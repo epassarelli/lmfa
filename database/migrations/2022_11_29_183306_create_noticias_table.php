@@ -28,10 +28,10 @@ class CreateNoticiasTable extends Migration
                 ->cascadeOnUpdate()
                 ->nullOnDelete();
 
-            $table->integer('visitas');
+            $table->integer('visitas')->default(0);
 
-            $table->datetime('publicar');
-            $table->integer('estado');
+            $table->datetime('publicar')->nullable();
+            $table->integer('estado')->default(0);
 
             $table->timestamps();
         });

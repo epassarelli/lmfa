@@ -13,6 +13,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     @livewireStyles
 
     <!-- Scripts -->
@@ -41,10 +42,29 @@
             {{ $slot }}
         </main>
     </div>
+    {{-- <footer class="bg-gray-800 text-gray-400 py-6">
+        <div class="container mx-auto flex justify-between px-4">
+            <div class="flex items-center">
+                <img src="/img/logo.png" alt="Logo de la empresa" class="h-10 mr-4">
+                <span class="font-bold text-lg">MiPortalMusical.com</span>
+            </div>
+            <div class="flex items-center">
+                <a href="#" class="mr-6 hover:text-gray-200">Acerca de</a>
+                <a href="#" class="mr-6 hover:text-gray-200">Contacto</a>
+                <a href="#" class="mr-6 hover:text-gray-200">Términos y condiciones</a>
+                <a href="#" class="hover:text-gray-200">Política de privacidad</a>
+            </div>
+        </div>
+    </footer> --}}
+    @include('footer')
 
     @stack('modals')
 
     @livewireScripts
+
+    <!-- Sección de scripts -->
+    @stack('scripts')
+
 </body>
 
 </html>

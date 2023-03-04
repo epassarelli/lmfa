@@ -11,8 +11,16 @@ class Noticia extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['titulo', 'slug', 'noticia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
+
+
     public function interpretes()
     {
         return $this->belongsToMany(Interprete::class, 'interprete_noticia');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

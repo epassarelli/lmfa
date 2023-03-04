@@ -15,6 +15,7 @@ use App\Models\Cancion;
 class Interprete extends Model
 {
     use HasFactory;
+    protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
 
     public function noticias()
     {
@@ -34,5 +35,10 @@ class Interprete extends Model
     public function canciones()
     {
         return $this->belongsToMany(Cancion::class, 'interprete:cancion');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
