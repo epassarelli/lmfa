@@ -11,6 +11,7 @@ use App\Models\Album;
 class Cancion extends Model
 {
     use HasFactory;
+    protected $table = 'canciones';
 
     public function albunes()
     {

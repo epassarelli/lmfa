@@ -1,10 +1,10 @@
-{{-- <nav x-data="{ open: false }" class="bg-white border-b border-gray-100"> --}}
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100 bg-gray-800">
 
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
+
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
@@ -14,25 +14,52 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+
+                    <x-jet-nav-link href="{{ route('noticias.index') }}" :active="request()->routeIs('noticias.index')">
+                        {{ __('Noticias') }}
                     </x-jet-nav-link>
 
-                    <x-jet-nav-link href="{{ route('admin.usuarios') }}" :active="request()->routeIs('admin.usuarios')">
-                        {{ __('Usuarios') }}
-                    </x-jet-nav-link>
-
-                    <x-jet-nav-link href="{{ route('admin.interpretes') }}" :active="request()->routeIs('admin.interpretes')">
+                    <x-jet-nav-link href="{{ route('interpretes.index') }}" :active="request()->routeIs('interpretes.index')">
                         {{ __('Interpretes') }}
                     </x-jet-nav-link>
 
-                    <x-jet-nav-link href="{{ route('admin.noticias') }}" :active="request()->routeIs('admin.noticias')">
-                        {{ __('Noticias') }}
+                    <x-jet-nav-link href="{{ route('canciones.index') }}" :active="request()->routeIs('canciones.index')">
+                        {{ __('Canciones') }}
                     </x-jet-nav-link>
-                    {{-- 
-                    <x-jet-nav-link href="{{ route('shows') }}" :active="request()->routeIs('shows')">
-                        {{ __('Shows') }}
-                    </x-jet-nav-link> --}}
+
+                    <x-jet-nav-link href="{{ route('cartelera.index') }}" :active="request()->routeIs('cartelera.index')">
+                        {{ __('Cartelera') }}
+                    </x-jet-nav-link>
+
+
+
+
+                    <x-jet-nav-link href="{{ route('festivales.index') }}" :active="request()->routeIs('festivales.index')">
+                        {{ __('Festivales') }}
+                    </x-jet-nav-link>
+
+                    <x-jet-nav-link href="{{ route('radios.index') }}" :active="request()->routeIs('radios.index')">
+                        {{ __('Radios') }}
+                    </x-jet-nav-link>
+
+                    <x-jet-nav-link href="{{ route('penas.index') }}" :active="request()->routeIs('penas.index')">
+                        {{ __('Peñas') }}
+                    </x-jet-nav-link>
+
+                    <x-jet-nav-link href="{{ route('comidas.index') }}" :active="request()->routeIs('comidas.index')">
+                        {{ __('Comidas') }}
+                    </x-jet-nav-link>
+
+                    <x-jet-nav-link href="{{ route('mitos.index') }}" :active="request()->routeIs('mitos.index')">
+                        {{ __('Mitos') }}
+                    </x-jet-nav-link>
+
+
+
+                    <x-jet-nav-link href="{{ route('videos.index') }}" :active="request()->routeIs('videos.index')">
+                        {{ __('Videos') }}
+                    </x-jet-nav-link>
+
                 </div>
             </div>
 
@@ -133,9 +160,6 @@
                             <x-jet-dropdown-link href="{{ route('profile.show') }}">
                                 {{ __('Mi perfil') }}
                             </x-jet-dropdown-link>
-
-
-
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                                 <x-jet-dropdown-link href="{{ route('api-tokens.index') }}">

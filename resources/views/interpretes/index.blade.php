@@ -1,11 +1,12 @@
 <x-app-layout>
 
+    <!-- Listado de interpretes en cards -->
+    <div class="flex flex-wrap justify-center">
 
-    <div class="flex flex-wrap  px-4 py-4">
         @foreach ($interpretes as $interprete)
-            <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-8">
+            <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 mb-8">
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <a href="{{ route('interpretes.show', $interprete->slug) }}">
+                    <a href="{{ route('interprete.show', $interprete->slug) }}">
                         <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}"
                             alt="{{ $interprete->interprete }}" class="w-full h-64 object-cover">
                         <div class="p-4">
@@ -16,9 +17,11 @@
             </div>
         @endforeach
 
-        <div class="mt-8 content-center">
+        <!-- Links del paginado -->
+        <div class="flex justify-center p-4">
             {{ $interpretes->links() }}
         </div>
+
     </div>
 
 </x-app-layout>
