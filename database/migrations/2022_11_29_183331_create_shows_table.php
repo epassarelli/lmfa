@@ -31,7 +31,11 @@ class CreateShowsTable extends Migration
                 ->constrained('users')
                 ->cascadeOnUpdate()
                 ->nullOnDelete();
-
+            $table->foreignId('interprete_id')
+                ->nullable()
+                ->constrained('interpretes')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
             $table->integer('visitas');
 
             $table->datetime('publicar');

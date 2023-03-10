@@ -21,6 +21,13 @@ class CreateInterpretesTable extends Migration
             $table->string('foto');
             $table->text('biografia');
 
+            $table->string('telefono');
+            $table->string('correo');
+
+            $table->string('instagram');
+            $table->string('twitter');
+            $table->string('youtube');
+
             $table->integer('visitas');
 
             $table->datetime('publicar');
