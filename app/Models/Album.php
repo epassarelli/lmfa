@@ -10,9 +10,9 @@ class Album extends Model
     use HasFactory;
     protected $table = 'albunes';
 
-    public function interpretes()
+    public function interprete()
     {
-        return $this->belongsToMany(Interprete::class, 'interprete_album');
+        return $this->belongsTo(Interprete::class);
     }
 
     public function canciones()

@@ -18,11 +18,6 @@ class Cancion extends Model
         return $this->belongsToMany(Cancion::class, 'album_cancion');
     }
 
-    public function interpretes()
-    {
-        return $this->belongsToMany(Interprete::class, 'interprete_cancion');
-    }
-
     public function interprete()
     {
         return $this->belongsTo(Interprete::class);

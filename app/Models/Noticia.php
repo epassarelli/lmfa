@@ -14,9 +14,9 @@ class Noticia extends Model
     protected $fillable = ['titulo', 'slug', 'noticia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
 
 
-    public function interpretes()
+    public function interprete()
     {
-        return $this->belongsToMany(Interprete::class, 'interprete_noticia');
+        return $this->belongsTo(Interprete::class);
     }
 
     public function user()

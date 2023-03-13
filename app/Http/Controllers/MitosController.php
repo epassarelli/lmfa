@@ -15,4 +15,16 @@ class MitosController extends Controller
             ->paginate(12);
         return view('mitos.index', compact('mitos'));
     }
+
+    public function show($slug)
+    {
+        $mito = Mito::where('slug', $slug)->firstOrFail();
+        $ultimos_mitos = Mito::where('estado', 1)
+            ->where('id', '<>', $mito->id)
+            ->orderByDesc('created_at')
+            ->take(10)
+            ->get();
+
+        return view('mitos.show', compact('mito', 'ultimos_mitos'));
+    }
 }

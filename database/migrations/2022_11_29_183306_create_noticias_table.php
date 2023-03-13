@@ -27,13 +27,14 @@ class CreateNoticiasTable extends Migration
                 ->constrained('users')
                 ->cascadeOnUpdate()
                 ->nullOnDelete();
+
             $table->foreignId('interprete_id')
                 ->nullable()
                 ->constrained('interpretes')
                 ->cascadeOnUpdate()
                 ->nullOnDelete();
-            $table->integer('visitas')->default(0);
 
+            $table->integer('visitas')->default(0);
             $table->datetime('publicar')->nullable();
             $table->integer('estado')->default(0);
 

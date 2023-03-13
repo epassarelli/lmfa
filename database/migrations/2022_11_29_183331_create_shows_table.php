@@ -24,8 +24,8 @@ class CreateShowsTable extends Migration
 
             $table->datetime('fecha');
             $table->string('hora');
-            $table->integer('lugar_id');
-
+            $table->string('lugar');
+            $table->string('direccion');
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users')

@@ -9,10 +9,21 @@ class ShowsController extends Controller
 {
     public function index()
     {
-        // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
         $shows = Show::where('estado', 1)
             ->orderBy('publicar', 'desc')
             ->paginate(12);
         return view('shows.index', compact('shows'));
+    }
+
+    public function show($slug)
+    {
+        $show = Show::where('slug', $slug)->firstOrFail();
+        $ultimos_shows = Show::where('estado', 1)
+            ->where('id', '<>', $show->id)
+            ->orderByDesc('created_at')
+            ->take(10)
+            ->get();
+
+        return view('shows.show', compact('show', 'ultimos_shows'));
     }
 }

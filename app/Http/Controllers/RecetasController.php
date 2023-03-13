@@ -15,4 +15,16 @@ class RecetasController extends Controller
             ->paginate(12);
         return view('recetas.index', compact('recetas'));
     }
+
+    public function show($slug)
+    {
+        $receta = Comida::where('slug', $slug)->firstOrFail();
+        $ultimas_recetas = Comida::where('estado', 1)
+            ->where('id', '<>', $receta->id)
+            ->orderByDesc('created_at')
+            ->take(10)
+            ->get();
+
+        return view('recetas.show', compact('receta', 'ultimas_recetas'));
+    }
 }

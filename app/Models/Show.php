@@ -11,8 +11,8 @@ class Show extends Model
 {
     use HasFactory;
 
-    public function interpretes()
+    public function interprete()
     {
-        return $this->belongsToMany(Interprete::class, 'interprete_shows');
+        return $this->belongsTo(Interprete::class);
     }
 }

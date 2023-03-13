@@ -19,22 +19,22 @@ class Interprete extends Model
 
     public function noticias()
     {
-        return $this->belongsToMany(Noticia::class, 'interprete:noticia');
+        return $this->hasMany(Noticia::class);
     }
 
     public function shows()
     {
-        return $this->belongsToMany(Show::class, 'interprete:show');
+        return $this->hasMany(Show::class);
     }
 
     public function albunes()
     {
-        return $this->belongsToMany(Album::class, 'interprete:album');
+        return $this->hasMany(Album::class);
     }
 
     public function canciones()
     {
-        return $this->belongsToMany(Cancion::class, 'interprete:cancion');
+        return $this->hasMany(Cancion::class);
     }
 
     public function user()

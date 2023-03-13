@@ -22,7 +22,7 @@
     </div>
 
     <!-- Links del paginado -->
-    <div class="flex justify-center">
+    <div class="flex justify-center p-4">
         <div class="mt-8">
             {{ $festivales->links() }}
         </div>
