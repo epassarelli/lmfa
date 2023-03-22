@@ -1,6 +1,7 @@
 <div class="flex flex-col items-center space-y-4">
-    <div class="w-full">
-        <img src="{{ $interprete->photo }}" alt="{{ $interprete->interprete }}" class="w-full h-auto">
+    <div class="flex">
+        <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
+            class="h-auto w-auto">
     </div>
     <h1 class="text-2xl font-semibold">{{ $interprete->interprete }}</h1>
     <div class="flex flex-wrap space-x-4">
@@ -29,19 +30,19 @@
         </a>
     </div>
     <div class="flex flex-wrap space-x-4">
-        <a href="{{ route('interprete.show', $interprete->slug) }}"
+        <a href="{{ route('interprete.show', str_replace('biografia-de-', '', $interprete->slug)) }}"
             class="text-blue-600 hover:text-blue-800">Biografía</a>
-        <a href="{{ route('interprete.shows', $interprete->slug) }}"
+        <a href="{{ route('interprete.shows', str_replace('biografia-de-', '', $interprete->slug)) }}"
             class="text-blue-600 hover:text-blue-800">Shows</a>
-        <a href="{{ route('interprete.discografia', $interprete->slug) }}"
+        <a href="{{ route('interprete.discografia', str_replace('biografia-de-', '', $interprete->slug)) }}"
             class="text-blue-600 hover:text-blue-800">Discografía</a>
-        <a href="{{ route('interprete.noticias', $interprete->slug) }}"
+        <a href="{{ route('interprete.noticias', str_replace('biografia-de-', '', $interprete->slug)) }}"
             class="text-blue-600 hover:text-blue-800">Noticias</a>
-        <a href="{{ route('interprete.canciones', $interprete->slug) }}"
+        <a href="{{ route('interprete.canciones', str_replace('biografia-de-', '', $interprete->slug)) }}"
             class="text-blue-600 hover:text-blue-800">Letras</a>
-        <a href="{{ route('interprete.videos', $interprete->slug) }}"
-            class="text-blue-600 hover:text-blue-800">Videos</a>
-        <a href="{{ route('interprete.entrevistas', $interprete->slug) }}"
-            class="text-blue-600 hover:text-blue-800">Entrevistas</a>
+        {{-- <a href="{{ route('interprete.videos', str_replace('biografia-de-', '', $interprete->slug)) }}"
+            class="text-blue-600 hover:text-blue-800">Videos</a> --}}
+        {{-- <a href="{{ route('interprete.entrevistas', str_replace('biografia-de-', '', $interprete->slug)) }}"
+            class="text-blue-600 hover:text-blue-800">Entrevistas</a> --}}
     </div>
 </div>

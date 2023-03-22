@@ -4,7 +4,7 @@
 
         <div class="w-full md:w-3/4 px-4">
             <h2 class="text-3xl font-bold mb-4">{{ $festival->titulo }}</h2>
-            <img src="{{ asset('storage/fiestas/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
+            <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
                 class="mb-4 rounded-lg shadow-lg">
             <p class="text-lg mb-4">{!! $festival->detalle !!}</p>
             <p class="text-gray-600">Visitas: {{ $festival->visitas }}</p>

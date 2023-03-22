@@ -31,6 +31,18 @@ class NoticiasController extends Controller
     return view('noticias.index', compact('noticias', 'ultimas_noticias'));
   }
 
+  public function byArtista($slug)
+  {
+    // dd($slug);
+    $interprete = Interprete::where('slug', $slug)->first();
+    $noticias = $interprete->noticias()->where('estado', 1)->paginate(12);
+    // $noticias = Show::where('estado', 1)
+    //     ->where('estado', 1)
+    //     ->orderBy('publicar', 'desc')
+    //     ->paginate(12);
+    return view('noticias.byArtista', compact('noticias', 'interprete'));
+  }
+
   public function show($slug)
   {
     $noticia = Noticia::where('slug', $slug)->firstOrFail();

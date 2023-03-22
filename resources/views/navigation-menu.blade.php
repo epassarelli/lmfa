@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 bg-gray-800">
+<nav x-data="{ open: false }" class="border-b border-gray-100 bg-white">
 
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -7,8 +7,10 @@
 
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-jet-application-mark class="block h-9 w-auto" />
+                    <a href="{{ route('inicio') }}">
+                        <img class="h-8 w-8 rounded-full" src="{{ asset('storage/img/logo.jpg') }}"
+                            alt="Mi Folklore Argentino">
+                        {{-- <x-jet-application-mark class="block h-9 w-auto" /> --}}
                     </a>
                 </div>
 

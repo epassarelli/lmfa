@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Interprete;
 use App\Models\Show;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,18 @@ class ShowsController extends Controller
             ->orderBy('publicar', 'desc')
             ->paginate(12);
         return view('shows.index', compact('shows'));
+    }
+
+    public function byArtista($slug)
+    {
+        // dd($slug);
+        $interprete = Interprete::where('slug', $slug)->first();
+        $shows = $interprete->shows()->paginate(12);
+        // $shows = Show::where('estado', 1)
+        //     ->where('estado', 1)
+        //     ->orderBy('publicar', 'desc')
+        //     ->paginate(12);
+        return view('shows.byArtista', compact('shows', 'interprete'));
     }
 
     public function show($slug)

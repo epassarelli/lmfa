@@ -27,7 +27,7 @@ class Interprete extends Model
         return $this->hasMany(Show::class);
     }
 
-    public function albunes()
+    public function discos()
     {
         return $this->hasMany(Album::class);
     }

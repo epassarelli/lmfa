@@ -1549,10 +1549,6 @@ select {
 .border-transparent {
   border-color: transparent;
 }
-.bg-amber-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(180 83 9 / var(--tw-bg-opacity));
-}
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
@@ -2608,6 +2604,10 @@ select {
     width: 25%;
   }
 
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;
@@ -2619,4 +2619,3 @@ select {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-

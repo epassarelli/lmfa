@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="w-full md:w-3/12 px-4">
+    <div class="w-full px-4">
         @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
     </div>
 
@@ -79,7 +79,7 @@
 
 
 
-        <form action="{{ route('interprete.show', $interprete->slug) }}" method="get">
+        {{-- <form action="{{ route('interprete.show', $interprete->slug) }}" method="get">
             <label for="salto">Saltar a:</label>
             <select name="salto" id="salto">
                 @foreach ($interpretes as $i)
@@ -87,7 +87,7 @@
                 @endforeach
             </select>
             <button type="submit">Ir</button>
-        </form>
+        </form> --}}
 
 
 

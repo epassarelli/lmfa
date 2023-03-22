@@ -14,19 +14,19 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" /> --}}
     @livewireStyles
 
     <!-- Scripts -->
     {{-- @mix(['resources/css/app.css', 'resources/js/app.js']) --}}
     <script src="{{ asset('js/app.js') }}" defer></script>
     <!-- Agregar en el head de la vista -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> --}}
 
 </head>
 
-<body class="font-sans antialiased  bg-brown-700">
+<body class="font-sans antialiased">
     <x-jet-banner />
 
     <div class="min-h-screen bg-gray-200">
@@ -42,7 +42,7 @@
         @endif
 
         <!-- Page Content -->
-        <main>
+        <main class="container mx-auto mt-10">
             {{ $slot }}
         </main>
     </div>

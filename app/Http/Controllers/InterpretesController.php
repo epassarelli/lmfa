@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Interprete;
-use App\Models\Noticia;
-use App\Models\Show;
-use App\Models\Disco;
-use App\Models\Cancion;
-use App\Models\Foto;
-use App\Models\Video;
+// use App\Models\Noticia;
+// use App\Models\Show;
+// use App\Models\Disco;
+// use App\Models\Cancion;
+// use App\Models\Foto;
+// use App\Models\Video;
 
 
 class InterpretesController extends Controller
@@ -29,7 +29,7 @@ class InterpretesController extends Controller
         // Obtener el intérprete actual
         $interprete = Interprete::where('slug', $slug)->first();
         // $interprete = Interprete::where('slug', $slug)->firstOrFail();
-
+        //dd($interprete);
         // Obtener la lista de intérpretes en estado 1
         $interpretes = Interprete::where('estado', 1)->orderBy('interprete', 'ASC')->get();
 
@@ -87,8 +87,8 @@ class InterpretesController extends Controller
             ];
 
             // return view('interpretes.show', compact('interprete', 'noticiasCount', 'showsCount', 'discosCount', 'cancionesCount', 'fotosCount', 'videosCount'));
-
-            return view('interprete.show', compact('interprete', 'interpretes', 'recursos'));
+            // dd($interprete);
+            return view('interpretes.show', compact('interprete', 'interpretes', 'recursos'));
             // return view('interpretes.show', compact('interprete', 'interpretes'));
         } else {
             return back()->with('alert', 'El intérprete no existe.');

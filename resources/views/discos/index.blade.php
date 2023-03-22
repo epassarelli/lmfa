@@ -1,8 +1,9 @@
 <x-app-layout>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+        
         @foreach ($discos as $disco)
-            <a href="{{ route('interprete.album.show', [$disco->slug, $disco->interprete->slug]) }}"
+            <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}"
                 class="bg-white rounded-lg shadow-md overflow-hidden flex">
                 <img class="w-24 h-auto object-cover" src="{{ asset('storage/albunes/' . $disco->foto) }}"
                     alt="{{ $disco->album }}">

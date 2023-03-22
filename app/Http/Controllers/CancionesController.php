@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cancion;
+use App\Models\Interprete;
 use Illuminate\Http\Request;
 
 class CancionesController extends Controller
@@ -16,5 +17,17 @@ class CancionesController extends Controller
 
         //dd($canciones);
         return view('canciones.index', compact('canciones'));
+    }
+
+    public function byArtista($slug)
+    {
+        // dd($slug);
+        $interprete = Interprete::where('slug', $slug)->first();
+        $canciones = $interprete->canciones()->where('estado', 1)->paginate(12);
+        // $canciones = Show::where('estado', 1)
+        //     ->where('estado', 1)
+        //     ->orderBy('publicar', 'desc')
+        //     ->paginate(12);
+        return view('canciones.byArtista', compact('canciones', 'interprete'));
     }
 }

@@ -1,6 +1,7 @@
 <x-app-layout>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+
         @foreach ($canciones as $cancion)
             <a href="{{ route('interprete.cancion.show', [$cancion->slug, $cancion->slug]) }}"
                 class="bg-white rounded-lg shadow-md overflow-hidden flex">
