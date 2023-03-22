@@ -18,9 +18,9 @@
         <div class="mt-8">
             <h2 class="text-lg font-bold">Canciones:</h2>
             <ul class="mt-4 list-disc list-inside">
-                @foreach ($disco->canciones as $cancion)
+                {{-- @foreach ($disco->canciones as $cancion)
                     <li><a href="{{ route('canciones.show', $cancion) }}">{{ $cancion->titulo }}</a></li>
-                @endforeach
+                @endforeach --}}
             </ul>
         </div>
     </div>
@@ -46,10 +46,10 @@
                 </div>
                 <h2 class="text-2xl font-bold mb-4">Canciones</h2>
                 <ul>
-                    @foreach ($disco->canciones as $cancion)
+                    {{-- @foreach ($disco->canciones as $cancion)
                         <li class="text-lg mb-2"><a
                                 href="{{ route('cancion.show', $cancion->id) }}">{{ $cancion->titulo }}</a></li>
-                    @endforeach
+                    @endforeach --}}
                 </ul>
             </div>
         </div>
@@ -60,16 +60,3 @@
 
 
 </x-app-layout>
-
-{{-- <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-            <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                <div class="flex justify-center">
-                    <img src="{{ $album->cover_photo }}" alt="{{ $album->title }}" class="w-64 h-64 rounded-lg">
-                </div>
-                <div class="mt-4">
-                    <h1 class="text-2xl font-bold">{{ $album->title }}</h1>
-                    <p class="text-sm text-gray-500">{{ $album->year }}</p>
-                    <p class="mt-2"><a href="{{ route('artist.show', $album->artist_id) }}" class="text-blue-500">{{ $album->artist->name }}</a></p>
-                </div>
-</ --}}

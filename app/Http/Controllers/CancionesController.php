@@ -30,4 +30,19 @@ class CancionesController extends Controller
         //     ->paginate(12);
         return view('canciones.byArtista', compact('canciones', 'interprete'));
     }
+
+    public function show($slugInterprete, $slugCancion)
+    {
+        // dd($slugInterprete, $slugCancion);
+        $interprete = Interprete::where('slug', $slugInterprete)->first();
+        $cancion = Cancion::where('slug', $slugCancion)->firstOrFail();
+
+        $relacionadas = Cancion::where('estado', 1)
+            ->where('id', '<>', $cancion->id)
+            ->orderByDesc('created_at')
+            ->take(12)
+            ->get();
+        // dd($interprete, $cancion, $relacionados);
+        return view('canciones.show', compact('cancion', 'interprete', 'relacionadas'));
+    }
 }
