@@ -63,7 +63,7 @@ class Users extends Component
 
     public function render()
     {
+        // dd('Llego');
         return view('livewire.backend.users');
     }
-}    
-
+}

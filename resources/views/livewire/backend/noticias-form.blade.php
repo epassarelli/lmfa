@@ -1,9 +1,3 @@
-Tengo la siguiente vista del CRUD
-
-
-
-Y la siguiente vista del formulario
-interpretes-form.blade
 <div>
     @if (session()->has('message'))
         <div class="bg-green-500 text-white p-3 mb-3">{{ session('message') }}</div>

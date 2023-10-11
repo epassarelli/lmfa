@@ -7,7 +7,19 @@ Como puedo hacer para que queden todas con la misma altura? --}}
 se puede hacer? Me dices como? --}}
 
 <x-app-layout>
+    <div class="flex flex-wrap justify-center">
+        {{ auth()->user() }}
+        <br>
+        @if (!empty($administrados))
+            @foreach ($administrados as $inte)
+                {{ $inte }}
+            @endforeach
+        @else
+            {{ 'No posee interpretes administrados' }}
+        @endif
 
+
+    </div>
     <!-- Listado de noticias en cards -->
     <div class="flex flex-wrap justify-center">
         <?php foreach($noticias as $noticia): ?>

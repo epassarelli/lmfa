@@ -9,14 +9,16 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Gestión de interpretes') }}
             </h2>
-
+            <div>
+                {{ $interprete }}
+            </div>
             @if (session()->has('message'))
                 <div class="bg-green-500 text-white p-3 mb-3">{{ session('message') }}</div>
             @endif
 
             <div>
-                {{ auth()->user() }}
-                {{ auth()->user()->name }}
+                {{-- {{ auth()->user() }} --}}
+                {{-- {{ auth()->user()->name }} --}}
             </div>
 
             @if ($modal)
@@ -129,6 +131,7 @@
                         @endforeach
                     </tbody>
                 </table>
+
                 <div class="py-3">
                     {{ $interpretes->links() }}
                 </div>

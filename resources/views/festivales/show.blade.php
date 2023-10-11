@@ -15,7 +15,7 @@
             <h3 class="text-2xl font-bold mb-4">Últimos festivales</h3>
             <ul class="border-t-4 border-b-4 border-gray-300 py-4">
                 @foreach ($ultimos_festivales as $festival)
-                    <li class="py-2"><a href="{{ url('festivales/' . $festival->slug) }}"
+                    <li class="py-2"><a href="{{ route('festivales.show', $festival->slug) }}"
                             class="text-lg hover:underline">{{ $festival->titulo }}</a></li>
                     <hr class="my-2">
                 @endforeach

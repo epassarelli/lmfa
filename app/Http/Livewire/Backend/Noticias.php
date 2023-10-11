@@ -65,7 +65,10 @@ class Noticias extends Component
         ];
     }
 
-
+    // public function mount()
+    // {
+    //     dd("El componente de Livewire 'Noticias' se está cargando correctamente");
+    // }
     public function mount()
     {
         $this->todos_interpretes = Interprete::all();
@@ -74,14 +77,22 @@ class Noticias extends Component
 
     public function render()
     {
+        // Si no soy ADMIN verifico y obtengo un array con todos los interpretes sobre los cuales son Prensa
+        // $this->noticias = Noticia::all();
+        // Obtengo las Gacetillas de los interpretes que soy prensa
 
-        $noticias = Noticia::with('interpretes')
-            ->where('titulo', 'like', '%' . $this->search . '%')
-            ->orWhere('noticia', 'like', '%' . $this->search . '%')
-            ->orderBy($this->sort, $this->order)
-            ->paginate(5);
+        // Sino
 
-        return view('livewire.backend.noticias', compact('noticias'));
+        // Obtengo las gacetillas de todos
+        $this->noticias = Noticia::all();
+
+        // $noticias = Noticia::with('interprete')
+        // $this->noticias = Noticia::where('titulo', 'like', '%' . $this->search . '%')
+        //     ->orWhere('noticia', 'like', '%' . $this->search . '%')
+        //     ->orderBy($this->sort, $this->order)
+        //     ->paginate(5);
+        // dd($noticias);
+        return view('livewire.backend.noticias', ['noticias' => $this->noticias]);
     }
 
 

@@ -10,7 +10,7 @@ use App\Models\Disco;
 use App\Models\Cancion;
 use App\Models\Foto;
 use App\Models\Video;
-
+use Illuminate\Support\Facades\Session;
 
 class NoticiasController extends Controller
 {
@@ -26,9 +26,10 @@ class NoticiasController extends Controller
       ->orderBy('publicar', 'desc')
       ->take(6)
       ->get();
+    $administrados = Session::get('interpretes');
 
     // Renderizar la vista con las noticias y las últimas noticias
-    return view('noticias.index', compact('noticias', 'ultimas_noticias'));
+    return view('noticias.index', compact('noticias', 'ultimas_noticias', 'administrados'));
   }
 
   public function byArtista($slug)

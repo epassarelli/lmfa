@@ -1,9 +1,11 @@
-<x-app-layout>
+<div>
+    {{-- 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
+ --}}
 
 
     <div class="py-8">
@@ -13,14 +15,14 @@
 
                 <!-- Card 1 -->
                 <div class="bg-white rounded-lg shadow-md p-4">
-                    <h3 class="text-lg font-semibold mb-2">Usuarios</h3>
-                    <p class="text-3xl font-bold">1</p>
+                    <h3 class="text-3xl font-semibold mb-2">Usuarios</h3>
+                    <p class="text-3xl font-bold">{{ $users }}</p>
                 </div>
 
                 <!-- Card 2 -->
                 <div class="bg-white rounded-lg shadow-md p-4">
                     <h3 class="text-lg font-semibold mb-2">Roles</h3>
-                    <p class="text-3xl font-bold">1</p>
+                    <p class="text-3xl font-bold">{{ $teams }}</p>
                 </div>
 
                 <!-- Card 3 -->
@@ -33,6 +35,8 @@
                 <div class="bg-white rounded-lg shadow-md p-4">
                     <h3 class="text-lg font-semibold mb-2">Interpretes</h3>
                     <p class="text-3xl font-bold">1</p>
+                    <p class="font-bold">Activos: {{ $interpretes[1] ?? 0 }}</p>
+                    <p class="font-bold">Inactivos: {{ $interpretes[0] ?? 0 }}</p>
                 </div>
 
                 <!-- Card 5 -->
@@ -193,5 +197,4 @@
 
 
     </div>
-
-</x-app-layout>
+</div>

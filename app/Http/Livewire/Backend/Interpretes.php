@@ -2,13 +2,14 @@
 
 namespace App\Http\Livewire\Backend;
 
-use App\Models\Interprete;
+
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 use Illuminate\Support\Str;
 
+use App\Models\Interprete;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -187,7 +188,7 @@ class Interpretes extends Component
 
     public function save()
     {
-        // dd($this->interprete);
+
         $this->validate();
         // $slug = Str::slug($this->interprete);
         // $foto = $this->foto->store('interpretes');
@@ -195,13 +196,13 @@ class Interpretes extends Component
         $imagen_name = $this->foto->getClientOriginalName();
         $upload_imagen = $this->foto->storeAs('interpretes', $imagen_name);
         // list($width, $height) = getimagesize(storage_path('app/' . $foto));
-
+        // dd($this->imagen_name);
         // if ($width > 400 || $height > 400) {
         //     \Intervention\Image\Facades\Image::make(storage_path('app/' . $foto))->resize(400, 400, function ($constraint) {
         //         $constraint->aspectRatio();
         //     })->save();
         // }
-
+        // dd($interprete);
         if ($this->interprete_id) {
             $interprete = Interprete::find($this->interprete_id);
             $interprete->update([
@@ -225,10 +226,10 @@ class Interpretes extends Component
                 'estado' => $this->estado,
                 'user_id' => auth()->user()->id,
             ]);
-
+            dd($interprete);
             $this->interprete_id = $interprete->id;
         }
-
+        dd($interprete);
         session()->flash('message', $this->interprete_id ? 'Intérprete actualizado exitosamente.' : 'Intérprete creado exitosamente.');
 
         // return redirect()->route('interpretes.index');

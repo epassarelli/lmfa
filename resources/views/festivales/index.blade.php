@@ -7,7 +7,7 @@
 
         <div class="w-full sm:w-1/2 md:w-1/3 p-4">
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <a href="festivales/<?php echo $festival->slug; ?>">
+                <a href="{{ route('festivales.show', $festival->slug) }}">
                     <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
                         class="w-full h-48 object-cover">
                     <div class="p-4">

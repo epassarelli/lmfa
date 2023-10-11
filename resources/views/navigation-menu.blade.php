@@ -70,11 +70,13 @@
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 @if (!auth()->check())
+                    {{-- {{ dd(' Iniciar Sesion ') }} --}}
                     <a href="{{ route('login') }}"
                         class="inline-block px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
                         Iniciar sesión
                     </a>
                 @else
+                    {{-- {{ dd('Sesion iniciada') }} --}}
                     <!-- Aquí va el código para mostrar el botón de usuario logueado -->
                     <!-- Teams Dropdown -->
                     @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
@@ -84,7 +86,7 @@
                                     <span class="inline-flex rounded-md">
                                         <button type="button"
                                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
-                                            {{ Auth::user()->currentTeam->name }}
+                                            {{-- {{ Auth::user()->currentTeam->name }} --}}
 
                                             <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20" fill="currentColor">
@@ -138,15 +140,15 @@
                                 @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                                     <button
                                         class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                        <img class="h-8 w-8 rounded-full object-cover"
+                                        {{-- <img class="h-8 w-8 rounded-full object-cover"
                                             src="{{ Auth::user()->profile_photo_url }}"
-                                            alt="{{ Auth::user()->name }}" />
+                                            alt="{{ Auth::user()->name }}" /> --}}
                                     </button>
                                 @else
                                     <span class="inline-flex rounded-md">
                                         <button type="button"
                                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition">
-                                            {{ Auth::user()->name }}
+                                            {{-- {{ Auth::user()->name }} --}}
 
                                             <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20" fill="currentColor">
@@ -161,7 +163,7 @@
 
                             <x-slot name="content">
 
-                                <x-jet-dropdown-link href="{{ route('dashboard') }}">
+                                <x-jet-dropdown-link href="{{ route('admin.dashboard') }}">
                                     {{ __('Mis contenidos') }}
                                 </x-jet-dropdown-link>
 
@@ -216,7 +218,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+            <x-jet-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
         </div>

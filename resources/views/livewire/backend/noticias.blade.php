@@ -6,7 +6,7 @@
             {{ __('Gestión de gacetillas de prensa') }}
         </h2>
     </x-slot> --}}
-
+    {{-- {{ dd($noticias) }} --}}
 
 
     <div class="py-8">
