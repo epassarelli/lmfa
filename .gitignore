@@ -1,3 +1,4 @@
+/database_local
 /node_modules
 /public/hot
 /public/storage
@@ -10,6 +11,9 @@ docker-compose.override.yml
 Homestead.json
 Homestead.yaml
 npm-debug.log
+Dockerfile
+docker-compose.yml
+apache.conf
 yarn-error.log
 /.idea
 /.vscode
