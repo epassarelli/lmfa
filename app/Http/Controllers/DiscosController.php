@@ -14,24 +14,24 @@ class DiscosController extends Controller
         $discos = Album::where('estado', 1)
             ->orderBy('publicar', 'desc')
             ->paginate(12);
-        return view('discos.index', compact('discos'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+
+        return view('discos.index', compact('discos', 'metaTitle', 'metaDescription'));
     }
 
     public function byArtista($slug)
     {
-        // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
         $discos = $interprete->discos()->where('estado', 1)->paginate(12);
-        // $discos = Show::where('estado', 1)
-        //     ->where('estado', 1)
-        //     ->orderBy('publicar', 'desc')
-        //     ->paginate(12);
-        return view('discos.byArtista', compact('discos', 'interprete'));
+
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('discos.byArtista', compact('discos', 'interprete', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slugInterprete, $slugDisco)
     {
-        // dd($slugInterprete, $slugDisco);
         $interprete = Interprete::where('slug', $slugInterprete)->first();
         $disco = Album::where('slug', $slugDisco)->firstOrFail();
 
@@ -40,7 +40,10 @@ class DiscosController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
-        // dd($interprete, $disco, $relacionados);
-        return view('discos.show', compact('disco', 'interprete', 'relacionados'));
+
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+
+        return view('discos.show', compact('disco', 'interprete', 'relacionados', 'metaTitle', 'metaDescription'));
     }
 }

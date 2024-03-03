@@ -27,9 +27,10 @@ class NoticiasController extends Controller
       ->take(6)
       ->get();
     $administrados = Session::get('interpretes');
-
+    $metaTitle = "Mi Folklore Argentino";
+    $metaDescription = "El portal del folklore";
     // Renderizar la vista con las noticias y las últimas noticias
-    return view('noticias.index', compact('noticias', 'ultimas_noticias', 'administrados'));
+    return view('noticias.index', compact('noticias', 'ultimas_noticias', 'administrados', 'metaTitle', 'metaDescription'));
   }
 
   public function byArtista($slug)
@@ -41,7 +42,9 @@ class NoticiasController extends Controller
     //     ->where('estado', 1)
     //     ->orderBy('publicar', 'desc')
     //     ->paginate(12);
-    return view('noticias.byArtista', compact('noticias', 'interprete'));
+    $metaTitle = "Mi Folklore Argentino";
+    $metaDescription = "El portal del folklore";
+    return view('noticias.byArtista', compact('noticias', 'interprete', 'metaTitle', 'metaDescription'));
   }
 
   public function show($slug)
@@ -52,8 +55,9 @@ class NoticiasController extends Controller
       ->orderByDesc('created_at')
       ->take(10)
       ->get();
-
-    return view('noticias.show', compact('noticia', 'ultimas_noticias'));
+    $metaTitle = "Mi Folklore Argentino";
+    $metaDescription = "El portal del folklore";
+    return view('noticias.show', compact('noticia', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
   }
 
   public function showOld($slug)
@@ -63,8 +67,9 @@ class NoticiasController extends Controller
 
     // Obtener la lista de intérpretes en estado 1
     $interpretes = Interprete::where('estado', 1)->orderBy('interprete', 'ASC')->get();
-
-    return view('noticias.show', compact('noticia', 'interpretes'));
+    $metaTitle = "Mi Folklore Argentino";
+    $metaDescription = "El portal del folklore";
+    return view('noticias.show', compact('noticia', 'interpretes', 'metaTitle', 'metaDescription'));
   }
 
 

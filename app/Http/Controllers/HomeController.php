@@ -9,7 +9,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('home');
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('home', compact('metaTitle', 'metaDescription'));
     }
 }
 

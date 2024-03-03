@@ -13,7 +13,9 @@ class FestivalesController extends Controller
         $festivales = Festival::where('estado', 1)
             ->orderBy('publicar', 'desc')
             ->paginate(12);
-        return view('festivales.index', compact('festivales'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('festivales.index', compact('festivales', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)
@@ -24,7 +26,8 @@ class FestivalesController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
-
-        return view('festivales.show', compact('festival', 'ultimos_festivales'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('festivales.show', compact('festival', 'ultimos_festivales', 'metaTitle', 'metaDescription'));
     }
 }

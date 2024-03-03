@@ -13,7 +13,9 @@ class RecetasController extends Controller
         $recetas = Comida::where('estado', 1)
             ->orderBy('publicar', 'desc')
             ->paginate(12);
-        return view('recetas.index', compact('recetas'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('recetas.index', compact('recetas', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)
@@ -24,7 +26,8 @@ class RecetasController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
-
-        return view('recetas.show', compact('receta', 'ultimas_recetas'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('recetas.show', compact('receta', 'ultimas_recetas', 'metaTitle', 'metaDescription'));
     }
 }

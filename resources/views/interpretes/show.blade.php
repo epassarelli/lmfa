@@ -1,41 +1,43 @@
+@section('metaTitle', $metaTitle)
+@section('metaDescription', $metaDescription)
 <x-app-layout>
 
-    <div class="w-full px-4">
-        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
+  <div class="w-full px-4">
+    @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
+  </div>
+
+  <div class="max-w-xl mx-auto py-8">
+    <div class="flex items-center mb-8">
+      <img class="w-24 h-24 rounded-full mr-4" src="{{ $interprete->foto }}" alt="{{ $interprete->nombre }}">
+      <h1 class="text-3xl font-bold">{{ $interprete->interprete }}</h1>
     </div>
 
-    <div class="max-w-xl mx-auto py-8">
-        <div class="flex items-center mb-8">
-            <img class="w-24 h-24 rounded-full mr-4" src="{{ $interprete->foto }}" alt="{{ $interprete->nombre }}">
-            <h1 class="text-3xl font-bold">{{ $interprete->interprete }}</h1>
-        </div>
+    <div class="mb-8">
+      <p class="text-lg">{!! $interprete->biografia !!}</p>
+    </div>
 
-        <div class="mb-8">
-            <p class="text-lg">{!! $interprete->biografia !!}</p>
-        </div>
+    <div class="mb-8">
+      <h2 class="text-xl font-bold mb-2">Contacto</h2>
+      <p>{{ $interprete->correo }}</p>
+      <p>{{ $interprete->telefono }}</p>
+      <p>{{ $interprete->direccion }}</p>
+    </div>
 
-        <div class="mb-8">
-            <h2 class="text-xl font-bold mb-2">Contacto</h2>
-            <p>{{ $interprete->correo }}</p>
-            <p>{{ $interprete->telefono }}</p>
-            <p>{{ $interprete->direccion }}</p>
-        </div>
-
-        <div class="mb-8">
-            <h2 class="text-xl font-bold mb-2">Redes sociales</h2>
-            <ul class="list-inline">
-                <li><a href="{{ $interprete->facebook }}" target="_blank"><i class="fab fa-facebook fa-lg"></i></a></li>
-                <li><a href="{{ $interprete->twitter }}" target="_blank"><i class="fab fa-twitter fa-lg"></i></a></li>
-                <li><a href="{{ $interprete->instagram }}" target="_blank"><i class="fab fa-instagram fa-lg"></i></a>
-                </li>
-            </ul>
-        </div>
+    <div class="mb-8">
+      <h2 class="text-xl font-bold mb-2">Redes sociales</h2>
+      <ul class="list-inline">
+        <li><a href="{{ $interprete->facebook }}" target="_blank"><i class="fab fa-facebook fa-lg"></i></a></li>
+        <li><a href="{{ $interprete->twitter }}" target="_blank"><i class="fab fa-twitter fa-lg"></i></a></li>
+        <li><a href="{{ $interprete->instagram }}" target="_blank"><i class="fab fa-instagram fa-lg"></i></a>
+        </li>
+      </ul>
+    </div>
 
 
 
 
 
-        {{-- @foreach ($recursos as $nombre => $cantidad)
+    {{-- @foreach ($recursos as $nombre => $cantidad)
             <div class="rounded-lg bg-white shadow-lg p-4 mb-4">
                 <div class="flex items-center justify-center mb-4">
                     @switch($nombre)
@@ -79,7 +81,7 @@
 
 
 
-        {{-- <form action="{{ route('interprete.show', $interprete->slug) }}" method="get">
+    {{-- <form action="{{ route('interprete.show', $interprete->slug) }}" method="get">
             <label for="salto">Saltar a:</label>
             <select name="salto" id="salto">
                 @foreach ($interpretes as $i)
@@ -92,13 +94,13 @@
 
 
 
-    </div>
+  </div>
 
 
 
 
-    <!-- Agregar en el body de la vista -->
-    {{-- 
+  <!-- Agregar en el body de la vista -->
+  {{-- 
       <script>
         $(document).ready(function() {
             // Inicializar el campo select con Select2

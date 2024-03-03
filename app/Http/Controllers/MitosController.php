@@ -13,7 +13,9 @@ class MitosController extends Controller
         $mitos = Mito::where('estado', 1)
             ->orderBy('publicar', 'desc')
             ->paginate(12);
-        return view('mitos.index', compact('mitos'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('mitos.index', compact('mitos', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)
@@ -24,7 +26,8 @@ class MitosController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
-
-        return view('mitos.show', compact('mito', 'ultimos_mitos'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('mitos.show', compact('mito', 'ultimos_mitos', 'metaTitle', 'metaDescription'));
     }
 }

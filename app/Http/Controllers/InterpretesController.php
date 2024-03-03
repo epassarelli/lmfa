@@ -21,7 +21,10 @@ class InterpretesController extends Controller
             ->paginate(12);
 
         // dd($interpretes);
-        return view('interpretes.index', compact('interpretes'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        // return view('home', compact('metaTitle', 'metaDescription'));
+        return view('interpretes.index', compact('interpretes', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)
@@ -88,7 +91,9 @@ class InterpretesController extends Controller
 
             // return view('interpretes.show', compact('interprete', 'noticiasCount', 'showsCount', 'discosCount', 'cancionesCount', 'fotosCount', 'videosCount'));
             // dd($interprete);
-            return view('interpretes.show', compact('interprete', 'interpretes', 'recursos'));
+            $metaTitle = "Mi Folklore Argentino";
+            $metaDescription = "El portal del folklore";
+            return view('interpretes.show', compact('interprete', 'interpretes', 'recursos', 'metaTitle', 'metaDescription'));
             // return view('interpretes.show', compact('interprete', 'interpretes'));
         } else {
             return back()->with('alert', 'El intérprete no existe.');

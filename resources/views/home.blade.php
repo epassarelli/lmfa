@@ -1,3 +1,5 @@
+@section('metaTitle', $metaTitle)
+@section('metaDescription', $metaDescription)
 <x-app-layout>
 
 

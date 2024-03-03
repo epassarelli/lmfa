@@ -13,7 +13,9 @@ class ShowsController extends Controller
         $shows = Show::where('estado', 1)
             ->orderBy('publicar', 'desc')
             ->paginate(12);
-        return view('shows.index', compact('shows'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('shows.index', compact('shows', 'metaTitle', 'metaDescription'));
     }
 
     public function byArtista($slug)
@@ -25,7 +27,9 @@ class ShowsController extends Controller
         //     ->where('estado', 1)
         //     ->orderBy('publicar', 'desc')
         //     ->paginate(12);
-        return view('shows.byArtista', compact('shows', 'interprete'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('shows.byArtista', compact('shows', 'interprete', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)
@@ -36,7 +40,8 @@ class ShowsController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
-
-        return view('shows.show', compact('show', 'ultimos_shows'));
+        $metaTitle = "Mi Folklore Argentino";
+        $metaDescription = "El portal del folklore";
+        return view('shows.show', compact('show', 'ultimos_shows', 'metaTitle', 'metaDescription'));
     }
 }
