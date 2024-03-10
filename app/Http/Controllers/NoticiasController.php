@@ -47,7 +47,7 @@ class NoticiasController extends Controller
     return view('noticias.byArtista', compact('noticias', 'interprete', 'metaTitle', 'metaDescription'));
   }
 
-  public function show($slug)
+  public function show($slugNoticia, $slug)
   {
     $noticia = Noticia::where('slug', $slug)->firstOrFail();
     $ultimas_noticias = Noticia::where('estado', 1)

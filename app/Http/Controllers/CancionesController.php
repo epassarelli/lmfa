@@ -23,7 +23,7 @@ class CancionesController extends Controller
 
     public function byArtista($slug)
     {
-
+        // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
         $canciones = $interprete->canciones()->where('estado', 1)->paginate(12);
 

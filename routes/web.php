@@ -21,15 +21,10 @@ use App\Http\Controllers\VideosController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImagenController;
 
-
 use App\Http\Livewire\Backend\Dashboard;
 use App\Http\Livewire\Backend\Noticias;
 use App\Http\Livewire\Backend\Interpretes;
 use App\Http\Livewire\Backend\Users;
-
-
-
-
 
 
 Route::middleware([
@@ -58,7 +53,30 @@ Route::middleware([
     });
 });
 
+// Rutas para el controlador de biografia
+Route::get('biografias/{interprete:slug}', [InterpretesController::class, 'show'])->name('interprete.show');
+Route::get('biografias', [InterpretesController::class, 'index'])->name('interpretes.index');
 
+// Rutas para el controlador de Noticias:
+Route::get('noticias/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
+Route::get('noticias/{interprete:slug}', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
+Route::get('noticias/{noticia:slug}', [NoticiasController::class, 'show'])->name('noticias.show');
+Route::get('noticias', [NoticiasController::class, 'index'])->name('noticias.index');
+
+// Rutas para el controlador de Letras de canciones:
+Route::get('letras-de-canciones/{interprete:slug}/{cancion:slug}', [CancionesController::class, 'show'])->name('interprete.cancion.show');
+Route::get('letras-de-canciones/{interprete:slug}', [CancionesController::class, 'byArtista'])->name('interprete.canciones');
+Route::get('letras-de-canciones', [CancionesController::class, 'index'])->name('canciones.index');
+
+// Rutas para el controlador de discografías:
+Route::get('discografias/{interprete:slug}/{id}', [DiscosController::class, 'show'])->name('interprete.album.show');
+Route::get('discografias/{interprete:slug}', [DiscosController::class, 'byArtista'])->name('interprete.discografia');
+Route::get('discografias', [DiscosController::class, 'index'])->name('discos.index');
+
+// Rutas para el controlador de Cartelera:
+Route::get('cartelera/{interprete:slug}/{id}',  [ShowsController::class, 'show'])->name('interprete.show.show');
+Route::get('cartelera/{interprete:slug}', [ShowsController::class, 'byArtista'])->name('interprete.shows');
+Route::get('cartelera', [ShowsController::class, 'index'])->name('shows.index');
 
 
 
@@ -66,92 +84,59 @@ Route::middleware([
 Route::get('thumb/{carpeta}/{ancho}/{alto}/{calidad}', [ImagenController::class, 'generarMiniaturas']);
 
 // Rutas para el controlador de Festivales:
-Route::get('fiestas-tradicionales-argentina', [FestivalesController::class, 'index'])->name('festivales.index');
 Route::get('fiestas-tradicionales-argentina/{id}', [FestivalesController::class, 'show'])->name('festivales.show');
+Route::get('fiestas-tradicionales-argentina', [FestivalesController::class, 'index'])->name('festivales.index');
 
 // Rutas para el controlador de Radios:
-Route::get('radios', [RadiosController::class, 'index'])->name('radios.index');
 Route::get('radios/{id}', [RadiosController::class, 'show'])->name('radios.show');
+Route::get('radios', [RadiosController::class, 'index'])->name('radios.index');
 
 // Rutas para el controlador de Peñas:
-Route::get('penias', [PeniasController::class, 'index'])->name('penas.index');
 Route::get('penias/{id}', [PeniasController::class, 'show'])->name('penas.show');
+Route::get('penias', [PeniasController::class, 'index'])->name('penas.index');
 
 // Rutas para el controlador de Comidas:
-Route::get('comidas', [RecetasController::class, 'index'])->name('comidas.index');
 Route::get('comidas/{id}', [RecetasController::class, 'show'])->name('comidas.show');
+Route::get('comidas', [RecetasController::class, 'index'])->name('comidas.index');
 
 // Rutas para el controlador de Mitos:
-Route::get('mitos', [MitosController::class, 'index'])->name('mitos.index');
 Route::get('mitos/{id}', [MitosController::class, 'show'])->name('mitos.show');
+Route::get('mitos', [MitosController::class, 'index'])->name('mitos.index');
 
-// Rutas para el controlador de Noticias:
-Route::get('noticias', [NoticiasController::class, 'index'])->name('noticias.index');
-Route::get('noticias/{id}', [NoticiasController::class, 'show'])->name('noticias.show');
 
-// Rutas para el controlador de Letras de canciones:
-Route::get('letras-de-canciones', [CancionesController::class, 'index'])->name('canciones.index');
-// Route::get('letras/{id}', [CancionesController::class, 'show'])->name('letras.show');
 
-// Rutas para el controlador de Letras de canciones:
-Route::get('discos', [DiscosController::class, 'index'])->name('discos.index');
+
 
 // Rutas para el controlador de Cartelera:
-Route::get('cartelera', [ShowsController::class, 'index'])->name('shows.index');
-Route::get('cartelera/{id}', [ShowsController::class, 'show'])->name('shows.show');
-
-// Rutas para el controlador de Cartelera:
-Route::get('videos', [VideosController::class, 'index'])->name('videos.index');
+// Route::get('videos', [VideosController::class, 'index'])->name('videos.index');
 
 
 #############################################################################
 ##  Rutas internas al SILO Interpretes 
 #############################################################################
 // Rutas para el controlador de interpretes:
-Route::prefix('interpretes')->group(function () {
-    // Route::get('/{slug}', [InterpretesController::class, 'show'])->name('interprete.show');
-    Route::get('/busqueda', [InterpretesController::class, 'busqueda'])->name('interpretes.busqueda');
-    Route::get('/', [InterpretesController::class, 'index'])->name('interpretes.index');
-});
+// Route::prefix('interpretes')->group(function () {
+//     // Route::get('/{slug}', [InterpretesController::class, 'show'])->name('interprete.show');
+//     Route::get('/busqueda', [InterpretesController::class, 'busqueda'])->name('interpretes.busqueda');
+// });
 
-// Rutas para el controlador de biografia
-Route::get('{interprete:slug}/biografia', [InterpretesController::class, 'show'])->name('interprete.show');
 
-// Rutas para el controlador de discografía
-Route::get('{interprete:slug}/discografia', [DiscosController::class, 'byArtista'])->name('interprete.discografia');
-Route::get('{interprete:slug}/discografia/{id}', [DiscosController::class, 'show'])->name('interprete.album.show');
-
-// Rutas para el controlador de noticias
-Route::get('{interprete:slug}/noticias', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
-Route::get('{interprete:slug}/noticias/{slugNoticia}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
-
-// Rutas para el controlador de letras
-Route::get('{interprete:slug}/letras-de-canciones', [CancionesController::class, 'byArtista'])->name('interprete.canciones');
-Route::get('{interprete:slug}/letras-de-canciones/{id}', [CancionesController::class, 'show'])->name('interprete.cancion.show');
 
 // Rutas para el controlador de videos
-Route::get('{interprete:slug}/videos', [VideosController::class, 'byArtista'])->name('interprete.videos');
-Route::get('{interprete:slug}/videos/{id}', [VideosController::class, 'show'])->name('interprete.video.show');
+// Route::get('{interprete:slug}/videos', [VideosController::class, 'byArtista'])->name('interprete.videos');
+// Route::get('{interprete:slug}/videos/{id}', [VideosController::class, 'show'])->name('interprete.video.show');
 
-// Rutas para el controlador de shows
-Route::get('{interprete:slug}/shows', [ShowsController::class, 'byArtista'])->name('interprete.shows');
-Route::get('{interprete:slug}/shows/{id}', [ShowsController::class, 'show'])->name('interprete.show.show');
 
 // Rutas para el controlador de entrevistas
 Route::get('{interprete:slug}/entrevistas', [EntrevistasController::class, 'byArtista'])->name('interprete.entrevistas');
 Route::get('{interprete:slug}/entrevistas/{id}', [EntrevistasController::class, 'show'])->name('interprete.entrevista.show');
 
-
-
-
-
-
 // Rutas para el controlador de noticias:
-Route::prefix('noticias')->group(function () {
-    Route::get('/noticias-de-{slug}', [NoticiasController::class, 'byInterprete'])->name('noticias.byInterprete');
-    Route::get('/{slug}', [NoticiasController::class, 'show'])->name('noticias.show');
-    Route::get('/busqueda', [NoticiasController::class, 'busqueda'])->name('noticias.busqueda');
-    //Route::get('/', [NoticiasController::class, 'index'])->name('noticias.index');
-});
+// Route::prefix('noticias')->group(function () {
+//     Route::get('/noticias-de-{slug}', [NoticiasController::class, 'byInterprete'])->name('noticias.byInterprete');
+//     Route::get('/{slug}', [NoticiasController::class, 'show'])->name('noticias.show');
+//     Route::get('/busqueda', [NoticiasController::class, 'busqueda'])->name('noticias.busqueda');
+//     //Route::get('/', [NoticiasController::class, 'index'])->name('noticias.index');
+// });
 
 Route::get('/', [HomeController::class, 'index'])->name('inicio');
