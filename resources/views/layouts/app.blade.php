@@ -57,7 +57,13 @@
 
     <!-- Page Content -->
     <main class="container mx-auto mt-2">
-      {{ $slot }}
+      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="overflow-hidden bg-white shadow-xl sm:rounded-lg">
+          {{-- <div class="grid grid-cols-1 md:grid-cols-3"> --}}
+          {{ $slot }}
+          {{-- </div> --}}
+        </div>
+      </div>
     </main>
   </div>
 

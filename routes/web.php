@@ -60,7 +60,7 @@ Route::get('biografias', [InterpretesController::class, 'index'])->name('interpr
 // Rutas para el controlador de Noticias:
 Route::get('noticias/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
 Route::get('noticias/{interprete:slug}', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
-Route::get('noticias/{noticia:slug}', [NoticiasController::class, 'show'])->name('noticias.show');
+// Route::get('noticias/{id}', [NoticiasController::class, 'show'])->name('noticias.show');
 Route::get('noticias', [NoticiasController::class, 'index'])->name('noticias.index');
 
 // Rutas para el controlador de Letras de canciones:

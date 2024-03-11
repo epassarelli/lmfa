@@ -21,8 +21,8 @@ class InterpretesController extends Controller
             ->paginate(12);
 
         // dd($interpretes);
-        $metaTitle = "Mi Folklore Argentino";
-        $metaDescription = "El portal del folklore";
+        $metaTitle = "Biografías de Interpretes folkloricos de Argentina";
+        $metaDescription = "Biografías de Interpretes folkloricos de Argentina";
         // return view('home', compact('metaTitle', 'metaDescription'));
         return view('interpretes.index', compact('interpretes', 'metaTitle', 'metaDescription'));
     }
@@ -93,6 +93,8 @@ class InterpretesController extends Controller
             // dd($interprete);
             $metaTitle = "Mi Folklore Argentino";
             $metaDescription = "El portal del folklore";
+            $metaTitle = "Biografía de " . $interprete->interprete;
+            $metaDescription = "Biografía folklorica de " . $interprete->interprete . ". Artistas e interpretes populares de Argentina";
             return view('interpretes.show', compact('interprete', 'interpretes', 'recursos', 'metaTitle', 'metaDescription'));
             // return view('interpretes.show', compact('interprete', 'interpretes'));
         } else {

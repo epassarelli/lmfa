@@ -27,7 +27,7 @@ se puede hacer? Me dices como? --}}
 
     <div class="w-full sm:w-1/2 md:w-1/3 p-4">
       <div class="bg-white rounded-lg shadow-lg overflow-hidden h-full">
-        <a href="noticias/<?php echo $noticia->slug; ?>">
+        <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}">
           <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
             class="w-full h-48 object-cover">
           <div class="p-4">

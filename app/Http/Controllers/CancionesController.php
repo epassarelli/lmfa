@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cancion;
 use App\Models\Interprete;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class CancionesController extends Controller
@@ -17,7 +18,7 @@ class CancionesController extends Controller
 
 
         $metaTitle = "Letras de canciones del Folklore Argentino";
-        $metaDescription = "Todas las letras de canciones del Folklore Argentino para cantar";
+        $metaDescription = "Todas las letras de canciones del Folklore Argentino para cantar, cancionero folklórico";
         return view('canciones.index', compact('canciones', 'metaTitle', 'metaDescription'));
     }
 
@@ -44,8 +45,14 @@ class CancionesController extends Controller
             ->take(12)
             ->get();
         // dd($interprete);
-        $metaTitle = "Letra de " . $cancion->cancion;
-        $metaDescription = "El portal del folklore";
+
+        $metaTitle = "Letra de " . $cancion->cancion . ", " . $interprete->interprete;
+
+        // Decodifica las entidades HTML, elimina etiquetas HTML y toma los primeros 150 caracteres
+        $metaDescription = Str::limit(strip_tags(html_entity_decode($cancion->letra)), 150);
+
+        // Elimina los saltos de línea
+        $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
         return view('canciones.show', compact('cancion', 'interprete', 'relacionadas', 'metaTitle', 'metaDescription'));
     }
 }
