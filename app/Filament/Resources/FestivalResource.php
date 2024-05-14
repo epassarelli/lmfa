@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InterpreteResource\Pages;
-use App\Filament\Resources\InterpreteResource\RelationManagers;
-use App\Models\Interprete;
+use App\Filament\Resources\FestivalResource\Pages;
+use App\Filament\Resources\FestivalResource\RelationManagers;
+use App\Models\Festival;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,51 +13,37 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-
-class InterpreteResource extends Resource
+class FestivalResource extends Resource
 {
-    protected static ?string $model = Interprete::class;
+    protected static ?string $model = Festival::class;
 
-    protected static ?string $navigationIcon = 'heroicon-s-user';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('interprete')
+                Forms\Components\TextInput::make('titulo')
                     ->required()
-                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
-                    
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
                     ->required()
-                    ->disabled()
-                    ->dehydrated()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('foto')
-                    ->image()
-                    ->imageEditor()
-                    ->required(),
-                Forms\Components\RichEditor::make('biografia')
+                Forms\Components\Textarea::make('detalle')
                     ->required()
-                    ->columnSpanFull()
-                    ->maxLength(65535),
-                Forms\Components\TextInput::make('telefono')
-                    ->tel()
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('foto')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('correo')
+                Forms\Components\TextInput::make('provincia_id')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('instagram')
+                    ->numeric(),
+                Forms\Components\TextInput::make('mes_id')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('twitter')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('youtube')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
+                Forms\Components\TextInput::make('user_id')
+                    ->numeric()
+                    ->default(null),
                 Forms\Components\TextInput::make('visitas')
                     ->required()
                     ->numeric(),
@@ -66,9 +52,6 @@ class InterpreteResource extends Resource
                 Forms\Components\TextInput::make('estado')
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
             ]);
     }
 
@@ -76,22 +59,21 @@ class InterpreteResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('interprete')
+                Tables\Columns\TextColumn::make('titulo')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('foto')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('telefono')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('correo')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('instagram')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('twitter')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('youtube')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('provincia_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('mes_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
                     ->sortable(),
@@ -99,9 +81,6 @@ class InterpreteResource extends Resource
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('estado')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -136,9 +115,9 @@ class InterpreteResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInterpretes::route('/'),
-            'create' => Pages\CreateInterprete::route('/create'),
-            'edit' => Pages\EditInterprete::route('/{record}/edit'),
+            'index' => Pages\ListFestivals::route('/'),
+            'create' => Pages\CreateFestival::route('/create'),
+            'edit' => Pages\EditFestival::route('/{record}/edit'),
         ];
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InterpreteResource\Pages;
-use App\Filament\Resources\InterpreteResource\RelationManagers;
-use App\Models\Interprete;
+use App\Filament\Resources\ShowResource\Pages;
+use App\Filament\Resources\ShowResource\RelationManagers;
+use App\Models\Show;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,51 +13,45 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-
-class InterpreteResource extends Resource
+class ShowResource extends Resource
 {
-    protected static ?string $model = Interprete::class;
+    protected static ?string $model = Show::class;
 
-    protected static ?string $navigationIcon = 'heroicon-s-user';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('interprete')
+                Forms\Components\TextInput::make('show')
                     ->required()
-                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
-                    
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
                     ->required()
-                    ->disabled()
-                    ->dehydrated()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('foto')
-                    ->image()
-                    ->imageEditor()
+                Forms\Components\Textarea::make('detalle')
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('foto')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\DateTimePicker::make('fecha')
                     ->required(),
-                Forms\Components\RichEditor::make('biografia')
-                    ->required()
-                    ->columnSpanFull()
-                    ->maxLength(65535),
-                Forms\Components\TextInput::make('telefono')
-                    ->tel()
+                Forms\Components\TextInput::make('hora')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('correo')
+                Forms\Components\TextInput::make('lugar')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('instagram')
+                Forms\Components\TextInput::make('direccion')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('twitter')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('youtube')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('user_id')
+                    ->numeric()
+                    ->default(null),
+                Forms\Components\TextInput::make('interprete_id')
+                    ->numeric()
+                    ->default(null),
                 Forms\Components\TextInput::make('visitas')
                     ->required()
                     ->numeric(),
@@ -66,9 +60,6 @@ class InterpreteResource extends Resource
                 Forms\Components\TextInput::make('estado')
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
             ]);
     }
 
@@ -76,22 +67,27 @@ class InterpreteResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('interprete')
+                Tables\Columns\TextColumn::make('show')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('foto')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('telefono')
+                Tables\Columns\TextColumn::make('fecha')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('hora')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('correo')
+                Tables\Columns\TextColumn::make('lugar')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('instagram')
+                Tables\Columns\TextColumn::make('direccion')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('twitter')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('youtube')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('interprete_id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
                     ->sortable(),
@@ -99,9 +95,6 @@ class InterpreteResource extends Resource
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('estado')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -136,9 +129,9 @@ class InterpreteResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInterpretes::route('/'),
-            'create' => Pages\CreateInterprete::route('/create'),
-            'edit' => Pages\EditInterprete::route('/{record}/edit'),
+            'index' => Pages\ListShows::route('/'),
+            'create' => Pages\CreateShow::route('/create'),
+            'edit' => Pages\EditShow::route('/{record}/edit'),
         ];
     }
 }
