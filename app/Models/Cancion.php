@@ -22,4 +22,9 @@ class Cancion extends Model
     {
         return $this->belongsTo(Interprete::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

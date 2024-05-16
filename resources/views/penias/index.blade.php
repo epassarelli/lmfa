@@ -1,6 +1,9 @@
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
+
+@section('content')
 
   <!-- Listado de noticias en cards -->
   <div class="flex flex-wrap justify-center">
@@ -29,4 +32,4 @@
     </div>
   </div>
 
-</x-app-layout>
+@endsection

@@ -1,6 +1,9 @@
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
+
+@section('content')
 
   <div class="flex flex-wrap py-4">
 
@@ -27,4 +30,4 @@
 
   </div>
 
-</x-app-layout>
+@endsection

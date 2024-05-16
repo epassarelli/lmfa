@@ -1,6 +1,9 @@
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
+
+@section('content')
 
   <div class="w-full px-4">
     @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
@@ -10,8 +13,7 @@
     @foreach ($discos as $disco)
       <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}"
         class="bg-white rounded-lg shadow-md overflow-hidden flex">
-        <img class="w-24 h-auto object-cover" src="{{ asset('storage/albunes/' . $disco->foto) }}"
-          alt="{{ $disco->album }}">
+        <img class="w-24 h-auto object-cover" src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->album }}">
         <div class="p-4 flex flex-col">
           <h2 class="text-lg font-medium text-gray-800 mb-2 hover:text-blue-600">
             {{ $disco->album }}
@@ -31,5 +33,4 @@
     </div>
   </div>
 
-
-</x-app-layout>
+@endsection

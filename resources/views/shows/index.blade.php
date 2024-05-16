@@ -1,7 +1,9 @@
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
 
+@section('content')
 
   <div class="flex flex-wrap -mx-4 p-4">
     @foreach ($shows as $evento)
@@ -38,4 +40,4 @@
     </div>
   </div>
 
-</x-app-layout>
+@endsection

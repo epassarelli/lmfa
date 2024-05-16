@@ -1,6 +1,9 @@
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
+
+@section('content')
 
   <div class="w-full px-4">
     @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
@@ -128,5 +131,4 @@
     </script> 
     --}}
 
-
-</x-app-layout>
+@endsection

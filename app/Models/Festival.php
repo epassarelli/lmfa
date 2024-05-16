@@ -9,4 +9,9 @@ class Festival extends Model
 {
     use HasFactory;
     protected $table = 'festivales';
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

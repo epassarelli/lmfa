@@ -1,13 +1,15 @@
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
+
+@section('content')
 
   <div class="flex flex-wrap py-4">
 
     <div class="w-full md:w-3/4 px-4">
       <h2 class="text-3xl font-bold mb-4">{{ $receta->titulo }}</h2>
-      <img src="{{ asset('storage/mitos/' . $receta->foto) }}" alt="{{ $receta->titulo }}"
-        class="mb-4 rounded-lg shadow-lg">
+      <img src="{{ asset('storage/mitos/' . $receta->foto) }}" alt="{{ $receta->titulo }}" class="mb-4 rounded-lg shadow-lg">
       <p class="text-lg mb-4">{!! $receta->receta !!}</p>
       <p class="text-gray-600">Visitas: {{ $receta->visitas }}</p>
     </div>
@@ -26,4 +28,4 @@
 
   </div>
 
-</x-app-layout>
+@endsection

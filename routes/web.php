@@ -17,41 +17,41 @@ use App\Http\Controllers\PeniasController;
 use App\Http\Controllers\RadiosController;
 use App\Http\Controllers\RecetasController;
 use App\Http\Controllers\ShowsController;
-use App\Http\Controllers\VideosController;
+// use App\Http\Controllers\VideosController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImagenController;
 
-use App\Http\Livewire\Backend\Dashboard;
-use App\Http\Livewire\Backend\Noticias;
-use App\Http\Livewire\Backend\Interpretes;
-use App\Http\Livewire\Backend\Users;
+// use App\Http\Livewire\Backend\Dashboard;
+// use App\Http\Livewire\Backend\Noticias;
+// use App\Http\Livewire\Backend\Interpretes;
+// use App\Http\Livewire\Backend\Users;
 
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
+// Route::middleware([
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+//     'verified'
+// ])->group(function () {
 
-    Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
-        Route::get('/usuarios', Users::class)->name('admin.usuarios');
-        Route::get('/interpretes', Interpretes::class)->name('admin.interpretes');
-        Route::get('/noticias', Noticias::class)->name('admin.noticias');
-        // Route::get('/noticias', Noticias::class)->name('admin.shows');
-        // Route::get('/noticias', Noticias::class)->name('admin.discos');
-        // Route::get('/noticias', Noticias::class)->name('admin.canciones');
-        // Route::get('/noticias', Noticias::class)->name('admin.entrevistas');
-        // Route::get('/noticias', Noticias::class)->name('admin.videos');
+//     Route::prefix('admin')->group(function () {
+//         Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
+//         Route::get('/usuarios', Users::class)->name('admin.usuarios');
+//         Route::get('/interpretes', Interpretes::class)->name('admin.interpretes');
+//         Route::get('/noticias', Noticias::class)->name('admin.noticias');
+// Route::get('/noticias', Noticias::class)->name('admin.shows');
+// Route::get('/noticias', Noticias::class)->name('admin.discos');
+// Route::get('/noticias', Noticias::class)->name('admin.canciones');
+// Route::get('/noticias', Noticias::class)->name('admin.entrevistas');
+// Route::get('/noticias', Noticias::class)->name('admin.videos');
 
-        // Route::get('/noticias', Noticias::class)->name('admin.festivales');
-        // Route::get('/noticias', Noticias::class)->name('admin.radios');
-        // Route::get('/noticias', Noticias::class)->name('admin.penias');
-        // Route::get('/noticias', Noticias::class)->name('admin.comidas');
-        // Route::get('/noticias', Noticias::class)->name('admin.mitos');
-        // Route::get('/articulos', Noticias::class)->name('admin.articulos');
-    });
-});
+// Route::get('/noticias', Noticias::class)->name('admin.festivales');
+// Route::get('/noticias', Noticias::class)->name('admin.radios');
+// Route::get('/noticias', Noticias::class)->name('admin.penias');
+// Route::get('/noticias', Noticias::class)->name('admin.comidas');
+// Route::get('/noticias', Noticias::class)->name('admin.mitos');
+// Route::get('/articulos', Noticias::class)->name('admin.articulos');
+//     });
+// });
 
 // Rutas para el controlador de biografia
 Route::get('biografias/{interprete:slug}', [InterpretesController::class, 'show'])->name('interprete.show');
@@ -139,4 +139,4 @@ Route::get('{interprete:slug}/entrevistas/{id}', [EntrevistasController::class, 
 //     //Route::get('/', [NoticiasController::class, 'index'])->name('noticias.index');
 // });
 
-Route::get('/', [HomeController::class, 'index'])->name('inicio');
+Route::get('/', [HomeController::class, 'index'])->name('home');

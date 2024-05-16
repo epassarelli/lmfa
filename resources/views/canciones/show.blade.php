@@ -1,6 +1,9 @@
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
+
+@section('content')
 
   <div class="w-full px-4">
     @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
@@ -22,8 +25,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
             @foreach ($relacionadas as $related_song)
               <div class="overflow-hidden bg-white shadow-md rounded-lg">
-                <a
-                  href="{{ route('interprete.cancion.show', [$related_song->interprete->slug, $related_song->slug]) }}">
+                <a href="{{ route('interprete.cancion.show', [$related_song->interprete->slug, $related_song->slug]) }}">
                   <img src="{{ asset('storage/interpretes/' . $related_song->interprete->foto) }}"
                     alt="{{ $related_song->artist }}" class="w-full h-48 object-cover">
                   <div class="p-6">
@@ -39,4 +41,4 @@
     </div>
   </div>
 
-</x-app-layout>
+@endsection

@@ -5,9 +5,13 @@ Como puedo hacer para que queden todas con la misma altura? --}}
 
 {{-- Si en lugar de mostrar la lista de noticias tal como la tengo, paginada, quisiera hacer un scroll infinito con Livewire
 se puede hacer? Me dices como? --}}
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
+
+@section('content')
+
   <div class="flex flex-wrap justify-center">
     {{ auth()->user() }}
     <br>
@@ -47,4 +51,4 @@ se puede hacer? Me dices como? --}}
     </div>
   </div>
 
-</x-app-layout>
+@endsection
