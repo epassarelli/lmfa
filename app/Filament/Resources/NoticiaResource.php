@@ -7,11 +7,13 @@ use App\Filament\Resources\NoticiaResource\RelationManagers;
 use App\Models\Noticia;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class NoticiaResource extends Resource
 {
@@ -23,24 +25,33 @@ class NoticiaResource extends Resource
     {
         return $form
             ->schema([
+
                 Forms\Components\TextInput::make('titulo')
                     ->required()
-                    ->maxLength(255),
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
+                    ->maxLength(100),
                 Forms\Components\TextInput::make('slug')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('noticia')
+                    ->disabled()
+                    ->dehydrated()
+                    ->maxLength(100),
+
+                Forms\Components\RichEditor::make('noticia')
                     ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('foto')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('user_id')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('interprete_id')
-                    ->numeric()
-                    ->default(null),
+                    ->columnSpanFull()
+                    ->maxLength(65535),
+
+                Forms\Components\FileUpload::make('foto')
+                    ->image()
+                    ->imageEditor()
+                    ->required(),
+                Forms\Components\Select::make('interprete_id')
+                    ->relationship('interprete', 'interprete')
+                    ->required(),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required(),
                 Forms\Components\TextInput::make('visitas')
                     ->required()
                     ->numeric()
@@ -57,23 +68,22 @@ class NoticiaResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('foto')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('titulo')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('foto')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('interprete_id')
-                    ->numeric()
+                // Tables\Columns\TextColumn::make('slug')
+                //     ->searchable(),
+                Tables\Columns\TextColumn::make('interprete.interprete')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('publicar')
                     ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('estado')
                     ->numeric()

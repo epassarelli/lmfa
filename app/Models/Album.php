@@ -19,4 +19,9 @@ class Album extends Model
     {
         return $this->belongsToMany(Cancion::class, 'album_cancion');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

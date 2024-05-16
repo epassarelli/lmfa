@@ -7,11 +7,13 @@ use App\Filament\Resources\InterpreteResource\RelationManagers;
 use App\Models\Interprete;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 
 class InterpreteResource extends Resource
@@ -26,14 +28,14 @@ class InterpreteResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('interprete')
                     ->required()
+                    ->live(onBlur: true)
                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
-                    
-                    ->maxLength(255),
+                    ->maxLength(100),
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->disabled()
                     ->dehydrated()
-                    ->maxLength(255),
+                    ->maxLength(100),
                 Forms\Components\FileUpload::make('foto')
                     ->image()
                     ->imageEditor()
@@ -43,23 +45,16 @@ class InterpreteResource extends Resource
                     ->columnSpanFull()
                     ->maxLength(65535),
                 Forms\Components\TextInput::make('telefono')
-                    ->tel()
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('correo')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('instagram')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('twitter')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('youtube')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('visitas')
-                    ->required()
                     ->numeric(),
                 Forms\Components\DateTimePicker::make('publicar')
                     ->required(),
@@ -76,22 +71,28 @@ class InterpreteResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('foto')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('interprete')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('foto')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('telefono')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('correo')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('instagram')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('twitter')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('youtube')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
                     ->sortable(),
@@ -118,6 +119,18 @@ class InterpreteResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Publicar')
+                    ->icon('heroicon-m-check-badge')
+                    ->action(function (Interprete $interprete) {
+                        $interprete->estado = 1;
+                        $interprete->save();
+                    }),
+                Tables\Actions\Action::make('DesPublicar')
+                    ->icon('heroicon-m-check-badge')
+                    ->action(function (Interprete $interprete) {
+                        $interprete->estado = 0;
+                        $interprete->save();
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

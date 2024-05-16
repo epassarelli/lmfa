@@ -7,11 +7,15 @@ use App\Filament\Resources\AlbumResource\RelationManagers;
 use App\Models\Album;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class AlbumResource extends Resource
 {
@@ -25,65 +29,70 @@ class AlbumResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('album')
                     ->required()
-                    ->maxLength(255),
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
+                    ->maxLength(100),
                 Forms\Components\TextInput::make('slug')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('foto')
-                    ->required()
-                    ->maxLength(255),
+                    ->disabled()
+                    ->dehydrated()
+                    ->maxLength(100),
+                Forms\Components\FileUpload::make('foto')
+                    ->image()
+                    ->imageEditor()
+                    ->required(),
                 Forms\Components\TextInput::make('anio')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('interprete_id')
+                    ->relationship('interprete', 'interprete')
+                    ->required()
+                    ->searchable(),
                 Forms\Components\TextInput::make('spotify')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('user_id')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('interprete_id')
-                    ->numeric()
-                    ->default(null),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required(),
                 Forms\Components\TextInput::make('visitas')
-                    ->required()
                     ->numeric(),
                 Forms\Components\DateTimePicker::make('publicar')
                     ->required(),
                 Forms\Components\TextInput::make('estado')
                     ->required()
                     ->numeric(),
-            ]);
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('foto')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('album')
                     ->searchable(),
                 // Tables\Columns\TextColumn::make('slug')
                 //     ->searchable(),
-                Tables\Columns\TextColumn::make('foto')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('anio')
                     ->searchable(),
                 // Tables\Columns\TextColumn::make('spotify')
                 //     ->searchable(),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('interprete_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('interprete.interprete')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('visitas')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('publicar')
                     ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('estado')
                     ->numeric()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
