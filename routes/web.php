@@ -54,6 +54,7 @@ use App\Http\Controllers\ImagenController;
 // });
 
 // Rutas para el controlador de biografia
+Route::get('biografias/letra/{letra}', [InterpretesController::class, 'letra'])->name('interprete.letra');
 Route::get('biografias/{interprete:slug}', [InterpretesController::class, 'show'])->name('interprete.show');
 Route::get('biografias', [InterpretesController::class, 'index'])->name('interpretes.index');
 
@@ -96,6 +97,7 @@ Route::get('penias/{id}', [PeniasController::class, 'show'])->name('penas.show')
 Route::get('penias', [PeniasController::class, 'index'])->name('penas.index');
 
 // Rutas para el controlador de Comidas:
+Route::get('comidas/letra/{letra}', [RecetasController::class, 'letra'])->name('comidas.letra');
 Route::get('comidas/{id}', [RecetasController::class, 'show'])->name('comidas.show');
 Route::get('comidas', [RecetasController::class, 'index'])->name('comidas.index');
 

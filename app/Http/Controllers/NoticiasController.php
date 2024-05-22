@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Session;
 
 class NoticiasController extends Controller
 {
+
   public function index()
   {
     // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
@@ -43,7 +44,10 @@ class NoticiasController extends Controller
   {
     // dd($slug);
     $interprete = Interprete::where('slug', $slug)->first();
+    // dd($interprete);
+
     $noticias = $interprete->noticias()->where('estado', 1)->paginate(12);
+    // dd($noticias);
     // $noticias = Show::where('estado', 1)
     //     ->where('estado', 1)
     //     ->orderBy('publicar', 'desc')

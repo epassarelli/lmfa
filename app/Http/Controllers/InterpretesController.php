@@ -4,27 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Interprete;
-// use App\Models\Noticia;
-// use App\Models\Show;
-// use App\Models\Disco;
-// use App\Models\Cancion;
-// use App\Models\Foto;
-// use App\Models\Video;
-
 
 class InterpretesController extends Controller
 {
     public function index()
     {
-        $interpretes = Interprete::where('estado', 1)
-            ->orderBy('visitas', 'desc')
-            ->paginate(12);
+        $interprete = new Interprete();
+        // Obtener los últimos 5 intérpretes
+        $ultimos = $interprete->getNLast(Interprete::class, 12);
+        $visitados = $interprete->getNMostVisited(Interprete::class, 12);
 
         // dd($interpretes);
         $metaTitle = "Biografías de Interpretes folkloricos de Argentina";
         $metaDescription = "Biografías de Interpretes folkloricos de Argentina";
         // return view('home', compact('metaTitle', 'metaDescription'));
-        return view('interpretes.index', compact('interpretes', 'metaTitle', 'metaDescription'));
+        return view('interpretes.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)
@@ -90,11 +84,9 @@ class InterpretesController extends Controller
             ];
 
             // return view('interpretes.show', compact('interprete', 'noticiasCount', 'showsCount', 'discosCount', 'cancionesCount', 'fotosCount', 'videosCount'));
-            // dd($interprete);
-            $metaTitle = "Mi Folklore Argentino";
-            $metaDescription = "El portal del folklore";
+
             $metaTitle = "Biografía de " . $interprete->interprete;
-            $metaDescription = "Biografía folklorica de " . $interprete->interprete . ". Artistas e interpretes populares de Argentina";
+            $metaDescription = "Biografía de " . $interprete->interprete . " interprete del folklore argentino";
             return view('interpretes.show', compact('interprete', 'interpretes', 'recursos', 'metaTitle', 'metaDescription'));
             // return view('interpretes.show', compact('interprete', 'interpretes'));
         } else {
@@ -120,5 +112,32 @@ class InterpretesController extends Controller
         }
 
         return response()->json($results);
+    }
+
+    public function letra($letra)
+    {
+        $interprete = new Interprete();
+        // Obtener los últimos 5 intérpretes
+        $ultimos = $interprete->getNLast(Interprete::class, 12);
+        $visitados = $interprete->getNMostVisited(Interprete::class, 12);
+
+
+        // Lógica para obtener intérpretes cuya letra del título comience con $letra
+        $interpretes = Interprete::where('interprete', 'LIKE', $letra . '%')->get();
+
+        $metaTitle = "Biografías de Interpretes folkloricos de Argentina que comienzan con $letra";
+        $metaDescription = "Biografías de Interpretes folkloricos de Argentina que comienzan con $letra";
+
+        return view('interpretes.letra', compact('interpretes', 'ultimos', 'visitados', 'letra', 'metaTitle', 'metaDescription'));
+    }
+
+    public function buscar(Request $request)
+    {
+        $searchTerm = $request->input('search');
+        $searchColumns = ['title', 'description']; // Define aquí los campos donde deseas buscar
+
+        $resultados = Interprete::search(Interprete::class, $searchTerm, $searchColumns);
+
+        return view('interpretes.resultados', compact('resultados', 'searchTerm'));
     }
 }

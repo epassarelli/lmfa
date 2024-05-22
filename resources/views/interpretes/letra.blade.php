@@ -29,6 +29,65 @@
 
 
 
+
+
+
+
+
+  <div class="container mt-5">
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2>Intérpretes con la letra </h2>
+        <p class="lead">
+          Explora los perfiles de los intérpretes de folklore argentino que han capturado la mayor atención de nuestros
+          visitantes. Estos artistas se destacan por su popularidad y su contribución significativa a la música
+          folklórica. Sumérgete en la vida y obra de los cantantes y músicos más reconocidos de nuestro portal.
+        </p>
+
+        <div class="row">
+          <!-- Repetir este bloque para cada intérprete -->
+          @foreach ($interpretes as $visitado2)
+            <div class="col-md-3 col-lg-2">
+              <div class="card mb-3">
+                <a href="{{ route('interprete.show', $visitado2->slug) }}" class="text-decoration-none">
+                  @if (file_exists(public_path('storage/interpretes/' . $visitado2->foto)) && $visitado2->foto !== '')
+                    <img src="{{ asset('storage/interpretes/' . $visitado2->foto) }}" alt="{{ $visitado2->interprete }}"
+                      class="card-img-top">
+                  @else
+                    <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
+                      class="card-img-top">
+                  @endif
+
+                  <div class="card-body">
+                    <h5 class="card-title">{{ $visitado2->interprete }}</h5>
+                    <p class="card-text">{{ number_format($visitado2->visitas, 0, '', ',') }} visitas</p>
+                    {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
+                  </div>
+                </a>
+              </div>
+            </div>
+          @endforeach
+          <!-- Fin del bloque -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div class="container mt-5">
     {{-- <h1>Intérpretes de Folklore Argentino</h1> --}}
     <p class="lead">Explora la rica diversidad de artistas y cantantes que han dado vida a la música folklórica
@@ -42,45 +101,6 @@
         <button class="btn btn-primary w-100">Buscar</button>
       </div>
     </div> --}}
-
-
-
-
-
-    <div class="row mb-4">
-      <div class="col-12">
-        <h2>Intérpretes Más Visitados</h2>
-        <p class="lead">
-          Explora los perfiles de los intérpretes de folklore argentino que han capturado la mayor atención de nuestros
-          visitantes. Estos artistas se destacan por su popularidad y su contribución significativa a la música
-          folklórica. Sumérgete en la vida y obra de los cantantes y músicos más reconocidos de nuestro portal.
-        </p>
-
-        <div class="row">
-          <!-- Repetir este bloque para cada intérprete -->
-          @foreach ($visitados as $visitado)
-            <div class="col-md-3 col-lg-2">
-              <div class="card mb-3">
-                <a href="{{ route('interprete.show', $visitado->slug) }}" class="text-decoration-none">
-                  <img src="{{ asset('storage/interpretes/' . $visitado->foto) }}" alt="{{ $visitado->interprete }}"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ $visitado->interprete }}</h5>
-                    <p class="card-text">{{ number_format($visitado->visitas, 0, '', ',') }} visitas</p>
-                    {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
-                  </div>
-                </a>
-              </div>
-            </div>
-          @endforeach
-          <!-- Fin del bloque -->
-        </div>
-      </div>
-    </div>
-
-
-
-
 
     <div class="row mb-4">
       <div class="col-12">
@@ -104,7 +124,36 @@
 
 
 
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2>Intérpretes Más Visitados</h2>
+        <p class="lead">
+          Explora los perfiles de los intérpretes de folklore argentino que han capturado la mayor atención de nuestros
+          visitantes. Estos artistas se destacan por su popularidad y su contribución significativa a la música
+          folklórica. Sumérgete en la vida y obra de los cantantes y músicos más reconocidos de nuestro portal.
+        </p>
 
+        <div class="row">
+          <!-- Repetir este bloque para cada intérprete -->
+          @foreach ($visitados as $visitado)
+            <div class="col-md-3 col-lg-2">
+              <div class="card mb-3">
+                <a href="{{ route('interprete.show', $visitado->slug) }}" class="text-decoration-none">
+                  <img src="{{ asset('storage/interpretes/' . $visitado->foto) }}" alt="{{ $visitado->interprete }}"
+                    class="card-img-top">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ $visitado->interprete }}</h5>
+                    <p class="card-text">{{ $visitado->visitas }} veces visitado</p>
+                    {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
+                  </div>
+                </a>
+              </div>
+            </div>
+          @endforeach
+          <!-- Fin del bloque -->
+        </div>
+      </div>
+    </div>
 
 
 
@@ -179,11 +228,10 @@
       </form>
     </div> --}}
 
-    {{--   
     <!-- Listado de interpretes en cards -->
-   <div class="d-flex flex-wrap justify-content-center">
+    {{-- <div class="d-flex flex-wrap justify-content-center">
 
-      @foreach ($interpretes as $interprete)
+     @foreach ($interpretes as $interprete)
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 p-4 mb-8">
           <div class="card h-100 shadow-sm text-decoration-none">
             <a href="{{ route('interprete.show', $interprete->slug) }}" class="text-decoration-none">
@@ -195,10 +243,10 @@
             </a>
           </div>
         </div>
-      @endforeach 
+      @endforeach
 
-    </div>
-    --}}
+    </div> --}}
+
 
   </div>
 

@@ -1,35 +1,55 @@
+@extends('layouts.app')
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-<x-app-layout>
 
-  <div class="w-full px-4">
-    @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-  </div>
+@section('content')
 
-  <!-- Listado de noticias en cards -->
-  <div class="flex flex-wrap justify-center">
-    <?php foreach($noticias as $noticia): ?>
 
-    <div class="w-full sm:w-1/2 md:w-1/3 p-4">
-      <div class="bg-white rounded-lg shadow-lg overflow-hidden h-full">
-        <a href="noticias/<?php echo $noticia->slug; ?>">
-          <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-            class="w-full h-48 object-cover">
-          <div class="p-4">
-            <h3 class="font-bold text-xl mb-2"><?php echo $noticia->titulo; ?></h3>
-          </div>
-        </a>
+  <div class="container mt-5">
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+        <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" class="img-fluid rounded"
+          alt="{{ $interprete->interprete }}">
+        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
       </div>
-    </div>
 
-    <?php endforeach; ?>
-  </div>
+      <div class="col-md-8">
+        <h1>Noticias de {{ $interprete->interprete }}</h1>
+        <div class="row">
+          @foreach ($noticias as $noticia)
+            <div class="col-12 pb-4">
+              <div class="card h-200 shadow-sm text-decoration-none">
+                <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
+                  class="text-decoration-none">
+                  <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+                    class="card-img-top" style="height: 16rem; object-fit: cover;">
+                  <div class="card-body">
+                    <h3 class="card-title h5 font-weight-bold text-dark mb-2">{{ $noticia->titulo }}</h3>
+                  </div>
+                </a>
+              </div>
+            </div>
+          @endforeach
 
-  <!-- Links del paginado -->
-  <div class="flex justify-center p-4">
-    <div class="mt-8">
-      {{ $noticias->links() }}
-    </div>
-  </div>
+        </div>
+        {{-- @foreach ($noticias as $noticia)
+          <div class="col-12 col-sm-6 col-md-4 p-4">
+            <div class="card h-100 shadow-sm text-decoration-none">
+              <a href="noticias/{{ $noticia->slug }}" class="text-decoration-none">
+                <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+                  class="card-img-top" style="height: 12rem; object-fit: cover;">
+                <div class="card-body">
+                  <h3 class="card-title h5 fw-bold text-dark mb-2">{{ $noticia->titulo }}</h3>
+                </div>
+              </a>
+            </div>
+          </div>
+        @endforeach --}}
 
-</x-app-layout>
+
+      </div>
+
+
+    @endsection

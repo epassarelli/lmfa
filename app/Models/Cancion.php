@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Interprete;
 use App\Models\Album;
+use App\Models\User;
 
 class Cancion extends Model
 {
@@ -15,12 +16,13 @@ class Cancion extends Model
 
     public function albunes()
     {
-        return $this->belongsToMany(Cancion::class, 'album_cancion');
+        return $this->belongsToMany(Album::class, 'albunes_canciones');
     }
 
     public function interprete()
     {
-        return $this->belongsTo(Interprete::class);
+        return $this->belongsTo(Interprete::class, 'interprete_id');
+        // return $this->belongsTo(Interprete::class, 'interpretes_canciones');
     }
 
     public function user()

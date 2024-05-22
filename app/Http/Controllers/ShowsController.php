@@ -23,12 +23,9 @@ class ShowsController extends Controller
         // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
         $shows = $interprete->shows()->paginate(12);
-        // $shows = Show::where('estado', 1)
-        //     ->where('estado', 1)
-        //     ->orderBy('publicar', 'desc')
-        //     ->paginate(12);
-        $metaTitle = "Mi Folklore Argentino";
-        $metaDescription = "El portal del folklore";
+
+        $metaTitle = "Shows de " . $interprete->interprete;
+        $metaDescription = "Cartelera de shows de " . $interprete->interprete . ", interprete del folklore argentino";
         return view('shows.byArtista', compact('shows', 'interprete', 'metaTitle', 'metaDescription'));
     }
 

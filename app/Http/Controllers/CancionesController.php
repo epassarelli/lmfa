@@ -26,10 +26,10 @@ class CancionesController extends Controller
     {
         // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
-        $canciones = $interprete->canciones()->where('estado', 1)->paginate(12);
+        $canciones = $interprete->canciones()->where('estado', 1)->orderBy('cancion', 'asc')->get();
 
         $metaTitle = "Letras de canciones de " . $interprete->interprete;
-        $metaDescription = "Todas las letras de canciones de " . $interprete->interprete;
+        $metaDescription = "Letras de canciones de " . $interprete->interprete . ", interprete del folklore argentino";
         return view('canciones.byArtista', compact('canciones', 'interprete', 'metaTitle', 'metaDescription'));
     }
 

@@ -19,6 +19,51 @@
       festividades, y lleva a tu mesa los sabores que han deleitado a generaciones. Descubre y comparte la pasión por
       nuestra gastronomía y cultura.</p>
 
+
+
+    <div class="container mt-5">
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2>Recetas de comidas con la letra {{ $letra }}</h2>
+          <p class="lead">
+            Explora los perfiles de los intérpretes de folklore argentino que han capturado la mayor atención de nuestros
+            visitantes. Estos artistas se destacan por su popularidad y su contribución significativa a la música
+            folklórica. Sumérgete en la vida y obra de los cantantes y músicos más reconocidos de nuestro portal.
+          </p>
+
+          <div class="row">
+            <!-- Repetir este bloque para cada intérprete -->
+            @foreach ($comidas as $visitado2)
+              <div class="col-md-4 col-lg-3">
+                <div class="card mb-3">
+                  <a href="{{ route('comidas.show', $visitado2->slug) }}" class="text-decoration-none">
+                    {{-- @if (file_exists(public_path('storage/comidas/' . $visitado2->foto)) && $visitado2->foto !== '')
+                      <img src="{{ asset('storage/comidas/' . $visitado2->foto) }}" alt="{{ $visitado2->interprete }}"
+                        class="card-img-top">
+                    @else
+                      <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
+                        class="card-img-top">
+                    @endif --}}
+
+                    <div class="card-body">
+                      <h5 class="card-title">{{ $visitado2->titulo }}</h5>
+                      <p class="card-text">{{ number_format($visitado2->visitas, 0, '', ',') }} visitas</p>
+                      {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
+                    </div>
+                  </a>
+                </div>
+              </div>
+            @endforeach
+            <!-- Fin del bloque -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
     <div class="row mb-4">
       <div class="col-12">
         <h2>Recetas de comidas más visitadas</h2>
@@ -37,7 +82,6 @@
                   @endif --}}
                   <div class="card-body">
                     <h5 class="card-title">{{ $receta->titulo }}</h5>
-                    <p class="card-text">{{ number_format($receta->visitas, 0, '', ',') }} visitas</p>
                   </div>
                 </a>
               </div>
