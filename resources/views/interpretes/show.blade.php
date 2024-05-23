@@ -8,13 +8,11 @@
   <div class="container mt-5">
     <div class="row mb-4">
 
-      <div class="col-md-4">
-        <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" class="img-fluid rounded"
-          alt="{{ $interprete->interprete }}">
+      <div class="col-md-3">
         @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
       </div>
 
-      <div class="col-md-8">
+      <div class="col-md-9">
         <h1>{{ $interprete->interprete }}</h1>
 
         <div class="lead">

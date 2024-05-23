@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Interprete;
 use App\Models\Album;
 use App\Models\User;
+use App\Traits\CommonMethodsTrait;
 
 class Cancion extends Model
 {
+    use CommonMethodsTrait;
     use HasFactory;
     protected $table = 'canciones';
 

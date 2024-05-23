@@ -11,13 +11,16 @@ class DiscosController extends Controller
     public function index()
     {
         // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
-        $discos = Album::where('estado', 1)
-            ->orderBy('publicar', 'desc')
-            ->paginate(12);
+        $disco = new Album();
+        // Obtener los últimos 5 intérpretes
+        $ultimos = $disco->getNLast(Album::class, 12);
+        $visitados = $disco->getNMostVisited(Album::class, 12);
+
+
         $metaTitle = "Discografias del Folklore Argentino";
         $metaDescription = "Todos los discos del folklore argentino";
 
-        return view('discos.index', compact('discos', 'metaTitle', 'metaDescription'));
+        return view('discos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
     }
 
     public function byArtista($slug)

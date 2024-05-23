@@ -22,14 +22,7 @@
       país. Explora y disfruta de los sonidos, historias y talentos que definen nuestra identidad cultural.</p>
 
 
-  </div>
 
-
-
-
-
-
-  <div class="container mt-5">
     {{-- <h1>Intérpretes de Folklore Argentino</h1> --}}
     <p class="lead">Explora la rica diversidad de artistas y cantantes que han dado vida a la música folklórica
       argentina. Encuentra biografías, discografías, letras de canciones y más.</p>
@@ -60,12 +53,12 @@
           <!-- Repetir este bloque para cada intérprete -->
           @foreach ($visitados as $visitado)
             <div class="col-md-3 col-lg-2">
-              <div class="card mb-3">
+              <div class="card mb-4">
                 <a href="{{ route('interprete.show', $visitado->slug) }}" class="text-decoration-none">
                   <img src="{{ asset('storage/interpretes/' . $visitado->foto) }}" alt="{{ $visitado->interprete }}"
                     class="card-img-top">
                   <div class="card-body">
-                    <h5 class="card-title">{{ $visitado->interprete }}</h5>
+                    <h5 class="card-title h5 text-dark">{{ $visitado->interprete }}</h5>
                     <p class="card-text">{{ number_format($visitado->visitas, 0, '', ',') }} visitas</p>
                     {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
                   </div>
@@ -92,12 +85,14 @@
         </p>
 
         <nav>
+          <hr>
           <ul class="pagination pagination-sm justify-content-center">
-            @foreach (range('A', 'Z') as $letra)
-              <li class="page-item"><a class="page-link"
+            @foreach (range('a', 'z') as $letra)
+              <li class="page-item mx-1"><a class="page-link"
                   href="{{ route('interprete.letra', $letra) }}">{{ $letra }}</a></li>
             @endforeach
           </ul>
+          <hr>
         </nav>
       </div>
     </div>
@@ -127,7 +122,7 @@
                   <img src="{{ asset('storage/interpretes/' . $ultimo->foto) }}" alt="{{ $ultimo->interprete }}"
                     class="card-img-top">
                   <div class="card-body">
-                    <h5 class="card-title">{{ $ultimo->interprete }}</h5>
+                    <h5 class="card-title h5 text-dark">{{ $ultimo->interprete }}</h5>
                     {{-- <p class="card-text">Breve descripción del artista.</p> --}}
                     {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
                   </div>

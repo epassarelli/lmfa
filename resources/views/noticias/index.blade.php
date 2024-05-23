@@ -14,18 +14,21 @@ se puede hacer? Me dices como? --}}
 
   <div class="container">
     <h1>Noticias del Folklore Argentino</h1>
-    <p>Mantente al día con las últimas noticias del folklore argentino en nuestra sección dedicada a mantenerte informado
+    <p class="lead">Mantente al día con las últimas noticias del folklore argentino en nuestra sección dedicada a
+      mantenerte informado
       sobre todo lo relacionado con la música folklórica de nuestro país. Aquí encontrarás las actualizaciones más
       recientes, incluyendo lanzamientos de nuevos álbumes, giras de conciertos, y eventos especiales que destacan lo
       mejor del folklore argentino.</p>
-    <p>Descubre entrevistas exclusivas con tus artistas y cantantes favoritos, reportajes en profundidad sobre tendencias
+    <p class="lead">Descubre entrevistas exclusivas con tus artistas y cantantes favoritos, reportajes en profundidad
+      sobre tendencias
       y movimientos dentro de la escena folklórica, y análisis detallados sobre la evolución de este género musical.
       Nuestra cobertura incluye tanto a los grandes íconos del folklore como a los nuevos talentos emergentes que están
       dando forma al futuro de la música tradicional argentina.</p>
-    <p>No te pierdas ninguna novedad del mundo del folklore argentino. Desde festivales y shows hasta proyectos
+    <p class="lead">No te pierdas ninguna novedad del mundo del folklore argentino. Desde festivales y shows hasta
+      proyectos
       colaborativos y homenajes, nuestra sección de noticias te mantendrá conectado con todo lo que está ocurriendo en el
       vibrante panorama de la música folklórica argentina.</p>
-    <div class="d-flex flex-wrap justify-content-center">
+    {{-- <div class="d-flex flex-wrap justify-content-center">
       {{ auth()->user() }}
       <br>
       @if (!empty($administrados))
@@ -35,19 +38,20 @@ se puede hacer? Me dices como? --}}
       @else
         {{ 'No posee interpretes administrados' }}
       @endif
-    </div>
+    </div> --}}
 
     <!-- Listado de noticias en cards -->
-    <div class="d-flex flex-wrap justify-content-center">
+    <div class="row">
       @foreach ($noticias as $noticia)
-        <div class="col-12 col-sm-6 col-md-4 p-4">
+        <div class="col-md-4 pb-4">
           <div class="card h-100 shadow-sm text-decoration-none">
             <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
               class="text-decoration-none">
-              <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}" class="card-img-top"
-                style="height: 12rem; object-fit: cover;">
+              <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+                class="card-img-top" style="height: 12rem; object-fit: cover;">
               <div class="card-body">
-                <h3 class="card-title h5 font-weight-bold text-dark mb-2">{{ $noticia->titulo }}</h3>
+                <h3 class="card-title h5 text-dark">{{ $noticia->titulo }}</h3>
+                <p class="card-text">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</p>
               </div>
             </a>
           </div>

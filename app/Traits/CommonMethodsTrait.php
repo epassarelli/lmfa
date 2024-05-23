@@ -20,7 +20,7 @@ trait CommonMethodsTrait
    * @return \Illuminate\Database\Eloquent\Collection
    */
 
-  public static function getNLast($model, $n, $orderColumn = 'created_at', $orderDirection = 'desc')
+  public static function getNLast($model, $n, $orderColumn = 'id', $orderDirection = 'desc')
   {
     return $model::orderBy($orderColumn, $orderDirection)->take($n)->get();
   }

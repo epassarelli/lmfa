@@ -11,15 +11,17 @@ class CancionesController extends Controller
 {
     public function index()
     {
+
         // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
-        $canciones = Cancion::where('estado', 1)
-            ->orderBy('publicar', 'desc')
-            ->paginate(12);
+        $cancion = new Cancion();
+        // Obtener los últimos 5 intérpretes
+        $ultimas = $cancion->getNLast(Cancion::class, 12);
+        $visitadas = $cancion->getNMostVisited(Cancion::class, 12);
 
 
         $metaTitle = "Letras de canciones del Folklore Argentino";
         $metaDescription = "Todas las letras de canciones del Folklore Argentino para cantar, cancionero folklórico";
-        return view('canciones.index', compact('canciones', 'metaTitle', 'metaDescription'));
+        return view('canciones.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription'));
     }
 
     public function byArtista($slug)

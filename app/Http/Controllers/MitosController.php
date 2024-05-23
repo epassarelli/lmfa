@@ -10,12 +10,14 @@ class MitosController extends Controller
     public function index()
     {
         // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
-        $mitos = Mito::where('estado', 1)
-            ->orderBy('publicar', 'desc')
-            ->paginate(12);
-        $metaTitle = "Mi Folklore Argentino";
-        $metaDescription = "El portal del folklore";
-        return view('mitos.index', compact('mitos', 'metaTitle', 'metaDescription'));
+        $mito = new Mito();
+        // Obtener los últimos 5 intérpretes
+        $ultimos = $mito->getNLast(Mito::class, 12);
+        $visitados = $mito->getNMostVisited(Mito::class, 12);
+
+        $metaTitle = "Mitos y leyendas del Folklore Argentino";
+        $metaDescription = "Mitos, leyendas, fábulas e historias del folklore argentino";
+        return view('mitos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)
@@ -26,8 +28,26 @@ class MitosController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
-        $metaTitle = "Mi Folklore Argentino";
+        $metaTitle = $mito->titulo . " - Mitos y leyendas urbanas";
         $metaDescription = "El portal del folklore";
         return view('mitos.show', compact('mito', 'ultimos_mitos', 'metaTitle', 'metaDescription'));
+    }
+
+
+    public function letra($letra)
+    {
+        $mito = new Mito();
+        // Obtener los últimos 5 intérpretes
+        $ultimos = $mito->getNLast(Mito::class, 12);
+        $visitados = $mito->getNMostVisited(Mito::class, 12);
+
+
+        // Lógica para obtener intérpretes cuya letra del título comience con $letra
+        $mitos = Mito::where('titulo', 'LIKE', $letra . '%')->get();
+
+        $metaTitle = "Mitos, leyendas urbanas del folklore argentino que comienzan con $letra";
+        $metaDescription = "Mitos, leyendas, fábulas e historias del folklore argentino que comienzan con $letra";
+
+        return view('mitos.letra', compact('ultimos', 'visitados', 'mitos', 'letra', 'metaTitle', 'metaDescription'));
     }
 }

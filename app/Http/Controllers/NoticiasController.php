@@ -46,7 +46,7 @@ class NoticiasController extends Controller
     $interprete = Interprete::where('slug', $slug)->first();
     // dd($interprete);
 
-    $noticias = $interprete->noticias()->where('estado', 1)->paginate(12);
+    $noticias = $interprete->noticias()->where('estado', 1)->get();
     // dd($noticias);
     // $noticias = Show::where('estado', 1)
     //     ->where('estado', 1)

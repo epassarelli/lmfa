@@ -27,6 +27,65 @@
 
 
 
+
+
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2>Leyendas urbanas con la letra {{ $letra }}</h2>
+        <p class="lead">
+          Mantente al día con las nuevas adiciones a nuestro repertorio de mitos y leyendas urbanas del folklore
+          argentino. En esta sección, te presentamos los últimos relatos que hemos agregado a nuestro portal. Descubre
+          historias recientes que enriquecen nuestra tradición cultural y explora los misterios y maravillas de los mitos
+          y leyendas que continúan fascinando a las generaciones.
+        </p>
+
+        <div class="row justify-content-center">
+          @foreach ($mitos as $mito)
+            <div class="col-md-4 col-sm-6 mb-4">
+              <div class="card">
+                <a href="{{ route('mitos.show', $mito->slug) }}" class="text-decoration-none">
+
+                  <div class="card-body">
+                    <h5 class="card-title h5 text-dark">{{ $mito->titulo }}</h5>
+
+                  </div>
+                </a>
+              </div>
+            </div>
+          @endforeach
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2>Buscar por Orden Alfabético</h2>
+        <p class="lead">
+          Encuentra fácilmente tus mitos y leyendas favoritos del folklore argentino utilizando nuestro índice alfabético.
+          Esta sección te permite explorar una amplia gama de relatos tradicionales, ordenados de la A a la Z, facilitando
+          tu búsqueda y ayudándote a descubrir nuevas historias llenas de misterio y encanto que puedes disfrutar y
+          compartir.
+        </p>
+        <hr>
+        <nav>
+          <ul class="pagination pagination-sm justify-content-center">
+            @foreach (range('a', 'z') as $letra)
+              <li class="page-item"><a class="page-link mx-1 "
+                  href="{{ route('mitos.letra', $letra) }}">{{ $letra }}</a></li>
+            @endforeach
+          </ul>
+        </nav>
+        <hr>
+      </div>
+    </div>
+
+
+
+
+
     <div class="row mb-4">
       <div class="col-12">
         <h2>Leyendas urbanas más visitadas</h2>
@@ -67,27 +126,7 @@
 
 
 
-    <div class="row mb-4">
-      <div class="col-12">
-        <h2>Buscar por Orden Alfabético</h2>
-        <p class="lead">
-          Encuentra fácilmente tus mitos y leyendas favoritos del folklore argentino utilizando nuestro índice alfabético.
-          Esta sección te permite explorar una amplia gama de relatos tradicionales, ordenados de la A a la Z, facilitando
-          tu búsqueda y ayudándote a descubrir nuevas historias llenas de misterio y encanto que puedes disfrutar y
-          compartir.
-        </p>
-        <hr>
-        <nav>
-          <ul class="pagination pagination-sm justify-content-center">
-            @foreach (range('a', 'z') as $letra)
-              <li class="page-item"><a class="page-link mx-1 "
-                  href="{{ route('mitos.letra', $letra) }}">{{ $letra }}</a></li>
-            @endforeach
-          </ul>
-        </nav>
-        <hr>
-      </div>
-    </div>
+
 
 
 

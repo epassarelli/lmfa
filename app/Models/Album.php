@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Interprete;
 use App\Models\Cancion;
 use App\Models\User;
+use App\Traits\CommonMethodsTrait;
 
 class Album extends Model
 {
+    use CommonMethodsTrait;
     use HasFactory;
     protected $table = 'albunes';
 

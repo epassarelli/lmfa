@@ -65,7 +65,7 @@ Route::get('noticias/{interprete:slug}', [NoticiasController::class, 'byArtista'
 Route::get('noticias', [NoticiasController::class, 'index'])->name('noticias.index');
 
 // Rutas para el controlador de Letras de canciones:
-Route::get('letras-de-canciones/{interprete:slug}/{cancion:slug}', [CancionesController::class, 'show'])->name('interprete.cancion.show');
+Route::get('letras-de-canciones/{interprete:slug}/{cancion:slug}', [CancionesController::class, 'show'])->name('canciones.show');
 Route::get('letras-de-canciones/{interprete:slug}', [CancionesController::class, 'byArtista'])->name('interprete.canciones');
 Route::get('letras-de-canciones', [CancionesController::class, 'index'])->name('canciones.index');
 
@@ -102,6 +102,7 @@ Route::get('comidas/{id}', [RecetasController::class, 'show'])->name('comidas.sh
 Route::get('comidas', [RecetasController::class, 'index'])->name('comidas.index');
 
 // Rutas para el controlador de Mitos:
+Route::get('mitos/letra/{letra}', [MitosController::class, 'letra'])->name('mitos.letra');
 Route::get('mitos/{id}', [MitosController::class, 'show'])->name('mitos.show');
 Route::get('mitos', [MitosController::class, 'index'])->name('mitos.index');
 
