@@ -1,36 +1,33 @@
-{{-- <div class="card"> --}}
-
 <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" class="card-img-top"
   alt="{{ $interprete->interprete }}">
 
-<div class="list-group">
 
+<div class="list-group">
   <a href="{{ route('interprete.show', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action">Biografía</a>
+    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.show') ? 'disabled active' : '' }}">
+    Biografía
+  </a>
 
   <a href="{{ route('interprete.noticias', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action">Noticias</a>
+    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.noticias') ? 'disabled active' : '' }}">
+    Noticias
+  </a>
 
   <a href="{{ route('interprete.shows', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action">Shows</a>
+    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.shows') ? 'disabled active' : '' }}">
+    Shows
+  </a>
 
   <a href="{{ route('interprete.discografia', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action">Discos</a>
+    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.discografia') ? 'disabled active' : '' }}">
+    Discos
+  </a>
 
   <a href="{{ route('interprete.canciones', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action">Canciones</a>
-
-  {{-- <a href="{{ route('interprete.noticias', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action">Videos</a>
-
-  <a href="{{ route('interprete.noticias', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action">Entrevistas</a> --}}
-
+    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.canciones') ? 'disabled active' : '' }}">
+    Canciones
+  </a>
 </div>
-
-{{-- </div> --}}
-
-
 
 
 

@@ -14,26 +14,39 @@
       </div>
 
       <div class="col-md-9">
-        <h1>Canciones por {{ $interprete->interprete }}</h1>
+        <h1>Letras de canciones por {{ $interprete->interprete }}</h1>
+        <p class="lead">
+          Explora las letras de canciones de {{ $interprete->interprete }}, uno de los exponentes más destacados del
+          folklore argentino. Sumérgete en las palabras y los mensajes que caracterizan sus melodías, cada letra
+          reflejando la rica herencia cultural de nuestra tierra. Desde emotivos relatos hasta vivencias cotidianas,
+          descubre la profundidad y la poesía que han cautivado a los seguidores de {{ $interprete->interprete }} a lo
+          largo de los años.
+        </p>
 
         <div class="row">
-          <ul>
-            @foreach ($canciones as $cancion)
-              <div class="col-md-6">
-
-                <li class="text-lg mb-2">
-                  <a href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}"
-                    class="h-100 shadow-sm text-decoration-none">
-                    {{ $cancion->interprete->interprete }} - {{ $cancion->cancion }}
-                  </a>
-                </li>
-
-              </div>
+          <ul class="list-group">
+            @foreach ($canciones as $index => $cancion)
+              <a href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}"
+                class="list-group-item @if ($index % 2 == 0) list-group-item-secondary @endif">
+                {{ $cancion->interprete->interprete }} - {{ $cancion->cancion }}
+              </a>
             @endforeach
           </ul>
         </div>
-
       </div>
+
+      <style>
+        .list-group-item:hover {
+          background-color: orange;
+        }
+      </style>
+
+
+
+
+
+
+
     </div>
 
   @endsection

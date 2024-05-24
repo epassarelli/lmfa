@@ -14,6 +14,12 @@
 
       <div class="col-md-9">
         <h1>Shows de {{ $interprete->interprete }}</h1>
+        <p class="lead">
+          Consulta la cartelera de shows y eventos de {{ $interprete->interprete }}, y no te pierdas la oportunidad de ver
+          en vivo a uno de los mayores exponentes del folklore argentino. Aquí encontrarás fechas, lugares y detalles de
+          todas sus presentaciones. Acompaña a {{ $interprete->interprete }} en sus giras y disfruta de una experiencia
+          única con su música en directo.
+        </p>
 
         <div class="row">
           @if ($shows->isEmpty())

@@ -14,6 +14,13 @@
 
       <div class="col-md-9">
         <h1>Discografía de {{ $interprete->interprete }}</h1>
+        <p class="lead">
+          Descubre la discografía completa de {{ $interprete->interprete }}, una de las figuras más influyentes del
+          folklore
+          argentino. Explora cada álbum, canción por canción, y sumérgete en la evolución musical de este talentoso
+          artista. Desde sus primeras grabaciones hasta sus últimas producciones, encuentra aquí una colección detallada
+          de su obra musical.
+        </p>
 
         <div class="row">
 

@@ -15,6 +15,13 @@
 
       <div class="col-md-9">
         <h1>Noticias de {{ $interprete->interprete }}</h1>
+        <p class="lead">
+          Mantente informado con las últimas noticias sobre {{ $interprete->interprete }}. Aquí encontrarás las
+          actualizaciones
+          más recientes, entrevistas, lanzamientos y eventos relacionados con uno de los íconos del folklore argentino. No
+          te pierdas ninguna novedad y sigue de cerca la trayectoria y los logros de {{ $interprete->interprete }}.
+        </p>
+
         <div class="row">
           @if ($noticias->isEmpty())
             <div class="warning"></div>

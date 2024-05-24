@@ -35,7 +35,7 @@
         <div class="row mb-4">
           @foreach ($visitadas as $cancion)
             <div class="col-md-4 mb-4">
-              <a href="{{ route('interprete.cancion.show', [$cancion->interprete->slug, $cancion->slug]) }}"
+              <a href="{{ route('canciones.show', [$cancion->interprete->slug, $cancion->slug]) }}"
                 class="card h-100 shadow-sm text-decoration-none">
                 <div class="row g-0">
                   <div class="col-auto">
