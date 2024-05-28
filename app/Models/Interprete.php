@@ -22,6 +22,16 @@ class Interprete extends Model
     use HasFactory;
     protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
 
+    // Retorna una coleccion con interpretes menos el actual
+    public static function getInterpretesExcluding($currentInterpreteId)
+    {
+        // return self::where('id', '!=', $currentInterpreteId)->get();
+        return self::where('id', '!=', $currentInterpreteId)
+            ->where('estado', 1)
+            ->orderBy('interprete', 'asc')
+            ->get();
+    }
+
     public function noticias()
     {
         return $this->hasMany(Noticia::class);

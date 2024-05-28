@@ -90,15 +90,48 @@ trait CommonMethodsTrait
     return $results->isEmpty() ? 'No se encontraron resultados.' : $results;
   }
 
-  // Métodos para traer objetos relacionados a los interpretes
-
-  public function getInterpreteNoticias(Interprete $interprete)
+  /**
+   * Obtener contenidos relacionados a un intérprete.
+   *
+   * @param \App\Models\Interprete $interprete
+   * @param string $seccion
+   * @param \Illuminate\Database\Eloquent\Model $contenidoActual
+   * @return \Illuminate\Database\Eloquent\Collection
+   */
+  public function getRelatedContent($interprete, $seccion, $contenidoActual)
   {
-    return $interprete->noticias()->get();
+    $relationMethod = $this->getRelationMethod($seccion);
+
+    if (method_exists($interprete, $relationMethod)) {
+      return $interprete->$relationMethod()
+        ->where('estado', 1)
+        ->where('id', '!=', $contenidoActual->id)
+        ->orderBy('id', 'desc')
+        ->get();
+    }
+
+    return new Collection();
   }
 
-  public function getInterpreteShows(Interprete $interprete)
+  /**
+   * Obtener el método de relación basado en la sección.
+   *
+   * @param string $seccion
+   * @return string
+   */
+  private function getRelationMethod($seccion)
   {
-    return $interprete->shows()->get();
+    switch ($seccion) {
+      case 'noticias':
+        return 'noticias';
+      case 'discos':
+        return 'discos';
+      case 'canciones':
+        return 'canciones';
+      case 'shows':
+        return 'shows';
+      default:
+        throw new \InvalidArgumentException("Sección no válida: {$seccion}");
+    }
   }
 }

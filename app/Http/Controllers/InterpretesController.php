@@ -14,6 +14,7 @@ class InterpretesController extends Controller
         $ultimos = $interprete->getNLast(Interprete::class, 12);
         $visitados = $interprete->getNMostVisited(Interprete::class, 12);
 
+
         // dd($interpretes);
         $metaTitle = "Biografías de Interpretes folkloricos de Argentina";
         $metaDescription = "Biografías de Interpretes folkloricos de Argentina";
@@ -28,10 +29,11 @@ class InterpretesController extends Controller
         // $interprete = Interprete::where('slug', $slug)->firstOrFail();
         //dd($interprete);
         // Obtener la lista de intérpretes en estado 1
-        $interpretes = Interprete::where('estado', 1)->orderBy('interprete', 'ASC')->get();
+        $biografias = Interprete::where('estado', 1)->orderBy('interprete', 'ASC')->get();
 
         // return view('interpretes.show', compact('interprete', 'noticiasCount', 'showsCount', 'discosCount', 'cancionesCount', 'fotosCount', 'videosCount'));
-
+        $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+        $section = 'biografias';
 
         if ($interprete) {
 
@@ -87,7 +89,7 @@ class InterpretesController extends Controller
 
             $metaTitle = "Biografía de " . $interprete->interprete;
             $metaDescription = "Biografía de " . $interprete->interprete . " interprete del folklore argentino";
-            return view('interpretes.show', compact('interprete', 'interpretes', 'recursos', 'metaTitle', 'metaDescription'));
+            return view('interpretes.show', compact('interprete', 'biografias', 'interpretes', 'section', 'recursos', 'metaTitle', 'metaDescription'));
             // return view('interpretes.show', compact('interprete', 'interpretes'));
         } else {
             return back()->with('alert', 'El intérprete no existe.');

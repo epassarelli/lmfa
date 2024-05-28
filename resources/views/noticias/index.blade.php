@@ -41,8 +41,8 @@ se puede hacer? Me dices como? --}}
     </div> --}}
 
     <!-- Listado de noticias en cards -->
-    <div class="row">
-      @foreach ($noticias as $noticia)
+    <div class="row mt-5">
+      @foreach ($ultimas as $noticia)
         <div class="col-md-4 pb-4">
           <div class="card h-100 shadow-sm text-decoration-none">
             <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
@@ -58,6 +58,36 @@ se puede hacer? Me dices como? --}}
         </div>
       @endforeach
     </div>
+
+
+
+    <div class="row mt-5">
+
+      <h2>Noticias Más Visitadas del Folklore Argentino</h2>
+      <p class="lead">
+        Mantente al tanto de las noticias más visitadas y populares del folklore argentino. Descubre qué historias,
+        eventos y novedades han captado la atención de los seguidores de la música folklórica. Desde entrevistas
+        exclusivas con los artistas más influyentes hasta coberturas de los festivales y conciertos más destacados, no te
+        pierdas lo más relevante y comentado en el mundo del folklore argentino.
+      </p>
+
+      @foreach ($visitadas as $noticia)
+        <div class="col-md-4 pb-4">
+          <div class="card h-100 shadow-sm text-decoration-none">
+            <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
+              class="text-decoration-none">
+              <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+                class="card-img-top" style="height: 12rem; object-fit: cover;">
+              <div class="card-body">
+                <h3 class="card-title h5 text-dark">{{ $noticia->titulo }}</h3>
+                <p class="card-text">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      @endforeach
+    </div>
+
 
 
   </div>

@@ -41,7 +41,8 @@
                       <h5 class="card-title text-lg font-medium text-gray-800 mb-2 hover:text-blue-600">
                         {{ $disco->album }}
                       </h5>
-                      <p class="card-text text-gray-500 text-sm mb-2">{{ $disco->interprete->interprete }}</p>
+                      <p class="card-text text-gray-500 text-sm mb-2">{{ $disco->anio }} -
+                        {{ $disco->interprete->interprete }}</p>
                     </div>
                   </div>
                 </a>
@@ -50,6 +51,8 @@
           @endif
 
         </div>
+
+        @include('layouts.partials.select-interprete')
 
       </div>
 

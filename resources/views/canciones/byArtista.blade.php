@@ -33,6 +33,9 @@
             @endforeach
           </ul>
         </div>
+
+        @include('layouts.partials.select-interprete')
+
       </div>
 
       <style>

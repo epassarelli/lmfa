@@ -27,26 +27,23 @@ class DiscosController extends Controller
     {
         $interprete = Interprete::where('slug', $slug)->first();
         $discos = $interprete->discos()->where('estado', 1)->get();
+        $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+        $section = 'discografias';
 
         $metaTitle = "Discografía de " . $interprete->interprete;
         $metaDescription = "Discografía de " . $interprete->interprete . ", interprete del folklore argentino";
-        return view('discos.byArtista', compact('discos', 'interprete', 'metaTitle', 'metaDescription'));
+        return view('discos.byArtista', compact('discos', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slugInterprete, $slugDisco)
     {
         $interprete = Interprete::where('slug', $slugInterprete)->first();
         $disco = Album::where('slug', $slugDisco)->firstOrFail();
+        $related = $interprete->getRelatedContent($interprete, 'discos', $disco);
 
-        $relacionados = Album::where('estado', 1)
-            ->where('id', '<>', $disco->id)
-            ->orderByDesc('created_at')
-            ->take(10)
-            ->get();
+        $metaTitle = $disco->titulo . " - Discografía de " . $interprete->interprete;
+        $metaDescription = $disco->titulo . "Discografía de " . $interprete->interprete . ", interprete del folklore argentino";
 
-        $metaTitle = "Discografía de " . $interprete->interprete;
-        $metaDescription = "Discografía de " . $interprete->interprete . ", interprete del folklore argentino";
-
-        return view('discos.show', compact('disco', 'interprete', 'relacionados', 'metaTitle', 'metaDescription'));
+        return view('discos.show', compact('disco', 'interprete', 'related', 'metaTitle', 'metaDescription'));
     }
 }

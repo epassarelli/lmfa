@@ -1,38 +1,42 @@
-<img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" class="card-img-top"
-  alt="{{ $interprete->interprete }}">
+<div class="row">
+  <div class="col-md-10">
 
 
-<div class="list-group">
-  <a href="{{ route('interprete.show', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.show') ? 'disabled active' : '' }}">
-    Biografía
-  </a>
-
-  <a href="{{ route('interprete.noticias', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.noticias') ? 'disabled active' : '' }}">
-    Noticias
-  </a>
-
-  <a href="{{ route('interprete.shows', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.shows') ? 'disabled active' : '' }}">
-    Shows
-  </a>
-
-  <a href="{{ route('interprete.discografia', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.discografia') ? 'disabled active' : '' }}">
-    Discos
-  </a>
-
-  <a href="{{ route('interprete.canciones', str_replace('biografia-de-', '', $interprete->slug)) }}"
-    class="list-group-item list-group-item-action {{ request()->routeIs('interprete.canciones') ? 'disabled active' : '' }}">
-    Canciones
-  </a>
-</div>
+    <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" class="card-img-top"
+      alt="{{ $interprete->interprete }}">
 
 
+    <div class="list-group">
+      <a href="{{ route('interprete.show', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.show') ? 'disabled active' : '' }}">
+        Biografía
+      </a>
+
+      <a href="{{ route('interprete.noticias', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.noticias') || request()->routeIs('interprete.noticia.show') ? 'disabled active' : '' }}">
+        Noticias
+      </a>
+
+      <a href="{{ route('interprete.shows', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.shows') ? 'disabled active' : '' }}">
+        Shows
+      </a>
+
+      <a href="{{ route('interprete.discografia', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.discografia') || request()->routeIs('interprete.album.show') ? 'disabled active' : '' }}">
+        Discos
+      </a>
+
+      <a href="{{ route('interprete.canciones', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.canciones') || request()->routeIs('canciones.show') ? 'disabled active' : '' }}">
+        Canciones
+      </a>
+    </div>
 
 
-{{-- 
+
+
+    {{-- 
     <div class="flex flex-col items-center space-y-4">
   <div class="flex">
     <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
@@ -74,3 +78,7 @@
     </div>
   @endif
  --}}
+
+
+  </div>
+</div>

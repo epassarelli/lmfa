@@ -24,10 +24,13 @@ class ShowsController extends Controller
         // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
         $shows = $interprete->shows()->get();
+        $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+
+        $section = 'shows';
 
         $metaTitle = "Shows de " . $interprete->interprete;
         $metaDescription = "Cartelera de shows de " . $interprete->interprete . ", interprete del folklore argentino";
-        return view('shows.byArtista', compact('shows', 'interprete', 'metaTitle', 'metaDescription'));
+        return view('shows.byArtista', compact('shows', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)

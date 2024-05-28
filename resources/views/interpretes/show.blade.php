@@ -26,6 +26,8 @@
           <a href="#" class="text-decoration-none"><i class="fab fa-youtube fa-2x"></i></a>
         </div>
 
+        @include('layouts.partials.select-interprete')
+
       </div>
     </div>
 

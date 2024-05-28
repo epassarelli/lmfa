@@ -29,10 +29,12 @@ class CancionesController extends Controller
         // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
         $canciones = $interprete->canciones()->where('estado', 1)->orderBy('cancion', 'asc')->get();
+        $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+        $section = 'canciones';
 
         $metaTitle = "Letras de canciones de " . $interprete->interprete;
         $metaDescription = "Letras de canciones de " . $interprete->interprete . ", interprete del folklore argentino";
-        return view('canciones.byArtista', compact('canciones', 'interprete', 'metaTitle', 'metaDescription'));
+        return view('canciones.byArtista', compact('canciones', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slugInterprete, $slugCancion)
@@ -41,20 +43,20 @@ class CancionesController extends Controller
         $interprete = Interprete::where('slug', $slugInterprete)->first();
         $cancion = Cancion::where('slug', $slugCancion)->firstOrFail();
 
-        $relacionadas = Cancion::where('estado', 1)
-            ->where('id', '<>', $cancion->id)
-            ->orderByDesc('created_at')
-            ->take(12)
-            ->get();
-        // dd($interprete);
+        // $relacionadas = Cancion::where('estado', 1)
+        //     ->where('interprete_id', $interprete->id)
+        //     ->where('id', '<>', $cancion->id)
+        //     ->orderBy('cancion', 'asc')
+        //     ->take(12)
+        //     ->get();
+        // // dd($interprete);
+        $related = $interprete->getRelatedContent($interprete, 'canciones', $cancion);
 
         $metaTitle = "Letra de " . $cancion->cancion . ", " . $interprete->interprete;
-
         // Decodifica las entidades HTML, elimina etiquetas HTML y toma los primeros 150 caracteres
         $metaDescription = Str::limit(strip_tags(html_entity_decode($cancion->letra)), 150);
-
         // Elimina los saltos de línea
         $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
-        return view('canciones.show', compact('cancion', 'interprete', 'relacionadas', 'metaTitle', 'metaDescription'));
+        return view('canciones.show', compact('cancion', 'interprete', 'related', 'metaTitle', 'metaDescription'));
     }
 }

@@ -71,12 +71,12 @@
           </li>
         </ul>
         <!-- Formulario de búsqueda -->
-        <form class="d-flex ms-2">
+        {{-- <form class="d-flex ms-2">
           <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
           <button class="btn btn-outline-success" type="submit">Buscar</button>
-        </form>
+        </form> --}}
         <!-- Botón de ingreso o menú desplegable del usuario -->
-        <div class="d-flex">
+        {{-- <div class="d-flex">
           <!-- Botón de ingreso -->
           <button class="btn btn-primary ms-2">Ingresar</button>
           <!-- Dropdown del usuario -->
@@ -94,7 +94,7 @@
               <li><a class="dropdown-item" href="#">Salir</a></li>
             </ul>
           </div>
-        </div>
+        </div> --}}
       </div>
     </div>
   </nav>

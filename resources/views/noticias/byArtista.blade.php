@@ -23,6 +23,7 @@
         </p>
 
         <div class="row">
+
           @if ($noticias->isEmpty())
             <div class="warning"></div>
             <div class="alert alert-warning" role="alert">
@@ -46,22 +47,10 @@
             }
           @endif
 
-
         </div>
-        {{-- @foreach ($noticias as $noticia)
-          <div class="col-12 col-sm-6 col-md-4 p-4">
-            <div class="card h-100 shadow-sm text-decoration-none">
-              <a href="noticias/{{ $noticia->slug }}" class="text-decoration-none">
-                <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-                  class="card-img-top" style="height: 12rem; object-fit: cover;">
-                <div class="card-body">
-                  <h3 class="card-title h5 fw-bold text-dark mb-2">{{ $noticia->titulo }}</h3>
-                </div>
-              </a>
-            </div>
-          </div>
-        @endforeach --}}
 
+
+        @include('layouts.partials.select-interprete')
 
       </div>
     </div>
