@@ -20,7 +20,11 @@ class Interprete extends Model
     use CommonMethodsTrait;
 
     use HasFactory;
-    protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
+    // protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
+    protected $fillable = [
+        'interprete', 'slug', 'biografia', 'foto', 'telefono', 'correo',
+        'instagram', 'twitter', 'youtube', 'visitas', 'publicar', 'estado', 'user_id'
+    ];
 
     // Retorna una coleccion con interpretes menos el actual
     public static function getInterpretesExcluding($currentInterpreteId)
