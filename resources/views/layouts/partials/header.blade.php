@@ -4,9 +4,7 @@
     <div class="container-md">
       <a class="navbar-brand col-6 col-md-3 col-lg-3" href="{{ route('home') }}" title="Inicio Mi Folklore Argentino">
         <!-- logo -->
-        <img src="{{ asset('img/mfa.jpg') }}" width="60" height="60" alt="Mi Folklore Argentino"
-          class="img-fluid float-left">
-        <h1 class="visually-hidden">Mi Folklore Argentino</h1>
+        <img src="{{ asset('img/mfa.jpg') }}" width="50" alt="Mi Folklore Argentino" class="img-fluid float-left">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

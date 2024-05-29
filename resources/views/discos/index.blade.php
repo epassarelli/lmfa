@@ -31,7 +31,10 @@
       <div class="col-12">
         <h2>Discos folklóricos Más Visitados</h2>
         <p class="lead">
-          ...
+          Descubre los discos folklóricos más visitados y populares del folklore argentino. Estos álbumes han capturado la
+          atención y el corazón de los amantes de la música folklórica, destacándose por su calidad y autenticidad.
+          Explora los trabajos más escuchados de los artistas más influyentes en el folklore argentino y sumérgete en las
+          melodías que definen nuestra rica herencia cultural.
         </p>
         <div class="row">
           @foreach ($visitados as $disco)
@@ -66,7 +69,10 @@
       <div class="col-12">
         <h2>Ultimos albunes del folklore agregados</h2>
         <p class="lead">
-          ...
+          Mantente al día con los últimos discos agregados al portal de folklore argentino. Aquí encontrarás las novedades
+          más recientes en la discografía de nuestros artistas, incluyendo los lanzamientos más frescos que enriquecen la
+          tradición de nuestra música folklórica. No te pierdas la oportunidad de descubrir nuevos sonidos y talentos
+          emergentes en el mundo del folklore argentino.
         </p>
         <div class="row">
           @foreach ($ultimos as $disco)

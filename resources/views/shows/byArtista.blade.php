@@ -6,22 +6,7 @@
 @section('content')
 
   <style>
-    .card-title {
-      font-size: 2rem;
-      font-weight: bold;
-    }
 
-    .card-text {
-      margin: 0;
-    }
-
-    .bg-light {
-      background-color: #CCC !important;
-    }
-
-    .rounded-circle {
-      object-fit: cover;
-    }
   </style>
 
   <div class="container mt-5">
@@ -74,27 +59,6 @@
                   </div>
                 </div>
               </div>
-
-
-
-              {{-- <div class="col-md-4 mb-4">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden position-relative">
-                  <img class="w-100" src="{{ asset('storage/interpretes/' . $evento->interprete->foto) }}"
-                    alt="{{ $evento->interprete->interprete }}">
-                  <div class="position-absolute bottom-0 start-0 w-100 h-25 bg-gradient bg-gradient-opacity">
-                  </div>
-                  <div class="position-absolute bottom-0 start-0 p-4">
-                    <h2 class="text-white fs-4 fw-bold">{{ $evento->titulo }}</h2>
-                    <p class="text-gray-300">{{ $evento->interprete->interprete }}</p>
-                  </div>
-                  <div class="p-4">
-                    <p class="text-gray-600 fs-6">{{ \Carbon\Carbon::parse($evento->fecha)->format('Y-m-d') }}</p>
-                    <p class="text-gray-800 fs-5 fw-bold mb-2">{{ $evento->titulo }}</p>
-                    <p class="text-gray-700">{{ $evento->interprete->interprete }}</p>
-                    <p class="text-gray-600">{{ $evento->lugar }}, {{ $evento->direccion }}</p>
-                  </div>
-                </div>
-              </div> --}}
             @endforeach
           @endif
         </div>

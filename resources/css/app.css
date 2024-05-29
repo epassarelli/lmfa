@@ -1,3 +1,6 @@
+/* Importar la fuente seleccionada */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 /* Aplicar la fuente a tu sitio */
 body {
   font-family: 'Roboto', sans-serif;
@@ -12,6 +15,7 @@ body {
     line-height: 1.5;
   }
 }
+
 
 .list-group-item:hover {
   background-color: orange;
@@ -43,4 +47,23 @@ main {
   /* Color de fondo de Bootstrap */
   color: white;
   /* Naranja */
+}
+
+
+/* Cards de shows */
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.card-text {
+  margin: 0;
+}
+
+.bg-light {
+  background-color: #ddd !important;
+}
+
+.rounded-circle {
+  object-fit: cover;
 }
