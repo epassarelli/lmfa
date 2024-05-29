@@ -30,7 +30,10 @@
       <div class="col-12">
         <h2>Canciones folkloricas con más visitas</h2>
         <p class="lead">
-          ...
+          Descubre las letras de canciones folklóricas más visitadas por nuestros usuarios. Explora las canciones que han
+          capturado los corazones de los amantes del folklore argentino, desde clásicos inolvidables hasta nuevos éxitos.
+          Sumérgete en las palabras que reflejan la rica tradición cultural de nuestra música y conecta con los temas más
+          populares de la escena folklórica.
         </p>
         <div class="row mb-4">
           @foreach ($visitadas as $cancion)
@@ -39,9 +42,14 @@
                 class="card h-100 shadow-sm text-decoration-none">
                 <div class="row g-0">
                   <div class="col-auto">
-                    <img class="img-fluid rounded-start"
-                      src="{{ asset('storage/interpretes/' . $cancion->interprete->foto) }}" alt="{{ $cancion->cancion }}"
-                      style="width: 6rem; height: auto; object-fit: cover;">
+                    @if (file_exists(public_path('storage/interpretes/' . $cancion->interprete->foto)) && $cancion->interprete->foto !== '')
+                      <img class="img-fluid rounded-start"
+                        src="{{ asset('storage/interpretes/' . $cancion->interprete->foto) }}"
+                        alt="{{ $cancion->interprete }}" style="width: 6rem; height: auto; object-fit: cover;">
+                    @else
+                      <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
+                        class="card-img-top">
+                    @endif
                   </div>
                   <div class="col">
                     <div class="card-body">
@@ -74,7 +82,10 @@
       <div class="col-12">
         <h2>Ultimas letras de canciones agregadas</h2>
         <p class="lead">
-          ...
+          Mantente al día con las últimas letras de canciones folklóricas agregadas a nuestro portal. Descubre nuevas
+          incorporaciones a nuestra colección y disfruta de lo más reciente del folklore argentino. Desde lanzamientos
+          recientes hasta joyas redescubiertas, encuentra las palabras y melodías que están enriqueciendo la tradición de
+          nuestra música popular.
         </p>
         <div class="row mb-4">
           @foreach ($ultimas as $cancion)
@@ -83,9 +94,14 @@
                 class="card h-100 shadow-sm text-decoration-none">
                 <div class="row g-0">
                   <div class="col-auto">
-                    <img class="img-fluid rounded-start"
-                      src="{{ asset('storage/interpretes/' . $cancion->interprete->foto) }}" alt="{{ $cancion->cancion }}"
-                      style="width: 6rem; height: auto; object-fit: cover;">
+                    @if (file_exists(public_path('storage/interpretes/' . $cancion->interprete->foto)) && $cancion->interprete->foto !== '')
+                      <img class="img-fluid rounded-start"
+                        src="{{ asset('storage/interpretes/' . $cancion->interprete->foto) }}"
+                        alt="{{ $cancion->interprete }}" style="width: 6rem; height: auto; object-fit: cover;">
+                    @else
+                      <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
+                        class="img-fluid rounded-start" style="width: 6rem; height: auto; object-fit: cover;">
+                    @endif
                   </div>
                   <div class="col">
                     <div class="card-body">

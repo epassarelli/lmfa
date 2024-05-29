@@ -1,33 +1,3 @@
-<style>
-  /* Ajuste del espacio superior para evitar superposiciones */
-  main {
-    padding-top: 70px;
-    /* Altura del menú */
-  }
-
-  /* Estilos para los elementos del menú */
-  .navbar-nav .nav-item {
-    margin-right: 15px;
-  }
-
-  /* Color de fondo y texto para el elemento activo */
-  .navbar-nav .nav-item.active a.nav-link {
-    background-color: #8B4513;
-    /* Marrón */
-    color: white;
-    pointer-events: none;
-    /* Deshabilita el link del elemento activo */
-  }
-
-  /* Color de fondo para el efecto de hover */
-  .navbar-nav .nav-item a.nav-link:hover {
-    background-color: #f5d6c0;
-    /* Color de fondo de Bootstrap */
-    color: #8B4513;
-    /* Naranja */
-  }
-</style>
-
 <!-- Encabezado sticky -->
 <header class="sticky-top bg-light">
   <nav class="container-fluid navbar navbar-expand-lg bg-white py-0 menutop shadow">
