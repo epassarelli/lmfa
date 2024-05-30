@@ -20,10 +20,11 @@ use App\Http\Controllers\ImagenController;
 // use App\Http\Controllers\Dashboard\InterpretesCRUD;
 
 // use App\Http\Controllers\VideosController;
-use App\Http\Livewire\Backend\Dashboard;
-use App\Http\Livewire\Backend\Noticias;
-use App\Http\Livewire\Backend\Interpretes;
-use App\Http\Livewire\Backend\Users;
+// use App\Http\Livewire\Backend\Dashboard;
+// use App\Http\Livewire\Backend\Noticias;
+// use App\Http\Livewire\Backend\Interpretes;
+// use App\Http\Livewire\Backend\Users;
+// use Illuminate\Support\Facades\Auth;
 
 // Route::resource('dashboard/interpretes', InterpretesCRUD::class);
 
@@ -99,31 +100,31 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // });
 
 
-Route::middleware([
-  'auth:sanctum',
-  config('jetstream.auth_session'),
-  'verified'
-])->group(function () {
+// Route::middleware([
+//   'auth:sanctum',
+//   config('jetstream.auth_session'),
+//   'verified'
+// ])->group(function () {
 
-  Route::prefix('panel')->group(function () {
-    Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
-    Route::get('/usuarios', Users::class)->name('admin.usuarios');
-    Route::get('/interpretes', Interpretes::class)->name('admin.interpretes');
-    //         Route::get('/noticias', Noticias::class)->name('admin.noticias');
-    // Route::get('/noticias', Noticias::class)->name('admin.shows');
-    // Route::get('/noticias', Noticias::class)->name('admin.discos');
-    // Route::get('/noticias', Noticias::class)->name('admin.canciones');
-    // Route::get('/noticias', Noticias::class)->name('admin.entrevistas');
-    // Route::get('/noticias', Noticias::class)->name('admin.videos');
+//   Route::prefix('admin')->group(function () {
+//     Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
+//     Route::get('/usuarios', Users::class)->name('admin.usuarios');
+//     Route::get('/interpretes', Interpretes::class)->name('admin.interpretes');
+//     //         Route::get('/noticias', Noticias::class)->name('admin.noticias');
+//     // Route::get('/noticias', Noticias::class)->name('admin.shows');
+//     // Route::get('/noticias', Noticias::class)->name('admin.discos');
+//     // Route::get('/noticias', Noticias::class)->name('admin.canciones');
+//     // Route::get('/noticias', Noticias::class)->name('admin.entrevistas');
+//     // Route::get('/noticias', Noticias::class)->name('admin.videos');
 
-    // Route::get('/noticias', Noticias::class)->name('admin.festivales');
-    // Route::get('/noticias', Noticias::class)->name('admin.radios');
-    // Route::get('/noticias', Noticias::class)->name('admin.penias');
-    // Route::get('/noticias', Noticias::class)->name('admin.comidas');
-    // Route::get('/noticias', Noticias::class)->name('admin.mitos');
-    // Route::get('/articulos', Noticias::class)->name('admin.articulos');
-  });
-});
+//     // Route::get('/noticias', Noticias::class)->name('admin.festivales');
+//     // Route::get('/noticias', Noticias::class)->name('admin.radios');
+//     // Route::get('/noticias', Noticias::class)->name('admin.penias');
+//     // Route::get('/noticias', Noticias::class)->name('admin.comidas');
+//     // Route::get('/noticias', Noticias::class)->name('admin.mitos');
+//     // Route::get('/articulos', Noticias::class)->name('admin.articulos');
+//   });
+// });
 
 
 
@@ -147,3 +148,7 @@ Route::middleware([
 // Rutas para el controlador de videos
 // Route::get('{interprete:slug}/videos', [VideosController::class, 'byArtista'])->name('interprete.videos');
 // Route::get('{interprete:slug}/videos/{id}', [VideosController::class, 'show'])->name('interprete.video.show');
+
+Auth::routes();
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
