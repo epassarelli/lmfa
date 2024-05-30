@@ -105,7 +105,7 @@ Route::middleware([
   'verified'
 ])->group(function () {
 
-  Route::prefix('admin')->group(function () {
+  Route::prefix('panel')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
     Route::get('/usuarios', Users::class)->name('admin.usuarios');
     Route::get('/interpretes', Interpretes::class)->name('admin.interpretes');

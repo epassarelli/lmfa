@@ -1,69 +1,7 @@
-/* Importar la fuente seleccionada */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Aplicar la fuente a tu sitio */
-body {
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-/* Ajustes específicos para dispositivos móviles */
-@media (max-width: 768px) {
-  body {
-    font-size: 14px;
-    line-height: 1.5;
-  }
-}
-
-
-.list-group-item:hover {
-  background-color: orange;
-}
-
-/* Ajuste del espacio superior para evitar superposiciones */
-main {
-  padding-top: 70px;
-  /* Altura del menú */
-}
-
-/* Estilos para los elementos del menú */
-.navbar-nav .nav-item {
-  margin-right: 5px;
-}
-
-/* Color de fondo y texto para el elemento activo */
-.navbar-nav .nav-item.active a.nav-link {
-  background-color: #8B4513;
-  /* Marrón */
-  color: white;
-  pointer-events: none;
-  /* Deshabilita el link del elemento activo */
-}
-
-/* Color de fondo para el efecto de hover */
-.navbar-nav .nav-item a.nav-link:hover {
-  background-color: #8B4513;
-  /* Color de fondo de Bootstrap */
-  color: white;
-  /* Naranja */
-}
-
-
-/* Cards de shows */
-.card-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.card-text {
-  margin: 0;
-}
-
-.bg-light {
-  background-color: #ddd !important;
-}
-
-.rounded-circle {
-  object-fit: cover;
+[x-cloak] {
+    display: none;
 }
