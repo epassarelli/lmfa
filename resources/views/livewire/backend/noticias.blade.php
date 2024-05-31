@@ -1,118 +1,98 @@
+@section('title', 'Admin Gacetillas')
+
 <div>
-  <div class="container py-8">
-    <div class="max-w-7xl mx-auto">
-      <div class="card shadow-sm p-4">
+  {{-- The Master doesn't talk, he acts. --}}
+  <div class="container-fluid">
 
-        <h2 class="fw-semibold fs-4 text-dark">
-          {{ __('Gestión de gacetillas de prensa') }}
-        </h2>
+    <div class="row mb-3">
 
-        @if ($modal)
-          @include('livewire.backend.noticias-form')
-        @else
-          <div class="row mb-3">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4 py-3">
-              {{-- <input type="text" placeholder="Texto a buscar" wire:model="search" class="form-control" /> --}}
-            </div>
-            <div class="col-sm-4 text-end">
-              <button wire:click="create()" class="btn btn-success btn-sm">
-                + Nueva gacetilla
-              </button>
-            </div>
-          </div>
-
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th class="cursor-pointer" wire:click="order('id')">Id
-                  @if ($sort == 'id')
-                    @if ($order == 'asc')
-                      <i class="fas fa-sort-alpha-up-alt float-end mt-1"></i>
-                    @else
-                      <i class="fas fa-sort-alpha-down-alt float-end mt-1"></i>
-                    @endif
-                  @else
-                    <i class="fas fa-sort float-end mt-1"></i>
-                  @endif
-                </th>
-                <th class="cursor-pointer">Imagen</th>
-                <th class="cursor-pointer" wire:click="order('titulo')">Titulo
-                  @if ($sort == 'titulo')
-                    @if ($order == 'asc')
-                      <i class="fas fa-sort-alpha-up-alt float-end mt-1"></i>
-                    @else
-                      <i class="fas fa-sort-alpha-down-alt float-end mt-1"></i>
-                    @endif
-                  @else
-                    <i class="fas fa-sort float-end mt-1"></i>
-                  @endif
-                </th>
-                <th class="cursor-pointer" wire:click="order('publicar')">Publicar
-                  @if ($sort == 'publicar')
-                    @if ($order == 'asc')
-                      <i class="fas fa-sort-alpha-up-alt float-end mt-1"></i>
-                    @else
-                      <i class="fas fa-sort-alpha-down-alt float-end mt-1"></i>
-                    @endif
-                  @else
-                    <i class="fas fa-sort float-end mt-1"></i>
-                  @endif
-                </th>
-                <th class="cursor-pointer">Interpretes</th>
-                <th class="cursor-pointer">Usuario</th>
-                <th class="cursor-pointer" wire:click="order('estado')">Estado
-                  @if ($sort == 'estado')
-                    @if ($order == 'asc')
-                      <i class="fas fa-sort-alpha-up-alt float-end mt-1"></i>
-                    @else
-                      <i class="fas fa-sort-alpha-down-alt float-end mt-1"></i>
-                    @endif
-                  @else
-                    <i class="fas fa-sort float-end mt-1"></i>
-                  @endif
-                </th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach ($noticias as $noticia)
-                <tr>
-                  <td class="border px-4 py-2">{{ $noticia->id }}</td>
-                  <td class="border px-4 py-2">
-                    {{-- <div class="flex-shrink-0 h-10 w-10"> --}}
-                    <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="" width="80">
-                    {{-- </div> --}}
-                  </td>
-                  <td class="border px-4 py-2">{{ $noticia->titulo }}</td>
-                  <td class="border px-4 py-2">{{ $noticia->publicar }}</td>
-                  <td class="border px-4 py-2">{{ $noticia->interprete->interprete }}
-                    {{-- @foreach ($noticia->interpretes as $interprete)
-                                            <span class="badge bg-secondary">{{ $interprete->interprete }}</span>
-                                        @endforeach --}}
-                  </td>
-                  <td class="border px-4 py-2">{{ $noticia->user->name }}</td>
-                  <td class="border px-4 py-2 text-center">
-                    {{-- <livewire:toggle-button :model="$noticia" field="estado" key="{{ $noticia->id }}" /> --}}
-                  </td>
-                  <td class="border px-4 py-2 text-center">
-                    <button wire:click="edit({{ $noticia->id }})" class="btn btn-primary btn-sm">
-                      Editar
-                    </button>
-                    <button wire:click="$emit('alertDelete', {{ $noticia->id }})" class="btn btn-danger btn-sm">
-                      Borrar
-                    </button>
-                  </td>
-                </tr>
-              @endforeach
-            </tbody>
-          </table>
-
-          {{-- {{ $noticias->links() }} --}}
-        @endif
+      <div class="col-md-8 mt-4 col-6">
+        <h3>Gacetillas de prensa</h3>
       </div>
+
+      <div class="col-md-4 text-right mt-3 mt-md-4 col-6">
+        <button wire:click="create" class="btn btn-success" data-toggle="modal" data-target="#roleModal"><i
+            class="fas fa-plus-circle mr-2" style="color: white;"></i>Agregar</button>
+      </div>
+
     </div>
+
+    <div class="row">
+
+      <div class="table-responsive">
+
+        <table class="table table-hover table-striped table-bordered mt-3 datatable" id="myTable">
+          <thead>
+            <tr>
+              <th scope="col">COD</th>
+              <th scope="col">Imagen</th>
+              <th scope="col">Titulo</th>
+              <th scope="col">Interprete</th>
+              <th scope="col">Usuario</th>
+              <th scope="col" class="text-center" style="width: 15%">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @foreach ($noticias as $noticia)
+              <tr>
+                <td class="align-middle">{{ $noticia->id }}</td>
+                <td class="align-middle">
+                  <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="" width="80">
+                </td>
+                <td class="align-middle">{{ $noticia->titulo }}</td>
+                <td class="align-middle">{{ $noticia->interprete->interprete }}
+                </td>
+                <td class="align-middle">{{ $noticia->user->name }}</td>
+                <td class="align-middle">
+                  <div class="d-flex flex-md-row gap-1 justify-content-evenly">
+                    <div class="m-1 mt-3">
+                      <livewire:toggle-button :model="$noticia" field="estado" key="{{ $noticia->id }}" />
+                    </div>
+                    <button wire:click="edit({{ $noticia->id }})" data-toggle="modal" data-target="#roleModal"
+                      title="Editar"><i class="fa fa-edit" style="color: orange "></i></button>
+                    <button wire:click="$emit('alertDelete',{{ $noticia->id }})" title="Eliminar"><i
+                        class="fas fa-trash-alt" aria-hidden="true" style="color: red "></i></button>
+                  </div>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+
   </div>
+
+
+  @if ($modal)
+    @include('livewire.backend.noticias-form')
+  @endif
+
+  <script>
+    $(document).ready(function() {
+      $('#myTable').DataTable({
+        "stateSave": true, // Habilita guardar el estado
+        "language": {
+          "lengthMenu": "Mostrar _MENU_ elementos por página",
+          "zeroRecords": "No se encontraron resultados",
+          "info": "Mostrando página _PAGE_ de _PAGES_",
+          "infoEmpty": "No hay registros disponibles",
+          "infoFiltered": "(filtrados de _MAX_ registros totales)",
+          "search": "Buscar:",
+          "paginate": {
+            "first": "Primero",
+            "last": "Último",
+            "next": "Siguiente",
+            "previous": "Anterior"
+          },
+        }
+      });
+    });
+  </script>
 
   @push('scripts')
     <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
@@ -128,4 +108,6 @@
         });
     </script>
   @endpush
+
+
 </div>

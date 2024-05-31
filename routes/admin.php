@@ -1,12 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Livewire\Admin\Dashboard;
-// use App\Http\Livewire\Admin\Roles;
-use App\Http\Livewire\Admin\Users;
-use App\Http\Livewire\Admin\Noticias;
-use App\Http\Livewire\Admin\Interpretes;
-
+use App\Livewire\Admin\Dashboard;
+use App\Livewire\Admin\Users;
+use App\Livewire\Admin\Noticias;
+use App\Livewire\Admin\Interpretes;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +17,8 @@ use App\Http\Livewire\Admin\Interpretes;
 |
 */
 
+
 Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
-// Route::get('/roles', Roles::class)->name('admin.roles');
-Route::get('/users', Users::class)->name('admin.users');
-//     Route::get('/usuarios', Users::class)->name('admin.usuarios');
+Route::get('/usuarios', Users::class)->name('admin.usuarios');
 Route::get('/interpretes', Interpretes::class)->name('admin.interpretes');
 Route::get('/noticias', Noticias::class)->name('admin.noticias');
