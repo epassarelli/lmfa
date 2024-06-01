@@ -5,33 +5,51 @@
 
 @section('content')
 
-  <div class="w-full px-4">
-    @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-  </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-    @foreach ($canciones as $cancion)
-      <a href="{{ route('interprete.cancion.show', [$interprete->slug, $cancion->slug]) }}"
-        class="bg-white rounded-lg shadow-md overflow-hidden flex">
-        <img class="w-24 h-auto object-cover" src="{{ asset('storage/interpretes/' . $cancion->interprete->foto) }}"
-          alt="{{ $cancion->cancion }}">
-        <div class="p-4 flex flex-col">
-          <h2 class="text-lg font-medium text-gray-800 mb-2 hover:text-blue-600">
-            {{ $cancion->cancion }}
-          </h2>
-          <p class="text-gray-500 text-sm mb-2">
-            {{ $cancion->interprete->interprete }}
-          </p>
+  <div class="container mt-5">
+    <div class="row mb-4">
+
+      <div class="col-md-3">
+        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
+      </div>
+
+      <div class="col-md-9">
+        <h1>Letras de canciones por {{ $interprete->interprete }}</h1>
+        <p class="lead">
+          Explora las letras de canciones de {{ $interprete->interprete }}, uno de los exponentes más destacados del
+          folklore argentino. Sumérgete en las palabras y los mensajes que caracterizan sus melodías, cada letra
+          reflejando la rica herencia cultural de nuestra tierra. Desde emotivos relatos hasta vivencias cotidianas,
+          descubre la profundidad y la poesía que han cautivado a los seguidores de {{ $interprete->interprete }} a lo
+          largo de los años.
+        </p>
+
+        <div class="row">
+          <ul class="list-group">
+            @foreach ($canciones as $index => $cancion)
+              <a href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}"
+                class="list-group-item @if ($index % 2 == 0) list-group-item-secondary @endif">
+                {{ $cancion->interprete->interprete }} - {{ $cancion->cancion }}
+              </a>
+            @endforeach
+          </ul>
         </div>
-      </a>
-    @endforeach
-  </div>
 
-  <!-- Links del paginado -->
-  <div class="flex justify-center">
-    <div class="mt-8">
-      {{ $canciones->links() }}
+        @include('layouts.partials.select-interprete')
+
+      </div>
+
+      <style>
+        .list-group-item:hover {
+          background-color: orange;
+        }
+      </style>
+
+
+
+
+
+
+
     </div>
-  </div>
 
-@endsection
+  @endsection

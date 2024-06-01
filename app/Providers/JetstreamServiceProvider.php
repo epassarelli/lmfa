@@ -16,20 +16,30 @@ class JetstreamServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
+<<<<<<< HEAD
      *
      * @return void
      */
     public function register()
+=======
+     */
+    public function register(): void
+>>>>>>> dev
     {
         //
     }
 
     /**
      * Bootstrap any application services.
+<<<<<<< HEAD
      *
      * @return void
      */
     public function boot()
+=======
+     */
+    public function boot(): void
+>>>>>>> dev
     {
         $this->configurePermissions();
 
@@ -44,10 +54,15 @@ class JetstreamServiceProvider extends ServiceProvider
 
     /**
      * Configure the roles and permissions that are available within the application.
+<<<<<<< HEAD
      *
      * @return void
      */
     protected function configurePermissions()
+=======
+     */
+    protected function configurePermissions(): void
+>>>>>>> dev
     {
         Jetstream::defaultApiTokenPermissions(['read']);
 

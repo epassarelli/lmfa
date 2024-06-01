@@ -5,32 +5,130 @@
 
 @section('content')
 
-  <!-- Listado de noticias en cards -->
-  <div class="flex flex-wrap justify-center">
-    <?php foreach($festivales as $festival): ?>
+  <div class="container mx-auto py-8">
+
+    <h1>Fiestas y Festivales Folklóricos</h1>
+    <p class="lead">Descubre la magia de las fiestas y festivales folklóricos en nuestra sección dedicada a los eventos
+      que celebran la
+      música folklórica argentina. Aquí encontrarás información completa sobre los festivales más importantes, las fiestas
+      tradicionales y los eventos culturales que destacan la riqueza y diversidad del folklore argentino.</p>
+    <p class="lead">Cada festival y fiesta está detalladamente descrito, ofreciendo información sobre las fechas,
+      ubicaciones,
+      actividades y artistas participantes. Desde festivales nacionales que atraen a miles de visitantes hasta
+      celebraciones locales llenas de encanto y autenticidad, te ofrecemos una guía completa para disfrutar de estas
+      experiencias únicas. Aprende sobre la historia y el significado de cada evento y cómo puedes participar y disfrutar
+      de ellos.</p>
+    <p class="lead">Sumérgete en el espíritu festivo del folklore argentino y únete a las celebraciones que honran
+      nuestras tradiciones
+      y cultura. Nuestra sección de fiestas y festivales folklóricos es tu recurso definitivo para estar al tanto de los
+      próximos eventos y para conocer más sobre las celebraciones que hacen vibrar el corazón de nuestra música
+      folklórica. Vive la alegría y la pasión del folklore en cada festival y fiesta.</p>
 
 
-    <div class="w-full sm:w-1/2 md:w-1/3 p-4">
-      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <a href="{{ route('festivales.show', $festival->slug) }}">
-          <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
-            class="w-full h-48 object-cover">
-          <div class="p-4">
-            <h3 class="font-bold text-xl mb-2"><?php echo $festival->titulo; ?></h3>
-          </div>
-        </a>
+
+    {{-- <div class="row mb-4">
+      <div class="col-md-8">
+        <input type="text" class="form-control" id="searchFestivales" placeholder="Buscar fiestas y festivales...">
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-primary w-100">Buscar</button>
+      </div>
+    </div> --}}
+
+    {{-- <div class="row mb-4">
+      <div class="col-12">
+        <h2>Buscar por provincia</h2>
+        <nav>
+          <ul class="pagination pagination-sm justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">A</a></li>
+            <li class="page-item"><a class="page-link" href="#">B</a></li>
+            <li class="page-item"><a class="page-link" href="#">C</a></li>
+            <!-- Repite para todas las letras del abecedario -->
+            <li class="page-item"><a class="page-link" href="#">Z</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div> --}}
+
+
+
+
+
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2>Festivales Más Visitados</h2>
+        <p class="lead">
+          Descubre los festivales de folklore argentino que han capturado la atención de los amantes de la música y la
+          cultura. Estos eventos son los más populares en nuestro portal, atrayendo a miles de visitantes cada año.
+          Sumérgete en la tradición y la alegría de los festivales más destacados de Argentina.
+        </p>
+        <div class="row">
+          @foreach ($visitados as $festival)
+            <div class="col-md-4 mb-4">
+              <div class="card mb-3 h-100">
+                <a href="{{ route('festivales.show', $festival->slug) }}" class="text-decoration-none">
+                  <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
+                    class="card-img-top">
+                  <div class="card-body">
+                    <h5 class="card-title h5 text-dark">{{ $festival->titulo }}</h5>
+                    <p class="card-text">{{ number_format($festival->visitas, 0, '', ',') }} visitas</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          @endforeach
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2>Últimos Festivales Agregados</h2>
+        <p class="lead">
+          Mantente al día con los nuevos festivales de folklore argentino que se suman a nuestra colección. Esta sección
+          presenta los eventos más recientes añadidos a nuestro portal, ofreciéndote las últimas novedades y oportunidades
+          para disfrutar de la rica tradición folklórica de Argentina. No te pierdas los festivales recién descubiertos.
+        </p>
+
+        <div class="row">
+          @foreach ($ultimos as $festival)
+            <div class="col-md-4 mb-4">
+              <div class="card mb-3 h-100">
+                <a href="{{ route('festivales.show', $festival->slug) }}" class="text-decoration-none">
+                  <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
+                    class="card-img-top">
+                  <div class="card-body">
+                    <h5 class="card-title h5 text-dark">{{ $festival->titulo }}</h5>
+                  </div>
+                </a>
+              </div>
+            </div>
+          @endforeach
+        </div>
+
       </div>
     </div>
 
 
-    <?php endforeach; ?>
-  </div>
+    {{-- <h1>Festivales por Provincia</h1>
+    <p class="lead">Explora los festivales de folklore argentino distribuidos por todas las provincias. Encuentra
+      información sobre los eventos más importantes de cada región.</p>
 
-  <!-- Links del paginado -->
-  <div class="flex justify-center p-4">
-    <div class="mt-8">
-      {{ $festivales->links() }}
-    </div>
+    <div class="row">
+      <!-- Repetir este bloque para cada provincia -->
+      <div class="col-md-3 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Provincia de Buenos Aires">
+          <div class="card-body text-center">
+            <h5 class="card-title">Buenos Aires</h5>
+            <a href="festivales/provincia/buenos-aires" class="btn btn-primary">Ver Festivales</a>
+          </div>
+        </div>
+      </div>
+      <!-- Fin del bloque -->
+    </div> --}}
+
+
   </div>
 
 @endsection

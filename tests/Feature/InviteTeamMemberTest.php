@@ -15,10 +15,17 @@ class InviteTeamMemberTest extends TestCase
 {
     use RefreshDatabase;
 
+<<<<<<< HEAD
     public function test_team_members_can_be_invited_to_team()
     {
         if (! Features::sendsTeamInvitations()) {
             return $this->markTestSkipped('Team invitations not enabled.');
+=======
+    public function test_team_members_can_be_invited_to_team(): void
+    {
+        if (! Features::sendsTeamInvitations()) {
+            $this->markTestSkipped('Team invitations not enabled.');
+>>>>>>> dev
         }
 
         Mail::fake();
@@ -26,20 +33,34 @@ class InviteTeamMemberTest extends TestCase
         $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
         $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
+<<<<<<< HEAD
                         ->set('addTeamMemberForm', [
                             'email' => 'test@example.com',
                             'role' => 'admin',
                         ])->call('addTeamMember');
+=======
+            ->set('addTeamMemberForm', [
+                'email' => 'test@example.com',
+                'role' => 'admin',
+            ])->call('addTeamMember');
+>>>>>>> dev
 
         Mail::assertSent(TeamInvitation::class);
 
         $this->assertCount(1, $user->currentTeam->fresh()->teamInvitations);
     }
 
+<<<<<<< HEAD
     public function test_team_member_invitations_can_be_cancelled()
     {
         if (! Features::sendsTeamInvitations()) {
             return $this->markTestSkipped('Team invitations not enabled.');
+=======
+    public function test_team_member_invitations_can_be_cancelled(): void
+    {
+        if (! Features::sendsTeamInvitations()) {
+            $this->markTestSkipped('Team invitations not enabled.');
+>>>>>>> dev
         }
 
         Mail::fake();
@@ -48,10 +69,17 @@ class InviteTeamMemberTest extends TestCase
 
         // Add the team member...
         $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
+<<<<<<< HEAD
                         ->set('addTeamMemberForm', [
                             'email' => 'test@example.com',
                             'role' => 'admin',
                         ])->call('addTeamMember');
+=======
+            ->set('addTeamMemberForm', [
+                'email' => 'test@example.com',
+                'role' => 'admin',
+            ])->call('addTeamMember');
+>>>>>>> dev
 
         $invitationId = $user->currentTeam->fresh()->teamInvitations->first()->id;
 

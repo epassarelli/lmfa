@@ -17,10 +17,16 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Create a newly registered user.
      *
+<<<<<<< HEAD
      * @param  array  $input
      * @return \App\Models\User
      */
     public function create(array $input)
+=======
+     * @param  array<string, string>  $input
+     */
+    public function create(array $input): User
+>>>>>>> dev
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
@@ -42,11 +48,16 @@ class CreateNewUser implements CreatesNewUsers
 
     /**
      * Create a personal team for the user.
+<<<<<<< HEAD
      *
      * @param  \App\Models\User  $user
      * @return void
      */
     protected function createTeam(User $user)
+=======
+     */
+    protected function createTeam(User $user): void
+>>>>>>> dev
     {
         $user->ownedTeams()->save(Team::forceCreate([
             'user_id' => $user->id,

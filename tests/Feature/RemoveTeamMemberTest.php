@@ -12,7 +12,11 @@ class RemoveTeamMemberTest extends TestCase
 {
     use RefreshDatabase;
 
+<<<<<<< HEAD
     public function test_team_members_can_be_removed_from_teams()
+=======
+    public function test_team_members_can_be_removed_from_teams(): void
+>>>>>>> dev
     {
         $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
@@ -21,13 +25,22 @@ class RemoveTeamMemberTest extends TestCase
         );
 
         $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
+<<<<<<< HEAD
                         ->set('teamMemberIdBeingRemoved', $otherUser->id)
                         ->call('removeTeamMember');
+=======
+            ->set('teamMemberIdBeingRemoved', $otherUser->id)
+            ->call('removeTeamMember');
+>>>>>>> dev
 
         $this->assertCount(0, $user->currentTeam->fresh()->users);
     }
 
+<<<<<<< HEAD
     public function test_only_team_owner_can_remove_team_members()
+=======
+    public function test_only_team_owner_can_remove_team_members(): void
+>>>>>>> dev
     {
         $user = User::factory()->withPersonalTeam()->create();
 
@@ -38,8 +51,14 @@ class RemoveTeamMemberTest extends TestCase
         $this->actingAs($otherUser);
 
         $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
+<<<<<<< HEAD
                         ->set('teamMemberIdBeingRemoved', $user->id)
                         ->call('removeTeamMember')
                         ->assertStatus(403);
+=======
+            ->set('teamMemberIdBeingRemoved', $user->id)
+            ->call('removeTeamMember')
+            ->assertStatus(403);
+>>>>>>> dev
     }
 }

@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Interprete;
+use App\Models\User;
+use App\Traits\CommonMethodsTrait;
 
 class Noticia extends Model
 {
+    use CommonMethodsTrait;
     use HasFactory;
 
     protected $fillable = ['titulo', 'slug', 'noticia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
@@ -16,7 +19,8 @@ class Noticia extends Model
 
     public function interprete()
     {
-        return $this->belongsTo(Interprete::class);
+        return $this->belongsTo(Interprete::class, 'interprete_id');
+        // return $this->belongsToMany(Interprete::class, 'interpretes_noticias');
     }
 
     public function user()

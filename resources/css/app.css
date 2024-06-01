@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
+<<<<<<< HEAD
 @tailwind utilities;
+=======
+@tailwind utilities;
+
+[x-cloak] {
+    display: none;
+}
+>>>>>>> dev
