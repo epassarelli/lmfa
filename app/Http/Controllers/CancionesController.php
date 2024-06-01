@@ -43,13 +43,9 @@ class CancionesController extends Controller
         $interprete = Interprete::where('slug', $slugInterprete)->first();
         $cancion = Cancion::where('slug', $slugCancion)->firstOrFail();
 
-        // $relacionadas = Cancion::where('estado', 1)
-        //     ->where('interprete_id', $interprete->id)
-        //     ->where('id', '<>', $cancion->id)
-        //     ->orderBy('cancion', 'asc')
-        //     ->take(12)
-        //     ->get();
-        // // dd($interprete);
+        // Incrementar el contador de visitas
+        $cancion->increment('visitas');
+
         $related = $interprete->getRelatedContent($interprete, 'canciones', $cancion);
 
         $metaTitle = "Letra de " . $cancion->cancion . ", " . $interprete->interprete;

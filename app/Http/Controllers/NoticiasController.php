@@ -24,13 +24,13 @@ class NoticiasController extends Controller
     $ultimas = $noticia->getNLast(Noticia::class, 12);
     $visitadas = $noticia->getNMostVisited(Noticia::class, 12);
 
-    $administrados = Session::get('interpretes');
+    // $administrados = Session::get('interpretes');
 
     $metaTitle = "Noticias del Folklore Argentino";
     $metaDescription = "Noticias del folklore Argentino. Lanazamientos, festivales, shows y todas las novedades.";
 
     // Renderizar la vista con las noticias y las últimas noticias
-    return view('noticias.index', compact('visitadas', 'ultimas', 'administrados', 'metaTitle', 'metaDescription'));
+    return view('noticias.index', compact('visitadas', 'ultimas', 'metaTitle', 'metaDescription'));
   }
 
   public function byArtista($slug)
@@ -56,6 +56,8 @@ class NoticiasController extends Controller
       ->orderByDesc('created_at')
       ->take(10)
       ->get();
+    // Incrementar el contador de visitas
+    $noticia->increment('visitas');
 
     $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
     $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);

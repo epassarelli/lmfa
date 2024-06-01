@@ -30,6 +30,9 @@ class FestivalesController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
+        // Incrementar el contador de visitas
+        $festival->increment('visitas');
+
         $metaTitle = $festival->titulo . " - Folklore Argentino";
         $metaDescription = "El portal del folklore";
         return view('festivales.show', compact('festival', 'ultimos_festivales', 'metaTitle', 'metaDescription'));

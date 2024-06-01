@@ -33,6 +33,10 @@ class RecetasController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
+
+        // Incrementar el contador de visitas
+        $receta->increment('visitas');
+
         $metaTitle = "Mi Folklore Argentino";
         $metaDescription = "El portal del folklore";
         return view('recetas.show', compact('receta', 'ultimas_recetas', 'metaTitle', 'metaDescription'));

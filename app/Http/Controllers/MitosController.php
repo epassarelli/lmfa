@@ -28,6 +28,9 @@ class MitosController extends Controller
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
+        // Incrementar el contador de visitas
+        $mito->increment('visitas');
+        
         $metaTitle = $mito->titulo . " - Mitos y leyendas urbanas";
         $metaDescription = "El portal del folklore";
         return view('mitos.show', compact('mito', 'ultimos_mitos', 'metaTitle', 'metaDescription'));

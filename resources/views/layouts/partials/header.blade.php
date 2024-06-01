@@ -38,31 +38,7 @@
             <a href="{{ route('comidas.index') }}" title="Nuestras actividades" class="nav-link">Comidas</a>
           </li>
         </ul>
-        <!-- Formulario de búsqueda -->
-        {{-- <form class="d-flex ms-2">
-          <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
-          <button class="btn btn-outline-success" type="submit">Buscar</button>
-        </form> --}}
-        <!-- Botón de ingreso o menú desplegable del usuario -->
-        {{-- <div class="d-flex">
-          <!-- Botón de ingreso -->
-          <button class="btn btn-primary ms-2">Ingresar</button>
-          <!-- Dropdown del usuario -->
-          <div class="dropdown ms-2">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              Usuario
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <li><a class="dropdown-item" href="#">Mis datos</a></li>
-              <li><a class="dropdown-item" href="#">Mis contenidos</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Salir</a></li>
-            </ul>
-          </div>
-        </div> --}}
+
       </div>
     </div>
   </nav>

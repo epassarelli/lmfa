@@ -39,6 +39,9 @@ class DiscosController extends Controller
     {
         $interprete = Interprete::where('slug', $slugInterprete)->first();
         $disco = Album::where('slug', $slugDisco)->firstOrFail();
+        // Incrementar el contador de visitas
+        $disco->increment('visitas');
+
         $related = $interprete->getRelatedContent($interprete, 'discos', $disco);
 
         $metaTitle = $disco->titulo . " - Discografía de " . $interprete->interprete;

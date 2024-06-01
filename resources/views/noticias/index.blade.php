@@ -28,17 +28,6 @@ se puede hacer? Me dices como? --}}
       proyectos
       colaborativos y homenajes, nuestra sección de noticias te mantendrá conectado con todo lo que está ocurriendo en el
       vibrante panorama de la música folklórica argentina.</p>
-    {{-- <div class="d-flex flex-wrap justify-content-center">
-      {{ auth()->user() }}
-      <br>
-      @if (!empty($administrados))
-        @foreach ($administrados as $inte)
-          {{ $inte }}
-        @endforeach
-      @else
-        {{ 'No posee interpretes administrados' }}
-      @endif
-    </div> --}}
 
     <!-- Listado de noticias en cards -->
     <div class="row mt-5">

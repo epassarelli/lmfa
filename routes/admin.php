@@ -15,4 +15,12 @@ use App\Http\Controllers\Backend\NoticiaController;
 |
 */
 
-Route::resource('noticias', NoticiaController::class);
+Route::resource('admin/noticias', NoticiaController::class)->names([
+  'index' => 'crud.noticias.index',
+  'create' => 'crud.noticias.create',
+  'store' => 'crud.noticias.store',
+  'show' => 'crud.noticias.show',
+  'edit' => 'crud.noticias.edit',
+  'update' => 'crud.noticias.update',
+  'destroy' => 'crud.noticias.destroy',
+]);
