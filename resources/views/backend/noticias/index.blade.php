@@ -1,68 +1,50 @@
-{{-- @extends('layouts.app') --}}
+@extends('adminlte::page')
 
-<x-slot name="header">
-    <h1>Listado de Noticias</h1>
-</x-slot>
+@section('metaTitle', 'Listado de Noticias')
 
-{{-- @section('content') --}}
-<div class="container">
+@section('content_header')
+  <h1>Noticias</h1>
+@stop
 
-
-    <div class="my-3">
-        <a href="{{ route('noticias.create') }}" class="btn btn-primary">Crear Noticia</a>
+@section('content')
+  <div class="card">
+    <div class="card-header">
+      <a href="{{ route('noticias.create') }}" class="btn btn-primary">Nueva Noticia</a>
     </div>
-
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Slug</th>
-                    <th>Autor</th>
-                    <th>Intérpretes</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($noticias as $noticia)
-                    <tr>
-                        <td>{{ $noticia->titulo }}</td>
-                        <td>{{ $noticia->slug }}</td>
-                        <td>{{ $noticia->user->name }}</td>
-                        <td>
-                            @foreach ($noticia->interpretes as $interprete)
-                                {{ $interprete->interprete }}
-                                @if (!$loop->last)
-                                    ,
-                                @endif
-                            @endforeach
-                        </td>
-                        <td>{{ $noticia->status ? 'Publicada' : 'Borrador' }}</td>
-                        <td>
-                            <a href="{{ route('noticias.show', $noticia->id) }}" class="btn btn-sm btn-info">Ver</a>
-                            <a href="{{ route('noticias.edit', $noticia->id) }}"
-                                class="btn btn-sm btn-primary">Editar</a>
-                            <form action="{{ route('noticias.destroy', $noticia->id) }}" method="post"
-                                class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('¿Estás seguro de que deseas eliminar esta noticia?')">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <div class="card-body">
+      <table id="noticias" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($noticias as $noticia)
+            <tr>
+              <td>{{ $noticia->id }}</td>
+              <td>{{ $noticia->titulo }}</td>
+              <td>
+                <a href="{{ route('noticias.edit', $noticia) }}" class="btn btn-warning btn-sm">Editar</a>
+                <form action="{{ route('noticias.destroy', $noticia) }}" method="POST" style="display:inline-block;">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
     </div>
+  </div>
+@stop
 
-    {{ $noticias->links() }}
-</div>
-{{-- @endsection --}}
+@section('js')
+  <script>
+    $(document).ready(function() {
+      $('#noticias').DataTable();
+    });
+  </script>
+@stop

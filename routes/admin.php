@@ -1,10 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Livewire\Admin\Dashboard;
-use App\Livewire\Admin\Users;
-use App\Livewire\Admin\Noticias;
-use App\Livewire\Admin\Interpretes;
+use App\Http\Controllers\Backend\NoticiaController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +15,4 @@ use App\Livewire\Admin\Interpretes;
 |
 */
 
-
-Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
-Route::get('/usuarios', Users::class)->name('admin.usuarios');
-Route::get('/interpretes', Interpretes::class)->name('admin.interpretes');
-Route::get('/noticias', Noticias::class)->name('admin.noticias');
+Route::resource('noticias', NoticiaController::class);

@@ -1,35 +1,54 @@
-<form action="{{ route('noticias.update', $noticia->id) }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
+@extends('adminlte::page')
 
-    <div class="form-group">
-        <label for="title">Título</label>
-        <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror"
-            value="{{ old('title', $noticia->title) }}" required>
-    </div>
+@section('title', 'Editar Noticia')
 
+@section('content_header')
+  <h1>Editar Noticia</h1>
+@stop
 
-    <div class="form-group">
-        <label for="interpretes">Intérpretes</label>
-        <select name="interpretes[]" id="interpretes" class="form-control @error('interpretes') is-invalid @enderror"
-            multiple>
+@section('content')
+  <div class="card">
+    <div class="card-body">
+      <form action="{{ route('noticias.update', $noticia) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+        <div class="form-group">
+          <label for="titulo">Título</label>
+          <input type="text" name="titulo" class="form-control" value="{{ $noticia->titulo }}" required>
+        </div>
+        <div class="form-group">
+          <label for="slug">Slug</label>
+          <input type="text" name="slug" class="form-control" value="{{ $noticia->slug }}" required>
+        </div>
+        <div class="form-group">
+          <label for="noticia">Noticia</label>
+          <textarea name="noticia" id="editor" class="form-control" required>{{ $noticia->noticia }}</textarea>
+        </div>
+        <div class="form-group">
+          <label for="interprete_id">Intérprete</label>
+          <select name="interprete_id" class="form-control" required>
             @foreach ($interpretes as $interprete)
-                <option value="{{ $interprete->id }}" @if ($noticia->interpretes->contains($interprete->id)) selected @endif>
-                    {{ $interprete->name }}</option>
+              <option value="{{ $interprete->id }}" {{ $noticia->interprete_id == $interprete->id ? 'selected' : '' }}>
+                {{ $interprete->interprete }}</option>
             @endforeach
-        </select>
-        @error('interpretes')
-            <span class="invalid-feedback">{{ $message }}</span>
-        @enderror
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="foto">Foto</label>
+          <input type="file" name="foto" class="form-control">
+          @if ($noticia->foto)
+            <img src="{{ asset('storage/' . $noticia->foto) }}" alt="Foto actual" class="img-fluid mt-2">
+          @endif
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+      </form>
     </div>
+  </div>
+@stop
 
-    <div class="form-group">
-        <label for="biography">Biografía</label>
-        <textarea name="biography" id="biography" class="form-control ckeditor @error('biography') is-invalid @enderror"
-            rows="10">{{ old('biography', $noticia->biography->content ?? '') }}</textarea>
-        @error('biography')
-            <span class="invalid-feedback">{{ $message }}</span>
-        @enderror
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
+@section('js')
+  <script src="{{ asset('path/to/ckeditor.js') }}"></script>
+  <script>
+    ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
+  </script>
+@stop
