@@ -73,6 +73,10 @@ class Interpretes extends Component
         $interpretes = Interprete::where('interprete', 'like', '%' . $this->search . '%')
             ->orderBy($this->sort, $this->order)
             ->paginate(5);
+<<<<<<< HEAD
+=======
+        //dd($interpretes);
+>>>>>>> f6a1528eb1fc36098adb0d1c90a2861b3666f2d7
         return view('livewire.backend.interpretes', compact('interpretes'))->layout('layouts.adminlte');
     }
 

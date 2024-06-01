@@ -15,10 +15,17 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
+<<<<<<< HEAD
     public function test_email_verification_screen_can_be_rendered()
     {
         if (! Features::enabled(Features::emailVerification())) {
             return $this->markTestSkipped('Email verification not enabled.');
+=======
+    public function test_email_verification_screen_can_be_rendered(): void
+    {
+        if (! Features::enabled(Features::emailVerification())) {
+            $this->markTestSkipped('Email verification not enabled.');
+>>>>>>> dev
         }
 
         $user = User::factory()->withPersonalTeam()->unverified()->create();
@@ -28,10 +35,17 @@ class EmailVerificationTest extends TestCase
         $response->assertStatus(200);
     }
 
+<<<<<<< HEAD
     public function test_email_can_be_verified()
     {
         if (! Features::enabled(Features::emailVerification())) {
             return $this->markTestSkipped('Email verification not enabled.');
+=======
+    public function test_email_can_be_verified(): void
+    {
+        if (! Features::enabled(Features::emailVerification())) {
+            $this->markTestSkipped('Email verification not enabled.');
+>>>>>>> dev
         }
 
         Event::fake();
@@ -52,10 +66,17 @@ class EmailVerificationTest extends TestCase
         $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
     }
 
+<<<<<<< HEAD
     public function test_email_can_not_verified_with_invalid_hash()
     {
         if (! Features::enabled(Features::emailVerification())) {
             return $this->markTestSkipped('Email verification not enabled.');
+=======
+    public function test_email_can_not_verified_with_invalid_hash(): void
+    {
+        if (! Features::enabled(Features::emailVerification())) {
+            $this->markTestSkipped('Email verification not enabled.');
+>>>>>>> dev
         }
 
         $user = User::factory()->unverified()->create();

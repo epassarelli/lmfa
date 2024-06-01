@@ -6,14 +6,27 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+<<<<<<< HEAD
+=======
+// use Laravel\Fortify\TwoFactorAuthenticatable;
+// use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Jetstream\HasTeams;
+>>>>>>> f6a1528eb1fc36098adb0d1c90a2861b3666f2d7
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
+<<<<<<< HEAD
     use Notifiable;
 
+=======
+    // use HasProfilePhoto;
+    // use HasTeams;
+    use Notifiable;
+    // use TwoFactorAuthenticatable;
+>>>>>>> f6a1528eb1fc36098adb0d1c90a2861b3666f2d7
 
     /**
      * The attributes that are mass assignable.

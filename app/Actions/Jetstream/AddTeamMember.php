@@ -2,9 +2,18 @@
 
 namespace App\Actions\Jetstream;
 
+<<<<<<< HEAD
 use App\Models\Team;
 use App\Models\User;
 use Closure;
+=======
+<<<<<<< HEAD
+=======
+use App\Models\Team;
+use App\Models\User;
+use Closure;
+>>>>>>> dev
+>>>>>>> f6a1528eb1fc36098adb0d1c90a2861b3666f2d7
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Jetstream\Contracts\AddsTeamMembers;
@@ -17,8 +26,24 @@ class AddTeamMember implements AddsTeamMembers
 {
     /**
      * Add a new team member to the given team.
+<<<<<<< HEAD
      */
     public function add(User $user, Team $team, string $email, string $role = null): void
+=======
+<<<<<<< HEAD
+     *
+     * @param  mixed  $user
+     * @param  mixed  $team
+     * @param  string  $email
+     * @param  string|null  $role
+     * @return void
+     */
+    public function add($user, $team, string $email, string $role = null)
+=======
+     */
+    public function add(User $user, Team $team, string $email, string $role = null): void
+>>>>>>> dev
+>>>>>>> f6a1528eb1fc36098adb0d1c90a2861b3666f2d7
     {
         Gate::forUser($user)->authorize('addTeamMember', $team);
 
@@ -37,8 +62,23 @@ class AddTeamMember implements AddsTeamMembers
 
     /**
      * Validate the add member operation.
+<<<<<<< HEAD
      */
     protected function validate(Team $team, string $email, ?string $role): void
+=======
+<<<<<<< HEAD
+     *
+     * @param  mixed  $team
+     * @param  string  $email
+     * @param  string|null  $role
+     * @return void
+     */
+    protected function validate($team, string $email, ?string $role)
+=======
+     */
+    protected function validate(Team $team, string $email, ?string $role): void
+>>>>>>> dev
+>>>>>>> f6a1528eb1fc36098adb0d1c90a2861b3666f2d7
     {
         Validator::make([
             'email' => $email,
@@ -53,9 +93,21 @@ class AddTeamMember implements AddsTeamMembers
     /**
      * Get the validation rules for adding a team member.
      *
+<<<<<<< HEAD
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     protected function rules(): array
+=======
+<<<<<<< HEAD
+     * @return array
+     */
+    protected function rules()
+=======
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
+     */
+    protected function rules(): array
+>>>>>>> dev
+>>>>>>> f6a1528eb1fc36098adb0d1c90a2861b3666f2d7
     {
         return array_filter([
             'email' => ['required', 'email', 'exists:users'],
@@ -67,8 +119,22 @@ class AddTeamMember implements AddsTeamMembers
 
     /**
      * Ensure that the user is not already on the team.
+<<<<<<< HEAD
      */
     protected function ensureUserIsNotAlreadyOnTeam(Team $team, string $email): Closure
+=======
+<<<<<<< HEAD
+     *
+     * @param  mixed  $team
+     * @param  string  $email
+     * @return \Closure
+     */
+    protected function ensureUserIsNotAlreadyOnTeam($team, string $email)
+=======
+     */
+    protected function ensureUserIsNotAlreadyOnTeam(Team $team, string $email): Closure
+>>>>>>> dev
+>>>>>>> f6a1528eb1fc36098adb0d1c90a2861b3666f2d7
     {
         return function ($validator) use ($team, $email) {
             $validator->errors()->addIf(

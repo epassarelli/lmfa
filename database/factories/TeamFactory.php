@@ -6,9 +6,6 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Team>
- */
 class TeamFactory extends Factory
 {
     /**
@@ -16,7 +13,7 @@ class TeamFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+    public function definition()
     {
         return [
             'name' => $this->faker->unique()->company(),
