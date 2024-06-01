@@ -15,42 +15,34 @@ use Illuminate\Support\Facades\Session;
 
 class NoticiasController extends Controller
 {
+
   public function index()
   {
-    // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
 
-    $noticias = Noticia::where('estado', 1)
-      ->with('interprete') // Cargar la relación interprete
-      ->orderBy('publicar', 'desc')
-      ->paginate(12);
+    $noticia = new Noticia();
+    // Obtener los últimos 5 intérpretes
+    $ultimas = $noticia->getNLast(Noticia::class, 12);
+    $visitadas = $noticia->getNMostVisited(Noticia::class, 12);
 
-    // Obtener las últimas 6 noticias en estado = 1 y ordenadas por el campo "publicar" desc
-    $ultimas_noticias = Noticia::where('estado', 1)
-      ->with('interprete')
-      ->orderBy('publicar', 'desc')
-      ->take(6)
-      ->get();
-    $administrados = Session::get('interpretes');
+    // $administrados = Session::get('interpretes');
 
     $metaTitle = "Noticias del Folklore Argentino";
     $metaDescription = "Noticias del folklore Argentino. Lanazamientos, festivales, shows y todas las novedades.";
 
     // Renderizar la vista con las noticias y las últimas noticias
-    return view('noticias.index', compact('noticias', 'ultimas_noticias', 'administrados', 'metaTitle', 'metaDescription'));
+    return view('noticias.index', compact('visitadas', 'ultimas', 'metaTitle', 'metaDescription'));
   }
 
   public function byArtista($slug)
   {
-    // dd($slug);
     $interprete = Interprete::where('slug', $slug)->first();
-    $noticias = $interprete->noticias()->where('estado', 1)->paginate(12);
-    // $noticias = Show::where('estado', 1)
-    //     ->where('estado', 1)
-    //     ->orderBy('publicar', 'desc')
-    //     ->paginate(12);
+    $noticias = $interprete->noticias()->where('estado', 1)->get();
+    $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+    $section = 'noticias';
+
     $metaTitle = "Noticias de " . $interprete->interprete;
     $metaDescription = "Todas las novedades y noticias de " . $interprete->interprete . ". Presentaciones, próximos lanzamientos.";
-    return view('noticias.byArtista', compact('noticias', 'interprete', 'metaTitle', 'metaDescription'));
+    return view('noticias.byArtista', compact('noticias', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
   }
 
   public function show($slugIterprete, $slugNoticia)
@@ -64,6 +56,8 @@ class NoticiasController extends Controller
       ->orderByDesc('created_at')
       ->take(10)
       ->get();
+    // Incrementar el contador de visitas
+    $noticia->increment('visitas');
 
     $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
     $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
@@ -72,7 +66,7 @@ class NoticiasController extends Controller
     // Elimina los saltos de línea
     $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
 
-    return view('noticias.show', compact('noticia', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
+    return view('noticias.show', compact('noticia', 'interprete', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
   }
 
 
