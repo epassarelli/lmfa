@@ -2,3 +2,25 @@
     RewriteEngine On
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
+
+
+# Redirección para biografías
+RewriteRule ^biografia-de-(.*)$ /biografias/$1 [R=301,L]
+
+# Redirección para noticias específicas
+RewriteRule ^noticias-de-(.*?)/(.*)$ /noticias/$1/$2 [R=301,L]
+
+# Redirección para el listado de noticias
+RewriteRule ^noticias-de-(.*)$ /noticias/$1 [R=301,L]
+
+# Redirección para discografía específica
+RewriteRule ^discografia-de-(.*?)/(.*)$ /discografias/$1/$2 [R=301,L]
+
+# Redirección para el listado de discografías
+RewriteRule ^discografia-de-(.*)$ /discografias/$1 [R=301,L]
+
+# Redirección para una letra de canción específica
+RewriteRule ^letras-de-canciones-de-(.*?)/(.*)$ /letras-de-canciones/$1/$2 [R=301,L]
+
+# Redirección para el listado de letras de canciones
+RewriteRule ^letras-de-canciones-de-(.*)$ /letras-de-canciones/$1 [R=301,L]

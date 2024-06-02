@@ -14,28 +14,31 @@
         <ul class="navbar-nav">
           <!-- Opciones de navegación -->
           <li class="nav-item {{ request()->routeIS('interpretes.index') ? 'active' : '' }}">
-            <a href="{{ route('interpretes.index') }}" title="Página principal" class="nav-link">Interpretes</a>
+            <a href="{{ route('interpretes.index') }}" title="Biografias de interpretes"
+              class="nav-link">Interpretes</a>
           </li>
           <li class="nav-item {{ request()->routeIS('noticias.index') ? 'active' : '' }}">
-            <a href="{{ route('noticias.index') }}" title="Nuestros noticias" class="nav-link">Noticias</a>
+            <a href="{{ route('noticias.index') }}" title="Noticias del folklore argentino"
+              class="nav-link">Noticias</a>
           </li>
           <li class="nav-item {{ request()->routeIS('shows.index') ? 'active' : '' }}">
-            <a href="{{ route('shows.index') }}" title="Nuestros shows" class="nav-link">Shows</a>
+            <a href="{{ route('shows.index') }}" title="Cartelera de shows folkloricos" class="nav-link">Shows</a>
           </li>
           <li class="nav-item {{ request()->routeIS('discos.index') ? 'active' : '' }}">
-            <a href="{{ route('discos.index') }}" title="Nuestras actividades" class="nav-link">Discos</a>
+            <a href="{{ route('discos.index') }}" title="Discografias del folklore" class="nav-link">Discos</a>
           </li>
           <li class="nav-item {{ request()->routeIS('canciones.index') ? 'active' : '' }}">
-            <a href="{{ route('canciones.index') }}" title="Nuestras actividades" class="nav-link">Canciones</a>
+            <a href="{{ route('canciones.index') }}" title="Letras de canciones" class="nav-link">Canciones</a>
           </li>
           <li class="nav-item {{ request()->routeIS('festivales.index') ? 'active' : '' }}">
-            <a href="{{ route('festivales.index') }}" title="Nuestras actividades" class="nav-link">Festivales</a>
+            <a href="{{ route('festivales.index') }}" title="Festivales y fiestas tradicionales"
+              class="nav-link">Festivales</a>
           </li>
           <li class="nav-item {{ request()->routeIS('mitos.index') ? 'active' : '' }}">
-            <a href="{{ route('mitos.index') }}" title="Nuestras actividades" class="nav-link">Mitos</a>
+            <a href="{{ route('mitos.index') }}" title="Mitos y leyendas urbanas" class="nav-link">Mitos</a>
           </li>
           <li class="nav-item {{ request()->routeIS('comidas.index') ? 'active' : '' }}">
-            <a href="{{ route('comidas.index') }}" title="Nuestras actividades" class="nav-link">Comidas</a>
+            <a href="{{ route('comidas.index') }}" title="Recetas de comidas tipicas" class="nav-link">Comidas</a>
           </li>
         </ul>
 
