@@ -22,7 +22,10 @@ trait CommonMethodsTrait
 
   public static function getNLast($model, $n, $orderColumn = 'id', $orderDirection = 'desc')
   {
-    return $model::orderBy($orderColumn, $orderDirection)->take($n)->get();
+    return $model::where('estado', 1)
+      ->orderBy($orderColumn, $orderDirection)
+      ->take($n)
+      ->get();
   }
 
   /**
@@ -36,7 +39,10 @@ trait CommonMethodsTrait
 
   public static function getNMostVisited($model, $n, $visitColumn = 'visitas')
   {
-    return $model::orderBy($visitColumn, 'desc')->take($n)->get();
+    return $model::where('estado', 1)
+      ->orderBy($visitColumn, 'desc')
+      ->take($n)
+      ->get();
   }
 
   /**
@@ -51,7 +57,10 @@ trait CommonMethodsTrait
 
   public static function getNStartsWith($model, $n, $letter, $titleColumn = 'title')
   {
-    return $model::where($titleColumn, 'LIKE', $letter . '%')->take($n)->get();
+    return $model::where($titleColumn, 'LIKE', $letter . '%')
+      ->where('estado', 1)
+      ->take($n)
+      ->get();
   }
 
   /**

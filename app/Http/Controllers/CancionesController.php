@@ -50,7 +50,15 @@ class CancionesController extends Controller
 
         $metaTitle = "Letra de " . $cancion->cancion . ", " . $interprete->interprete;
         // Decodifica las entidades HTML, elimina etiquetas HTML y toma los primeros 150 caracteres
-        $metaDescription = Str::limit(strip_tags(html_entity_decode($cancion->letra)), 150);
+
+        // $metaDescription = Str::limit(strip_tags(html_entity_decode($cancion->letra)), 150);
+        $letraContent = strip_tags(html_entity_decode($cancion->letra));
+
+        if (strlen($letraContent) > 50) {
+            $metaDescription = Str::limit($letraContent, 150);
+        } else {
+            $metaDescription = $interprete->interprete . ', ' . $cancion->cancion;
+        }
         // Elimina los saltos de línea
         $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
         return view('canciones.show', compact('cancion', 'interprete', 'related', 'metaTitle', 'metaDescription'));

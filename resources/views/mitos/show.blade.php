@@ -8,7 +8,7 @@
   <div class="container mx-auto py-8">
     <div class="row">
       <div class="col-md-9">
-        <h2 class="text-3xl font-bold mb-4">{{ $mito->titulo }}</h2>
+        <h1 class="text-3xl font-bold mb-4">{{ $mito->titulo }}</h1>
         {{-- <img src="{{ asset('storage/mitos/' . $mito->foto) }}" alt="{{ $mito->titulo }}" class="mb-4 rounded-lg shadow-lg"> --}}
         <p class="text-lg mb-4">{!! $mito->mito !!}</p>
         <p class="text-gray-600">Visitas: {{ $mito->visitas }}</p>

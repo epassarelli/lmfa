@@ -15,19 +15,19 @@
 
       <div class="col-md-9">
 
-        <div class="p-6">
-          <h2 class="text-2xl font-bold mb-2">{{ $cancion->cancion }}</h2>
-          <p class="text-lg font-medium mb-4">{{ $interprete->interprete }}</p>
+        <div class="p-3">
+          <h1 class="fs-4 fw-bold mb-2">{{ $cancion->cancion }}</h1>
+          <p class="fs-5 fw-medium mb-4">{{ $interprete->interprete }}</p>
           @if ($cancion->youtube !== '')
-            <div class="relative h-0 pb-16/9">
-              <iframe src="https://www.youtube.com/watch?v={{ $cancion->youtube }}" frameborder="0"
-                class="absolute top-0 left-0 w-full h-full"></iframe>
+            <div class="ratio ratio-16x9">
+              <iframe src="https://www.youtube.com/embed/{{ $cancion->youtube }}" frameborder="0" allowfullscreen></iframe>
             </div>
           @endif
 
-          <p class="text-lg font-medium mt-4">{!! $cancion->letra !!}</p>
-          <p class="text-lg font-medium mt-4">{{ $cancion->visitas }} veces vista</p>
+          <p class="fs-5 fw-medium mt-4">{!! $cancion->letra !!}</p>
+          <p class="fs-5 fw-medium mt-4">{{ $cancion->visitas }} veces vista</p>
         </div>
+
 
 
 
