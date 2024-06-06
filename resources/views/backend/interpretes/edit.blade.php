@@ -1,10 +1,16 @@
-@extends('layouts.app')
+@extends('adminlte::page')
+
+@section('title', 'Editar Noticia')
+
+@section('content_header')
+  <h1>Editar Interprete</h1>
+@stop
 
 @section('content')
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <h1 class="mb-3">Editar Interprete</h1>
+
         <form action="{{ route('interpretes.update', $interprete->id) }}" method="POST">
           @csrf
           @method('PUT')
@@ -25,7 +31,7 @@
           </div>
           <div class="mb-3">
             <label for="biografia" class="form-label">Biografia</label>
-            <textarea name="biografia" class="form-control" id="biografia" required>{{ old('biografia', $interprete->biografia) }}</textarea>
+            <textarea name="biografia" class="form-control" id="editor" required>{{ old('biografia', $interprete->biografia) }}</textarea>
           </div>
           <div class="mb-3">
             <label for="telefono" class="form-label">Telefono</label>
@@ -79,13 +85,11 @@
       </div>
     </div>
   </div>
-@endsection
+@stop
 
-<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
-<script>
-  ClassicEditor
-    .create(document.querySelector('#biografia'))
-    .catch(error => {
-      console.error(error);
-    });
-</script>
+@section('js')
+  <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
+  <script>
+    ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
+  </script>
+@stop

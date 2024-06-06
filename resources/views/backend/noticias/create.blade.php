@@ -7,6 +7,8 @@
 @stop
 
 @section('content')
+
+
   <div class="card">
     <div class="card-body">
       <form action="{{ route('noticias.store') }}" method="POST" enctype="multipart/form-data">

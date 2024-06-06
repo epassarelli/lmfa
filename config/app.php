@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Mi folklore argentino'),
 
     /*
     |--------------------------------------------------------------------------
@@ -187,6 +187,11 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
     ])->toArray(),
 
+    // 'aliases' => [
+    //     // Otros alias
+    //     'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
+    // ],
 ];

@@ -9,7 +9,7 @@ use App\Models\Noticia;
 use App\Models\Interprete;
 
 use Illuminate\Support\Facades\Auth;
-// use RealRashid\SweetAlert\Facades\Alert;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class NoticiaController extends Controller
@@ -37,13 +37,18 @@ class NoticiaController extends Controller
         ]);
 
         $noticia = new Noticia($request->all());
-        $noticia->foto = $request->file('foto')->store('fotos', 'public');
+
+        // Almacena la foto en disco y obtiene el nombre original del archivo
+        $nombreArchivo = $request->file('foto')->store('noticias', 'public');
+
+        // Almacena solo el nombre del archivo en el atributo 'foto' del modelo 'Noticia'
+        $noticia->foto = basename($nombreArchivo);
         $noticia->user_id = Auth::id();
         $noticia->save();
 
         // Para mensajes de éxito
-        // Alert::success('Noticia creada', 'La noticia ha sido creada con éxito.');
-        return redirect()->route('noticias.index')->with('success', 'La noticia ha sido creada con éxito.');
+        Alert::success('Noticia creada', 'La noticia ha sido creada con éxito.');
+        return redirect()->route('crud.noticias.index'); //->with('success', 'La noticia ha sido creada con éxito.');
     }
 
     public function show(Noticia $noticia)
@@ -69,20 +74,24 @@ class NoticiaController extends Controller
 
         $noticia->fill($request->all());
         if ($request->hasFile('foto')) {
-            $noticia->foto = $request->file('foto')->store('fotos', 'public');
+            // Almacena la foto en disco y obtiene el nombre original del archivo
+            $nombreArchivo = $request->file('foto')->store('noticias', 'public');
+
+            // Almacena solo el nombre del archivo en el atributo 'foto' del modelo 'Noticia'
+            $noticia->foto = basename($nombreArchivo);
         }
         $noticia->save();
 
         // Para mensajes de éxito
-        // Alert::success('Noticia actualizada', 'La noticia ha sido actualizada con éxito.');
-        return redirect()->route('noticias.index')->with('success', 'La noticia ha sido actualizada con éxito.');
+        Alert::success('Noticia actualizada', 'La noticia ha sido actualizada con éxito.');
+        return redirect()->route('crud.noticias.index'); //->with('success', 'La noticia ha sido actualizada con éxito.');
     }
 
     public function destroy(Noticia $noticia)
     {
         $noticia->delete();
         // Para mensajes de éxito
-        // Alert::success('Noticia eliminada', 'La noticia ha sido eliminada con éxito.');
-        return redirect()->route('noticias.index')->with('success', 'La noticia ha sido eliminada con éxito.');
+        Alert::success('Noticia eliminada', 'La noticia ha sido eliminada con éxito.');
+        return redirect()->route('noticias.index'); //->with('success', 'La noticia ha sido eliminada con éxito.');
     }
 }

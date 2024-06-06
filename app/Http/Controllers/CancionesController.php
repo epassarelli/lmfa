@@ -19,8 +19,8 @@ class CancionesController extends Controller
         $visitadas = $cancion->getNMostVisited(Cancion::class, 12);
 
 
-        $metaTitle = "Letras de canciones del Folklore Argentino";
-        $metaDescription = "Todas las letras de canciones del Folklore Argentino para cantar, cancionero folklórico";
+        $metaTitle = "Letras de Canciones del Folklore Argentino | Cancionero Popular";
+        $metaDescription = "Encuentra las letras de tus canciones favoritas del folklore argentino. Nuestro cancionero folklórico tiene todas las letras que necesitas para cantar. ¡Visítanos!";
         return view('canciones.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription'));
     }
 
