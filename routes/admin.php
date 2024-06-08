@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Backend\Dashboard;
+use App\Http\Controllers\Backend\InterpretesCrud;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\NoticiaController;
 
@@ -15,12 +17,25 @@ use App\Http\Controllers\Backend\NoticiaController;
 |
 */
 
-Route::resource('admin/noticias', NoticiaController::class)->names([
+
+Route::resource('noticias', NoticiaController::class)->names([
   'index' => 'crud.noticias.index',
-  'create' => 'crud.noticias.create',
-  'store' => 'crud.noticias.store',
-  'show' => 'crud.noticias.show',
-  'edit' => 'crud.noticias.edit',
-  'update' => 'crud.noticias.update',
-  'destroy' => 'crud.noticias.destroy',
+  'create' => 'noticias.create',
+  'store' => 'noticias.store',
+  'show' => 'noticias.show',
+  'edit' => 'noticias.edit',
+  'update' => 'noticias.update',
+  'destroy' => 'noticias.destroy',
 ]);
+
+Route::resource('interpretes', InterpretesCrud::class)->names([
+  'index' => 'crud.interpretes.index',
+  'create' => 'interpretes.create',
+  'store' => 'interpretes.store',
+  'show' => 'interpretes.show',
+  'edit' => 'interpretes.edit',
+  'update' => 'interpretes.update',
+  'destroy' => 'interpretes.destroy',
+]);
+
+Route::get('/', [Dashboard::class, 'index'])->name('dashboard');

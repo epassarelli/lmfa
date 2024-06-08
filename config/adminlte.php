@@ -257,7 +257,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'admin',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -341,6 +341,7 @@ return [
             'text' => 'Noticias',
             'url' => 'admin/noticias',
             'icon' => 'fas fa-fw fa-user',
+            'can' => 'read noticia',
         ],
 
         [

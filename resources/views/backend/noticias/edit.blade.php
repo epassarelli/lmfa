@@ -37,7 +37,7 @@
           <label for="foto">Foto</label>
           <input type="file" name="foto" class="form-control">
           @if ($noticia->foto)
-            <img src="{{ asset('storage/' . $noticia->foto) }}" alt="Foto actual" class="img-fluid mt-2">
+            <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="Foto actual" class="img-fluid mt-2">
           @endif
         </div>
         <button type="submit" class="btn btn-primary">Actualizar</button>
@@ -47,7 +47,7 @@
 @stop
 
 @section('js')
-  <script src="{{ asset('path/to/ckeditor.js') }}"></script>
+  <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
   <script>
     ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
   </script>

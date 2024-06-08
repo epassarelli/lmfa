@@ -9,8 +9,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $metaTitle = "Mi Folklore Argentino";
-        $metaDescription = "El portal del folklore";
+        $metaTitle = "Mi Folklore Argentino | Todo sobre Nuestras Tradiciones y Costumbres";
+        $metaDescription = "Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre música, danzas y más. ¡Visítanos hoy!";
         return view('home', compact('metaTitle', 'metaDescription'));
     }
 }

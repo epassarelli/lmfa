@@ -1,43 +1,81 @@
-@extends('layouts.app')
+@extends('adminlte::page')
+
+@section('metaTitle', 'Listado de Noticias')
+
+@section('content_header')
+  <h1>Gestión de Interpretes</h1>
+@stop
 
 @section('content')
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <h1 class="mb-3">Interpretes</h1>
-        <a href="{{ route('interpretes.create') }}" class="btn btn-primary mb-3">Crear Interprete</a>
-        @if ($message = Session::get('success'))
-          <div class="alert alert-success">
-            <p>{{ $message }}</p>
-          </div>
-        @endif
-        <table class="table table-bordered">
-          <tr>
-            <th>ID</th>
-            <th>Interprete</th>
-            <th>Slug</th>
-            <th>Correo</th>
-            <th>Acciones</th>
-          </tr>
+
+  <div class="card">
+
+    <div class="card-header text-right">
+      <a href="{{ route('interpretes.create') }}" class="btn btn-primary mb-3">Crear Interprete</a>
+    </div>
+
+    <div class="card-body">
+
+      @if ($message = Session::get('success'))
+        <div class="alert alert-success">
+          <p>{{ $message }}</p>
+        </div>
+      @endif
+
+      <table id="interpretes" class="table table-striped table-bordered">
+        <thead>
+          <th>ID</th>
+          <th>Foto</th>
+          <th>Interprete</th>
+          {{-- <th>Slug</th> --}}
+          <th>Correo</th>
+          <th>Acciones</th>
+        </thead>
+        <tbody>
           @foreach ($interpretes as $interprete)
             <tr>
               <td>{{ $interprete->id }}</td>
-              <td>{{ $interprete->interprete }}</td>
-              <td>{{ $interprete->slug }}</td>
-              <td>{{ $interprete->correo }}</td>
               <td>
-                <form action="{{ route('interpretes.destroy', $interprete->id) }}" method="POST">
-                  <a class="btn btn-info" href="{{ route('interpretes.show', $interprete->id) }}">Mostrar</a>
-                  <a class="btn btn-primary" href="{{ route('interpretes.edit', $interprete->id) }}">Editar</a>
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
+                <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
+                  class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+              </td>
+              <td>{{ $interprete->interprete }}</td>
+              {{-- <td>{{ $interprete->slug }}</td> --}}
+              <td>{{ $interprete->correo }}</td>
+              {{-- <td class="text-center"><livewire:toggle-button :model="$interprete" field="estado"
+                  key="{{ $interprete->id }}" />
+              </td> --}}
+              <td class="text-right">
+                <div class="action-icons">
+                  <a class="btn btn-info" href="{{ route('interpretes.show', $interprete->id) }}">
+                    <i class="fas fa-eye"></i>
+                  </a>
+                  <a class="btn btn-warning" href="{{ route('interpretes.edit', $interprete->id) }}">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <form action="{{ route('interpretes.destroy', $interprete->id) }}" method="POST"
+                    style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                </div>
               </td>
             </tr>
           @endforeach
-        </table>
-      </div>
+        </tbody>
+      </table>
+
     </div>
   </div>
-@endsection
+@stop
+
+@section('js')
+  <script>
+    $(document).ready(function() {
+      $('#interpretes').DataTable();
+    });
+  </script>
+@stop

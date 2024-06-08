@@ -25,6 +25,7 @@
         <div class="row">
 
           @if ($noticias->isEmpty())
+
             <div class="warning"></div>
             <div class="alert alert-warning" role="alert">
               No hay noticias disponibles para {{ $interprete->interprete }} aún.
@@ -44,7 +45,7 @@
                 </div>
               </div>
             @endforeach
-            }
+
           @endif
 
         </div>
