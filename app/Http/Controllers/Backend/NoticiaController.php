@@ -10,24 +10,38 @@ use App\Models\Interprete;
 
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
-
+use Illuminate\Support\Facades\Log;
 
 class NoticiaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        // $this->authorize('access', Noticia::class);
+        // $this->middleware('permission:access noticia');
+    }
+
+
     public function index()
     {
+        $this->authorize('viewAny', Noticia::class);
+
         $noticias = Noticia::with('interprete', 'user')->get();
         return view('backend.noticias.index', compact('noticias'));
     }
 
     public function create()
     {
+        $this->authorize('create', Noticia::class);
+
         $interpretes = Interprete::all();
         return view('backend.noticias.create', compact('interpretes'));
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Noticia::class);
+
         $request->validate([
             'titulo' => 'required',
             'slug' => 'required|unique:noticias',
@@ -53,17 +67,23 @@ class NoticiaController extends Controller
 
     public function show(Noticia $noticia)
     {
+        $this->authorize('view', $noticia);
+
         return view('backend.noticias.show', compact('noticia'));
     }
 
     public function edit(Noticia $noticia)
     {
+        $this->authorize('update', $noticia);
+
         $interpretes = Interprete::all();
         return view('backend.noticias.edit', compact('noticia', 'interpretes'));
     }
 
     public function update(Request $request, Noticia $noticia)
     {
+        $this->authorize('update', $noticia);
+
         $request->validate([
             'titulo' => 'required',
             'slug' => 'required|unique:noticias,slug,' . $noticia->id,
@@ -89,6 +109,8 @@ class NoticiaController extends Controller
 
     public function destroy(Noticia $noticia)
     {
+        $this->authorize('delete', $noticia);
+
         $noticia->delete();
         // Para mensajes de éxito
         Alert::success('Noticia eliminada', 'La noticia ha sido eliminada con éxito.');

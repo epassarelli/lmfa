@@ -12,7 +12,9 @@
   <div class="card">
 
     <div class="card-header text-right">
-      <a href="{{ route('noticias.create') }}" class="btn btn-primary">Crear Noticia</a>
+      @can('create noticia')
+        <a href="{{ route('noticias.create') }}" class="btn btn-primary">Crear Noticia</a>
+      @endcan
     </div>
 
     <div class="card-body">
@@ -39,8 +41,9 @@
                   key="{{ $noticia->id }}" />
               </td> --}}
               <td class="text-right" style="white-space: nowrap;">
-
-                <a href="{{ route('noticias.edit', $noticia) }}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                @can('update', $noticia)
+                  <a href="{{ route('noticias.edit', $noticia) }}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                @endcan
                 {{-- <form action="{{ route('noticias.destroy', $noticia) }}" method="POST" style="display:inline-block;">
                   @csrf
                   @method('DELETE')
@@ -48,15 +51,16 @@
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </form> --}}
-
-                <form id="delete-form-{{ $noticia->id }}" action="{{ route('noticias.destroy', $noticia) }}"
-                  method="POST" style="display:inline-block;">
-                  @csrf
-                  @method('DELETE')
-                  <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $noticia->id }})">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </form>
+                @can('delete', $noticia)
+                  <form id="delete-form-{{ $noticia->id }}" action="{{ route('noticias.destroy', $noticia) }}"
+                    method="POST" style="display:inline-block;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $noticia->id }})">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                @endcan
               </td>
 
             </tr>
