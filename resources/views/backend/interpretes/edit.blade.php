@@ -11,7 +11,7 @@
     <div class="row">
       <div class="col-12">
 
-        <form action="{{ route('interpretes.update', $interprete->id) }}" method="POST">
+        <form action="{{ route('backend.interpretes.update', $interprete->id) }}" method="POST">
           @csrf
           @method('PUT')
           <div class="mb-3">

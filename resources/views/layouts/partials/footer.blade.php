@@ -16,7 +16,7 @@
 
           <!-- categorias -->
           <div class="col-md-4 mb-3">
-            <p class="h6 fw-bold text-white">Categorías de productos</p>
+            <p class="h6 fw-bold text-white">Otras secciones</p>
             {{-- <ul class="list-unstyled text-white-50 light">
               <li><a href="{{ route('empresa') }}" class="text-decoration-none link-light"
                   title="Saber más sobre la Empresa"> Empresa
@@ -49,12 +49,12 @@
             <p class="h6 fw-bold text-white">Nuestras redes</p>
             <ul class="list-group list-group-horizontal">
               <li class="list-group-item bg-transparent ps-0 border-0 light text-light">
-                <a href="/" class="text-decoration-none link-light" title="Mirá nuestro canal de youtube"> <i
-                    class="fa-brands fa-youtube"></i> </a>
+                <a href="https://www.facebook.com/MiFolkloreArgentino" class="text-decoration-none link-light"
+                  title="Mirá nuestra página de Facebook"> <i class="fa-brands fa-facebook"></i> </a>
               </li>
               <li class="list-group-item bg-transparent ps-0 border-0 light text-light">
-                <a href="/" class="text-decoration-none link-light" title="Nuestro Instagram"> <i
-                    class="fa-brands fa-instagram"></i> </a>
+                <a href="https://www.instagram.com/mifolkloreargentino/" class="text-decoration-none link-light"
+                  title="Nuestro Instagram"> <i class="fa-brands fa-instagram"></i> </a>
               </li>
             </ul>
           </div>

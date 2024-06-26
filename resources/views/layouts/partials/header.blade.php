@@ -40,6 +40,36 @@
           <li class="nav-item {{ request()->routeIS('comidas.index') ? 'active' : '' }}">
             <a href="{{ route('comidas.index') }}" title="Recetas de comidas tipicas" class="nav-link">Comidas</a>
           </li>
+
+          <!-- Opciones de autenticación -->
+          @guest
+            <li class="nav-item">
+              <a href="{{ route('login') }}" class="btn btn-primary"><span class="fas fa-sign-in-alt"></span>
+                Ingresar</a>
+            </li>
+          @else
+            <li class="nav-item dropdown">
+              <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ Auth::user()->name }}
+              </a>
+
+              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ url('/admin/misdatos') }}">Mis datos</a>
+                <a class="dropdown-item" href="{{ url('/admin') }}">Mis contenidos</a>
+                <a class="dropdown-item" href="{{ route('logout') }}"
+                  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  Salir
+                </a>
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                  @csrf
+                </form>
+              </div>
+            </li>
+          @endguest
+
+
         </ul>
 
       </div>

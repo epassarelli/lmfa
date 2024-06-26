@@ -14,6 +14,9 @@ class Album extends Model
     use CommonMethodsTrait;
     use HasFactory;
     protected $table = 'albunes';
+    protected $fillable = [
+        'album', 'slug', 'anio', 'foto', 'telefono', 'spotify', 'visitas', 'publicar', 'estado', 'user_id', 'interprete_id'
+    ];
 
     public function interprete()
     {

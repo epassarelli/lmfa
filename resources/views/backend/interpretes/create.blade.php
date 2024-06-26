@@ -11,7 +11,7 @@
     <div class="row">
       <div class="col-12">
         <h1 class="mb-3">Crear Interprete</h1>
-        <form action="{{ route('interpretes.store') }}" method="POST">
+        <form action="{{ route('backend.interpretes.store') }}" method="POST">
           @csrf
           <div class="mb-3">
             <label for="interprete" class="form-label">Interprete</label>

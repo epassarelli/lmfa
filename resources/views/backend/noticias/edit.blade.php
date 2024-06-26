@@ -9,7 +9,7 @@
 @section('content')
   <div class="card">
     <div class="card-body">
-      <form action="{{ route('noticias.update', $noticia) }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('backend.noticias.update', $noticia) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="form-group">

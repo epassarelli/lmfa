@@ -20,7 +20,7 @@ class CreateAlbumsTable extends Migration
             $table->string('slug');
             $table->string('foto');
             $table->string('anio');
-            $table->string('spotify');
+            $table->string('spotify')->nullable();
 
             $table->foreignId('user_id')
                 ->nullable()
@@ -32,9 +32,9 @@ class CreateAlbumsTable extends Migration
                 ->constrained('interpretes')
                 ->cascadeOnUpdate()
                 ->nullOnDelete();
-            $table->integer('visitas');
+            $table->integer('visitas')->default(0);
 
-            $table->datetime('publicar');
+            $table->datetime('publicar')->nullable();
             $table->integer('estado');
 
             $table->timestamps();

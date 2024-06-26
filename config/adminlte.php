@@ -110,7 +110,7 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
+        'enabled' => false,
         'mode' => 'fullscreen',
         'img' => [
             'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
@@ -295,26 +295,6 @@ return [
 
     'menu' => [
         // Navbar items:
-        [
-            'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
-        ],
-        [
-            'type' => 'fullscreen-widget',
-            'topnav_right' => true,
-        ],
-
-        // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
-        [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
-        ],
         // [
         //     'text' => 'pages',
         //     'url' => 'admin/pages',
@@ -325,86 +305,89 @@ return [
 
         // ['header' => 'account_settings'],
 
+        // [
+        //     'type' => 'navbar-search',
+        //     'text' => 'search',
+        //     'topnav_right' => true,
+        // ],
+        // [
+        //     'type' => 'fullscreen-widget',
+        //     'topnav_right' => true,
+        // ],
+
+        // // Sidebar items:
+        // [
+        //     'type' => 'sidebar-menu-search',
+        //     'text' => 'search',
+        // ],
+        // [
+        //     'text' => 'blog',
+        //     'url' => 'admin/blog',
+        //     'can' => 'manage-blog',
+        // ],
+
         [
             'text' => 'Usuarios',
             'url' => 'admin/users',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-users',
         ],
-
+        [
+            'text' => 'Roles',
+            'url' => 'admin/roles',
+            'icon' => 'fas fa-fw fa-user-tag',
+        ],
+        [
+            'text' => 'Permisos',
+            'url' => 'admin/permissions',
+            'icon' => 'fas fa-fw fa-user-shield',
+        ],
         [
             'text' => 'Interpretes',
             'url' => 'admin/interpretes',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-microphone',
         ],
-
         [
             'text' => 'Noticias',
             'url' => 'admin/noticias',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-newspaper',
             'can' => 'read noticia',
         ],
-
         [
             'text' => 'Shows',
             'url' => 'admin/shows',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-calendar-alt',
         ],
-
         [
             'text' => 'Discos',
             'url' => 'admin/discos',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-compact-disc',
         ],
-
         [
             'text' => 'Canciones',
             'url' => 'admin/canciones',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-music',
         ],
-
         [
             'text' => 'Festivales',
             'url' => 'admin/festivales',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-map-marked-alt',
         ],
-
         [
             'text' => 'Comidas',
             'url' => 'admin/comidas',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-utensils',
         ],
-
         [
             'text' => 'Mitos',
             'url' => 'admin/mitos',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-book',
         ],
-
-
-
 
         // [
         //     'text' => 'profile',
         //     'url' => 'admin/settings',
         //     'icon' => 'fas fa-fw fa-user',
         // ],
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         // [
         //     'text' => 'change_password',

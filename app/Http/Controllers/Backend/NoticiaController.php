@@ -26,9 +26,50 @@ class NoticiaController extends Controller
     {
         $this->authorize('viewAny', Noticia::class);
 
-        $noticias = Noticia::with('interprete', 'user')->get();
+        $noticias = Noticia::select('id', 'titulo', 'foto', 'created_at', 'visitas')
+            ->with(['interprete:id,nombre', 'user:id,name'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('backend.noticias.index', compact('noticias'));
     }
+
+    // public function index(Request $request)
+    // {
+    //     $this->authorize('viewAny', Noticia::class);
+
+    //     if ($request->ajax()) {
+    //         $data = Noticia::with(['interprete:id,interprete', 'user:id,name'])->orderBy('created_at', 'desc');
+    //         return DataTables::of($data)
+    //             ->addColumn('interprete', function ($row) {
+    //                 return $row->interprete ? $row->interprete->interprete : 'Sin intérprete';
+    //             })
+    //             ->addColumn('user', function ($row) {
+    //                 return $row->user->name;
+    //             })
+    //             ->addColumn('action', function ($row) {
+    //                 $editUrl = route('backend.noticias.edit', $row->id);
+    //                 $deleteUrl = route('backend.noticias.destroy', $row->id);
+    //                 return '
+    //                     <a href="' . $editUrl . '" class="btn btn-warning">
+    //                         <i class="fas fa-edit"></i>
+    //                     </a>
+    //                     <form action="' . $deleteUrl . '" method="POST" style="display:inline-block;">
+    //                         ' . csrf_field() . '
+    //                         ' . method_field('DELETE') . '
+    //                         <button type="submit" class="btn btn-danger" onclick="return confirm(\'¿Estás seguro de eliminar esta noticia?\')">
+    //                             <i class="fas fa-trash-alt"></i>
+    //                         </button>
+    //                     </form>
+    //                 ';
+    //             })
+    //             ->rawColumns(['action'])
+    //             ->make(true);
+    //     }
+
+    //     return view('backend.noticias.index');
+    // }
+
 
     public function create()
     {
@@ -62,7 +103,7 @@ class NoticiaController extends Controller
 
         // Para mensajes de éxito
         Alert::success('Noticia creada', 'La noticia ha sido creada con éxito.');
-        return redirect()->route('crud.noticias.index'); //->with('success', 'La noticia ha sido creada con éxito.');
+        return redirect()->route('backend.noticias.index'); //->with('success', 'La noticia ha sido creada con éxito.');
     }
 
     public function show(Noticia $noticia)
@@ -104,7 +145,7 @@ class NoticiaController extends Controller
 
         // Para mensajes de éxito
         Alert::success('Noticia actualizada', 'La noticia ha sido actualizada con éxito.');
-        return redirect()->route('crud.noticias.index'); //->with('success', 'La noticia ha sido actualizada con éxito.');
+        return redirect()->route('backend.noticias.index'); //->with('success', 'La noticia ha sido actualizada con éxito.');
     }
 
     public function destroy(Noticia $noticia)
@@ -114,6 +155,6 @@ class NoticiaController extends Controller
         $noticia->delete();
         // Para mensajes de éxito
         Alert::success('Noticia eliminada', 'La noticia ha sido eliminada con éxito.');
-        return redirect()->route('noticias.index'); //->with('success', 'La noticia ha sido eliminada con éxito.');
+        return redirect()->route('backend.noticias.index'); //->with('success', 'La noticia ha sido eliminada con éxito.');
     }
 }
