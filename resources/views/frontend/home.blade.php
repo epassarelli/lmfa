@@ -2,7 +2,7 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-
+{{-- 
 @section('content')
 
   <div class="container">
@@ -152,4 +152,120 @@
   </div>
 
 
+@endsection --}}
+
+@section('content')
+  <div class="container">
+    <!-- Introducción -->
+    {{-- <section class="intro mb-5">
+      <h1 class="mb-4">Bienvenidos a Nuestro Portal de Folklore Argentino</h1>
+      <p>Descubre las últimas noticias, eventos, letras de canciones, biografías de artistas y mucho más sobre el folklore
+        argentino. Nuestro objetivo es preservar y promover la rica cultura del folklore en Argentina.</p>
+    </section> --}}
+
+    <!-- Noticias Destacadas -->
+    <section class="noticias-destacadas mb-5">
+      <h1 class="mb-4">Bienvenidos al Portal del Folklore Argentino</h1>
+      <div id="noticiasCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          @foreach ($noticiasDestacadas as $index => $noticia)
+            <div class="carousel-item @if ($index == 0) active @endif">
+              <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" class="d-block w-100"
+                alt="{{ $noticia->titulo }}">
+              <div class="carousel-caption d-none d-md-block">
+                <h3>{{ $noticia->titulo }}</h3>
+                <p>{{ $noticia->resumen }}</p>
+                <a href="{{ route('noticias.index', $noticia->id) }}" class="btn btn-primary">Leer más</a>
+              </div>
+            </div>
+          @endforeach
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#noticiasCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#noticiasCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Próximos Shows y Festivales -->
+    {{-- <section class="shows-festivales mb-5">
+      <h2 class="mb-4">Próximos Shows y Festivales de Folklore Argentino</h2>
+      <div class="row">
+        @foreach ($eventos as $evento)
+          <div class="col-md-4 mb-4">
+            <div class="card h-100">
+              <img src="{{ asset('storage/' . $evento->imagen) }}" class="card-img-top" alt="{{ $evento->nombre }}">
+              <div class="card-body">
+                <h4 class="card-title">{{ $evento->nombre }}</h4>
+                <p class="card-text">{{ $evento->fecha }} - {{ $evento->lugar }}</p>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </section> --}}
+
+    <!-- Letras de Canciones Populares -->
+    {{-- <section class="letras-canciones mb-5">
+      <h2 class="mb-4">Letras de Canciones Populares del Folklore Argentino</h2>
+      <div class="row">
+        @foreach ($canciones as $cancion)
+          <div class="col-md-4 mb-4">
+            <div class="card h-100">
+              <img src="{{ asset('storage/' . $cancion->imagen) }}" class="card-img-top" alt="{{ $cancion->titulo }}">
+              <div class="card-body">
+                <h4 class="card-title">{{ $cancion->titulo }}</h4>
+                <p class="card-text">{{ Str::limit($cancion->letra, 100) }}</p>
+                <a href="{{ route('canciones.show', $cancion->id) }}" class="btn btn-primary">Leer más</a>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </section> --}}
+
+    <!-- Biografías de Artistas -->
+    <section class="biografias-artistas mb-5">
+      <h2 class="mb-4">Biografías de Artistas del Folklore Argentino</h2>
+      <div class="row">
+        @foreach ($artistas as $artista)
+          <div class="col-md-4 mb-4">
+            <div class="card h-100">
+              <img src="{{ asset('storage/interpretes/' . $artista->imagen) }}" class="card-img-top"
+                alt="{{ $artista->nombre }}">
+              <div class="card-body">
+                <h4 class="card-title">{{ $artista->interprete }}</h4>
+                <p class="card-text">{{ Str::limit($artista->biografia, 100) }}</p>
+                <a href="{{ route('interpretes.index', $artista->id) }}" class="btn btn-primary">Leer más</a>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </section>
+
+    <!-- Artículos y Blog -->
+    {{-- <section class="articulos-blog">
+      <h2 class="mb-4">Artículos y Blog sobre la Cultura del Folklore Argentino</h2>
+      <div class="row">
+        @foreach ($articulos as $articulo)
+          <div class="col-md-4 mb-4">
+            <div class="card h-100">
+              <img src="{{ asset('storage/' . $articulo->imagen) }}" class="card-img-top" alt="{{ $articulo->titulo }}">
+              <div class="card-body">
+                <h4 class="card-title">{{ $articulo->titulo }}</h4>
+                <p class="card-text">{{ Str::limit($articulo->contenido, 100) }}</p>
+                <a href="{{ route('blog.show', $articulo->id) }}" class="btn btn-primary">Leer más</a>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </section> --}}
+
+  </div>
 @endsection
