@@ -1,0 +1,109 @@
+<?php
+
+namespace App\Http\Controllers\Backend;
+
+use App\Http\Controllers\Controller;
+use App\Models\Show;
+use App\Http\Requests\ShowRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\Interprete;
+use Illuminate\Http\Request;
+
+class ShowController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->authorizeResource(Show::class, 'show');
+    }
+
+    public function index()
+    {
+        $user = Auth::user();
+        $shows = Show::query()
+            ->when($user->hasRole('colaborador'), function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->when($user->hasRole('prensa'), function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->with('user', 'interprete')
+            ->get();
+
+        return view('backend.shows.index', compact('shows'));
+    }
+
+    public function create()
+    {
+        $interpretes = Interprete::all();
+        return view('backend.shows.create', compact('interpretes'));
+    }
+
+    public function store(ShowRequest $request)
+    {
+        $show = new Show($request->validated());
+        $show->slug = Str::slug($show->show);
+        $show->user_id = Auth::id();
+        $show->estado = Auth::user()->hasRole('prensa') ? 1 : 0;
+
+        if ($request->hasFile('foto')) {
+            $filePath = $request->file('foto')->store('shows', 'public');
+            $show->foto = $filePath;
+        }
+
+        $show->save();
+
+        if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
+            $this->sendNotification($show);
+        }
+
+        Alert::success('Show creada', 'La show ha sido creada con éxito.');
+        return redirect()->route('backend.shows.index');
+    }
+
+    public function edit(Show $show)
+    {
+        $interpretes = Interprete::all();
+        return view('backend.shows.edit', compact('show', 'interpretes'));
+    }
+
+    public function update(ShowRequest $request, Show $show)
+    {
+        $show->fill($request->validated());
+        $show->slug = Str::slug($show->show);
+
+        if ($request->hasFile('foto')) {
+            $filePath = $request->file('foto')->store('shows', 'public');
+            $show->foto = $filePath;
+        }
+
+        $show->save();
+
+        Alert::success('Show actualizada', 'La show ha sido actualizada con éxito.');
+        return redirect()->route('backend.shows.index');
+    }
+
+    public function destroy(Show $show)
+    {
+        $this->authorize('delete', $show);
+        $show->delete();
+
+        Alert::success('Show eliminada', 'La show ha sido eliminada con éxito.');
+        return redirect()->route('backend.shows.index');
+    }
+
+    private function sendNotification(Show $show)
+    {
+        $details = [
+            'title' => 'Se ha agregado un/a Show en el portal',
+            'show' => $show->show,
+            'interprete' => $show->interprete->nombre,
+            'user' => $show->user->name,
+        ];
+
+        Mail::to('info@mifolkloreargentino.com')->send(new \App\Mail\ShowCreated($details));
+    }
+}

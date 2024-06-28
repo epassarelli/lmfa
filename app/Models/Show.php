@@ -11,6 +11,7 @@ use App\Models\User;
 class Show extends Model
 {
     use HasFactory;
+    protected $fillable = ['show', 'slug', 'detalle', 'foto', 'visitas', 'publicar', 'user_id', 'estado', 'interprete_id', 'fecha', 'hora', 'lugar', 'direccion'];
 
     public function interprete()
     {

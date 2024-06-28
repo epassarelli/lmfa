@@ -11,7 +11,7 @@
 
   <div class="card">
     <div class="card-body">
-      <form action="{{ route('noticias.store') }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('backend.noticias.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
           <label for="titulo">Título</label>

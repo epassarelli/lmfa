@@ -8,51 +8,62 @@
 
 @section('content')
 
-
   <div class="card">
 
     <div class="card-header text-right">
       @can('create noticia')
-        <a href="{{ route('noticias.create') }}" class="btn btn-primary">Crear Noticia</a>
+        <a href="{{ route('backend.noticias.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Crear Noticia</a>
       @endcan
     </div>
 
     <div class="card-body">
-      <table id="noticias" class="table table-striped table-bordered datatables">
+      <table id="noticias" class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Fecha</th>
             <th>Foto</th>
             <th>Título</th>
+            <th>Interprete</th>
+            <th>Vistas</th>
             <th>Acciones</th>
           </tr>
         </thead>
+
         <tbody>
           @foreach ($noticias as $noticia)
             <tr>
-              <td>{{ $noticia->id }}</td>
+              <td>
+                @if ($noticia->created_at)
+                  {{ $noticia->created_at->format('d/m/Y H:i') }}
+                @else
+                  --- Sin fecha
+                @endif
+              </td>
               <td>
                 <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
                   class="img-fluid img-thumbnail" style="width: 100px; height: auto; cursor: pointer;" data-toggle="modal"
                   data-target="#imageModal" data-image="{{ asset('storage/noticias/' . $noticia->foto) }}">
               </td>
               <td>{{ $noticia->titulo }}</td>
+              <td>
+                @if ($noticia->interprete)
+                  {{ $noticia->interprete->interprete }}
+                @else
+                  --- Sin intérprete
+                @endif
+              </td>
+              <td>{{ $noticia->visitas }}</td>
               {{-- <td class="text-center"><livewire:toggle-button :model="$noticia" field="estado"
                   key="{{ $noticia->id }}" />
               </td> --}}
               <td class="text-right" style="white-space: nowrap;">
                 @can('update', $noticia)
-                  <a href="{{ route('noticias.edit', $noticia) }}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                  <a href="{{ route('backend.noticias.edit', $noticia) }}" class="btn btn-warning"><i
+                      class="fas fa-edit"></i></a>
                 @endcan
-                {{-- <form action="{{ route('noticias.destroy', $noticia) }}" method="POST" style="display:inline-block;">
-                  @csrf
-                  @method('DELETE')
-                  <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $noticia->id }})">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </form> --}}
+
                 @can('delete', $noticia)
-                  <form id="delete-form-{{ $noticia->id }}" action="{{ route('noticias.destroy', $noticia) }}"
+                  <form id="delete-form-{{ $noticia->id }}" action="{{ route('backend.noticias.destroy', $noticia) }}"
                     method="POST" style="display:inline-block;">
                     @csrf
                     @method('DELETE')
@@ -66,6 +77,7 @@
             </tr>
           @endforeach
         </tbody>
+
       </table>
 
     </div>
@@ -96,7 +108,40 @@
 @section('js')
   <script>
     $(document).ready(function() {
-      $('#noticias').DataTable();
+
+      $('#noticias').DataTable({
+        "order": [
+          [1, "desc"]
+        ] // Ordenar por la columna de fecha de creación
+      });
+
+      // $('#noticias').DataTable({
+      //   processing: true,
+      //   serverSide: true,
+      //   ajax: '{{ route('backend.noticias.index') }}',
+      //   columns: [{
+      //       data: 'titulo',
+      //       name: 'titulo'
+      //     },
+      //     {
+      //       data: 'interprete',
+      //       name: 'interprete.interprete'
+      //     },
+      //     {
+      //       data: 'user',
+      //       name: 'user.name'
+      //     },
+      //     {
+      //       data: 'action',
+      //       name: 'action',
+      //       orderable: false,
+      //       searchable: false
+      //     }
+      //   ],
+      //   order: [
+      //     [0, 'desc']
+      //   ]
+      // });
 
       $('#imageModal').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget);

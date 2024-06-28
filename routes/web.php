@@ -3,30 +3,20 @@
 use Illuminate\Support\Facades\Route;
 
 // Controladores del front
-use App\Http\Controllers\NoticiasController;
-use App\Http\Controllers\CancionesController;
-use App\Http\Controllers\DiscosController;
-use App\Http\Controllers\EntrevistasController;
-use App\Http\Controllers\FestivalesController;
-use App\Http\Controllers\InterpretesController;
-use App\Http\Controllers\MitosController;
-use App\Http\Controllers\PeniasController;
-use App\Http\Controllers\RadiosController;
-use App\Http\Controllers\RecetasController;
-use App\Http\Controllers\ShowsController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ImagenController;
+use App\Http\Controllers\Frontend\NoticiasController;
+use App\Http\Controllers\Frontend\CancionesController;
+use App\Http\Controllers\Frontend\DiscosController;
+use App\Http\Controllers\Frontend\EntrevistasController;
+use App\Http\Controllers\Frontend\FestivalesController;
+use App\Http\Controllers\Frontend\InterpretesController;
+use App\Http\Controllers\Frontend\MitosController;
+use App\Http\Controllers\Frontend\PeniasController;
+use App\Http\Controllers\Frontend\RadiosController;
+use App\Http\Controllers\Frontend\RecetasController;
+use App\Http\Controllers\Frontend\ShowsController;
+use App\Http\Controllers\Frontend\HomeController;
+// use App\Http\Controllers\Frontend\ImagenController;
 
-// use App\Http\Controllers\Dashboard\InterpretesCRUD;
-
-// use App\Http\Controllers\VideosController;
-// use App\Http\Livewire\Backend\Dashboard;
-// use App\Http\Livewire\Backend\Noticias;
-// use App\Http\Livewire\Backend\Interpretes;
-// use App\Http\Livewire\Backend\Users;
-// use Illuminate\Support\Facades\Auth;
-
-// Route::resource('dashboard/interpretes', InterpretesCRUD::class);
 
 
 // Rutas para el controlador de biografia
@@ -37,7 +27,6 @@ Route::get('biografias', [InterpretesController::class, 'index'])->name('interpr
 // Rutas para el controlador de Noticias:
 Route::get('noticias/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
 Route::get('noticias/{interprete:slug}', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
-// Route::get('noticias/{id}', [NoticiasController::class, 'show'])->name('noticias.show');
 Route::get('noticias', [NoticiasController::class, 'index'])->name('noticias.index');
 
 // Rutas para el controlador de Letras de canciones:
@@ -56,7 +45,7 @@ Route::get('cartelera/{interprete:slug}', [ShowsController::class, 'byArtista'])
 Route::get('cartelera', [ShowsController::class, 'index'])->name('shows.index');
 
 
-Route::get('thumb/{carpeta}/{ancho}/{alto}/{calidad}', [ImagenController::class, 'generarMiniaturas']);
+// Route::get('thumb/{carpeta}/{ancho}/{alto}/{calidad}', [ImagenController::class, 'generarMiniaturas']);
 
 // Rutas para el controlador de Festivales:
 Route::get('fiestas-tradicionales-argentina/{id}', [FestivalesController::class, 'show'])->name('festivales.show');
@@ -88,67 +77,5 @@ Route::get('{interprete:slug}/entrevistas/{id}', [EntrevistasController::class, 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
-
-
-
-// Rutas para el controlador de noticias:
-// Route::prefix('noticias')->group(function () {
-//     Route::get('/noticias-de-{slug}', [NoticiasController::class, 'byInterprete'])->name('noticias.byInterprete');
-//     Route::get('/{slug}', [NoticiasController::class, 'show'])->name('noticias.show');
-//     Route::get('/busqueda', [NoticiasController::class, 'busqueda'])->name('noticias.busqueda');
-//     //Route::get('/', [NoticiasController::class, 'index'])->name('noticias.index');
-// });
-
-
-// Route::middleware([
-//   'auth:sanctum',
-//   config('jetstream.auth_session'),
-//   'verified'
-// ])->group(function () {
-
-//   Route::prefix('admin')->group(function () {
-//     Route::get('/dashboard', Dashboard::class)->name('admin.dashboard');
-//     Route::get('/usuarios', Users::class)->name('admin.usuarios');
-//     Route::get('/interpretes', Interpretes::class)->name('admin.interpretes');
-//     //         Route::get('/noticias', Noticias::class)->name('admin.noticias');
-//     // Route::get('/noticias', Noticias::class)->name('admin.shows');
-//     // Route::get('/noticias', Noticias::class)->name('admin.discos');
-//     // Route::get('/noticias', Noticias::class)->name('admin.canciones');
-//     // Route::get('/noticias', Noticias::class)->name('admin.entrevistas');
-//     // Route::get('/noticias', Noticias::class)->name('admin.videos');
-
-//     // Route::get('/noticias', Noticias::class)->name('admin.festivales');
-//     // Route::get('/noticias', Noticias::class)->name('admin.radios');
-//     // Route::get('/noticias', Noticias::class)->name('admin.penias');
-//     // Route::get('/noticias', Noticias::class)->name('admin.comidas');
-//     // Route::get('/noticias', Noticias::class)->name('admin.mitos');
-//     // Route::get('/articulos', Noticias::class)->name('admin.articulos');
-//   });
-// });
-
-
-
-
-
-// Rutas para el controlador de Cartelera:
-// Route::get('videos', [VideosController::class, 'index'])->name('videos.index');
-
-
-#############################################################################
-##  Rutas internas al SILO Interpretes 
-#############################################################################
-// Rutas para el controlador de interpretes:
-// Route::prefix('interpretes')->group(function () {
-//     // Route::get('/{slug}', [InterpretesController::class, 'show'])->name('interprete.show');
-//     Route::get('/busqueda', [InterpretesController::class, 'busqueda'])->name('interpretes.busqueda');
-// });
-
-
-
-// Rutas para el controlador de videos
-// Route::get('{interprete:slug}/videos', [VideosController::class, 'byArtista'])->name('interprete.videos');
-// Route::get('{interprete:slug}/videos/{id}', [VideosController::class, 'show'])->name('interprete.video.show');
-
-Auth::routes();
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Auth::routes();
+Auth::routes(['register' => false, 'reset' => false]);
