@@ -330,21 +330,25 @@ return [
             'text' => 'Usuarios',
             'url' => 'admin/users',
             'icon' => 'fas fa-fw fa-users',
+            'can' => 'read user',
         ],
         [
             'text' => 'Roles',
             'url' => 'admin/roles',
             'icon' => 'fas fa-fw fa-user-tag',
+            'can' => 'read role',
         ],
         [
             'text' => 'Permisos',
             'url' => 'admin/permissions',
             'icon' => 'fas fa-fw fa-user-shield',
+            'can' => 'read permission',
         ],
         [
             'text' => 'Interpretes',
             'url' => 'admin/interpretes',
             'icon' => 'fas fa-fw fa-microphone',
+            'can' => 'read interprete',
         ],
         [
             'text' => 'Noticias',
@@ -356,31 +360,37 @@ return [
             'text' => 'Shows',
             'url' => 'admin/shows',
             'icon' => 'fas fa-fw fa-calendar-alt',
+            'can' => 'read show',
         ],
         [
             'text' => 'Discos',
             'url' => 'admin/discos',
             'icon' => 'fas fa-fw fa-compact-disc',
+            'can' => 'read album',
         ],
         [
             'text' => 'Canciones',
             'url' => 'admin/canciones',
             'icon' => 'fas fa-fw fa-music',
+            'can' => 'read cancion',
         ],
         [
             'text' => 'Festivales',
             'url' => 'admin/festivales',
             'icon' => 'fas fa-fw fa-map-marked-alt',
+            'can' => 'read festival',
         ],
         [
             'text' => 'Comidas',
             'url' => 'admin/comidas',
             'icon' => 'fas fa-fw fa-utensils',
+            'can' => 'read comida',
         ],
         [
             'text' => 'Mitos',
             'url' => 'admin/mitos',
             'icon' => 'fas fa-fw fa-book',
+            'can' => 'read mito',
         ],
 
         // [

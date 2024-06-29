@@ -77,5 +77,5 @@ Route::get('{interprete:slug}/entrevistas/{id}', [EntrevistasController::class, 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
-// Auth::routes();
-Auth::routes(['register' => false, 'reset' => false]);
+Auth::routes();
+//Auth::routes(['register' => false, 'reset' => false]);
