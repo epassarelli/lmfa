@@ -17,23 +17,11 @@
           <!-- categorias -->
           <div class="col-md-4 mb-3">
             <p class="h6 fw-bold text-white">Otras secciones</p>
-            {{-- <ul class="list-unstyled text-white-50 light">
-              <li><a href="{{ route('empresa') }}" class="text-decoration-none link-light"
-                  title="Saber más sobre la Empresa"> Empresa
+            <ul class="list-unstyled text-white-50 light">
+              <li><a href="#" class="text-decoration-none link-light" title="Politica de privacidad"> Politica de
+                  privacidad
                 </a></li>
-              <li><a href="{{ route('servicios') }}" class="text-decoration-none link-light"
-                  title="Todos los servicios"> Servicios
-                </a></li>
-              <li><a href="{{ route('productos') }}" class="text-decoration-none link-light"
-                  title="Todos nuestros productos">
-                  Productos </a></li>
-              <li><a href="{{ route('novedades') }}" class="text-decoration-none link-light"
-                  title="Todas la últimas novedades">
-                  Novedades </a></li>
-              <li><a href="{{ route('contacto') }}" class="text-decoration-none link-light" title="Nuestros contactos">
-                  Contacto </a>
-              </li>
-            </ul> --}}
+            </ul>
           </div>
 
 
@@ -45,16 +33,23 @@
 
 
           <!-- redes -->
-          <div class="col-md-4">
+          <div class="col-md-3">
             <p class="h6 fw-bold text-white">Nuestras redes</p>
             <ul class="list-group list-group-horizontal">
               <li class="list-group-item bg-transparent ps-0 border-0 light text-light">
                 <a href="https://www.facebook.com/MiFolkloreArgentino" class="text-decoration-none link-light"
-                  title="Mirá nuestra página de Facebook"> <i class="fa-brands fa-facebook"></i> </a>
+                  title="Nuestra página de Facebook" target="_blank"> <i class="fa-brands fa-facebook fa-3x"
+                    style="color: #3b5998;"></i> </a>
               </li>
               <li class="list-group-item bg-transparent ps-0 border-0 light text-light">
                 <a href="https://www.instagram.com/mifolkloreargentino/" class="text-decoration-none link-light"
-                  title="Nuestro Instagram"> <i class="fa-brands fa-instagram"></i> </a>
+                  title="Nuestro Instagram" target="_blank"> <i class="fab fa-instagram fa-3x"
+                    style="color: #c32aa3;"></i></a>
+              </li>
+              <li class="list-group-item bg-transparent ps-0 border-0 light text-light">
+                <a href="https://www.twitter.com/mifolklorearg/" class="text-decoration-none link-light"
+                  title="Nuestro Twitter" target="_blank"> <i class="fab fa-twitter fa-3x"
+                    style="color: #1da1f2;"></i></a>
               </li>
             </ul>
           </div>
@@ -62,6 +57,7 @@
       </div>
     </div>
     <!-- FIN footer -->
+
 
 
     {{-- <script src="js/jquery.min.js"></script> --}}
