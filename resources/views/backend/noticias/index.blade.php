@@ -115,34 +115,6 @@
         ] // Ordenar por la columna de fecha de creación
       });
 
-      // $('#noticias').DataTable({
-      //   processing: true,
-      //   serverSide: true,
-      //   ajax: '{{ route('backend.noticias.index') }}',
-      //   columns: [{
-      //       data: 'titulo',
-      //       name: 'titulo'
-      //     },
-      //     {
-      //       data: 'interprete',
-      //       name: 'interprete.interprete'
-      //     },
-      //     {
-      //       data: 'user',
-      //       name: 'user.name'
-      //     },
-      //     {
-      //       data: 'action',
-      //       name: 'action',
-      //       orderable: false,
-      //       searchable: false
-      //     }
-      //   ],
-      //   order: [
-      //     [0, 'desc']
-      //   ]
-      // });
-
       $('#imageModal').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget);
         var imageSrc = button.data('image');
