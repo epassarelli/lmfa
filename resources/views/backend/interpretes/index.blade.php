@@ -48,20 +48,26 @@
               </td> --}}
               <td class="text-right" style="white-space: nowrap;">
                 <div class="action-icons">
-                  <a class="btn btn-primary" href="{{ route('backend.interpretes.show', $interprete->id) }}">
+                  {{-- <a class="btn btn-primary" href="{{ route('backend.interpretes.show', $interprete->id) }}">
                     <i class="fas fa-eye"></i>
-                  </a>
-                  <a class="btn btn-warning" href="{{ route('backend.interpretes.edit', $interprete->id) }}">
-                    <i class="fas fa-edit"></i>
-                  </a>
-                  <form action="{{ route('backend.interpretes.destroy', $interprete->id) }}" method="POST"
-                    style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                      <i class="fas fa-trash-alt"></i>
-                    </button>
-                  </form>
+                  </a> --}}
+
+                  @can('edit', $interprete)
+                    <a class="btn btn-warning" href="{{ route('backend.interpretes.edit', $interprete->id) }}">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                  @endcan
+
+                  @can('delete', $interprete)
+                    <form action="{{ route('backend.interpretes.destroy', $interprete->id) }}" method="POST"
+                      style="display:inline;">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </form>
+                  @endcan
                 </div>
               </td>
             </tr>
