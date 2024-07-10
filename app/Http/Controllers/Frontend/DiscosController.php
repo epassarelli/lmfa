@@ -42,12 +42,13 @@ class DiscosController extends Controller
         $disco = Album::where('slug', $slugDisco)->firstOrFail();
         // Incrementar el contador de visitas
         $disco->increment('visitas');
+        $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
         $related = $interprete->getRelatedContent($interprete, 'discos', $disco);
 
         $metaTitle = $disco->titulo . " - Discografía de " . $interprete->interprete;
         $metaDescription = $disco->titulo . "Discografía de " . $interprete->interprete . ", interprete del folklore argentino";
 
-        return view('frontend.discos.show', compact('disco', 'interprete', 'related', 'metaTitle', 'metaDescription'));
+        return view('frontend.discos.show', compact('disco', 'interprete', 'interpretes', 'related', 'metaTitle', 'metaDescription'));
     }
 }

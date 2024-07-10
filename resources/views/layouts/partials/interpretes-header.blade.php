@@ -45,84 +45,39 @@
         </a>
       </div>
 
-
-      {{-- 
-    <div class="flex flex-col items-center space-y-4">
-  <div class="flex">
-    <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
-      class="h-auto w-auto">
-  </div>
-  <h1 class="text-2xl font-semibold">{{ $interprete->interprete }}</h1>
-  <div class="flex flex-wrap space-x-4">
-    <div class="flex items-center">
-      <i class="fas fa-map-marker-alt mr-2"></i>
-      <span>{{ $interprete->location }}</span>
-    </div>
-    <div class="flex items-center">
-      <i class="fas fa-phone mr-2"></i>
-      <span>{{ $interprete->phone }}</span>
-    </div>
-    <div class="flex items-center">
-      <i class="fas fa-envelope mr-2"></i>
-      <span>{{ $interprete->email }}</span>
-    </div>
-  </div>
-
-  @if ($interprete->facebook || $interprete->twitter || $interprete->instagram)
-    <div class="flex space-x-4">
-      @if ($interprete->facebook)
-        <a href="{{ $interprete->facebook }}" target="_blank" class="text-blue-600 hover:text-blue-800">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-      @endif
-      @if ($interprete->twitter)
-        <a href="{{ $interprete->twitter }}" target="_blank" class="text-blue-400 hover:text-blue-600">
-          <i class="fab fa-twitter"></i>
-        </a>
-      @endif
-      @if ($interprete->instagram)
-        <a href="{{ $interprete->instagram }}" target="_blank" class="text-pink-600 hover:text-pink-800">
-          <i class="fab fa-instagram"></i>
-        </a>
-      @endif
-    </div>
-  @endif
- --}}
-
-
     </div>
   </div>
 
   <!-- resources/views/partials/select-interprete.blade.php -->
   <div class="container mt-5 mb-4">
 
-    @if ($section === 'noticias')
+    @if (request()->segment(1) === 'noticias')
       <h2>Explora noticias de otros Intérpretes</h2>
       <p class="lead">
         Explora las últimas noticias de otros intérpretes del folklore argentino. Selecciona un artista de la lista a
         continuación y descubre las novedades sobre su carrera y su música.
       </p>
-    @elseif($section === 'discografias')
+    @elseif(request()->segment(1) === 'discografias')
       <h2>Explora más Discografías</h2>
       <p class="lead">
         Descubre la música de otros intérpretes del folklore argentino. Elige un artista de la lista a continuación y
         sumérgete en su discografía completa, desde sus primeras grabaciones hasta sus últimos éxitos.
       </p>
-    @elseif($section === 'canciones')
+    @elseif(request()->segment(1) === 'canciones')
       <h2>Encuentra más Letras de Canciones</h2>
       <p class="lead">
         Explora las letras de canciones de otros intérpretes del folklore argentino. Selecciona un artista de la lista
         a
         continuación y disfruta de las palabras y los mensajes que caracterizan su música.
       </p>
-    @elseif($section === 'shows')
+    @elseif(request()->segment(1) === 'shows')
       <h2>Descubre más Shows y Eventos</h2>
       <p class="lead">
         No te pierdas la oportunidad de ver en vivo a otros intérpretes del folklore argentino. Elige un artista de
         la
         lista a continuación y consulta su cartelera de shows y eventos para disfrutar de su música en directo.
       </p>
-    @elseif($section === 'biografias')
+    @elseif(request()->segment(1) === 'biografias')
       <h2>Explora más Biografías</h2>
       <p class="lead">
         Conoce la historia y el legado de otros intérpretes del folklore argentino. Selecciona un artista de la

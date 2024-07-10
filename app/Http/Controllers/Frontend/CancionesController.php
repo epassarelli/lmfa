@@ -46,6 +46,7 @@ class CancionesController extends Controller
 
         // Incrementar el contador de visitas
         $cancion->increment('visitas');
+        $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
         $related = $interprete->getRelatedContent($interprete, 'canciones', $cancion);
 
@@ -62,6 +63,6 @@ class CancionesController extends Controller
         }
         // Elimina los saltos de línea
         $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
-        return view('frontend.canciones.show', compact('cancion', 'interprete', 'related', 'metaTitle', 'metaDescription'));
+        return view('frontend.canciones.show', compact('cancion', 'interprete', 'interpretes', 'related', 'metaTitle', 'metaDescription'));
     }
 }
