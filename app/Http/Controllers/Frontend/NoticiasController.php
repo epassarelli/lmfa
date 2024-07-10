@@ -59,6 +59,7 @@ class NoticiasController extends Controller
       ->get();
     // Incrementar el contador de visitas
     $noticia->increment('visitas');
+    $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
     $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
     $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
@@ -67,7 +68,7 @@ class NoticiasController extends Controller
     // Elimina los saltos de línea
     $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
 
-    return view('frontend.noticias.show', compact('noticia', 'interprete', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.show', compact('noticia', 'interprete', 'interpretes', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
   }
 
 
