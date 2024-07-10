@@ -12,6 +12,7 @@ class ShowsController extends Controller
     public function index()
     {
         $shows = Show::where('estado', 1)
+            ->where('fecha', '>=', now())
             ->orderBy('publicar', 'desc')
             ->paginate(12);
 

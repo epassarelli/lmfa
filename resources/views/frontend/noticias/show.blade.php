@@ -13,9 +13,11 @@
 
       <div class="col-md-9">
 
-        <h1>{{ $noticia->titulo }}</h1>
+
         <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
           class="mb-4 img-fluid rounded shadow-lg">
+        <h1 class="fs-4">{{ $noticia->titulo }}</h1>
+
         <p class="fs-5 mb-4">{!! $noticia->noticia !!}</p>
         <p class="text-muted">Visitas: {{ $noticia->visitas }}</p>
       </div>

@@ -41,16 +41,23 @@
 
         <div class="row justify-content-center">
           @foreach ($mitos as $mito)
-            <div class="col-md-4 col-sm-6 mb-4">
-              <div class="card">
-                <a href="{{ route('mitos.show', $mito->slug) }}" class="text-decoration-none">
-
-                  <div class="card-body">
-                    <h5 class="card-title h5 text-dark">{{ $mito->titulo }}</h5>
-
+            <div class="col-md-4 mb-4">
+              <a href="{{ route('mitos.show', $mito->slug) }}" class="card h-100 shadow-sm text-decoration-none text-white"
+                style="background-color: #343a40;">
+                <div class="row g-0 h-100">
+                  <div class="col-auto d-flex align-items-center justify-content-center p-3 bg-black">
+                    <i class="fas fa-dragon fa-3x"></i>
                   </div>
-                </a>
-              </div>
+                  <div class="col">
+                    <div class="card-body d-flex flex-column">
+                      <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
+                        {{ $mito->titulo }}
+                      </p>
+                      <p class="card-text mt-auto">{{ number_format($mito->visitas, 0, '', ',') }} visitas</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
             </div>
           @endforeach
         </div>
@@ -98,22 +105,23 @@
 
         <div class="row justify-content-center">
           @foreach ($visitados as $mito)
-            <div class="col-md-4 col-sm-6 mb-4">
-              <div class="card">
-                <a href="{{ route('mitos.show', $mito->slug) }}" class="text-decoration-none">
-                  {{-- @if (file_exists(public_path('storage/mitos/' . $mito->foto)) && $mito->foto !== '')
-                    <img src="{{ asset('storage/mitos/' . $mito->foto) }}" alt="{{ $mito->titulo }}"
-                      class="card-img-top">
-                  @else
-                    <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
-                      class="card-img-top">
-                  @endif --}}
-                  <div class="card-body">
-                    <h5 class="card-title  h5 text-dark">{{ $mito->titulo }}</h5>
-                    <p class="card-text">{{ number_format($mito->visitas, 0, '', ',') }} visitas</p>
+            <div class="col-md-4 mb-4">
+              <a href="{{ route('mitos.show', $mito->slug) }}"
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="row g-0 h-100">
+                  <div class="col-auto d-flex align-items-center justify-content-center p-3 bg-black">
+                    <i class="fas fa-dragon fa-3x"></i>
                   </div>
-                </a>
-              </div>
+                  <div class="col">
+                    <div class="card-body d-flex flex-column">
+                      <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
+                        {{ $mito->titulo }}
+                      </p>
+                      <p class="card-text mt-auto">{{ number_format($mito->visitas, 0, '', ',') }} visitas</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
             </div>
           @endforeach
         </div>
@@ -144,22 +152,23 @@
 
         <div class="row justify-content-center">
           @foreach ($ultimos as $mito)
-            <div class="col-md-4 col-sm-6 mb-4">
-              <div class="card">
-                <a href="{{ route('mitos.show', $mito->slug) }}" class="text-decoration-none">
-                  {{-- @if (file_exists(public_path('storage/mitos/' . $mito->foto)) && $mito->foto !== '')
-                    <img src="{{ asset('storage/mitos/' . $mito->foto) }}" alt="{{ $mito->titulo }}"
-                      class="card-img-top">
-                  @else
-                    <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
-                      class="card-img-top">
-                  @endif --}}
-                  <div class="card-body">
-                    <h5 class="card-title h5 text-dark">{{ $mito->titulo }}</h5>
-
+            <div class="col-md-4 mb-4">
+              <a href="{{ route('mitos.show', $mito->slug) }}"
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="row g-0 h-100">
+                  <div class="col-auto d-flex align-items-center justify-content-center p-3 bg-black">
+                    <i class="fas fa-dragon fa-3x"></i>
                   </div>
-                </a>
-              </div>
+                  <div class="col">
+                    <div class="card-body d-flex flex-column">
+                      <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
+                        {{ $mito->titulo }}
+                      </p>
+                      <p class="card-text mt-auto">{{ number_format($mito->visitas, 0, '', ',') }} visitas</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
             </div>
           @endforeach
         </div>

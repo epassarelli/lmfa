@@ -7,76 +7,6 @@
 
   <div class="container">
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <a href="{{ route('canciones.index') }}">
-            <img src="{{ asset('img/cancionero-folklorico.jpg') }}" alt="Cancionero folklorico" class="card-img-top">
-            <div class="card-body">
-              <h2 class="card-title h5">Letras de Canciones</h2>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <a href="{{ route('shows.index') }}">
-            <img src="{{ asset('img/cartelera-folklorica.jpg') }}" alt="Cartelera folklorica" class="card-img-top">
-            <div class="card-body">
-              <h2 class="card-title h5">Cartelera Folklorica</h2>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <a href="{{ route('festivales.index') }}">
-            <img src="{{ asset('img/fiestas-tradicionales-argentina.jpg') }}" alt="Fiestas y festivales folkloricos"
-              class="card-img-top">
-            <div class="card-body">
-              <h2 class="card-title h5">Festivales Tradicionales</h2>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <a href="{{ route('interpretes.index') }}">
-            <img src="{{ asset('img/biografias-folkloricas.jpg') }}" alt="Biografias de folklore" class="card-img-top">
-            <div class="card-body">
-              <h2 class="card-title h5">Biografías folklóricas</h2>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <a href="{{ route('comidas.index') }}">
-            <img src="{{ asset('img/comidas-tipicas.jpg') }}" alt="Comidas tipicas folkloricas" class="card-img-top">
-            <div class="card-body">
-              <h2 class="card-title h5">Comidas Tradicionales</h2>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="col">
-        <div class="card h-100 shadow-sm">
-          <a href="{{ route('mitos.index') }}">
-            <img src="{{ asset('img/mitos-leyendas-folklore.jpg') }}" alt="Mitos y leyendas" class="card-img-top">
-            <div class="card-body">
-              <h2 class="card-title h5">Mitos, Leyendas y Fabulas</h2>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-
     <div class="row g-4 mt-4">
       <div class="col-sm-6">
         <div class="card h-100 shadow-sm">
@@ -156,189 +86,27 @@
 
 @section('content')
 
-  {{-- <div class="bg-slate-400" style="background-color: gray">
-    <div class="container mt-4">
-      <!-- Primer Carousel -->
-      <h2>Relacionado con tus visitas en Juegos y Juguetes</h2>
-      <div id="carouselExampleIndicators1" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="0" class="active"
-            aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="1"
-            aria-label="Slide 2"></button>
-        </div>
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="row">
-              <!-- Aquí van las cards del primer slide -->
-              <div class="col-md-3 m-2">
-                <div class="card h-100">
-                  <img src="{{ asset('img/biografias-folkloricas.jpg') }}" alt="Biografias de folklore"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title" style="font-size: 14px;">Bloques Para Armar Lego 42132 Technic Moto</h5>
-                    <p class="card-text" style="font-size: 20px; font-weight: bold;">$45.500</p>
-                    <p class="card-text" style="font-size: 14px;">en 6 cuotas de $10.033</p>
-                    <p class="card-text" style="font-size: 14px; color: green;">Llega gratis mañana</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <div class="card h-100">
-                  <img src="{{ asset('img/biografias-folkloricas.jpg') }}" alt="Biografias de folklore"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title" style="font-size: 14px;">Lego Technic - Jeep Wrangler</h5>
-                    <p class="card-text" style="font-size: 20px; font-weight: bold;">$199.800</p>
-                    <p class="card-text" style="font-size: 14px;">10% OFF</p>
-                    <p class="card-text" style="font-size: 14px; color: green;">Llega gratis mañana</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <div class="card h-100">
-                  <img src="{{ asset('img/biografias-folkloricas.jpg') }}" alt="Biografias de folklore"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title" style="font-size: 14px;">Lego Technic - Jeep Wrangler</h5>
-                    <p class="card-text" style="font-size: 20px; font-weight: bold;">$199.800</p>
-                    <p class="card-text" style="font-size: 14px;">10% OFF</p>
-                    <p class="card-text" style="font-size: 14px; color: green;">Llega gratis mañana</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <div class="card h-100">
-                  <img src="{{ asset('img/biografias-folkloricas.jpg') }}" alt="Biografias de folklore"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title" style="font-size: 14px;">Lego Technic - Jeep Wrangler</h5>
-                    <p class="card-text" style="font-size: 20px; font-weight: bold;">$199.800</p>
-                    <p class="card-text" style="font-size: 14px;">10% OFF</p>
-                    <p class="card-text" style="font-size: 14px; color: green;">Llega gratis mañana</p>
-                  </div>
-                </div>
-              </div>
-
-
-              <!-- Añade más col-md-2 con cards según sea necesario -->
-            </div>
-          </div>
-
-
-          <div class="carousel-item">
-            <div class="row">
-              <!-- Aquí van las cards del segundo slide -->
-              <div class="col-md-2">
-                <div class="card h-100">
-                  <img src="{{ asset('img/biografias-folkloricas.jpg') }}" alt="Biografias de folklore"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title" style="font-size: 14px;">Lego Technic - Jeep Wrangler</h5>
-                    <p class="card-text" style="font-size: 20px; font-weight: bold;">$199.800</p>
-                    <p class="card-text" style="font-size: 14px;">10% OFF</p>
-                    <p class="card-text" style="font-size: 14px; color: green;">Llega gratis mañana</p>
-                  </div>
-                </div>
-              </div>
-              <!-- Añade más col-md-2 con cards según sea necesario -->
-            </div>
-          </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators1"
-          data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators1"
-          data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-
-
-
-
-      <!-- Segundo Carousel -->
-      <div class="card my-4 p-4">
-        <h2>Visto recientemente</h2>
-        <div id="carouselExampleIndicators2" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="0" class="active"
-              aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide-to="1"
-              aria-label="Slide 2"></button>
-          </div>
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <div class="row">
-                <!-- Aquí van las cards del primer slide -->
-                <div class="col-md-2">
-                  <div class="card h-100">
-                    <img src="path_to_image3.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title" style="font-size: 14px;">Cpu</h5>
-                      <p class="card-text" style="font-size: 20px; font-weight: bold;">$250.000</p>
-                    </div>
-                  </div>
-                </div>
-                <!-- Añade más col-md-2 con cards según sea necesario -->
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="row">
-                <!-- Aquí van las cards del segundo slide -->
-                <div class="col-md-2">
-                  <div class="card h-100">
-                    <img src="path_to_image4.jpg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title" style="font-size: 14px;">Escritorio Plegable Pared Rebatible</h5>
-                      <p class="card-text" style="font-size: 20px; font-weight: bold;">$93.738</p>
-                      <p class="card-text" style="font-size: 14px;">5% OFF</p>
-                      <p class="card-text" style="font-size: 14px; color: green;">Envío gratis</p>
-                    </div>
-                  </div>
-                </div>
-                <!-- Añade más col-md-2 con cards según sea necesario -->
-              </div>
-            </div>
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators2"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators2"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div> --}}
-
   <div class="container">
+
     <!-- Noticias Destacadas -->
     <section class="noticias-destacadas mb-5">
-      {{-- <h1 class="mb-4">Bienvenidos al Portal del Folklore Argentino</h1> --}}
       <div id="noticiasCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
+
           @foreach ($noticias as $index => $noticia)
             <div class="carousel-item @if ($index == 0) active @endif">
-              <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" class="d-block w-100"
-                alt="{{ $noticia->titulo }}">
-              <div class="carousel-caption d-none d-md-block">
-                <h3>{{ $noticia->titulo }}</h3>
-                <p>{{ $noticia->resumen }}</p>
-                <a href="{{ route('noticias.index', $noticia->id) }}" class="btn btn-primary">Leer más</a>
-              </div>
+              <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
+                class="text-decoration-none">
+                <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" class="d-block w-100"
+                  alt="{{ $noticia->titulo }}">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 p-3">
+                  <h2 class="text-white"><b>{{ $noticia->titulo }}</b></h2>
+                  <p class="text-white">{{ $noticia->resumen }}</p>
+                </div>
+              </a>
             </div>
           @endforeach
+
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#noticiasCarousel" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -349,37 +117,42 @@
           <span class="visually-hidden">Next</span>
         </button>
       </div>
+
     </section>
+
+
+
 
     <!-- Próximos Shows y Festivales -->
     <section class="shows-festivales mb-5">
-      <h2 class="mb-4">Próximos Shows y Festivales de Folklore Argentino</h2>
+
+      <h2 class="fs-4">Cartelera folkórica</h2>
+
       <div class="row">
         @foreach ($shows as $evento)
-          <div class="col-md-6">
-            <div class="card mb-3 bg-slate-200">
-              <div class="row g-0">
-                <div class="col-md-4 col-lg-2 d-flex align-items-center justify-content-center bg-light">
-                  <div class="text-center">
-                    <h5 class="card-title mb-1">{{ date('d', strtotime($evento->fecha)) }}</h5>
-                    <p class="card-text mb-1">{{ date('M', strtotime($evento->fecha)) }}</p>
-                    <p class="card-text">{{ date('Y', strtotime($evento->fecha)) }}</p>
+          <div class="col-md-6 mb-4">
+            <div class="card h-100"
+              style="background-image: url('{{ asset('storage/interpretes/' . $evento->interprete->foto) }}'); background-size: cover; background-position: center;">
+              <div class="row h-100">
+                <div class="col-md-4 text-center d-flex align-items-center justify-content-center"
+                  style="background-color: rgba(0, 0, 0, 0.7); color: white;">
+                  <div>
+                    <h2 class="mb-1">{{ date('d', strtotime($evento->fecha)) }}</h2>
+                    <p class="mb-1">{{ date('M', strtotime($evento->fecha)) }}</p>
+                    <p>{{ date('Y', strtotime($evento->fecha)) }}</p>
                   </div>
                 </div>
-                <div class="col-md-8 col-lg-10">
-                  <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
-                      <img src="{{ asset('storage/interpretes/' . $evento->interprete->foto) }}"
-                        alt="{{ $evento->interprete->interprete }}" class="rounded-circle me-3"
-                        style="width: 50px; height: 50px;">
-                      <h5 class="card-title m-0">{{ $evento->interprete->interprete }}</h5>
-                    </div>
-                    <h6 class="card-subtitle mb-2 text-muted"><strong>Show:</strong> {{ $evento->show }}</h6>
-                    {{-- <p class="card-text"><strong>Show:</strong> {{ $evento->show }}</p> --}}
-                    <p class="card-text"><strong>Detalles:</strong> {!! $evento->detalle !!}</p>
-                    <p class="card-text"><strong>Lugar:</strong> {{ $evento->lugar }}</p>
-                    <p class="card-text">{{ $evento->descripcion }}</p>
+                <div class="col-md-8 p-4" style="background-color: rgba(255, 255, 255, 0.8);">
+                  <div class="d-flex align-items-center mb-3">
+                    <h3 class="card-title m-0">{{ $evento->interprete->interprete }}</h3>
                   </div>
+                  <h4 class="card-subtitle mb-3 text-muted">{{ $evento->show }}</h4>
+
+                  <p class="card-text"><i class="fas fa-map-marker-alt me-2"></i><strong>Ubicación:</strong>
+                    {{ $evento->lugar }}</p>
+                  <p class="card-text"><i class="fas fa-info-circle me-2"></i><strong>Detalles:</strong>
+                    {!! $evento->detalle !!}</p>
+                  <p class="card-text"><i class="fas fa-align-left me-2"></i>{{ $evento->descripcion }}</p>
                 </div>
               </div>
             </div>
@@ -387,58 +160,63 @@
         @endforeach
       </div>
     </section>
+
+
+
+
+
 
 
 
     <!-- Biografías de Artistas -->
     <section class="biografias-artistas mb-5">
-      <h2 class="mb-4">Biografías de Artistas del Folklore Argentino</h2>
+
+      <h3 class="fs-4">Grupos y solistas del Folklore Argentino</h3>
+
       <div class="row">
         @foreach ($interpretes as $artista)
           <div class="col-md-3 mb-4">
-            <div class="card h-150">
-              <img src="{{ asset('storage/interpretes/' . $artista->foto) }}" class="card-img-top"
-                alt="{{ $artista->interprete }}">
-              <div class="card-body">
-                <h4 class="card-title">{{ $artista->interprete }}</h4>
-                {{-- <p class="card-text">{{ Str::limit($artista->biografia, 100) }}</p> --}}
-                <a href="{{ route('interpretes.index', $artista->id) }}" class="btn btn-primary">Leer más</a>
+            <a href="{{ route('interprete.show', $artista->slug) }}"
+              class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+              <div class="card-img-top">
+                <img src="{{ asset('storage/interpretes/' . $artista->foto) }}"
+                  class="img-fluid w-100 h-auto object-cover" alt="{{ $artista->interprete }}">
               </div>
-            </div>
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $artista->interprete }}</h5>
+                <p class="card-text mt-auto">{{ number_format($artista->visitas, 0, '', ',') }} visitas</p>
+              </div>
+            </a>
           </div>
         @endforeach
       </div>
     </section>
 
 
+
     <!-- Letras de Canciones Populares -->
     <section class="letras-canciones mb-5">
-      <h2 class="mb-4">Letras de Canciones Populares del Folklore Argentino</h2>
+
+      <h4 class="fs-4">Cancionero del Folklore Argentino</h4>
+
       <div class="row">
         @foreach ($canciones as $cancion)
           <div class="col-md-4 mb-4">
             <a href="{{ route('canciones.show', [$cancion->interprete->slug, $cancion->slug]) }}"
-              class="card h-100 shadow-sm text-decoration-none">
-              <div class="row g-0">
-                <div class="col-auto">
-                  @if (file_exists(public_path('storage/interpretes/' . $cancion->interprete->foto)) && $cancion->interprete->foto !== '')
-                    <img class="img-fluid rounded-start"
-                      src="{{ asset('storage/interpretes/' . $cancion->interprete->foto) }}"
-                      alt="{{ $cancion->interprete }}" style="width: 6rem; height: auto; object-fit: cover;">
-                  @else
-                    <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
-                      class="card-img-top" style="width: 6rem; height: auto; object-fit: cover;">
-                  @endif
+              class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+              <div class="row g-0 h-100">
+                <div class="col-auto d-flex align-items-center justify-content-center p-3 bg-black">
+                  <i class="fas fa-music fa-3x"></i>
                 </div>
                 <div class="col">
-                  <div class="card-body">
-                    <h2 class="card-title h6 text-dark mb-2 hover:text-primary">
+                  <div class="card-body d-flex flex-column">
+                    <h2 class="card-title h5 mb-2">
                       {{ $cancion->cancion }}
                     </h2>
-                    <p class="card-text text-muted mb-2">
+                    <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
                       {{ $cancion->interprete->interprete }}
                     </p>
-                    <p class="card-text">{{ number_format($cancion->visitas, 0, '', ',') }} visitas</p>
+                    <p class="card-text mt-auto">{{ number_format($cancion->visitas, 0, '', ',') }} visitas</p>
                   </div>
                 </div>
               </div>
@@ -449,22 +227,30 @@
     </section>
 
 
-    <!-- Letras de Canciones Populares -->
-    <section class="letras-canciones mb-5">
-      <h2 class="mb-4">Discos del Folklore Argentino agregados recientemente al portal</h2>
+
+
+
+
+    <!-- Discos del Folklore Argentino -->
+    <section class="letras-canciones mb-4">
+
+      <h5 class="fs-4">Discos del Folklore Argentino</h5>
+
       <div class="row">
         @foreach ($discos as $disco)
           <div class="col-md-3 mb-4">
             <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}"
-              class="text-decoration-none">
-              <div class="card">
-                <img class="card-img-top w-100 h-auto object-cover" src="{{ asset('storage/albunes/' . $disco->foto) }}"
+              class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+              <div class="card-img-top">
+                <img src="{{ asset('storage/albunes/' . $disco->foto) }}" class="img-fluid w-100 h-auto object-cover"
                   alt="{{ $disco->album }}">
-                <div class="card-body">
-                  <h5 class="card-title">{{ $disco->album }}</h5>
-                  <p class="card-text text-gray-500 text-sm">{{ $disco->interprete->interprete }}</p>
-                  <p class="card-text">{{ number_format($disco->visitas, 0, '', ',') }} visitas</p>
-                </div>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title mb-2">{{ $disco->album }}</h5>
+                <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
+                  {{ $disco->interprete->interprete }}
+                </p>
+                <p class="card-text mt-auto">{{ number_format($disco->visitas, 0, '', ',') }} visitas</p>
               </div>
             </a>
           </div>
@@ -472,24 +258,8 @@
       </div>
     </section>
 
-    <!-- Artículos y Blog -->
-    {{-- <section class="articulos-blog">
-      <h2 class="mb-4">Artículos y Blog sobre la Cultura del Folklore Argentino</h2>
-      <div class="row">
-        @foreach ($articulos as $articulo)
-          <div class="col-md-4 mb-4">
-            <div class="card h-100">
-              <img src="{{ asset('storage/' . $articulo->imagen) }}" class="card-img-top" alt="{{ $articulo->titulo }}">
-              <div class="card-body">
-                <h4 class="card-title">{{ $articulo->titulo }}</h4>
-                <p class="card-text">{{ Str::limit($articulo->contenido, 100) }}</p>
-                <a href="{{ route('blog.show', $articulo->id) }}" class="btn btn-primary">Leer más</a>
-              </div>
-            </div>
-          </div>
-        @endforeach
-      </div>
-    </section> --}}
+
+    <h1 class="fs-4 text-center">El portal del Folklore Argentino</h1>
 
   </div>
 
