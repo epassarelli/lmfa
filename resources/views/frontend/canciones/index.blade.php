@@ -39,27 +39,20 @@
           @foreach ($visitadas as $cancion)
             <div class="col-md-4 mb-4">
               <a href="{{ route('canciones.show', [$cancion->interprete->slug, $cancion->slug]) }}"
-                class="card h-100 shadow-sm text-decoration-none">
-                <div class="row g-0">
-                  <div class="col-auto">
-                    @if (file_exists(public_path('storage/interpretes/' . $cancion->interprete->foto)) && $cancion->interprete->foto !== '')
-                      <img class="img-fluid rounded-start"
-                        src="{{ asset('storage/interpretes/' . $cancion->interprete->foto) }}"
-                        alt="{{ $cancion->interprete }}" style="width: 6rem; height: auto; object-fit: cover;">
-                    @else
-                      <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
-                        class="card-img-top">
-                    @endif
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="row g-0 h-100">
+                  <div class="col-auto d-flex align-items-center justify-content-center p-3 bg-black">
+                    <i class="fas fa-music fa-3x"></i>
                   </div>
                   <div class="col">
-                    <div class="card-body">
-                      <h2 class="card-title h6 text-dark mb-2 hover:text-primary">
+                    <div class="card-body d-flex flex-column">
+                      <h2 class="card-title h5 mb-2">
                         {{ $cancion->cancion }}
                       </h2>
-                      <p class="card-text text-muted mb-2">
+                      <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
                         {{ $cancion->interprete->interprete }}
                       </p>
-                      <p class="card-text">{{ number_format($cancion->visitas, 0, '', ',') }} visitas</p>
+                      <p class="card-text mt-auto">{{ number_format($cancion->visitas, 0, '', ',') }} visitas</p>
                     </div>
                   </div>
                 </div>
@@ -91,26 +84,20 @@
           @foreach ($ultimas as $cancion)
             <div class="col-md-4 mb-4">
               <a href="{{ route('canciones.show', [$cancion->interprete->slug, $cancion->slug]) }}"
-                class="card h-100 shadow-sm text-decoration-none">
-                <div class="row g-0">
-                  <div class="col-auto">
-                    @if (file_exists(public_path('storage/interpretes/' . $cancion->interprete->foto)) && $cancion->interprete->foto !== '')
-                      <img class="img-fluid rounded-start"
-                        src="{{ asset('storage/interpretes/' . $cancion->interprete->foto) }}"
-                        alt="{{ $cancion->interprete }}" style="width: 6rem; height: auto; object-fit: cover;">
-                    @else
-                      <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
-                        class="img-fluid rounded-start" style="width: 6rem; height: auto; object-fit: cover;">
-                    @endif
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="row g-0 h-100">
+                  <div class="col-auto d-flex align-items-center justify-content-center p-3 bg-primary">
+                    <i class="fas fa-music fa-3x"></i>
                   </div>
                   <div class="col">
-                    <div class="card-body">
-                      <h2 class="card-title h6 text-dark mb-2 hover:text-primary">
+                    <div class="card-body d-flex flex-column">
+                      <h2 class="card-title h5 mb-2">
                         {{ $cancion->cancion }}
                       </h2>
-                      <p class="card-text text-muted mb-2">
+                      <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
                         {{ $cancion->interprete->interprete }}
                       </p>
+                      <p class="card-text mt-auto">{{ number_format($cancion->visitas, 0, '', ',') }} visitas</p>
                     </div>
                   </div>
                 </div>

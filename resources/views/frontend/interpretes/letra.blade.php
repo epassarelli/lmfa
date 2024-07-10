@@ -7,6 +7,7 @@
 
   <div class="container">
     <h1>Intérpretes de Folklore Argentino</h1>
+    <h2>{{ request()->segment(1) }}</h2>
     <p class="lead">Bienvenidos a nuestra sección dedicada a los intérpretes de folklore argentino. Aquí encontrarás
       información
       detallada sobre los cantantes y artistas más destacados que han dado vida a la rica tradición de la música
@@ -47,9 +48,10 @@
         <div class="row">
           <!-- Repetir este bloque para cada intérprete -->
           @foreach ($interpretes as $visitado2)
-            <div class="col-md-3 col-lg-2">
-              <div class="card mb-3">
-                <a href="{{ route('interprete.show', $visitado2->slug) }}" class="text-decoration-none">
+            <div class="col-md-3 mb-4">
+              <a href="{{ route('interprete.show', $visitado2->slug) }}"
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="card-img-top">
                   @if (file_exists(public_path('storage/interpretes/' . $visitado2->foto)) && $visitado2->foto !== '')
                     <img src="{{ asset('storage/interpretes/' . $visitado2->foto) }}" alt="{{ $visitado2->interprete }}"
                       class="card-img-top">
@@ -57,14 +59,12 @@
                     <img src="{{ asset('storage/img/imagennodisponible600x400.jpg') }}" alt="Imagen no disponible"
                       class="card-img-top">
                   @endif
-
-                  <div class="card-body">
-                    <h5 class="card-title">{{ $visitado2->interprete }}</h5>
-                    <p class="card-text">{{ number_format($visitado2->visitas, 0, '', ',') }} visitas</p>
-                    {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
-                  </div>
-                </a>
-              </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $visitado2->interprete }}</h5>
+                  <p class="card-text mt-auto">{{ number_format($visitado2->visitas, 0, '', ',') }} visitas</p>
+                </div>
+              </a>
             </div>
           @endforeach
           <!-- Fin del bloque -->
@@ -136,18 +136,18 @@
         <div class="row">
           <!-- Repetir este bloque para cada intérprete -->
           @foreach ($visitados as $visitado)
-            <div class="col-md-3 col-lg-2">
-              <div class="card mb-3">
-                <a href="{{ route('interprete.show', $visitado->slug) }}" class="text-decoration-none">
-                  <img src="{{ asset('storage/interpretes/' . $visitado->foto) }}" alt="{{ $visitado->interprete }}"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ $visitado->interprete }}</h5>
-                    <p class="card-text">{{ $visitado->visitas }} veces visitado</p>
-                    {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
-                  </div>
-                </a>
-              </div>
+            <div class="col-md-3 mb-4">
+              <a href="{{ route('interprete.show', $visitado->slug) }}"
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="card-img-top">
+                  <img src="{{ asset('storage/interpretes/' . $visitado->foto) }}"
+                    class="img-fluid w-100 h-auto object-cover" alt="{{ $visitado->interprete }}">
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $visitado->interprete }}</h5>
+                  <p class="card-text mt-auto">{{ number_format($visitado->visitas, 0, '', ',') }} visitas</p>
+                </div>
+              </a>
             </div>
           @endforeach
           <!-- Fin del bloque -->
@@ -170,18 +170,18 @@
         <div class="row">
           <!-- Repetir este bloque para cada intérprete -->
           @foreach ($ultimos as $ultimo)
-            <div class="col-md-3 col-lg-2">
-              <div class="card mb-3 text-decoration-none">
-                <a href="{{ route('interprete.show', $visitado->slug) }}" class="text-decoration-none">
-                  <img src="{{ asset('storage/interpretes/' . $ultimo->foto) }}" alt="{{ $ultimo->interprete }}"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ $ultimo->interprete }}</h5>
-                    {{-- <p class="card-text">Breve descripción del artista.</p> --}}
-                    {{-- <a href="#" class="btn btn-primary">Ver Perfil</a> --}}
-                  </div>
-                </a>
-              </div>
+            <div class="col-md-3 mb-4">
+              <a href="{{ route('interprete.show', $ultimo->slug) }}"
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="card-img-top">
+                  <img src="{{ asset('storage/interpretes/' . $ultimo->foto) }}"
+                    class="img-fluid w-100 h-auto object-cover" alt="{{ $ultimo->interprete }}">
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $ultimo->interprete }}</h5>
+                  <p class="card-text mt-auto">{{ number_format($ultimo->visitas, 0, '', ',') }} visitas</p>
+                </div>
+              </a>
             </div>
           @endforeach
           <!-- Fin del bloque -->

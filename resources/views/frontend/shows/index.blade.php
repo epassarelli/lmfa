@@ -29,32 +29,35 @@
       @if ($shows->isEmpty())
         <div class="warning"></div>
         <div class="alert alert-warning" role="alert">
-          No hay shows disponibles para {{ $interprete->interprete }} aún.
+          No hay shows disponibles aún.
         </div>
       @else
         @foreach ($shows as $evento)
-          <div class="card mb-3">
-            <div class="row g-0">
-              <div class="col-md-4 col-lg-2 d-flex align-items-center justify-content-center bg-light">
-                <div class="text-center">
-                  <h5 class="card-title mb-1">{{ date('d', strtotime($evento->fecha)) }}</h5>
-                  <p class="card-text mb-1">{{ date('M', strtotime($evento->fecha)) }}</p>
-                  <p class="card-text">{{ date('Y', strtotime($evento->fecha)) }}</p>
+          <div class="col-md-6 mb-4">
+            <div class="card h-100"
+              style="background-image: url('{{ asset('storage/interpretes/' . $evento->interprete->foto) }}'); background-size: cover; background-position: center;">
+              <div class="row h-100">
+                <div class="col-md-4 text-center d-flex align-items-center justify-content-center"
+                  style="background-color: rgba(0, 0, 0, 0.7); color: white;">
+                  <div>
+                    <h2 class="mb-1">{{ date('d', strtotime($evento->fecha)) }}</h2>
+                    <p class="mb-1">{{ date('M', strtotime($evento->fecha)) }}</p>
+                    <p>{{ date('Y', strtotime($evento->fecha)) }}</p>
+                  </div>
                 </div>
-              </div>
-              <div class="col-md-8 col-lg-10">
-                <div class="card-body">
-                  <div class="d-flex align-items-center mb-2">
+                <div class="col-md-8 p-4" style="background-color: rgba(255, 255, 255, 0.8);">
+                  <div class="d-flex align-items-center mb-3">
                     <img src="{{ asset('storage/interpretes/' . $evento->interprete->foto) }}"
                       alt="{{ $evento->interprete->interprete }}" class="rounded-circle me-3"
                       style="width: 50px; height: 50px;">
                     <h5 class="card-title m-0">{{ $evento->interprete->interprete }}</h5>
                   </div>
-                  <h6 class="card-subtitle mb-2 text-muted"><strong>Show:</strong> {{ $evento->show }}</h6>
-                  {{-- <p class="card-text"><strong>Show:</strong> {{ $evento->show }}</p> --}}
-                  <p class="card-text"><strong>Detalles:</strong> {!! $evento->detalle !!}</p>
-                  <p class="card-text"><strong>Lugar:</strong> {{ $evento->lugar }}</p>
-                  <p class="card-text">{{ $evento->descripcion }}</p>
+                  <h6 class="card-subtitle mb-3 text-muted"><strong>Show:</strong> {{ $evento->show }}</h6>
+                  <p class="card-text"><i class="fas fa-info-circle me-2"></i><strong>Detalles:</strong>
+                    {!! $evento->detalle !!}</p>
+                  <p class="card-text"><i class="fas fa-map-marker-alt me-2"></i><strong>Ubicación:</strong>
+                    {{ $evento->lugar }}</p>
+                  <p class="card-text"><i class="fas fa-align-left me-2"></i>{{ $evento->descripcion }}</p>
                 </div>
               </div>
             </div>
@@ -63,30 +66,6 @@
       @endif
     </div>
 
-    <div class="row">
-      @foreach ($shows as $evento)
-        <div class="col-12 col-md-6 col-lg-3 mb-4">
-          <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div class="position-relative">
-              <img class="w-100" src="{{ asset('storage/interpretes/' . $evento->interprete->foto) }}"
-                alt="{{ $evento->interprete->interprete }}">
-              <div class="position-absolute bottom-0 start-0 w-100 h-25 bg-gradient bg-gradient-opacity">
-              </div>
-              <div class="position-absolute bottom-0 start-0 p-4">
-                <h2 class="text-white fs-4 fw-bold">{{ $evento->titulo }}</h2>
-                <p class="text-gray-300">{{ $evento->interprete->interprete }}</p>
-              </div>
-            </div>
-            <div class="p-4">
-              <p class="text-gray-600 fs-6">{{ \Carbon\Carbon::parse($evento->fecha)->format('Y-m-d') }}</p>
-              <p class="text-gray-800 fs-5 fw-bold mb-2">{{ $evento->titulo }}</p>
-              <p class="text-gray-700">{{ $evento->interprete->interprete }}</p>
-              <p class="text-gray-600">{{ $evento->lugar }}, {{ $evento->direccion }}</p>
-            </div>
-          </div>
-        </div>
-      @endforeach
-    </div>
 
 
   </div>

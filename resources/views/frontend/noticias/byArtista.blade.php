@@ -32,17 +32,18 @@
             </div>
           @else
             @foreach ($noticias as $noticia)
-              <div class="col-12 pb-4">
-                <div class="card h-200 shadow-sm text-decoration-none">
-                  <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
-                    class="text-decoration-none">
-                    <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-                      class="card-img-top" style="height: 16rem; object-fit: cover;">
-                    <div class="card-body">
-                      <h3 class="card-title h5 font-weight-bold text-dark mb-2">{{ $noticia->titulo }}</h3>
-                    </div>
-                  </a>
-                </div>
+              <div class="col-md-6 mb-4">
+                <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
+                  class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                  <div class="card-img-top">
+                    <img src="{{ asset('storage/noticias/' . $noticia->foto) }}"
+                      class="img-fluid w-100 h-auto object-cover" alt="{{ $noticia->titulo }}">
+                  </div>
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $noticia->titulo }}</h5>
+                    <p class="card-text mt-auto">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</p>
+                  </div>
+                </a>
               </div>
             @endforeach
 

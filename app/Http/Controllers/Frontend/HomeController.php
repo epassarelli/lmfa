@@ -6,16 +6,39 @@ use App\Http\Controllers\Controller;
 use App\Http\Livewire\Backend\Interpretes;
 use Illuminate\Http\Request;
 
+use App\Models\Interprete;
+use App\Models\Noticia;
+use App\Models\Show;
+use App\Models\Album;
+use App\Models\Cancion;
+
 class HomeController extends Controller
 {
     public function index()
     {
+        // Obtener las últimas 4 noticias
+        $noticia = new Noticia();
+        $noticias = $noticia->getNLast(Noticia::class, 4);
+
+        // Obtener las últimas 4 shows
+        $show = new Show();
+        $shows = $show->getNLast(Show::class, 4);
+
+        // Obtener los últimos 3 intérpretes
+        $interprete = new Interprete();
+        $interpretes = $interprete->getNLast(Interprete::class, 4);
+
+        // Obtener los últimos 3 intérpretes
+        $disco = new Album();
+        $discos = $disco->getNLast(Album::class, 4);
+
+        // Obtener los últimos 3 intérpretes
+        $cancion = new Cancion();
+        $canciones = $cancion->getNLast(Cancion::class, 6);
+
         $metaTitle = "Mi Folklore Argentino | Todo sobre Nuestras Tradiciones y Costumbres";
         $metaDescription = "Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre música, danzas y más. ¡Visítanos hoy!";
-        return view('frontend.home', compact('metaTitle', 'metaDescription'));
+
+        return view('frontend.home', compact('metaTitle', 'metaDescription', 'noticias', 'interpretes', 'shows', 'discos', 'canciones'));
     }
 }
-
-
-// Como experto en Laravel y Livewire, me puedes crear un Controller "Dashboard" que renderice en un panel donde estén la cantidad de activos e inactivos:
-// Users, Teams, Interpretes, Noticias, Shows, Discos, Canciones, Mitos, Festivales, Comidas, Radios y Penias. De cada una de dichas entidades quiero pasar la cantidad de activos e inactivos. Para ello, cada tabla tiene un campo "estado" en 0 o 1.

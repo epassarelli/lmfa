@@ -65,16 +65,17 @@
         <div class="row">
           @foreach ($visitados as $festival)
             <div class="col-md-4 mb-4">
-              <div class="card mb-3 h-100">
-                <a href="{{ route('festivales.show', $festival->slug) }}" class="text-decoration-none">
-                  <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title h5 text-dark">{{ $festival->titulo }}</h5>
-                    <p class="card-text">{{ number_format($festival->visitas, 0, '', ',') }} visitas</p>
-                  </div>
-                </a>
-              </div>
+              <a href="{{ route('festivales.show', $festival->slug) }}"
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="card-img-top">
+                  <img src="{{ asset('storage/festivales/' . $festival->foto) }}"
+                    class="img-fluid w-100 h-auto object-cover" alt="{{ $festival->interprete }}">
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $festival->titulo }}</h5>
+                  <p class="card-text mt-auto">{{ number_format($festival->visitas, 0, '', ',') }} visitas</p>
+                </div>
+              </a>
             </div>
           @endforeach
         </div>
@@ -93,15 +94,17 @@
         <div class="row">
           @foreach ($ultimos as $festival)
             <div class="col-md-4 mb-4">
-              <div class="card mb-3 h-100">
-                <a href="{{ route('festivales.show', $festival->slug) }}" class="text-decoration-none">
-                  <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
-                    class="card-img-top">
-                  <div class="card-body">
-                    <h5 class="card-title h5 text-dark">{{ $festival->titulo }}</h5>
-                  </div>
-                </a>
-              </div>
+              <a href="{{ route('festivales.show', $festival->slug) }}"
+                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+                <div class="card-img-top">
+                  <img src="{{ asset('storage/festivales/' . $festival->foto) }}"
+                    class="img-fluid w-100 h-auto object-cover" alt="{{ $festival->interprete }}">
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $festival->titulo }}</h5>
+                  <p class="card-text mt-auto">{{ number_format($festival->visitas, 0, '', ',') }} visitas</p>
+                </div>
+              </a>
             </div>
           @endforeach
         </div>
