@@ -20,8 +20,8 @@ class RecetasController extends Controller
         //     ->orderBy('publicar', 'desc')
         //     ->paginate(12);
 
-        $metaTitle = "Recetas de comidas típicas del folklore argentino";
-        $metaDescription = "Recetas de comidas típicas del folklore argentino";
+        $metaTitle = "Recetas de Comidas Típicas del Folklore Argentino: Sabores Tradicionales";
+        $metaDescription = "Descubre las recetas de comidas típicas del folklore argentino. Aprende a preparar platos tradicionales con nuestras instrucciones fáciles de seguir. ¡Explora nuestras recetas ahora!";
 
         return view('frontend.recetas.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription'));
     }

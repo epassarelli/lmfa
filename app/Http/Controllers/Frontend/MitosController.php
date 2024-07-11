@@ -16,8 +16,8 @@ class MitosController extends Controller
         $ultimos = $mito->getNLast(Mito::class, 12);
         $visitados = $mito->getNMostVisited(Mito::class, 12);
 
-        $metaTitle = "Mitos y leyendas del Folklore Argentino";
-        $metaDescription = "Mitos, leyendas, fábulas e historias del folklore argentino";
+        $metaTitle = "Mitos y Leyendas del Folklore Argentino: Historias y Tradiciones";
+        $metaDescription = "Explora los mitos y leyendas más fascinantes del folklore argentino. Conoce historias y tradiciones que han pasado de generación en generación. ¡Visítanos para saber más!";
         return view('frontend.mitos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
     }
 

@@ -27,8 +27,8 @@ class NoticiasController extends Controller
 
     // $administrados = Session::get('interpretes');
 
-    $metaTitle = "Noticias del Folklore Argentino";
-    $metaDescription = "Noticias del folklore Argentino. Lanazamientos, festivales, shows y todas las novedades.";
+    $metaTitle = "Noticias de Folklore Argentino: Novedades y Eventos Recientes";
+    $metaDescription = "Descubre las últimas noticias del folklore argentino. Mantente al tanto de los eventos, festivales y novedades culturales más importantes. ¡Explora nuestra cobertura completa hoy mismo!";
 
     // Renderizar la vista con las noticias y las últimas noticias
     return view('frontend.noticias.index', compact('visitadas', 'ultimas', 'metaTitle', 'metaDescription'));

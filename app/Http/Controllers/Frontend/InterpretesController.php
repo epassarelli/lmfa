@@ -17,8 +17,8 @@ class InterpretesController extends Controller
 
 
         // dd($interpretes);
-        $metaTitle = "Biografías de Interpretes folkloricos de Argentina";
-        $metaDescription = "Biografías de Interpretes folkloricos de Argentina";
+        $metaTitle = "Biografías de Artistas del Folklore Argentino: Historia y Trayectoria";
+        $metaDescription = "Conoce la historia y trayectoria de los artistas e intérpretes del folklore argentino. Descubre sus biografías completas y su contribución a la música tradicional. ¡Explora ahora!";
         // return view('home', compact('metaTitle', 'metaDescription'));
         return view('frontend.interpretes.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
     }

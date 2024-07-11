@@ -18,8 +18,8 @@ class DiscosController extends Controller
         $visitados = $disco->getNMostVisited(Album::class, 12);
 
 
-        $metaTitle = "Discografias del Folklore Argentino";
-        $metaDescription = "Todos los discos del folklore argentino";
+        $metaTitle = "Discografías de Folklore Argentino: Álbumes y Obras Destacadas";
+        $metaDescription = "Explora las discografías completas del folklore argentino. Encuentra álbumes y canciones clásicas de artistas destacados. ¡Descubre la música tradicional de Argentina aquí!";
 
         return view('frontend.discos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
     }
