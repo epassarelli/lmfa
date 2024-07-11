@@ -16,8 +16,8 @@ class ShowsController extends Controller
             ->orderBy('publicar', 'desc')
             ->paginate(12);
 
-        $metaTitle = "Cartelera del Folklore Argentino";
-        $metaDescription = "Cartelera folklorica, shows, eventos, agendas y conciertos";
+        $metaTitle = "Cartelera de Eventos del Folklore Argentino: Festivales y Shows";
+        $metaDescription = "Consulta la cartelera de eventos del folklore argentino. Encuentra información sobre festivales, conciertos y shows en todo el país. ¡Mantente al día con nuestra agenda!";
         return view('frontend.shows.index', compact('shows', 'metaTitle', 'metaDescription'));
     }
 
