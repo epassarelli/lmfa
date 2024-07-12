@@ -7,7 +7,7 @@
 
   <div class="container">
 
-    <h1>Recetas de Comidas Típicas</h1>
+    <h1>Recetas de comidas típicas argentinas</h1>
     <p class="lead">Bienvenidos a nuestra sección de recetas de comidas típicas, donde te invitamos a descubrir y
       preparar los platos
       más tradicionales de la gastronomía argentina. Explora una variedad de recetas que reflejan la riqueza y diversidad

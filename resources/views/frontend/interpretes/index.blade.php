@@ -6,7 +6,7 @@
 @section('content')
 
   <div class="container">
-    <h1>Intérpretes de Folklore Argentino</h1>
+    <h1>Biografías de artistas folklóricos</h1>
     <p class="lead">Bienvenidos a nuestra sección dedicada a los intérpretes de folklore argentino. Aquí encontrarás
       información
       detallada sobre los cantantes y artistas más destacados que han dado vida a la rica tradición de la música
