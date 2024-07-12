@@ -7,7 +7,7 @@
 
   <div class="container">
 
-    <h1>Mitos y Leyendas Tradicionales</h1>
+    <h1>Mitos y leyendas argentinas</h1>
     <p class="lead">Bienvenidos a nuestra sección de mitos y leyendas tradicionales, donde exploramos las historias y
       relatos que
       forman parte del rico patrimonio cultural del folklore argentino. Aquí encontrarás una colección fascinante de mitos

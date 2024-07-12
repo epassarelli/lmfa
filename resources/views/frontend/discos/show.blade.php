@@ -9,10 +9,6 @@
   <div class="container mt-5">
     <div class="row mb-4">
 
-      <div class="col-md-3">
-        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-      </div>
-
       <div class="col-md-9">
 
         <div class="row">
@@ -87,6 +83,10 @@
 
 
 
+      </div>
+
+      <div class="col-md-3">
+        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
       </div>
 
     </div>

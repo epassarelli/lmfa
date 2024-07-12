@@ -7,7 +7,7 @@
 
   <div class="container mx-auto py-8">
 
-    <h1>Fiestas y Festivales Folklóricos</h1>
+    <h1>Cartelera de eventos folklóricos</h1>
     <p class="lead">Descubre la magia de las fiestas y festivales folklóricos en nuestra sección dedicada a los eventos
       que celebran la
       música folklórica argentina. Aquí encontrarás información completa sobre los festivales más importantes, las fiestas

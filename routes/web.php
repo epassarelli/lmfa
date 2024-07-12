@@ -17,62 +17,70 @@ use App\Http\Controllers\Frontend\ShowsController;
 use App\Http\Controllers\Frontend\HomeController;
 // use App\Http\Controllers\Frontend\ImagenController;
 
-
+// Folklore Argentino
+// Letras de canciones folklóricas
+// Noticias de folklore argentino
+// Discografías del folklore argentino
+// Festivales y fiestas tradicionales
+// Biografías de artistas folklóricos
+// Mitos y leyendas argentinas
+// Recetas de comidas típicas argentinas
+// Cartelera de eventos folklóricos
 
 // Rutas para el controlador de biografia
-Route::get('biografias/letra/{letra}', [InterpretesController::class, 'letra'])->name('interprete.letra');
-Route::get('biografias/{interprete:slug}', [InterpretesController::class, 'show'])->name('interprete.show');
-Route::get('biografias', [InterpretesController::class, 'index'])->name('interpretes.index');
+Route::get('biografias-de-artistas-folkloricos/letra/{letra}', [InterpretesController::class, 'letra'])->name('interprete.letra');
+Route::get('biografias-de-artistas-folkloricos/{interprete:slug}', [InterpretesController::class, 'show'])->name('interprete.show');
+Route::get('biografias-de-artistas-folkloricos', [InterpretesController::class, 'index'])->name('interpretes.index');
 
 // Rutas para el controlador de Noticias:
-Route::get('noticias/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
-Route::get('noticias/{interprete:slug}', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
-Route::get('noticias', [NoticiasController::class, 'index'])->name('noticias.index');
+Route::get('noticias-de-folklore-argentino/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
+Route::get('noticias-de-folklore-argentino/{interprete:slug}', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
+Route::get('noticias-de-folklore-argentino', [NoticiasController::class, 'index'])->name('noticias.index');
 
 // Rutas para el controlador de Letras de canciones:
-Route::get('letras-de-canciones/{interprete:slug}/{cancion:slug}', [CancionesController::class, 'show'])->name('canciones.show');
-Route::get('letras-de-canciones/{interprete:slug}', [CancionesController::class, 'byArtista'])->name('interprete.canciones');
-Route::get('letras-de-canciones', [CancionesController::class, 'index'])->name('canciones.index');
+Route::get('letras-de-canciones-folkloricas/{interprete:slug}/{cancion:slug}', [CancionesController::class, 'show'])->name('canciones.show');
+Route::get('letras-de-canciones-folkloricas/{interprete:slug}', [CancionesController::class, 'byArtista'])->name('interprete.canciones');
+Route::get('letras-de-canciones-folkloricas', [CancionesController::class, 'index'])->name('canciones.index');
 
 // Rutas para el controlador de discografías:
-Route::get('discografias/{interprete:slug}/{id}', [DiscosController::class, 'show'])->name('interprete.album.show');
-Route::get('discografias/{interprete:slug}', [DiscosController::class, 'byArtista'])->name('interprete.discografia');
-Route::get('discografias', [DiscosController::class, 'index'])->name('discos.index');
+Route::get('discografias-del-folklore-argentino/{interprete:slug}/{id}', [DiscosController::class, 'show'])->name('interprete.album.show');
+Route::get('discografias-del-folklore-argentino/{interprete:slug}', [DiscosController::class, 'byArtista'])->name('interprete.discografia');
+Route::get('discografias-del-folklore-argentino', [DiscosController::class, 'index'])->name('discos.index');
 
 // Rutas para el controlador de Cartelera:
-Route::get('cartelera/{interprete:slug}/{id}',  [ShowsController::class, 'show'])->name('interprete.show.show');
-Route::get('cartelera/{interprete:slug}', [ShowsController::class, 'byArtista'])->name('interprete.shows');
-Route::get('cartelera', [ShowsController::class, 'index'])->name('shows.index');
+Route::get('cartelera-de-eventos-folkloricos/{interprete:slug}/{id}',  [ShowsController::class, 'show'])->name('interprete.show.show');
+Route::get('cartelera-de-eventos-folkloricos/{interprete:slug}', [ShowsController::class, 'byArtista'])->name('interprete.shows');
+Route::get('cartelera-de-eventos-folkloricos', [ShowsController::class, 'index'])->name('shows.index');
 
 
 // Route::get('thumb/{carpeta}/{ancho}/{alto}/{calidad}', [ImagenController::class, 'generarMiniaturas']);
 
 // Rutas para el controlador de Festivales:
-Route::get('fiestas-tradicionales-argentina/{id}', [FestivalesController::class, 'show'])->name('festivales.show');
-Route::get('fiestas-tradicionales-argentina', [FestivalesController::class, 'index'])->name('festivales.index');
+Route::get('festivales-y-fiestas-tradicionales/{id}', [FestivalesController::class, 'show'])->name('festivales.show');
+Route::get('festivales-y-fiestas-tradicionales', [FestivalesController::class, 'index'])->name('festivales.index');
 
 // Rutas para el controlador de Radios:
-Route::get('radios/{id}', [RadiosController::class, 'show'])->name('radios.show');
-Route::get('radios', [RadiosController::class, 'index'])->name('radios.index');
+Route::get('radios-de-folklore-argentino/{id}', [RadiosController::class, 'show'])->name('radios.show');
+Route::get('radios-de-folklore-argentino', [RadiosController::class, 'index'])->name('radios.index');
 
 // Rutas para el controlador de Peñas:
-Route::get('penias/{id}', [PeniasController::class, 'show'])->name('penas.show');
-Route::get('penias', [PeniasController::class, 'index'])->name('penas.index');
+Route::get('penias-folkloricas-de-argentina/{id}', [PeniasController::class, 'show'])->name('penas.show');
+Route::get('penias-folkloricas-de-argentina', [PeniasController::class, 'index'])->name('penas.index');
 
 // Rutas para el controlador de Comidas:
-Route::get('comidas/letra/{letra}', [RecetasController::class, 'letra'])->name('comidas.letra');
-Route::get('comidas/{id}', [RecetasController::class, 'show'])->name('comidas.show');
-Route::get('comidas', [RecetasController::class, 'index'])->name('comidas.index');
+Route::get('recetas-de-comidas-tipicas-argentinas/letra/{letra}', [RecetasController::class, 'letra'])->name('comidas.letra');
+Route::get('recetas-de-comidas-tipicas-argentinas/{id}', [RecetasController::class, 'show'])->name('comidas.show');
+Route::get('recetas-de-comidas-tipicas-argentinas', [RecetasController::class, 'index'])->name('comidas.index');
 
 // Rutas para el controlador de Mitos:
-Route::get('mitos/letra/{letra}', [MitosController::class, 'letra'])->name('mitos.letra');
-Route::get('mitos/{id}', [MitosController::class, 'show'])->name('mitos.show');
-Route::get('mitos', [MitosController::class, 'index'])->name('mitos.index');
+Route::get('mitos-y-leyendas-argentinas/letra/{letra}', [MitosController::class, 'letra'])->name('mitos.letra');
+Route::get('mitos-y-leyendas-argentinas/{id}', [MitosController::class, 'show'])->name('mitos.show');
+Route::get('mitos-y-leyendas-argentinas', [MitosController::class, 'index'])->name('mitos.index');
 
 
 // Rutas para el controlador de entrevistas
-Route::get('{interprete:slug}/entrevistas', [EntrevistasController::class, 'byArtista'])->name('interprete.entrevistas');
-Route::get('{interprete:slug}/entrevistas/{id}', [EntrevistasController::class, 'show'])->name('interprete.entrevista.show');
+// Route::get('{interprete:slug}/entrevistas', [EntrevistasController::class, 'byArtista'])->name('interprete.entrevistas');
+// Route::get('{interprete:slug}/entrevistas/{id}', [EntrevistasController::class, 'show'])->name('interprete.entrevista.show');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

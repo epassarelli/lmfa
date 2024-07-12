@@ -9,10 +9,6 @@
   <div class="container mt-5">
     <div class="row mb-4">
 
-      <div class="col-md-3">
-        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-      </div>
-
       <div class="col-md-9">
         <h1>Noticias de {{ $interprete->interprete }}</h1>
         <p class="lead">
@@ -55,6 +51,11 @@
         @include('layouts.partials.select-interprete')
 
       </div>
+
+      <div class="col-md-3">
+        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
+      </div>
+
     </div>
 
   @endsection
