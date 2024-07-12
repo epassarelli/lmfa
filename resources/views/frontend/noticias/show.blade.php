@@ -7,10 +7,6 @@
   <div class="container mt-5">
     <div class="row mb-4">
 
-      <div class="col-md-3">
-        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-      </div>
-
       <div class="col-md-9">
 
 
@@ -21,6 +17,11 @@
         <p class="fs-5 mb-4">{!! $noticia->noticia !!}</p>
         <p class="text-muted">Visitas: {{ $noticia->visitas }}</p>
       </div>
+
+      <div class="col-md-3">
+        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
+      </div>
+
     </div>
 
     <div class="row">

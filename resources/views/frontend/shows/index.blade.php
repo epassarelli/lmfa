@@ -8,7 +8,7 @@
 
   <div class="container">
 
-    <h1>Shows y Eventos del Folklore Argentino</h1>
+    <h1>Cartelera de eventos folklóricos</h1>
     <p class="lead">Explora nuestra sección de shows y eventos del folklore argentino para mantenerte al tanto de las
       presentaciones en
       vivo y festivales que celebran la música folklórica argentina. Aquí encontrarás información detallada sobre los
