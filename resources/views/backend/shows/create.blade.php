@@ -3,7 +3,7 @@
 @section('title', 'Crear Show')
 
 @section('content_header')
-  <h1>Crear Show</h1>
+  <span>Crear Show</span>
 @stop
 
 @section('content')
@@ -13,9 +13,19 @@
       <div class="card-body">
         @include('backend.shows.form')
       </div>
+
       <div class="card-footer">
-        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save"></i> Guardar
+        </button>
+        <button type="reset" class="btn btn-secondary">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+        <a href="{{ url()->previous() }}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i> Volver al listado
+        </a>
       </div>
+
     </div>
   </form>
 @stop

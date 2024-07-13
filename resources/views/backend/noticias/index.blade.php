@@ -3,7 +3,7 @@
 @section('metaTitle', 'Listado de Noticias')
 
 @section('content_header')
-  <h1>Gestión de Noticias</h1>
+  <span>Gestión de Noticias</span>
 @stop
 
 @section('content')
