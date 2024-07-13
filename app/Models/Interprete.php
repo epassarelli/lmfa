@@ -36,6 +36,14 @@ class Interprete extends Model
             ->get();
     }
 
+    // Definir un scope para filtrar intérpretes activos y ordenarlos por el campo 'interprete'
+    public function scopeActive($query)
+    {
+        return $query->where('estado', 1)
+            ->orderBy('interprete', 'asc')
+            ->select('id', 'interprete', 'slug');
+    }
+
     public function noticias()
     {
         return $this->hasMany(Noticia::class);

@@ -38,8 +38,11 @@ class ShowController extends Controller
 
     public function create()
     {
-        $interpretes = Interprete::all();
-        return view('backend.shows.create', compact('interpretes'));
+        // Obtener los intérpretes activos ordenados y con los campos necesarios
+        $interpretes = Interprete::active()->get();
+
+        $action = 'create';
+        return view('backend.shows.create', compact('interpretes', 'action'));
     }
 
     public function store(ShowRequest $request)
@@ -60,14 +63,17 @@ class ShowController extends Controller
             $this->sendNotification($show);
         }
 
-        Alert::success('Show creada', 'La show ha sido creada con éxito.');
+        Alert::success('Show creada', 'El show ha sido creado con éxito.');
         return redirect()->route('backend.shows.index');
     }
 
     public function edit(Show $show)
     {
-        $interpretes = Interprete::all();
-        return view('backend.shows.edit', compact('show', 'interpretes'));
+        // Obtener los intérpretes activos ordenados y con los campos necesarios
+        $interpretes = Interprete::active()->get();
+
+        $action = 'edit';
+        return view('backend.shows.edit', compact('show', 'interpretes', 'action'));
     }
 
     public function update(ShowRequest $request, Show $show)
@@ -82,7 +88,7 @@ class ShowController extends Controller
 
         $show->save();
 
-        Alert::success('Show actualizada', 'La show ha sido actualizada con éxito.');
+        Alert::success('Show actualizado', 'El show ha sido actualizado con éxito.');
         return redirect()->route('backend.shows.index');
     }
 
@@ -91,14 +97,14 @@ class ShowController extends Controller
         $this->authorize('delete', $show);
         $show->delete();
 
-        Alert::success('Show eliminada', 'La show ha sido eliminada con éxito.');
+        Alert::success('Show eliminada', 'El show ha sido eliminado con éxito.');
         return redirect()->route('backend.shows.index');
     }
 
     private function sendNotification(Show $show)
     {
         $details = [
-            'title' => 'Se ha agregado un/a Show en el portal',
+            'title' => 'Se ha agregado un Show en el portal',
             'show' => $show->show,
             'interprete' => $show->interprete->nombre,
             'user' => $show->user->name,
