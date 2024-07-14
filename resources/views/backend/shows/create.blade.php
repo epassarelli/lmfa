@@ -31,7 +31,7 @@
 @stop
 
 @section('js')
-  <script src="{{ asset('vendor/ckeditor5/build/ckeditor.js') }}"></script>
+    <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
   <script>
     $(function() {
       ClassicEditor

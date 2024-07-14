@@ -14,7 +14,7 @@ class Noticia extends Model
     use CommonMethodsTrait;
     use HasFactory;
 
-    protected $fillable = ['titulo', 'slug', 'noticia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
+    protected $fillable = ['titulo', 'slug', 'noticia', 'interprete_id', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
 
 
     public function interprete()

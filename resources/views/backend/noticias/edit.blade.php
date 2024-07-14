@@ -7,8 +7,10 @@
 @stop
 
 @section('content')
+
   <div class="card">
     <div class="card-body">
+
       <form action="{{ route('backend.noticias.update', $noticia) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -34,18 +36,19 @@
         </div>
 
         <div class="row">
+
           <div class="col-md-6">
             <div class="form-group">
               <label for="interprete_id">Intérprete</label>
               <select name="interprete_id" class="form-control" required>
                 @foreach ($interpretes as $interprete)
-                  <option value="{{ $interprete->id }}"
-                    {{ $noticia->interprete_id == $interprete->id ? 'selected' : '' }}>
+                  <option value="{{ $interprete->id }}" {{ $noticia->interprete_id == $interprete->id ? 'selected' : '' }}>
                     {{ $interprete->interprete }}</option>
                 @endforeach
               </select>
             </div>
           </div>
+
           <div class="col-md-6">
             <div class="form-group">
               <label for="foto">Foto</label>
@@ -55,7 +58,9 @@
               @endif
             </div>
           </div>
+          
         </div>
+
     </div>
 
     <div class="card-footer">

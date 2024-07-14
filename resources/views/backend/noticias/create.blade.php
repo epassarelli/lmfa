@@ -75,8 +75,10 @@
 @stop
 
 @section('js')
-  <script src="{{ asset('path/to/ckeditor.js') }}"></script>
+
+  <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
   <script>
-    ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
+    ClassicEditor.create(document.querySelector('#editore')).catch(error => console.error(error));
   </script>
+
 @stop
