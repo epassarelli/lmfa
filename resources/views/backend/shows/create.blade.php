@@ -31,11 +31,11 @@
 @stop
 
 @section('js')
-    <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
+  <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
   <script>
     $(function() {
       ClassicEditor
-        .create(document.querySelector('#detalle'))
+        .create(document.querySelector('#detalle2'))
         .catch(error => {
           console.error(error);
         });
