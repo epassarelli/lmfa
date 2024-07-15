@@ -52,22 +52,22 @@
                     <i class="fas fa-eye"></i>
                   </a> --}}
 
-                  @can('edit', $interprete)
-                    <a class="btn btn-warning" href="{{ route('backend.interpretes.edit', $interprete->id) }}">
-                      <i class="fas fa-edit"></i>
-                    </a>
-                  @endcan
+                  {{-- @can('edit', $interprete) --}}
+                  <a class="btn btn-warning" href="{{ route('backend.interpretes.edit', $interprete->id) }}">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  {{-- @endcan --}}
 
-                  @can('delete', $interprete)
-                    <form action="{{ route('backend.interpretes.destroy', $interprete->id) }}" method="POST"
-                      style="display:inline;">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i>
-                      </button>
-                    </form>
-                  @endcan
+                  {{-- @can('delete', $interprete) --}}
+                  <form action="{{ route('backend.interpretes.destroy', $interprete->id) }}" method="POST"
+                    style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                  {{-- @endcan --}}
                 </div>
               </td>
             </tr>
