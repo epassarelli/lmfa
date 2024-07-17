@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Show;
+use App\Models\Interprete;
 use App\Http\Requests\ShowRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
-use App\Models\Interprete;
+
 use Illuminate\Http\Request;
 
 class ShowController extends Controller
@@ -19,6 +20,7 @@ class ShowController extends Controller
         $this->middleware('auth');
         $this->authorizeResource(Show::class, 'show');
     }
+
 
     public function index()
     {
@@ -36,6 +38,7 @@ class ShowController extends Controller
         return view('backend.shows.index', compact('shows'));
     }
 
+
     public function create()
     {
         // Obtener los intérpretes activos ordenados y con los campos necesarios
@@ -45,12 +48,15 @@ class ShowController extends Controller
         return view('backend.shows.create', compact('interpretes', 'action'));
     }
 
+
     public function store(ShowRequest $request)
     {
         $show = new Show($request->validated());
         $show->slug = Str::slug($show->show);
         $show->user_id = Auth::id();
-        $show->estado = Auth::user()->hasRole('prensa') ? 1 : 0;
+        // $show->estado = Auth::user()->hasRole('prensa') ? 1 : 0;
+        $show->estado = Auth::user()->hasAnyRole(['prensa', 'administrador']) ? 1 : 0;
+
 
         if ($request->hasFile('foto')) {
             $filePath = $request->file('foto')->store('shows', 'public');
@@ -63,9 +69,10 @@ class ShowController extends Controller
             $this->sendNotification($show);
         }
 
-        Alert::success('Show creada', 'El show ha sido creado con éxito.');
+        Alert::success('Show creado', 'El show ha sido creado con éxito.');
         return redirect()->route('backend.shows.index');
     }
+
 
     public function edit(Show $show)
     {
@@ -76,10 +83,15 @@ class ShowController extends Controller
         return view('backend.shows.edit', compact('show', 'interpretes', 'action'));
     }
 
+
     public function update(ShowRequest $request, Show $show)
     {
         $show->fill($request->validated());
+
         $show->slug = Str::slug($show->show);
+        $show->user_id = Auth::id();
+        // Si es Colaborador pasa a Inactivo
+        $show->estado = Auth::user()->hasAnyRole(['prensa', 'administrador']) ? 1 : 0;
 
         if ($request->hasFile('foto')) {
             $filePath = $request->file('foto')->store('shows', 'public');
@@ -92,6 +104,7 @@ class ShowController extends Controller
         return redirect()->route('backend.shows.index');
     }
 
+
     public function destroy(Show $show)
     {
         $this->authorize('delete', $show);
@@ -100,6 +113,7 @@ class ShowController extends Controller
         Alert::success('Show eliminada', 'El show ha sido eliminado con éxito.');
         return redirect()->route('backend.shows.index');
     }
+
 
     private function sendNotification(Show $show)
     {

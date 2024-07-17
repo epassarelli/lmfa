@@ -19,33 +19,44 @@
             <div class="form-group">
               <label for="titulo">Título</label>
               <input type="text" name="titulo" class="form-control" value="{{ $noticia->titulo }}" required>
+              @error('titulo')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-group">
               <label for="slug">Slug</label>
               <input type="text" name="slug" class="form-control" value="{{ $noticia->slug }}" required>
+              @error('slug')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
           </div>
         </div>
 
-
         <div class="form-group">
           <label for="noticia">Noticia</label>
           <textarea name="noticia" id="editor" class="form-control" required>{{ $noticia->noticia }}</textarea>
+          @error('noticia')
+            <div class="text-danger">{{ $message }}</div>
+          @enderror
         </div>
 
         <div class="row">
-
           <div class="col-md-6">
             <div class="form-group">
               <label for="interprete_id">Intérprete</label>
               <select name="interprete_id" class="form-control" required>
                 @foreach ($interpretes as $interprete)
-                  <option value="{{ $interprete->id }}" {{ $noticia->interprete_id == $interprete->id ? 'selected' : '' }}>
+                  <option value="{{ $interprete->id }}"
+                    {{ $noticia->interprete_id == $interprete->id ? 'selected' : '' }}>
                     {{ $interprete->interprete }}</option>
                 @endforeach
               </select>
+              @error('interprete_id')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
           </div>
 
@@ -56,9 +67,11 @@
               @if ($noticia->foto)
                 <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="Foto actual" class="img-fluid mt-2">
               @endif
+              @error('foto')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
           </div>
-          
         </div>
 
     </div>

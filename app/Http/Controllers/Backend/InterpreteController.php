@@ -4,42 +4,42 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Interprete;
+use App\Http\Requests\InterpreteRequest;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class InterpreteController extends Controller
 {
   public function index()
   {
+    $user = Auth::user();
     $interpretes = Interprete::all();
     return view('backend.interpretes.index', compact('interpretes'));
   }
 
   public function create()
   {
-    return view('backend.interpretes.create');
+    $action = 'create';
+    return view('backend.interpretes.create', compact('action'));
   }
 
-  public function store(Request $request)
+  public function store(InterpreteRequest $request)
   {
-    $request->validate([
-      'interprete' => 'required|string|max:255',
-      'slug' => 'required|string|max:255|unique:interpretes',
-      'foto' => 'required|string|max:255',
-      'biografia' => 'required',
-      // 'telefono' => 'required|string|max:255',
-      // 'correo' => 'required|email|max:255',
-      // 'instagram' => 'nullable|string|max:255',
-      // 'twitter' => 'nullable|string|max:255',
-      // 'youtube' => 'nullable|string|max:255',
-      // 'visitas' => 'required|integer',
-      // 'publicar' => 'required|date',
-      // 'estado' => 'required|integer',
-      'user_id' => 'nullable|exists:users,id',
-    ]);
+    $artista = new Interprete($request->validated());
 
-    Interprete::create($request->all());
+    $artista->slug = Str::slug($artista->interprete);
+    $artista->user_id = Auth::id();
+    $artista->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+
+    if ($request->hasFile('foto')) {
+      $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
+      $filePath = $request->file('foto')->storeAs('interpretes', $fileName, 'public');
+      $artista->foto = $fileName;
+    }
+
+    $artista->save();
 
     return redirect()->route('backend.interpretes.index')
       ->with('success', 'Interprete creado correctamente.');
@@ -52,30 +52,17 @@ class InterpreteController extends Controller
 
   public function edit(Interprete $interprete)
   {
-    return view('backend.interpretes.edit', compact('interprete'));
+    $action = 'edit';
+    return view('backend.interpretes.edit', compact('interprete', 'action'));
   }
 
-  public function update(Request $request, Interprete $interprete)
+  public function update(InterpreteRequest $request, Interprete $interprete)
   {
-    $request->validate([
-      'interprete' => 'required|string|max:255',
-      'slug' => 'required|string|max:255|unique:interpretes,slug,' . $interprete->id,
-      'foto' => 'image',
-      'biografia' => 'required',
-      // 'telefono' => 'required|string|max:255',
-      // 'correo' => 'required|email|max:255',
-      // 'instagram' => 'nullable|string|max:255',
-      // 'twitter' => 'nullable|string|max:255',
-      // 'youtube' => 'nullable|string|max:255',
-      // 'visitas' => 'required|integer',
-      // 'publicar' => 'required|date',
-      // 'estado' => 'required|integer',
-      'user_id' => 'nullable|exists:users,id',
-    ]);
 
     // $interprete->update($request->all());
 
     $interprete->fill($request->all());
+
     if ($request->hasFile('foto')) {
       // Almacena la foto en disco y obtiene el nombre original del archivo
       $nombreArchivo = $request->file('foto')->store('interpretes', 'public');
@@ -84,13 +71,14 @@ class InterpreteController extends Controller
       $interprete->foto = basename($nombreArchivo);
     }
 
-    dd($interprete);
+    // dd($interprete);
     $interprete->save();
 
 
     return redirect()->route('backend.interpretes.index')
       ->with('success', 'Interprete actualizado correctamente.');
   }
+
 
   public function destroy(Interprete $interprete)
   {

@@ -8,10 +8,9 @@
 
 @section('content')
 
-  <form action="{{ route('backend.interpretes.store') }}" method="POST">
+  <form action="{{ route('backend.interpretes.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
-    @csrf
     <div class="card">
       <div class="card-body">
         @include('backend.interpretes.form')
@@ -35,11 +34,11 @@
 @endsection
 
 
-<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+{{-- <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
 <script>
   ClassicEditor
     .create(document.querySelector('#biografia'))
     .catch(error => {
       console.error(error);
     });
-</script>
+</script> --}}
