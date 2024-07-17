@@ -37,7 +37,7 @@
 
         <div class="form-group">
           <label for="noticia">Noticia</label>
-          <textarea name="noticia" id="editor" class="form-control" required></textarea>
+          <textarea name="noticia" id="noticia" class="form-control" required></textarea>
           @error('noticia')
             <div class="text-danger">{{ $message }}</div>
           @enderror
@@ -87,11 +87,11 @@
 
 @stop
 
-@section('js')
+{{-- @section('js')
 
   <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
   <script>
     ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
   </script>
 
-@stop
+@stop --}}

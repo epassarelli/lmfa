@@ -26,12 +26,10 @@ class ShowController extends Controller
     {
         $user = Auth::user();
         $shows = Show::query()
-            ->when($user->hasRole('colaborador'), function ($query) use ($user) {
+            ->when($user->hasRole(['colaborador', 'prensa']), function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
-            ->when($user->hasRole('prensa'), function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
+            ->where('fecha', '>=', now())
             ->with('user', 'interprete')
             ->get();
 
