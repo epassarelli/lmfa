@@ -1,16 +1,23 @@
 <div class="row">
+
   <div class="col-md-4">
     <div class="mb-3">
       <label for="interprete" class="form-label">Interprete</label>
       <input type="text" name="interprete" class="form-control" id="interprete"
         value="{{ old('interprete', $interprete->interprete ?? '') }}" required>
+      @error('interprete')
+        <div class="text-danger">{{ $message }}</div>
+      @enderror
     </div>
   </div>
   <div class="col-md-4">
     <div class="mb-3">
       <label for="slug" class="form-label">Slug</label>
       <input type="text" name="slug" class="form-control" id="slug"
-        value="{{ old('slug', $interprete->slug ?? '') }}" required>
+        value="{{ old('slug', $interprete->slug ?? '') }}">
+      @error('slug')
+        <div class="text-danger">{{ $message }}</div>
+      @enderror
     </div>
   </div>
   <div class="col-md-4">
@@ -18,7 +25,17 @@
     <div class="mb-3">
       <label for="foto" class="form-label">Foto</label>
       <input type="file" name="foto" class="form-control" id="foto"
-        value="{{ old('foto', $interprete->foto ?? '') }}" required>
+        value="{{ old('foto', $interprete->foto ?? '') }}" {{ $action == 'create' ? 'required' : '' }}>
+      @if ($action == 'edit')
+        @if ($interprete->foto)
+          <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="Foto actual" class="img-fluid mt-2"
+            width="40">
+        @endif
+      @endif
+
+      @error('foto')
+        <div class="text-danger">{{ $message }}</div>
+      @enderror
     </div>
 
   </div>
@@ -29,6 +46,9 @@
 <div class="mb-3">
   <label for="biografia" class="form-label">Biografia</label>
   <textarea name="biografia" class="form-control" id="editor" required>{{ old('biografia', $interprete->biografia ?? '') }}</textarea>
+  @error('biografia')
+    <div class="text-danger">{{ $message }}</div>
+  @enderror
 </div>
 
 
@@ -47,13 +67,23 @@
         value="{{ old('telefono', $interprete->telefono ?? '') }}">
     </div>
   </div>
-  <div class="col-md-4">
+
+  {{-- <div class="col-md-4">
     <div class="mb-3">
       <label for="user_id" class="form-label">Usuario</label>
       <input type="number" name="user_id" class="form-control" id="user_id"
         value="{{ old('user_id', $interprete->user_id ?? '') }}">
     </div>
+  </div> --}}
+
+  <div class="col-md-4">
+    <div class="mb-3">
+      <label for="publicar" class="form-label">Fecha de Publicación</label>
+      <input type="datetime-local" name="publicar" class="form-control" id="publicar"
+        value="{{ old('publicar', $interprete->publicar ?? '') }}">
+    </div>
   </div>
+
 </div>
 
 
@@ -83,27 +113,34 @@
 </div>
 
 <div class="row">
+
   <div class="col-md-4">
     <div class="mb-3">
-      <label for="visitas" class="form-label">Visitas</label>
+      {{-- <label for="visitas" class="form-label">Visitas</label>
       <input type="number" name="visitas" class="form-control" id="visitas"
-        value="{{ old('visitas', $interprete->visitas ?? '') }}">
+        value="{{ old('visitas', $interprete->visitas ?? '') }}"> --}}
+      .
     </div>
   </div>
+
   <div class="col-md-4">
     <div class="mb-3">
-      <label for="publicar" class="form-label">Fecha de Publicación</label>
-      <input type="datetime-local" name="publicar" class="form-control" id="publicar"
-        value="{{ old('publicar', $interprete->publicar ?? '') }}">
+      .
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="mb-3">
-      <label for="estado" class="form-label">Estado</label>
-      <select name="estado" class="form-control" id="estado" required>
-        <option value="1" {{ old('estado', $interprete->estado ?? '') == 1 ? 'selected' : '' }}>Activo</option>
-        <option value="0" {{ old('estado', $interprete->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo</option>
-      </select>
+
+  @if ($action == 'edit' and Auth::user()->hasRole('administrador'))
+    <div class="col-md-4">
+      <div class="mb-3">
+        <label for="estado" class="form-label">Estado</label>
+        <select name="estado" class="form-control" id="estado" required>
+          <option value="1" {{ old('estado', $interprete->estado ?? '') == 1 ? 'selected' : '' }}>Activo</option>
+          <option value="0" {{ old('estado', $interprete->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo
+          </option>
+        </select>
+      </div>
     </div>
-  </div>
+  @endif
+
+
 </div>

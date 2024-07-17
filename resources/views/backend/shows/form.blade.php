@@ -1,4 +1,5 @@
 <div class="row">
+
   <!-- Columna 1 -->
   <div class="col-md-8">
     <div class="form-group">
@@ -7,6 +8,7 @@
         required>
     </div>
   </div>
+
   <!-- Columna 2 y 3 -->
   <div class="col-md-4">
     <div class="form-group">
@@ -33,6 +35,7 @@
 
 
 <div class="row">
+
   <!-- Columna 1 -->
   <div class="col-md-4">
     <div class="form-group">
@@ -41,6 +44,7 @@
         value="{{ old('fecha', isset($show) ? $show->fecha : '') }}" required>
     </div>
   </div>
+
   <!-- Columna 2 -->
   <div class="col-md-4">
     <div class="form-group">
@@ -49,6 +53,7 @@
         value="{{ old('hora', $show->hora ?? '') }}" required>
     </div>
   </div>
+
   <!-- Columna 3 -->
   <div class="col-md-4">
     <div class="form-group">
@@ -82,17 +87,15 @@
   </div>
   <!-- Columna 3 -->
   <div class="col-md-4">
-    <div class="form-group">
-      <label for="foto">Foto</label>
-      <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png">
-      @if (isset($show) && $show->foto)
-        <div class="mt-2">
-          <img src="{{ asset('storage/' . $show->foto) }}" alt="Foto de {{ $show->show }}"
-            style="max-height: 80px;">
-        </div>
-      @endif
+    <div class="mb-3">
+      <label for="estado" class="form-label">Estado</label>
+      <select name="estado" class="form-control" id="estado" required>
+        <option value="1" {{ old('estado', $interprete->estado ?? '') == 1 ? 'selected' : '' }}>Activo</option>
+        <option value="0" {{ old('estado', $interprete->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo</option>
+      </select>
     </div>
   </div>
+</div>
 </div>
 
 
