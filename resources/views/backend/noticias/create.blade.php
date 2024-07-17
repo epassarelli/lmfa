@@ -19,20 +19,28 @@
             <div class="form-group">
               <label for="titulo">Título</label>
               <input type="text" name="titulo" class="form-control" required>
+              @error('titulo')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-group">
               <label for="slug">Slug</label>
               <input type="text" name="slug" class="form-control" required>
+              @error('slug')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
           </div>
         </div>
 
-
         <div class="form-group">
           <label for="noticia">Noticia</label>
           <textarea name="noticia" id="editor" class="form-control" required></textarea>
+          @error('noticia')
+            <div class="text-danger">{{ $message }}</div>
+          @enderror
         </div>
 
         <div class="row">
@@ -44,12 +52,18 @@
                   <option value="{{ $interprete->id }}">{{ $interprete->interprete }}</option>
                 @endforeach
               </select>
+              @error('interprete_id')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-group">
               <label for="foto">Foto</label>
               <input type="file" name="foto" class="form-control" required>
+              @error('foto')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
           </div>
         </div>
@@ -69,7 +83,6 @@
 
     </form>
 
-
   </div>
 
 @stop
@@ -78,7 +91,7 @@
 
   <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
   <script>
-    ClassicEditor.create(document.querySelector('#editore')).catch(error => console.error(error));
+    ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
   </script>
 
 @stop

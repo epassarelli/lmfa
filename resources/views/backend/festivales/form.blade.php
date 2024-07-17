@@ -2,11 +2,17 @@
   <label for="titulo">Título del Festival</label>
   <input type="text" name="titulo" id="titulo" class="form-control"
     value="{{ old('titulo', $festival->titulo ?? '') }}" required>
+  @error('titulo')
+    <div class="text-danger">{{ $message }}</div>
+  @enderror
 </div>
 
 <div class="form-group">
   <label for="detalle">Detalle</label>
   <textarea name="detalle" id="detalle" class="form-control" rows="4">{{ old('detalle', $festival->detalle ?? '') }}</textarea>
+  @error('detalle')
+    <div class="text-danger">{{ $message }}</div>
+  @enderror
 </div>
 
 <div class="form-group">
@@ -18,6 +24,9 @@
         style="max-height: 80px;">
     </div>
   @endif
+  @error('foto')
+    <div class="text-danger">{{ $message }}</div>
+  @enderror
 </div>
 
 <div class="form-group">
@@ -30,6 +39,9 @@
       </option>
     @endforeach
   </select>
+  @error('provincia_id')
+    <div class="text-danger">{{ $message }}</div>
+  @enderror
 </div>
 
 <div class="form-group">
@@ -41,6 +53,9 @@
       </option>
     @endforeach
   </select>
+  @error('mes_id')
+    <div class="text-danger">{{ $message }}</div>
+  @enderror
 </div>
 
 @if (Auth::user()->hasRole('administrador'))
@@ -48,6 +63,9 @@
     <label for="slug">Slug</label>
     <input type="text" name="slug" id="slug" class="form-control"
       value="{{ old('slug', $festival->slug ?? '') }}" required>
+    @error('slug')
+      <div class="text-danger">{{ $message }}</div>
+    @enderror
   </div>
 @endif
 
@@ -55,4 +73,7 @@
   <label for="publicar">Fecha de Publicación</label>
   <input type="datetime-local" name="publicar" id="publicar" class="form-control"
     value="{{ old('publicar', isset($festival) ? $festival->publicar->format('Y-m-d\TH:i') : '') }}" required>
+  @error('publicar')
+    <div class="text-danger">{{ $message }}</div>
+  @enderror
 </div>
