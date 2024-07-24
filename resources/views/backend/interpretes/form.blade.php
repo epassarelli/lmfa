@@ -68,21 +68,19 @@
     </div>
   </div>
 
-  {{-- <div class="col-md-4">
-    <div class="mb-3">
-      <label for="user_id" class="form-label">Usuario</label>
-      <input type="number" name="user_id" class="form-control" id="user_id"
-        value="{{ old('user_id', $interprete->user_id ?? '') }}">
-    </div>
-  </div> --}}
 
-  <div class="col-md-4">
-    <div class="mb-3">
-      <label for="publicar" class="form-label">Fecha de Publicación</label>
-      <input type="datetime-local" name="publicar" class="form-control" id="publicar"
-        value="{{ old('publicar', $interprete->publicar ?? '') }}">
+  @if ($action == 'edit' and Auth::user()->hasRole('administrador'))
+    <div class="col-md-4">
+      <div class="mb-3">
+        <label for="estado" class="form-label">Estado</label>
+        <select name="estado" class="form-control" id="estado" required>
+          <option value="1" {{ old('estado', $interprete->estado ?? '') == 1 ? 'selected' : '' }}>Activo</option>
+          <option value="0" {{ old('estado', $interprete->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo
+          </option>
+        </select>
+      </div>
     </div>
-  </div>
+  @endif
 
 </div>
 
@@ -110,37 +108,4 @@
         value="{{ old('youtube', $interprete->youtube ?? '') }}">
     </div>
   </div>
-</div>
-
-<div class="row">
-
-  <div class="col-md-4">
-    <div class="mb-3">
-      {{-- <label for="visitas" class="form-label">Visitas</label>
-      <input type="number" name="visitas" class="form-control" id="visitas"
-        value="{{ old('visitas', $interprete->visitas ?? '') }}"> --}}
-      .
-    </div>
-  </div>
-
-  <div class="col-md-4">
-    <div class="mb-3">
-      .
-    </div>
-  </div>
-
-  @if ($action == 'edit' and Auth::user()->hasRole('administrador'))
-    <div class="col-md-4">
-      <div class="mb-3">
-        <label for="estado" class="form-label">Estado</label>
-        <select name="estado" class="form-control" id="estado" required>
-          <option value="1" {{ old('estado', $interprete->estado ?? '') == 1 ? 'selected' : '' }}>Activo</option>
-          <option value="0" {{ old('estado', $interprete->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo
-          </option>
-        </select>
-      </div>
-    </div>
-  @endif
-
-
 </div>

@@ -25,7 +25,7 @@ class HomeController extends Controller
         // $shows = $show->getNLast(Show::class, 4);
         $shows = Show::where('estado', 1)
             ->where('fecha', '>=', now())
-            ->orderBy('fecha', 'desc')
+            ->orderBy('fecha', 'asc')
             ->paginate(4);
 
         // Obtener los últimos 3 intérpretes

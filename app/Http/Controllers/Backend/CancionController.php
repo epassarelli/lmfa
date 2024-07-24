@@ -39,8 +39,9 @@ class CancionController extends Controller
 
   public function create()
   {
+    $action = 'create';
     $interpretes = Interprete::all();
-    return view('backend.canciones.create', compact('interpretes'));
+    return view('backend.canciones.create', compact('interpretes', 'action'));
   }
 
   public function store(CancionRequest $request)
@@ -48,7 +49,7 @@ class CancionController extends Controller
     $cancion = new Cancion($request->validated());
     $cancion->slug = Str::slug($cancion->cancion);
     $cancion->user_id = Auth::id();
-    $cancion->estado = Auth::user()->hasRole('prensa') ? 1 : 0;
+    $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
     $cancion->save();
 
     if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
@@ -61,15 +62,18 @@ class CancionController extends Controller
 
   public function edit(Cancion $cancion)
   {
+    $action = 'edit';
     $interpretes = Interprete::all();
     $albums = Album::where('interprete_id', $cancion->interprete_id)->get();
-    return view('backend.canciones.edit', compact('cancion', 'interpretes', 'albums'));
+    return view('backend.canciones.edit', compact('cancion', 'interpretes', 'albums', 'action'));
   }
 
   public function update(CancionRequest $request, Cancion $cancion)
   {
     $cancion->fill($request->validated());
     $cancion->slug = Str::slug($cancion->cancion);
+    $cancion->user_id = Auth::id();
+    $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
     $cancion->save();
 
     Alert::success('Canción actualizada', 'La canción ha sido actualizada con éxito.');

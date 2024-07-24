@@ -74,6 +74,29 @@
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-md">
+
+          </div>
+          <div class="col-md">
+
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="estado" class="form-label">Estado</label>
+              <select name="estado" class="form-control" id="estado" required>
+                <option value="1" {{ old('estado', $noticia->estado ?? '') == 1 ? 'selected' : '' }}>Activo
+                </option>
+                <option value="0" {{ old('estado', $noticia->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo
+                </option>
+              </select>
+              @error('estado')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
+            </div>
+          </div>
+        </div>
+
     </div>
 
     <div class="card-footer">

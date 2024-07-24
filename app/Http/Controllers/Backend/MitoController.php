@@ -48,7 +48,7 @@ class MitoController extends Controller
     $mito = new Mito($request->validated());
     $mito->slug = Str::slug($mito->titulo);
     $mito->user_id = Auth::id();
-    $mito->estado = Auth::user()->hasRole('prensa') ? 1 : 0;
+    $mito->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
     $mito->save();
 
     if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
@@ -70,6 +70,10 @@ class MitoController extends Controller
   {
     $mito->fill($request->validated());
     $mito->slug = Str::slug($mito->titulo);
+    $mito->user_id = Auth::id();
+    $mito->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+
+
     $mito->save();
 
     Alert::success('Mito actualizado', 'El mito ha sido actualizado con éxito.');

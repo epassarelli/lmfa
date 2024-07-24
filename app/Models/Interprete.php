@@ -23,7 +23,7 @@ class Interprete extends Model
     // protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
     protected $fillable = [
         'interprete', 'slug', 'biografia', 'foto', 'telefono', 'correo',
-        'instagram', 'twitter', 'youtube', 'visitas', 'publicar', 'estado', 'user_id'
+        'instagram', 'twitter', 'youtube', 'visitas', 'estado', 'user_id'
     ];
 
     // Retorna una coleccion con interpretes menos el actual
@@ -47,30 +47,25 @@ class Interprete extends Model
     public function noticias()
     {
         return $this->hasMany(Noticia::class);
-        // return $this->belongsToMany(Noticia::class, 'interpretes_noticias');
     }
 
     public function shows()
     {
         return $this->hasMany(Show::class);
-        // return $this->belongsToMany(Show::class, 'interpretes_shows');
     }
 
     public function discos()
     {
         return $this->hasMany(Album::class);
-        // return $this->belongsToMany(Album::class, 'interpretes_albunes');
     }
 
     public function canciones()
     {
         return $this->hasMany(Cancion::class);
-        // return $this->belongsToMany(Cancion::class, 'interpretes_canciones');
     }
 
     public function users()
     {
         return $this->hasMany(User::class);
-        // return $this->belongsToMany(User::class, 'interpretes_users');
     }
 }
