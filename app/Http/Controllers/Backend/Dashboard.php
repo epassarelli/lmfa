@@ -13,7 +13,9 @@ class Dashboard extends Controller
         $user = Auth::user();
         $roles = $user->getRoleNames();
         $permissions = $user->getAllPermissions()->pluck('name');
-
+        // Traer las cantidades de cada entidad
+        
+        
         return view('backend.dashboard', compact('user', 'roles', 'permissions'));
     }
 }

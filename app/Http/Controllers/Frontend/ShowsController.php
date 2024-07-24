@@ -13,7 +13,7 @@ class ShowsController extends Controller
     {
         $shows = Show::where('estado', 1)
             ->where('fecha', '>=', now())
-            ->orderBy('fecha', 'desc')
+            ->orderBy('fecha', 'asc')
             ->paginate(12);
 
         $metaTitle = "Cartelera de Eventos del Folklore Argentino: Festivales y Shows";

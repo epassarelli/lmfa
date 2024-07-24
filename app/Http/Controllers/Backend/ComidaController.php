@@ -48,7 +48,7 @@ class ComidaController extends Controller
         $comida = new Comida($request->validated());
         $comida->slug = Str::slug($comida->titulo);
         $comida->user_id = Auth::id();
-        $comida->estado = Auth::user()->hasRole('prensa') ? 1 : 0;
+        $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
         $comida->save();
 
         if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
@@ -70,6 +70,8 @@ class ComidaController extends Controller
     {
         $comida->fill($request->validated());
         $comida->slug = Str::slug($comida->titulo);
+        $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+
         $comida->save();
 
         Alert::success('Comida actualizada', 'La comida ha sido actualizada con éxito.');

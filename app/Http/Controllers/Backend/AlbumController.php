@@ -39,8 +39,9 @@ class AlbumController extends Controller
 
   public function create()
   {
-    $interpretes = Interprete::all();
-    return view('backend.albunes.create', compact('interpretes'));
+    $action = 'create';
+    $interpretes = Interprete::active()->get();
+    return view('backend.albunes.create', compact('interpretes', 'action'));
   }
 
   public function store(AlbumRequest $request)
@@ -48,27 +49,45 @@ class AlbumController extends Controller
     $album = new Album($request->validated());
     $album->slug = Str::slug($album->album);
     $album->user_id = Auth::id();
-    $album->estado = Auth::user()->hasRole('prensa') ? 1 : 0;
+    $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+    $album->visitas = 0;
+
+    if ($request->hasFile('foto')) {
+      $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
+      $filePath = $request->file('foto')->storeAs('discos', $fileName, 'public');
+      $album->foto = $fileName;
+    }
+
     $album->save();
 
     if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
       $this->sendNotification($album);
     }
     // Para mensajes de éxito
-    Alert::success('Album creada', 'El album ha sido creado con éxito.');
+    Alert::success('Album creado', 'El album ha sido creado con éxito.');
     return redirect()->route('backend.albums.index');
   }
 
   public function edit(Album $album)
   {
-    $interpretes = Interprete::all();
-    return view('backend.albunes.edit', compact('album', 'interpretes'));
+    $action = 'edit';
+    $interpretes = Interprete::active()->get();
+    return view('backend.albunes.edit', compact('album', 'interpretes', 'action'));
   }
 
   public function update(AlbumRequest $request, Album $album)
   {
     $album->fill($request->validated());
     $album->slug = Str::slug($album->album);
+    $album->user_id = Auth::id();
+    $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+
+    if ($request->hasFile('foto')) {
+      $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
+      $filePath = $request->file('foto')->storeAs('discos', $fileName, 'public');
+      $album->foto = $fileName;
+    }
+
     $album->save();
 
     return redirect()->route('backend.albums.index')->with('success', 'Álbum actualizado exitosamente.');
