@@ -9,13 +9,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\DB;
 
 class InterpreteController extends Controller
 {
   public function index()
   {
     $user = Auth::user();
-    $interpretes = Interprete::all();
+    // $interpretes = Interprete::all();
+    $interpretes = Interprete::withCount(['noticias', 'shows', 'discos', 'canciones'])
+      ->with('noticias', 'shows', 'discos', 'canciones')
+      ->orderByDesc('noticias_count')
+      ->get();
     return view('backend.interpretes.index', compact('interpretes'));
   }
 
