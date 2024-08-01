@@ -17,7 +17,7 @@ class ComidaController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->authorizeResource(Comida::class, 'comida');
+        // $this->authorizeResource(Comida::class, 'comida');
     }
 
     public function index()

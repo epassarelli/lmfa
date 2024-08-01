@@ -15,6 +15,10 @@ class Cancion extends Model
     use CommonMethodsTrait;
     use HasFactory;
     protected $table = 'canciones';
+    protected $fillable = [
+        'cancion', 'slug', 'letra', 'youtube', 'spotify', 'visitas', 'publicar', 'estado', 'user_id', 'interprete_id'
+    ];
+
 
     public function albunes()
     {

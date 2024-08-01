@@ -17,21 +17,25 @@ class CancionPolicy
 
   public function view(User $user, Cancion $cancion)
   {
-    return $user->hasRole('administrador') || $cancion->user_id == $user->id;
+    // return $user->hasRole('administrador') || $cancion->user_id == $user->id;
+    return $user->can('read cancion');
   }
 
   public function create(User $user)
   {
-    return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
+    // return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
+    return $user->can('create cancion');
   }
 
   public function update(User $user, Cancion $cancion)
   {
-    return $user->hasRole('administrador') || $cancion->user_id == $user->id;
+    // return $user->hasRole('administrador') || $cancion->user_id == $user->id;
+    return $user->can('update cancion');
   }
 
   public function delete(User $user, Cancion $cancion)
   {
-    return $user->hasRole('administrador');
+    // return $user->hasRole('administrador');
+    return $user->can('delete cancion');
   }
 }

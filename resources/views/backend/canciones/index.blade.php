@@ -13,7 +13,7 @@
         icon: 'success',
         title: 'Éxito',
         text: '{{ session('
-                                                            success ') }}'
+                                                                                            success ') }}'
       });
     </script>
   @endif
@@ -21,6 +21,7 @@
     <div class="card-header text-right">
       <a href="{{ route('backend.canciones.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Crear Canción</a>
     </div>
+
     <div class="card-body">
       <table id="canciones-table" class="table table-striped table-bordered table-hover">
         <thead>
@@ -32,12 +33,15 @@
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>
+      </table>
+    </div>
+
+
+    {{-- <tbody>
           @foreach ($canciones as $cancion)
             <tr>
               <td>{{ $cancion->cancion }}</td>
               <td>{{ $cancion->slug }}</td>
-              {{-- <td>{{ $cancion->interprete->interprete }}</td> --}}
               <td>{{ $cancion->visitas }}</td>
               <td>{{ $cancion->estado == 1 ? 'Activo' : 'Inactivo' }}</td>
               <td class="text-right" style="white-space: nowrap;">
@@ -58,16 +62,55 @@
               </td>
             </tr>
           @endforeach
-        </tbody>
-      </table>
-    </div>
+        </tbody> --}}
+
+
+
+
+    </table>
+  </div>
   </div>
 @stop
 
 @section('js')
   <script>
+    // $(function() {
+    //   $('#canciones-table').DataTable();
+    // });
+
+
     $(function() {
-      $('#canciones-table').DataTable();
+      $('#canciones-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{{ route('backend.canciones.get') }}',
+        columns: [{
+            data: 'cancion',
+            name: 'cancion'
+          },
+          {
+            data: 'interprete',
+            name: 'interprete'
+          },
+          {
+            data: 'visitas',
+            name: 'visitas'
+          },
+          {
+            data: 'estado',
+            name: 'estado'
+          },
+          {
+            data: 'acciones',
+            name: 'acciones',
+            orderable: false,
+            searchable: false
+          }
+        ],
+        // language: {
+        //   url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json'
+        // }
+      });
     });
   </script>
 @stop

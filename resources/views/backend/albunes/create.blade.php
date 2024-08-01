@@ -7,8 +7,10 @@
 @stop
 
 @section('content')
-  <form action="{{ route('backend.albums.store') }}" method="POST" enctype="multipart/form-data">
+
+  <form action="{{ route('backend.discos.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
+
     <div class="card">
       <div class="card-body">
         @include('backend.albunes.form')
@@ -28,6 +30,7 @@
 
     </div>
   </form>
+
 @stop
 
 @section('js')

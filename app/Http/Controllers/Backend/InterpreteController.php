@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\DB;
 
 class InterpreteController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('auth');
+    // $this->authorizeResource(Album::class, 'album');
+  }
+
   public function index()
   {
     $user = Auth::user();
@@ -64,8 +70,6 @@ class InterpreteController extends Controller
   public function update(InterpreteRequest $request, Interprete $interprete)
   {
 
-    // $interprete->update($request->all());
-
     $interprete->fill($request->all());
 
     if ($request->hasFile('foto')) {
@@ -76,9 +80,7 @@ class InterpreteController extends Controller
       $interprete->foto = basename($nombreArchivo);
     }
 
-    // dd($interprete);
     $interprete->save();
-
 
     return redirect()->route('backend.interpretes.index')
       ->with('success', 'Interprete actualizado correctamente.');

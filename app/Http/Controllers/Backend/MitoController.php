@@ -17,7 +17,7 @@ class MitoController extends Controller
   public function __construct()
   {
     $this->middleware('auth');
-    $this->authorizeResource(Mito::class, 'mito');
+    // $this->authorizeResource(Mito::class, 'mito');
   }
 
   public function index()

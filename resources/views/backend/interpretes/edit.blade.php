@@ -8,7 +8,6 @@
 
 @section('content')
 
-
   <form action="{{ route('backend.interpretes.update', $interprete->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')

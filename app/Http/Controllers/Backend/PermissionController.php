@@ -9,6 +9,13 @@ use Yajra\DataTables\DataTables;
 
 class PermissionController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        // $this->authorizeResource(Album::class, 'album');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+
   @if (session('success'))
     <script>
       Swal.fire({
@@ -16,9 +17,10 @@
       });
     </script>
   @endif
+
   <div class="card">
     <div class="card-header text-right">
-      <a href="{{ route('backend.albums.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Crear Disco</a>
+      <a href="{{ route('backend.discos.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Crear Disco</a>
     </div>
     <div class="card-body">
       <table id="albums-table" class="table table-striped table-bordered table-hover">
@@ -42,10 +44,10 @@
               <td>{{ $album->anio }}</td>
               <td>{{ $album->interprete->interprete }}</td>
               <td class="text-right" style="white-space: nowrap;">
-                <a href="{{ route('backend.albums.edit', $album) }}" class="btn btn-warning"><i
+                <a href="{{ route('backend.discos.edit', $album) }}" class="btn btn-warning"><i
                     class="fas fa-edit"></i></a>
                 @can('delete', $album)
-                  <form action="{{ route('backend.albums.destroy', $album) }}" method="POST" style="display:inline-block;">
+                  <form action="{{ route('backend.discos.destroy', $album) }}" method="POST" style="display:inline-block;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger"

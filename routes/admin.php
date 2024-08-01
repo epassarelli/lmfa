@@ -17,16 +17,6 @@ use App\Http\Controllers\Backend\FestivalController;
 use App\Http\Controllers\Backend\MitoController;
 use App\Http\Controllers\Backend\ShowController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::group(
   ['middleware' => ['auth']],
@@ -79,7 +69,7 @@ Route::group(
       'destroy' => 'backend.festivales.destroy',
     ]);
 
-
+    Route::get('canciones/data', [CancionController::class, 'getCanciones'])->name('backend.canciones.get');
     Route::resource('canciones', CancionController::class)->names([
       'index' => 'backend.canciones.index',
       'create' => 'backend.canciones.create',
@@ -88,17 +78,21 @@ Route::group(
       'edit' => 'backend.canciones.edit',
       'update' => 'backend.canciones.update',
       'destroy' => 'backend.canciones.destroy',
+    ])->parameters([
+      'canciones' => 'cancion'
     ]);
 
 
     Route::resource('discos', AlbumController::class)->names([
-      'index' => 'backend.albums.index',
-      'create' => 'backend.albums.create',
-      'store' => 'backend.albums.store',
-      'show' => 'backend.albums.show',
-      'edit' => 'backend.albums.edit',
-      'update' => 'backend.albums.update',
-      'destroy' => 'backend.albums.destroy',
+      'index' => 'backend.discos.index',
+      'create' => 'backend.discos.create',
+      'store' => 'backend.discos.store',
+      'show' => 'backend.discos.show',
+      'edit' => 'backend.discos.edit',
+      'update' => 'backend.discos.update',
+      'destroy' => 'backend.discos.destroy',
+    ])->parameters([
+      'discos' => 'album'
     ]);
 
 
