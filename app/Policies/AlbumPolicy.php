@@ -17,21 +17,25 @@ class AlbumPolicy
 
   public function view(User $user, Album $album)
   {
-    return $user->hasRole('administrador') || $album->user_id == $user->id;
+    // return $user->hasRole('administrador') || $album->user_id == $user->id;
+    return $user->can('read album');
   }
 
   public function create(User $user)
   {
-    return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
+    // return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
+    return $user->can('create album');
   }
 
   public function update(User $user, Album $album)
   {
-    return $user->hasRole('administrador') || $album->user_id == $user->id;
+    // return $user->hasRole('administrador') || $album->user_id == $user->id;
+    return $user->can('update album');
   }
 
   public function delete(User $user, Album $album)
   {
-    return $user->hasRole('administrador');
+    // return $user->hasRole('administrador');
+    return $user->can('delete album');
   }
 }

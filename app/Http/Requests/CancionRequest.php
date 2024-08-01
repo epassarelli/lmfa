@@ -19,8 +19,8 @@ class CancionRequest extends FormRequest
       'youtube' => 'nullable|url',
       'spotify' => 'nullable|url',
       'interprete_id' => 'required|exists:interpretes,id',
-      'album_id' => 'required|exists:albunes,id',
-      'publicar' => 'required|date',
+      // 'album_id' => 'required|exists:albunes,id',
+      'publicar' => 'nullable|date',
     ];
   }
 }

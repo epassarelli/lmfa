@@ -7,9 +7,11 @@
 @stop
 
 @section('content')
+
   <form action="{{ route('backend.shows.update', $show) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
+    
     <div class="card">
 
       <div class="card-body">

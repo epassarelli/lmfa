@@ -6,6 +6,12 @@
     # Redirección para biografías
     RewriteRule ^biografia-de-(.*)$ /biografias-de-artistas-folkloricos/$1 [R=301,L]
 
+    # Redirección para noticias específicas
+    RewriteRule ^noticias-de-(.*?)/(.*)$ /noticias-del-folklore-argentino/$1/$2 [R=301,L]
+
+    # Redirección para el listado de noticias
+    RewriteRule ^noticias-de-(.*)$ /noticias-del-folklore-argentino/$1 [R=301,L]
+
     # Redirección para discografía específica
     RewriteRule ^discografia-de-(.*?)/(.*)$ /discografias-del-folklore-argentino/$1/$2 [R=301,L]
 

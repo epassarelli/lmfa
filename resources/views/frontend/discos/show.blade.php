@@ -21,12 +21,12 @@
                 href="{{ route('interprete.show', $disco->interprete->slug) }}">{{ $disco->interprete->interprete }}</a>
             </p>
 
-            @if ($disco->spotify !== '')
+            {{-- @if ($disco->spotify !== '')
               <div class="mb-4">
                 <iframe src="https://open.spotify.com/embed/playlist/{{ $disco->spotify }}" width="100%" height="380"
                   frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
               </div>
-            @endif
+            @endif --}}
 
 
 
@@ -53,7 +53,9 @@
 
         <div class="row">
           <h3>Otros díscos de {{ $interprete->interprete }} </h3>
+
           @if ($related->isEmpty())
+
             <div class="warning"></div>
             <div class="alert alert-warning" role="alert">
               No hay discos relacionados disponibles para {{ $interprete->interprete }} aún.
@@ -77,6 +79,7 @@
                 </a>
               </div>
             @endforeach
+
           @endif
 
         </div>

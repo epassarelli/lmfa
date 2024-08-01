@@ -26,7 +26,10 @@ class Album extends Model
 
     public function canciones()
     {
-        return $this->belongsToMany(Cancion::class, 'albunes_canciones');
+        // return $this->belongsToMany(Cancion::class, 'albunes_canciones');
+        return $this->belongsToMany(Cancion::class, 'albunes_canciones')
+            ->withPivot('orden')
+            ->orderBy('pivot_orden');
     }
 
     public function user()

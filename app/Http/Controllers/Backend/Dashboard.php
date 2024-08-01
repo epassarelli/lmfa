@@ -8,14 +8,21 @@ use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        // $this->authorizeResource(Album::class, 'album');
+    }
+
     public function index()
     {
         $user = Auth::user();
         $roles = $user->getRoleNames();
         $permissions = $user->getAllPermissions()->pluck('name');
         // Traer las cantidades de cada entidad
-        
-        
+
+
         return view('backend.dashboard', compact('user', 'roles', 'permissions'));
     }
 }

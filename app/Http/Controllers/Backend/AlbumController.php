@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Album;
+use App\Models\Cancion;
 use App\Models\User;
 use App\Http\Requests\AlbumRequest;
 use App\Models\Interprete;
@@ -15,10 +16,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class AlbumController extends Controller
 {
+
   public function __construct()
   {
     $this->middleware('auth');
-    $this->authorizeResource(Album::class, 'album');
+    // $this->authorizeResource(Album::class, 'album');
   }
 
   public function index()
@@ -47,6 +49,7 @@ class AlbumController extends Controller
   public function store(AlbumRequest $request)
   {
     $album = new Album($request->validated());
+
     $album->slug = Str::slug($album->album);
     $album->user_id = Auth::id();
     $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
@@ -54,7 +57,7 @@ class AlbumController extends Controller
 
     if ($request->hasFile('foto')) {
       $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
-      $filePath = $request->file('foto')->storeAs('discos', $fileName, 'public');
+      $filePath = $request->file('foto')->storeAs('albunes', $fileName, 'public');
       $album->foto = $fileName;
     }
 
@@ -65,32 +68,51 @@ class AlbumController extends Controller
     }
     // Para mensajes de éxito
     Alert::success('Album creado', 'El album ha sido creado con éxito.');
-    return redirect()->route('backend.albums.index');
+    return redirect()->route('backend.discos.index');
   }
 
   public function edit(Album $album)
   {
     $action = 'edit';
     $interpretes = Interprete::active()->get();
-    return view('backend.albunes.edit', compact('album', 'interpretes', 'action'));
+
+    $interprete_id = $album->interprete_id;
+
+    $album_canciones_ids = $album->canciones->pluck('id')->toArray();
+    $canciones = Cancion::where('interprete_id', $interprete_id)
+      ->whereNotIn('id', $album_canciones_ids)
+      ->orderBy('cancion', 'asc')
+      ->get();
+    $album_canciones = $album->canciones;
+
+    return view('backend.albunes.edit', compact('album', 'canciones', 'album_canciones', 'interpretes', 'action'));
   }
 
   public function update(AlbumRequest $request, Album $album)
   {
     $album->fill($request->validated());
+
     $album->slug = Str::slug($album->album);
     $album->user_id = Auth::id();
     $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
     if ($request->hasFile('foto')) {
       $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
-      $filePath = $request->file('foto')->storeAs('discos', $fileName, 'public');
+      $filePath = $request->file('foto')->storeAs('albunes', $fileName, 'public');
       $album->foto = $fileName;
     }
+    $canciones = $request->input('canciones', []);
+    $ordenes = $request->input('ordenes', []);
 
+    $syncData = [];
+    foreach ($canciones as $index => $cancion_id) {
+      $syncData[$cancion_id] = ['orden' => $ordenes[$index]];
+    }
+
+    $album->canciones()->sync($syncData);
     $album->save();
 
-    return redirect()->route('backend.albums.index')->with('success', 'Álbum actualizado exitosamente.');
+    return redirect()->route('backend.discos.index')->with('success', 'Álbum actualizado exitosamente.');
   }
 
   public function destroy(Album $album)
@@ -99,7 +121,7 @@ class AlbumController extends Controller
     $album->delete();
 
     Alert::success('Album eliminado', 'El album se ha sido eliminado con éxito.');
-    return redirect()->route('backend.albums.index');
+    return redirect()->route('backend.discos.index');
   }
 
   private function sendNotification(Album $album)

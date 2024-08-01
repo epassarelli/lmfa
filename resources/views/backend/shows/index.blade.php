@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+
   @if (session('success'))
     <script>
       Swal.fire({
@@ -16,6 +17,7 @@
       });
     </script>
   @endif
+
   <div class="card">
     <div class="card-header text-right">
       <a href="{{ route('backend.shows.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Crear Show</a>
@@ -27,7 +29,6 @@
             <th>Fecha</th>
             <th>Show</th>
             <th>Intérprete</th>
-            {{-- <th>Visitas</th> --}}
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -38,7 +39,6 @@
               <td>{{ $show->fecha }}</td>
               <td>{{ $show->show }}</td>
               <td>{{ $show->interprete->interprete }}</td>
-              {{-- <td>{{ $show->visitas }}</td> --}}
               <td>{{ $show->estado == 1 ? 'Activo' : 'Inactivo' }}</td>
               <td class="text-right" style="white-space: nowrap;">
                 <a href="{{ route('backend.shows.edit', $show) }}" class="btn btn-warning">
