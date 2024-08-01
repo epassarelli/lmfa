@@ -42,7 +42,12 @@ class CancionesController extends Controller
     {
 
         $interprete = Interprete::where('slug', $slugInterprete)->first();
-        $cancion = Cancion::where('slug', $slugCancion)->firstOrFail();
+
+        // Busca la canción por su slug y asegura que pertenezca al intérprete encontrado
+        $cancion = Cancion::where('slug', $slugCancion)
+            ->where('interprete_id', $interprete->id)
+            ->firstOrFail();
+        // $cancion = Cancion::where('slug', $slugCancion)->firstOrFail();
 
         // Incrementar el contador de visitas
         $cancion->increment('visitas');
