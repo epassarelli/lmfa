@@ -28,7 +28,6 @@ class Cancion extends Model
     public function interprete()
     {
         return $this->belongsTo(Interprete::class, 'interprete_id');
-        // return $this->belongsTo(Interprete::class, 'interpretes_canciones');
     }
 
     public function user()
