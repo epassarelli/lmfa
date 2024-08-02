@@ -26,9 +26,10 @@
       <table id="albums-table" class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
+            <th>COD</th>
             <th>Foto</th>
-            <th>Álbum</th>
             <th>Año</th>
+            <th>Álbum</th>
             <th>Intérprete</th>
             <th>Acciones</th>
           </tr>
@@ -36,12 +37,13 @@
         <tbody>
           @foreach ($albums as $album)
             <tr>
+              <td>{{ $album->id }}</td>
               <td>
                 <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}"
-                  style="max-height: 80px;">
+                  style="max-height: 50px;">
               </td>
-              <td>{{ $album->album }}</td>
               <td>{{ $album->anio }}</td>
+              <td>{{ $album->album }}</td>
               <td>{{ $album->interprete->interprete }}</td>
               <td class="text-right" style="white-space: nowrap;">
                 <a href="{{ route('backend.discos.edit', $album) }}" class="btn btn-warning"><i

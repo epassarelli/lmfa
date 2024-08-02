@@ -15,18 +15,16 @@ class Album extends Model
     use HasFactory;
     protected $table = 'albunes';
     protected $fillable = [
-        'album', 'slug', 'anio', 'foto', 'telefono', 'spotify', 'visitas', 'publicar', 'estado', 'user_id', 'interprete_id'
+        'album', 'slug', 'anio', 'foto', 'spotify', 'visitas', 'estado', 'user_id', 'interprete_id'
     ];
 
     public function interprete()
     {
         return $this->belongsTo(Interprete::class, 'interprete_id');
-        // return $this->belongsToMany(Interprete::class, 'interpretes_albunes');
     }
 
     public function canciones()
     {
-        // return $this->belongsToMany(Cancion::class, 'albunes_canciones');
         return $this->belongsToMany(Cancion::class, 'albunes_canciones')
             ->withPivot('orden')
             ->orderBy('pivot_orden');

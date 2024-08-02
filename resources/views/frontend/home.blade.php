@@ -242,8 +242,9 @@
             <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}"
               class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
               <div class="card-img-top">
-                <img src="{{ asset('storage/albunes/' . $disco->foto) }}" class="img-fluid w-100 h-auto object-cover"
-                  alt="{{ $disco->album }}">
+                <img
+                  src="{{ file_exists(public_path('storage/albunes/' . $disco->foto)) && $disco->foto ? asset('storage/albunes/' . $disco->foto) : asset('img/imagennodisponible400x400.jpg') }}"
+                  class="img-fluid w-100 h-auto object-cover" alt="{{ $disco->album }}">
               </div>
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title mb-2">{{ $disco->album }}</h5>

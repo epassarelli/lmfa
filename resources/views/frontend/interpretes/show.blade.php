@@ -11,8 +11,6 @@
       <div class="col-md-9">
         <h1>Biografía de {{ $interprete->interprete }}</h1>
 
-
-
         <div class="lead">
           {!! $interprete->biografia !!}
         </div>
