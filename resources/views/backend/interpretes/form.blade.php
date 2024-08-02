@@ -26,6 +26,8 @@
       <label for="foto" class="form-label">Foto</label>
       <input type="file" name="foto" class="form-control" id="foto"
         value="{{ old('foto', $interprete->foto ?? '') }}" {{ $action == 'create' ? 'required' : '' }}>
+      <small class="form-text text-muted">La imagen debe ser en formato .jpg, de 400 x 400px y no debe superar los
+        200KB.</small>
       @if ($action == 'edit')
         @if ($interprete->foto)
           <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="Foto actual" class="img-fluid mt-2"

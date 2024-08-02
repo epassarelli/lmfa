@@ -63,7 +63,8 @@
         <div class="form-group">
           <label for="foto">Foto</label>
           <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png">
-          <small class="form-text text-muted">La imagen debe ser en formato .jpg y no debe superar los 200KB.</small>
+          <small class="form-text text-muted">La imagen debe ser en formato .jpg, de 400 x 400px y no debe superar los
+            200KB.</small>
           @if (isset($album) && $album->foto)
             <div class="mt-2">
               <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}"
