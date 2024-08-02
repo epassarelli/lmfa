@@ -29,7 +29,7 @@
       </div>
 
 
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="form-group">
           <label for="interprete_id">Intérprete</label>
           <select name="interprete_id" class="form-control" required>
@@ -47,7 +47,7 @@
       </div>
 
 
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="form-group">
           <label for="anio">Año</label>
           <input type="number" name="anio" id="anio" min="1900" max="2100" step="1"
@@ -59,22 +59,11 @@
       </div>
 
 
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="publicar">Fecha de Publicación</label>
-          <input type="datetime-local" name="publicar" id="publicar" class="form-control"
-            value="{{ old('publicar', isset($album) ? $album->publicar : '') }}">
-          @error('publicar')
-            <div class="text-danger">{{ $message }}</div>
-          @enderror
-        </div>
-      </div>
-
-
       <div class="col-md-6">
         <div class="form-group">
           <label for="foto">Foto</label>
           <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png">
+          <small class="form-text text-muted">La imagen debe ser en formato .jpg y no debe superar los 200KB.</small>
           @if (isset($album) && $album->foto)
             <div class="mt-2">
               <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}"
@@ -88,13 +77,15 @@
       </div>
 
 
-      <div class="form-group">
-        <label for="spotify">Enlace de Spotify</label>
-        <input type="text" name="spotify" id="spotify" class="form-control"
-          value="{{ old('spotify', $album->spotify ?? '') }}">
-        @error('spotify')
-          <div class="text-danger">{{ $message }}</div>
-        @enderror
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="spotify">Enlace de Spotify</label>
+          <input type="text" name="spotify" id="spotify" class="form-control"
+            value="{{ old('spotify', $album->spotify ?? '') }}">
+          @error('spotify')
+            <div class="text-danger">{{ $message }}</div>
+          @enderror
+        </div>
       </div>
 
 
@@ -116,7 +107,7 @@
             <div class="d-flex align-items-center">
               <input type="hidden" name="canciones[]" value="{{ $cancion->id }}">
               <input type="number" class="form-control me-2" name="ordenes[]" value="{{ $cancion->pivot->orden }}"
-                min="1" style="width: 80px;">
+                min="1" style="width: 60px;">
               {{ $cancion->cancion }}
             </div>
             <button type="button" class="btn btn-danger btn-sm remove-cancion">Quitar</button>

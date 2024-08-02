@@ -16,10 +16,9 @@ class AlbumRequest extends FormRequest
     return [
       'album' => 'required|string|max:255',
       'anio' => 'required|digits:4',
-      'spotify' => 'nullable',
+      'spotify' => 'nullable|string',
       'interprete_id' => 'required|exists:interpretes,id',
-      'foto' => 'nullable|image|mimes:jpeg,png|max:200',
-      'publicar' => 'date',
+      'foto' => 'required|image|mimes:jpeg,jpg|max:200',
     ];
   }
 }

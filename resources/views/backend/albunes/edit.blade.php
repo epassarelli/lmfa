@@ -17,8 +17,6 @@
       <div class="card-body">
         @include('backend.albunes.form')
 
-
-
         <div class="card-footer">
           <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i> Guardar
