@@ -14,45 +14,46 @@
         <div class="row">
 
           <div class="col-md-6">
-            <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}" class="card-img-top">
-
-            <p class="text-lg mb-4"><span class="font-bold">Año:</span> {{ $disco->anio }}</p>
-            <p class="text-lg mb-4"><span class="font-bold">Intérprete:</span> <a
+            <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}" class="card-img-top mb-4">
+            <h1 class="fs-2">{{ $disco->anio }} - {{ $disco->album }}</h1>
+            <p class="fs-5 mb-4"><span class="font-bold">Intérprete:</span> <a
                 href="{{ route('interprete.show', $disco->interprete->slug) }}">{{ $disco->interprete->interprete }}</a>
             </p>
+          </div>
 
-            {{-- @if ($disco->spotify !== '')
+          <div class="col-md-6">
+
+            <h4>Listado de Canciones</h4>
+            <hr>
+            <ol>
+              @foreach ($disco->canciones as $cancion)
+                <li class="fs-5 mb-2">
+                  <a href="{{ route('canciones.show', [$disco->interprete->slug, $cancion->slug]) }}"
+                    class="h-100 shadow-sm text-decoration-none">{{ $cancion->cancion }}
+                    <span class="float-end">
+                      <i class="fas fa-file-alt"></i>
+                      <i class="fas fa-video"></i>
+                    </span>
+                  </a>
+                </li>
+              @endforeach
+              </ul>
+          </div>
+          <hr>
+
+          {{-- @if ($disco->spotify !== '')
               <div class="mb-4">
                 <iframe src="https://open.spotify.com/embed/playlist/{{ $disco->spotify }}" width="100%" height="380"
                   frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
               </div>
             @endif --}}
-
-
-
-          </div>
-
-          <div class="col-md-6">
-            <h1>{{ $disco->album }}</h1>
-            {{-- <h2 class="mb-4">Canciones</h2> --}}
-            <ul>
-              @foreach ($disco->canciones as $cancion)
-                <li class="text-lg mb-2">
-                  <a href="{{ route('canciones.show', [$disco->interprete->slug, $cancion->slug]) }}"
-                    class="h-100 shadow-sm text-decoration-none">{{ $cancion->cancion }}</a>
-                </li>
-              @endforeach
-            </ul>
-          </div>
-
-
         </div>
 
 
 
-
         <div class="row">
-          <h3>Otros díscos de {{ $interprete->interprete }} </h3>
+
+          <h3 class="fs-2">Otros díscos de {{ $interprete->interprete }} </h3>
 
           @if ($related->isEmpty())
 
