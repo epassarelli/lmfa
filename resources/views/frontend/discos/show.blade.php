@@ -43,7 +43,7 @@
 
           @if ($disco->spotify !== '')
             <div class="mb-4">
-              {{ $disco->spotify }}
+              {!! $disco->spotify !!}
             </div>
           @endif
         </div>
