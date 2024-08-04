@@ -31,6 +31,7 @@
             <th>Año</th>
             <th>Álbum</th>
             <th>Visitas</th>
+            <th>Spotify</th>
             <th>Canc's</th>
             <th>Intérprete</th>
             <th>Acciones</th>
@@ -47,6 +48,7 @@
               <td>{{ $album->anio }}</td>
               <td>{{ $album->album }}</td>
               <td>{{ $album->visitas }}</td>
+              <td>{{ $album->spotify ? 'Sí' : '-' }}</td>
               <td>{{ $album->canciones_count }}</td>
               <td>{{ $album->interprete->interprete }}</td>
               <td class="text-right" style="white-space: nowrap;">
