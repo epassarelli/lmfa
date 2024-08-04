@@ -30,6 +30,8 @@
             <th>Foto</th>
             <th>Año</th>
             <th>Álbum</th>
+            <th>Visitas</th>
+            <th>Canc's</th>
             <th>Intérprete</th>
             <th>Acciones</th>
           </tr>
@@ -44,12 +46,15 @@
               </td>
               <td>{{ $album->anio }}</td>
               <td>{{ $album->album }}</td>
+              <td>{{ $album->visitas }}</td>
+              <td>{{ $album->canciones_count }}</td>
               <td>{{ $album->interprete->interprete }}</td>
               <td class="text-right" style="white-space: nowrap;">
                 <a href="{{ route('backend.discos.edit', $album) }}" class="btn btn-warning"><i
                     class="fas fa-edit"></i></a>
                 @can('delete', $album)
-                  <form action="{{ route('backend.discos.destroy', $album) }}" method="POST" style="display:inline-block;">
+                  <form action="{{ route('backend.discos.destroy', $album) }}" method="POST"
+                    style="display:inline-block;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger"

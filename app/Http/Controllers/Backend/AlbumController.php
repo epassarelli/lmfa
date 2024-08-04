@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AlbumRequest;
+
 use App\Models\Album;
 use App\Models\Cancion;
 use App\Models\User;
-use App\Http\Requests\AlbumRequest;
 use App\Models\Interprete;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -26,14 +29,21 @@ class AlbumController extends Controller
   public function index()
   {
     $user = Auth::user();
+
     $albums = Album::query()
-      ->when($user->hasRole('colaborador'), function ($query) use ($user) {
-        $query->where('user_id', $user->id);
-      })
-      ->when($user->hasRole('prensa'), function ($query) use ($user) {
-        $query->where('user_id', $user->id);
+      ->when($user->hasRole('colaborador') || $user->hasRole('prensa'), function ($query) use ($user) {
+        $query->where(
+          'user_id',
+          $user->id
+        );
       })
       ->with('interprete', 'user')
+      ->withCount('canciones') // Cuenta las canciones del álbum
+      // ->withCount(['interprete as interprete_canciones_count' => function ($query) {
+      //   $query->select(DB::raw('count(*)'))
+      //     ->from('canciones')
+      //     ->whereColumn('canciones.interprete_id', 'albums.interprete_id');
+      // }])
       ->get();
 
     return view('backend.albunes.index', compact('albums'));
