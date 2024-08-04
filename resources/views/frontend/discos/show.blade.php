@@ -41,12 +41,11 @@
           </div>
           <hr>
 
-          {{-- @if ($disco->spotify !== '')
-              <div class="mb-4">
-                <iframe src="https://open.spotify.com/embed/playlist/{{ $disco->spotify }}" width="100%" height="380"
-                  frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-              </div>
-            @endif --}}
+          @if ($disco->spotify !== '')
+            <div class="mb-4">
+              {{ $disco->spotify }}
+            </div>
+          @endif
         </div>
 
 
