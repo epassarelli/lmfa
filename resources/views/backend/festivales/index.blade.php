@@ -26,6 +26,7 @@
         <thead>
           <tr>
             <th>Título</th>
+            <th>Caract's</th>
             <th>Provincia</th>
             <th>Mes</th>
             <th>Visitas</th>
@@ -37,6 +38,7 @@
           @foreach ($festivales as $festival)
             <tr>
               <td>{{ $festival->titulo }}</td>
+              <td>{{ strlen(strip_tags($festival->detalle)) }}</td>
               <td>{{ $festival->provincia_id }}</td>
               <td>{{ $festival->mes_id }}</td>
               <td>{{ $festival->visitas }}</td>

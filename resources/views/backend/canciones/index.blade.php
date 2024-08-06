@@ -13,7 +13,7 @@
         icon: 'success',
         title: 'Éxito',
         text: '{{ session('
-                                                                                            success ') }}'
+                                                                                                    success ') }}'
       });
     </script>
   @endif

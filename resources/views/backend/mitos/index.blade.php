@@ -25,7 +25,8 @@
         <thead>
           <tr>
             <th>Título</th>
-            <th>Usuario</th>
+            {{-- <th>Usuario</th> --}}
+            <th>Caract's</th>
             <th>Visitas</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -35,7 +36,8 @@
           @foreach ($mitos as $mito)
             <tr>
               <td>{{ $mito->titulo }}</td>
-              <td>{{ $mito->user->name }}</td>
+              {{-- <td>{{ $mito->user->name }}</td> --}}
+              <td>{{ strlen(strip_tags($mito->mito)) }}</td>
               <td>{{ $mito->visitas }}</td>
               <td>{{ $mito->estado == 1 ? 'Activo' : 'Inactivo' }}</td>
               <td class="text-right" style="white-space: nowrap;">

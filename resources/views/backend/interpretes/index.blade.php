@@ -28,6 +28,7 @@
           <th>ID</th>
           <th>Foto</th>
           <th>Interprete</th>
+          <th>Caract's</th>
           <th>Visitas</th>
           <th>Noticias</th>
           <th>Shows</th>
@@ -44,6 +45,7 @@
                   class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
               </td>
               <td>{{ $interprete->interprete }}</td>
+              <td>{{ strlen(strip_tags($interprete->biografia)) }}</td>
               <td>{{ $interprete->visitas }}</td>
               <td>{{ $interprete->noticias_count }}</td>
               <td>{{ $interprete->shows_count }}</td>

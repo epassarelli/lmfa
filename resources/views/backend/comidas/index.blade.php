@@ -25,7 +25,7 @@
         <thead>
           <tr>
             <th>Título</th>
-            <th>Usuario</th>
+            <th>Caract's</th>
             <th>Visitas</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -35,7 +35,8 @@
           @foreach ($comidas as $comida)
             <tr>
               <td>{{ $comida->titulo }}</td>
-              <td>{{ $comida->user->name }}</td>
+              <td>{{ strlen(strip_tags($comida->receta)) }}</td>
+              {{-- <td>{{ $comida->user->name }}</td> --}}
               <td>{{ $comida->visitas }}</td>
               <td>{{ $comida->estado == 1 ? 'Activo' : 'Inactivo' }}</td>
               <td class="text-right" style="white-space: nowrap;">
