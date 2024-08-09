@@ -20,14 +20,13 @@
         </p>
 
         <div class="row">
-          <ul class="list-group">
-            @foreach ($canciones as $index => $cancion)
-              <a href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}"
-                class="list-group-item @if ($index % 2 == 0) list-group-item-secondary @endif">
-                {{ $cancion->interprete->interprete }} - {{ $cancion->cancion }}
-              </a>
-            @endforeach
-          </ul>
+          {{-- <ul class="list-group"> --}}
+          @foreach ($canciones as $index => $cancion)
+            <a class="col-md-6" href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}">
+              {{ $cancion->cancion }}
+            </a>
+          @endforeach
+          {{-- </ul> --}}
         </div>
 
         @include('layouts.partials.select-interprete')

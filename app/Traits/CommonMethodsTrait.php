@@ -107,7 +107,7 @@ trait CommonMethodsTrait
    * @param \Illuminate\Database\Eloquent\Model $contenidoActual
    * @return \Illuminate\Database\Eloquent\Collection
    */
-  public function getRelatedContent($interprete, $seccion, $contenidoActual)
+  public function getRelatedContent($interprete, $seccion, $contenidoActual, $orderBy = 'id', $direction = 'desc')
   {
     $relationMethod = $this->getRelationMethod($seccion);
 
@@ -115,13 +115,12 @@ trait CommonMethodsTrait
       return $interprete->$relationMethod()
         ->where('estado', 1)
         ->where('id', '!=', $contenidoActual->id)
-        ->orderBy('id', 'desc')
+        ->orderBy($orderBy, $direction)
         ->get();
     }
 
     return new Collection();
   }
-
   /**
    * Obtener el método de relación basado en la sección.
    *
