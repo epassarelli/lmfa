@@ -27,7 +27,7 @@ class DiscosController extends Controller
     public function byArtista($slug)
     {
         $interprete = Interprete::where('slug', $slug)->first();
-        $discos = $interprete->discos()->where('estado', 1)->get();
+        $discos = $interprete->discos()->where('estado', 1)->orderby('anio', 'desc')->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
         $section = 'discografias';
 
@@ -44,7 +44,7 @@ class DiscosController extends Controller
         $disco->increment('visitas');
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
-        $related = $interprete->getRelatedContent($interprete, 'discos', $disco);
+        $related = $interprete->getRelatedContent($interprete, 'discos', $disco, 'anio', 'desc');
 
         $metaTitle = $disco->titulo . " - Discografía de " . $interprete->interprete;
         $metaDescription = $disco->titulo . "Discografía de " . $interprete->interprete . ", interprete del folklore argentino";

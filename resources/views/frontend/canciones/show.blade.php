@@ -26,17 +26,13 @@
 
 
 
-
         <div class="row">
           <h2>Otras canciones de {{ $interprete->interprete }}</h2>
-          <ul class="list-group">
-            @foreach ($related as $index => $cancion)
-              <a href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}"
-                class="list-group-item @if ($index % 2 == 0) list-group-item-secondary @endif">
-                {{ $cancion->interprete->interprete }} - {{ $cancion->cancion }}
-              </a>
-            @endforeach
-          </ul>
+          @foreach ($related as $index => $cancion)
+            <a href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}" class="col-md-6">
+              {{ $cancion->cancion }}
+            </a>
+          @endforeach
         </div>
 
       </div>

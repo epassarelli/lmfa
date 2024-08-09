@@ -70,7 +70,7 @@
                       alt="{{ $disco->album }}">
                   </div>
                   <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mb-2">{{ $disco->album }}</h5>
+                    <h5 class="card-title mb-2">{{ $disco->anio }} - {{ $disco->album }}</h5>
                     <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
                       {{ $disco->interprete->interprete }}
                     </p>

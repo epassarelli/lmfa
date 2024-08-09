@@ -53,7 +53,7 @@ class CancionesController extends Controller
         $cancion->increment('visitas');
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
-        $related = $interprete->getRelatedContent($interprete, 'canciones', $cancion);
+        $related = $interprete->getRelatedContent($interprete, 'canciones', $cancion, 'cancion', 'asc');
 
         $metaTitle = "Letra de " . $cancion->cancion . ", " . $interprete->interprete;
         // Decodifica las entidades HTML, elimina etiquetas HTML y toma los primeros 150 caracteres
