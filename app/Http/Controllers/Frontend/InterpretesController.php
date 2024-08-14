@@ -12,8 +12,8 @@ class InterpretesController extends Controller
     {
         $interprete = new Interprete();
         // Obtener los últimos 5 intérpretes
-        $ultimos = $interprete->getNLast(Interprete::class, 12);
-        $visitados = $interprete->getNMostVisited(Interprete::class, 12);
+        $ultimos = $interprete->getNLast(Interprete::class, 20);
+        $visitados = $interprete->getNMostVisited(Interprete::class, 20);
 
 
         // dd($interpretes);
@@ -78,8 +78,8 @@ class InterpretesController extends Controller
     {
         $interprete = new Interprete();
         // Obtener los últimos 5 intérpretes
-        $ultimos = $interprete->getNLast(Interprete::class, 12);
-        $visitados = $interprete->getNMostVisited(Interprete::class, 12);
+        $ultimos = $interprete->getNLast(Interprete::class, 20);
+        $visitados = $interprete->getNMostVisited(Interprete::class, 40);
 
 
         // Lógica para obtener intérpretes cuya letra del título comience con $letra

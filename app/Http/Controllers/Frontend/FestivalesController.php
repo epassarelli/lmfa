@@ -15,7 +15,7 @@ class FestivalesController extends Controller
         $festival = new Festival();
         // Obtener los últimos 5 intérpretes
         $ultimos = $festival->getNLast(Festival::class, 12);
-        $visitados = $festival->getNMostVisited(Festival::class, 12);
+        $visitados = $festival->getNMostVisited(Festival::class, 20);
 
 
         $metaTitle = "Festivales y Fiestas del Folklore Argentino: Tradición y Cultura";

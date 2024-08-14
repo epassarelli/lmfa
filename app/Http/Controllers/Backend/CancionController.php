@@ -133,6 +133,38 @@ class CancionController extends Controller
     return redirect()->route('backend.canciones.index');
   }
 
+  public function storeAjax(Request $request)
+  {
+    $request->validate([
+      'cancion' => 'required|string|max:255',
+      'interprete_id' => 'required|exists:interpretes,id',
+    ]);
+
+    // Verificar si la canción ya existe para ese intérprete
+    $existingCancion = Cancion::where('cancion', $request->cancion)
+      ->where('interprete_id', $request->interprete_id)
+      ->first();
+
+    if ($existingCancion) {
+      return response()->json(['success' => false, 'message' => 'La canción ya existe para este intérprete.']);
+    }
+
+    // Crear la nueva canción
+    $cancion = new Cancion();
+    $cancion->cancion = $request->cancion;
+    $cancion->slug = Str::slug($request->cancion);
+    $cancion->letra = 'No disponible aún';
+    $cancion->youtube = null;
+    $cancion->spotify = null;
+    $cancion->estado = 1;
+    $cancion->visitas = 0;
+    $cancion->interprete_id = $request->interprete_id;
+    $cancion->user_id = auth()->id();
+    $cancion->save();
+
+    return response()->json(['success' => true, 'cancion' => $cancion]);
+  }
+
   private function sendNotification(Cancion $cancion)
   {
     $details = [

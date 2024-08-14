@@ -393,6 +393,27 @@ return [
             'can' => 'read mito',
         ],
 
+        ['header' => 'Avisos Clasificados'],
+
+        [
+            'text' => 'Avisos',
+            'url' => 'admin/classifieds',
+            'icon' => 'fas fa-fw fa-map-marked-alt',
+            'can' => 'read festival',
+        ],
+        [
+            'text' => 'Categorias',
+            'url' => 'admin/categories',
+            'icon' => 'fas fa-fw fa-utensils',
+            'can' => 'read comida',
+        ],
+        [
+            'text' => 'Tags',
+            'url' => 'admin/tags',
+            'icon' => 'fas fa-fw fa-book',
+            'can' => 'read mito',
+        ],
+
         // [
         //     'text' => 'profile',
         //     'url' => 'admin/settings',

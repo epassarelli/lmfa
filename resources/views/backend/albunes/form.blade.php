@@ -125,6 +125,15 @@
         <button type="button" id="add-cancion" class="btn btn-success">+</button>
       </div>
 
+      <div class="form-group">
+        <label for="new-cancion">Agregar Nueva Canción</label>
+        <input type="text" id="new-cancion" class="form-control" placeholder="Nombre de la canción">
+        <button type="button" id="create-cancion" class="btn btn-success mt-2">Crear y Agregar Canción</button>
+      </div>
+
+      <ul id="canciones-list" class="list-group mt-3">
+        <!-- Aquí se listarán las canciones seleccionadas para el álbum -->
+      </ul>
 
     </div>
   @endif

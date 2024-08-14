@@ -17,6 +17,10 @@ use App\Http\Controllers\Backend\FestivalController;
 use App\Http\Controllers\Backend\MitoController;
 use App\Http\Controllers\Backend\ShowController;
 
+use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\ClassifiedController;
+use App\Http\Controllers\Backend\TagController;
+
 
 Route::group(
   ['middleware' => ['auth']],
@@ -25,6 +29,9 @@ Route::group(
     Route::resource('roles', RoleController::class)->names('roles');
     Route::resource('users', UserController::class)->names('users');
     Route::resource('permissions', PermissionController::class)->names('permissions');
+    Route::resource('categories', CategoryController::class);
+    Route::resource('classifieds', ClassifiedController::class);
+    Route::resource('tags', TagController::class);
 
     Route::resource('shows', ShowController::class)->names([
       'index' => 'backend.shows.index',
@@ -69,6 +76,7 @@ Route::group(
       'destroy' => 'backend.festivales.destroy',
     ]);
 
+    Route::post('canciones/store-ajax', [CancionController::class, 'storeAjax'])->name('backend.canciones.store-ajax');
     Route::get('canciones/data', [CancionController::class, 'getCanciones'])->name('backend.canciones.get');
     Route::resource('canciones', CancionController::class)->names([
       'index' => 'backend.canciones.index',
