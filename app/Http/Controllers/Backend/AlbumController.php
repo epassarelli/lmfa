@@ -65,6 +65,7 @@ class AlbumController extends Controller
     $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
     $album->visitas = 0;
 
+    // Trar el slug del interprete y concatenarlo delante del album
     if ($request->hasFile('foto')) {
       $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
       $filePath = $request->file('foto')->storeAs('albunes', $fileName, 'public');
