@@ -17,6 +17,9 @@ use App\Http\Controllers\Frontend\ShowsController;
 use App\Http\Controllers\Frontend\HomeController;
 // use App\Http\Controllers\Frontend\ImagenController;
 
+use App\Http\Controllers\Auth\SocialiteController;
+
+
 // Folklore Argentino
 // Letras de canciones folklóricas
 // Noticias de folklore argentino
@@ -84,6 +87,13 @@ Route::get('mitos-y-leyendas-argentinas', [MitosController::class, 'index'])->na
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Rutas para la Autenticacion con redes sociales
+
+Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+
+Route::get('auth/facebook', [SocialiteController::class, 'redirectToFacebook'])->name('auth.facebook');
+Route::get('auth/facebook/callback', [SocialiteController::class, 'handleFacebookCallback']);
 
 Auth::routes();
 //Auth::routes(['register' => false, 'reset' => false]);
