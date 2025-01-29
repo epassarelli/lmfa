@@ -28,12 +28,13 @@
           <th>ID</th>
           <th>Foto</th>
           <th>Interprete</th>
-          <th>Caract's</th>
-          <th>Visitas</th>
-          <th>Noticias</th>
+          <th>Correo</th>
+          <th>Chars</th>
+          <th>Views</th>
+          <th>News</th>
           <th>Shows</th>
           <th>Discos</th>
-          <th>Canciones</th>
+          <th>Songs</th>
           <th>Acciones</th>
         </thead>
         <tbody>
@@ -45,6 +46,7 @@
                   class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
               </td>
               <td>{{ $interprete->interprete }}</td>
+              <td>{{ $interprete->correo }}</td>
               <td>{{ strlen(strip_tags($interprete->biografia)) }}</td>
               <td>{{ $interprete->visitas }}</td>
               <td>{{ $interprete->noticias_count }}</td>
