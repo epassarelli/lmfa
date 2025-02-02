@@ -124,3 +124,7 @@
     border-color: #ffbf00;
   }
 </style>
+
+{{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.carousel.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/magazine/owl.theme.default.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/magazine/style.css') }}"> --}}

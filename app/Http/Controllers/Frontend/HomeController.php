@@ -18,7 +18,7 @@ class HomeController extends Controller
     {
         // Obtener las últimas 4 noticias
         $noticia = new Noticia();
-        $noticias = $noticia->getNLast(Noticia::class, 4);
+        $noticias = $noticia->getNLast(Noticia::class, 10)->toArray();
 
         // Obtener las últimas 4 shows
         $show = new Show();
