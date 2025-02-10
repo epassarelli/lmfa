@@ -57,7 +57,7 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesourc
 RUN apt-get update && apt-get install nodejs -y
 
 # Puerto expuesto
-EXPOSE 80 443 5173
+EXPOSE 80
 
 # Comando para ejecutar el servidor Apache
 CMD ["apache2-foreground"]

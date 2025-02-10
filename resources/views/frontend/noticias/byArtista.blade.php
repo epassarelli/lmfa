@@ -3,6 +3,12 @@
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 
+@section('styles')
+  {{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.carousel.min.css') }}"> --}}
+  {{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.theme.default.min.css') }}"> --}}
+  <link rel="stylesheet" href="{{ asset('css/magazine/style.css') }}">
+@endsection
+
 @section('content')
 
 
@@ -28,18 +34,28 @@
             </div>
           @else
             @foreach ($noticias as $noticia)
-              <div class="col-md-6 mb-4">
-                <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
-                  class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
-                  <div class="card-img-top">
-                    <img src="{{ asset('storage/noticias/' . $noticia->foto) }}"
-                      class="img-fluid w-100 h-auto object-cover" alt="{{ $noticia->titulo }}">
+              <div class="col-lg-6">
+                <div class="single-sports-news-box">
+                  <div class="sports-news-image">
+                    <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">
+                      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}">
+                    </a>
+
+                    <a href="https://www.youtube.com/watch?v=UG8N5JT4QLc" class="popup-youtube">
+                      <i class="bx bx-play-circle"></i>
+                    </a>
                   </div>
-                  <div class="card-body d-flex flex-column">
-                    <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $noticia->titulo }}</h5>
-                    <p class="card-text mt-auto">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</p>
+
+                  <div class="sports-news-content">
+                    <span>Football</span>
+                    <h3>
+                      <a
+                        href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">{{ $noticia->titulo }}</a>
+                    </h3>
+                    <p><a href="#">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</a> / 28 September,
+                      2024</p>
                   </div>
-                </a>
+                </div>
               </div>
             @endforeach
 

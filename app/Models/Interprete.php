@@ -22,8 +22,18 @@ class Interprete extends Model
     use HasFactory;
     // protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
     protected $fillable = [
-        'interprete', 'slug', 'biografia', 'foto', 'telefono', 'correo',
-        'instagram', 'twitter', 'youtube', 'visitas', 'estado', 'user_id'
+        'interprete',
+        'slug',
+        'biografia',
+        'foto',
+        'telefono',
+        'correo',
+        'instagram',
+        'twitter',
+        'youtube',
+        'visitas',
+        'estado',
+        'user_id'
     ];
 
     // Retorna una coleccion con interpretes menos el actual
@@ -44,9 +54,14 @@ class Interprete extends Model
             ->select('id', 'interprete', 'slug');
     }
 
+    // public function noticias()
+    // {
+    //     return $this->hasMany(Noticia::class);
+    // }
+
     public function noticias()
     {
-        return $this->hasMany(Noticia::class);
+        return $this->belongsToMany(Noticia::class);
     }
 
     public function shows()

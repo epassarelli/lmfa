@@ -15,11 +15,20 @@ class Noticia extends Model
 
     protected $fillable = ['titulo', 'slug', 'noticia', 'interprete_id', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
 
-
-    public function interprete()
+    public function categoria()
     {
-        return $this->belongsTo(Interprete::class, 'interprete_id');
+        return $this->belongsTo(Categoria::class);
     }
+
+    public function interpretes()
+    {
+        return $this->belongsToMany(Interprete::class);
+    }
+
+    // public function interprete()
+    // {
+    //     return $this->belongsTo(Interprete::class, 'interprete_id');
+    // }
 
     public function user()
     {

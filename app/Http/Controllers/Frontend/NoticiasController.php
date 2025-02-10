@@ -10,6 +10,7 @@ use App\Models\Noticia;
 use App\Models\Show;
 use App\Models\Disco;
 use App\Models\Cancion;
+use App\Models\Categoria;
 use App\Models\Foto;
 use App\Models\Video;
 use Illuminate\Support\Facades\Session;
@@ -34,10 +35,13 @@ class NoticiasController extends Controller
     return view('frontend.noticias.index', compact('visitadas', 'ultimas', 'metaTitle', 'metaDescription'));
   }
 
+
+
   public function byArtista($slug)
   {
     $interprete = Interprete::where('slug', $slug)->first();
     $noticias = $interprete->noticias()->where('estado', 1)->get();
+    // dd($noticias);
     $interpretes = Interprete::getInterpretesExcluding($interprete->id);
     $section = 'noticias';
 
@@ -46,20 +50,75 @@ class NoticiasController extends Controller
     return view('frontend.noticias.byArtista', compact('noticias', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
   }
 
+
+  public function byCategoria($slug)
+  {
+    // Buscar la categoría por el slug
+    $categoria = Categoria::where('slug', $slug)->firstOrFail();
+
+    // Traer las noticias de esa categoría con sus intérpretes
+    $noticias = Noticia::where('categoria_id', $categoria->id)
+      ->where('estado', 1)
+      ->with(['interpretes'])
+      ->latest()
+      ->paginate(10); // Paginación para mejor rendimiento
+
+    $ultimas = Noticia::where('estado', 1)
+      ->orderByDesc('created_at')
+      ->take(5)
+      ->get();
+
+    // $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+    $section = 'noticias';
+
+    $metaTitle = "Noticias de " . $categoria->nombre;
+    $metaDescription = "Todas las novedades y noticias de " . $categoria->nombre . ". Presentaciones, próximos lanzamientos.";
+    return view('frontend.noticias.byCategoria', compact('categoria', 'noticias', 'ultimas', 'section', 'metaTitle', 'metaDescription'));
+  }
+
+  // public function show($slugIterprete, $slugNoticia)
+  // {
+  //   $interprete = Interprete::where('slug', $slugIterprete)->first();
+  //   $noticia = Noticia::where('slug', $slugNoticia)->firstOrFail();
+
+  //   $ultimas_noticias = Noticia::where('estado', 1)
+  //     ->with('interprete')
+  //     ->where('id', '<>', $noticia->id)
+  //     ->orderByDesc('created_at')
+  //     ->take(10)
+  //     ->get();
+  //   // Incrementar el contador de visitas
+  //   $noticia->increment('visitas');
+  //   $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+
+  //   $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
+  //   $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
+
+  //   $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
+  //   // Elimina los saltos de línea
+  //   $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
+
+  //   return view('frontend.noticias.show', compact('noticia', 'interprete', 'interpretes', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
+  // }
+
+
   public function show($slugIterprete, $slugNoticia)
   {
-    $interprete = Interprete::where('slug', $slugIterprete)->first();
+
     $noticia = Noticia::where('slug', $slugNoticia)->firstOrFail();
 
     $ultimas_noticias = Noticia::where('estado', 1)
-      ->with('interprete')
+      // ->with('interprete')
       ->where('id', '<>', $noticia->id)
       ->orderByDesc('created_at')
-      ->take(10)
+      ->take(5)
       ->get();
+
     // Incrementar el contador de visitas
     $noticia->increment('visitas');
-    $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+
+    // $interprete = Interprete::where('slug', $slugIterprete)->first();
+    // $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
     $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
     $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
@@ -68,23 +127,10 @@ class NoticiasController extends Controller
     // Elimina los saltos de línea
     $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
 
-    return view('frontend.noticias.show', compact('noticia', 'interprete', 'interpretes', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
+    // return view('frontend.noticias.show', compact('noticia', 'interprete', 'interpretes', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.show', compact('noticia', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
   }
 
-
-  public function showOld($slug)
-  {
-    // Obtener el intérprete actual
-    $noticia = Noticia::where('slug', $slug)->first();
-
-    // Obtener la lista de intérpretes en estado 1
-    $interpretes = Interprete::where('estado', 1)->orderBy('interprete', 'ASC')->get();
-
-    $metaTitle = "Mi Folklore Argentino";
-    $metaDescription = "El portal del folklore";
-
-    return view('frontend.noticias.show', compact('noticia', 'interpretes', 'metaTitle', 'metaDescription'));
-  }
 
 
   public function busqueda(Request $request)

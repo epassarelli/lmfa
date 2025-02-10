@@ -36,7 +36,9 @@ Route::get('biografias-de-artistas-folkloricos/{interprete:slug}', [InterpretesC
 Route::get('biografias-de-artistas-folkloricos', [InterpretesController::class, 'index'])->name('interpretes.index');
 
 // Rutas para el controlador de Noticias:
-Route::get('noticias-del-folklore-argentino/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
+Route::get('noticias-del-folklore-argentino/{categoria:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('noticia.show');
+// Route::get('noticias-del-folklore-argentino/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
+Route::get('noticias-del-folklore-argentino/{categoria:slug}', [NoticiasController::class, 'byCategoria'])->name('noticias.byCategoria');
 Route::get('noticias-del-folklore-argentino/{interprete:slug}', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
 Route::get('noticias-del-folklore-argentino', [NoticiasController::class, 'index'])->name('noticias.index');
 

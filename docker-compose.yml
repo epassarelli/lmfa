@@ -5,8 +5,6 @@ services:
     build: ./
     ports:
       - 80:80
-      # - 443:443
-      # - 5173:5173
     working_dir: /
     image: mfa_app
     volumes:
@@ -15,7 +13,6 @@ services:
       - db
     networks:
       - app-network
-    # command: bash -c "php /var/www/html/artisan migrate:fresh --seed && php-fpm"
 
   db:
     image: mariadb:10.8
@@ -46,3 +43,4 @@ services:
 
 networks:
   app-network:
+

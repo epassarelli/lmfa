@@ -354,7 +354,7 @@ return [
             'text' => 'Noticias',
             'url' => 'admin/noticias',
             'icon' => 'fas fa-fw fa-newspaper',
-            'can' => 'read noticia',
+            // 'can' => 'read noticia',
         ],
         [
             'text' => 'Shows',
