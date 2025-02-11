@@ -2,11 +2,7 @@
 FROM php:8.2-apache
 
 # Instalar dependencias
-RUN apt-get update && apt-get install -y \
-  curl\
-  libzip-dev \
-  zip \
-  unzip \
+RUN apt-get update && apt-get install -y curl libzip-dev zip unzip \
   && docker-php-ext-configure zip \
   && docker-php-ext-install zip pdo_mysql
 
