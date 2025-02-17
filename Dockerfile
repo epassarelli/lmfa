@@ -15,6 +15,9 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 # Configurar PHP
 # COPY .docker/php.ini /usr/local/etc/php/
 
+# Copiar configuración personalizada de PHP
+COPY php.ini /usr/local/etc/php/php.ini
+
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
