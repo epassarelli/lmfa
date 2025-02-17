@@ -76,7 +76,20 @@
 
         <div class="row">
           <div class="col-md">
-
+            <div class="form-group">
+              <label for="categoria_id">Categoría</label>
+              <select name="categoria_id" id="categoria_id" class="form-control" required>
+                <option value="">Seleccione una categoría</option>
+                @foreach ($categorias as $categoria)
+                  <option value="{{ $categoria->id }}" {{ $noticia->categoria_id == $categoria->id ? 'selected' : '' }}>
+                    {{ $categoria->nombre }}
+                  </option>
+                @endforeach
+              </select>
+              @error('categoria_id')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
+            </div>
           </div>
           <div class="col-md">
 

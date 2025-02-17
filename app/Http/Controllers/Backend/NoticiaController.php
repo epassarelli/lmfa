@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 use App\Models\Noticia;
@@ -40,8 +41,10 @@ class NoticiaController extends Controller
     {
         $this->authorize('create', Noticia::class);
 
+        $categorias = Categoria::all();
         $interpretes = Interprete::active()->get();
-        return view('backend.noticias.create', compact('interpretes'));
+
+        return view('backend.noticias.create', compact('interpretes', 'categorias'));
     }
 
     public function store(Request $request)
@@ -56,6 +59,7 @@ class NoticiaController extends Controller
             'noticia' => 'required',
             'foto' => 'required|image',
             'interprete_id' => 'required|exists:interpretes,id',
+            'categoria_id' => 'required|exists:categorias,id', // Validar la categoría
         ]);
 
         $noticia = new Noticia($request->all());
@@ -85,8 +89,10 @@ class NoticiaController extends Controller
     {
         $this->authorize('update', $noticia);
 
+        $categorias = Categoria::all();
         $interpretes = Interprete::active()->get();
-        return view('backend.noticias.edit', compact('noticia', 'interpretes'));
+
+        return view('backend.noticias.edit', compact('noticia', 'interpretes', 'categorias'));
     }
 
     public function update(Request $request, Noticia $noticia)
@@ -101,6 +107,7 @@ class NoticiaController extends Controller
             'noticia' => 'required',
             'foto' => 'image',
             'interprete_id' => 'required|exists:interpretes,id',
+            'categoria_id' => 'required|exists:categorias,id', // Validar la categoría
         ]);
 
         $noticia->fill($request->all());
