@@ -46,12 +46,13 @@
               </td>
               <td>{{ $noticia->titulo }}</td>
               <td>
-                @if ($noticia->interprete)
-                  {{ $noticia->interprete->interprete }}
+                @if ($noticia->interpretes->isNotEmpty())
+                  {{ $noticia->interpretes->pluck('interprete')->join(', ') }}
                 @else
-                  --- Sin intérprete
+                  --- Sin intérpretes
                 @endif
               </td>
+
               <td>{{ $noticia->visitas }}</td>
               {{-- <td class="text-center"><livewire:toggle-button :model="$noticia" field="estado"
                   key="{{ $noticia->id }}" />

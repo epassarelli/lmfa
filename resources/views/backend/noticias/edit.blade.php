@@ -44,14 +44,16 @@
         </div>
 
         <div class="row">
+
           <div class="col-md-6">
             <div class="form-group">
-              <label for="interprete_id">Intérprete</label>
-              <select name="interprete_id" class="form-control" required>
+              <label for="interprete_id">Intérpretes</label>
+              <select name="interprete_id[]" class="form-control" multiple required>
                 @foreach ($interpretes as $interprete)
                   <option value="{{ $interprete->id }}"
-                    {{ $noticia->interprete_id == $interprete->id ? 'selected' : '' }}>
-                    {{ $interprete->interprete }}</option>
+                    {{ in_array($interprete->id, $noticia->interpretes->pluck('id')->toArray()) ? 'selected' : '' }}>
+                    {{ $interprete->interprete }}
+                  </option>
                 @endforeach
               </select>
               @error('interprete_id')
@@ -59,6 +61,7 @@
               @enderror
             </div>
           </div>
+
 
           <div class="col-md-6">
             <div class="form-group">

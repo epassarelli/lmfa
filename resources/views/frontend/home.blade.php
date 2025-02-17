@@ -19,7 +19,7 @@
           <div class="single-main-news">
             <a href="{{ route('noticia.show', [$noticias[0]['categoria']['slug'], $noticias[0]['slug']]) }}">
               <img
-                src="{{ file_exists(public_path('storage/noticias/' . $noticias[0]['foto'])) && $noticias[0]['foto'] ? asset('storage/albunes/' . $noticias[0]['foto']) : asset('img/noticia.jpg') }}"
+                src="{{ file_exists(public_path('storage/noticias/' . $noticias[0]['foto'])) && $noticias[0]['foto'] ? asset('storage/noticias/' . $noticias[0]['foto']) : asset('img/noticia.jpg') }}"
                 alt="{{ $noticias[0]['titulo'] }}">
 
             </a>
@@ -39,7 +39,7 @@
           <div class="single-main-news-inner">
             <a href="{{ route('noticia.show', [$noticias[1]['categoria']['slug'], $noticias[1]['slug']]) }}">
               <img
-                src="{{ file_exists(public_path('storage/noticias/' . $noticias[1]['foto'])) && $noticias[1]['foto'] ? asset('storage/albunes/' . $noticias[1]['foto']) : asset('img/noticia.jpg') }}"
+                src="{{ file_exists(public_path('storage/noticias/' . $noticias[1]['foto'])) && $noticias[1]['foto'] ? asset('storage/noticias/' . $noticias[1]['foto']) : asset('img/noticia.jpg') }}"
                 alt="{{ $noticias[1]['titulo'] }}">
             </a>
             <div class="news-content">
@@ -56,7 +56,7 @@
           <div class="single-main-news-box">
             <a href="{{ route('noticia.show', [$noticias[2]['categoria']['slug'], $noticias[2]['slug']]) }}">
               <img
-                src="{{ file_exists(public_path('storage/noticias/' . $noticias[2]['foto'])) && $noticias[2]['foto'] ? asset('storage/albunes/' . $noticias[2]['foto']) : asset('img/noticia.jpg') }}"
+                src="{{ file_exists(public_path('storage/noticias/' . $noticias[2]['foto'])) && $noticias[2]['foto'] ? asset('storage/noticias/' . $noticias[2]['foto']) : asset('img/noticia.jpg') }}"
                 alt="{{ $noticias[2]['titulo'] }}">
             </a>
             <div class="news-content">
@@ -73,7 +73,7 @@
           <div class="single-main-news-box">
             <a href="{{ route('noticia.show', [$noticias[3]['categoria']['slug'], $noticias[3]['slug']]) }}">
               <img
-                src="{{ file_exists(public_path('storage/noticias/' . $noticias[3]['foto'])) && $noticias[3]['foto'] ? asset('storage/albunes/' . $noticias[3]['foto']) : asset('img/noticia.jpg') }}"
+                src="{{ file_exists(public_path('storage/noticias/' . $noticias[3]['foto'])) && $noticias[3]['foto'] ? asset('storage/noticias/' . $noticias[3]['foto']) : asset('img/noticia.jpg') }}"
                 alt="{{ $noticias[3]['titulo'] }}">
             </a>
             <div class="news-content">

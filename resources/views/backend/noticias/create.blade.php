@@ -44,10 +44,11 @@
         </div>
 
         <div class="row">
+
           <div class="col-md-6">
             <div class="form-group">
-              <label for="interprete_id">Intérprete</label>
-              <select name="interprete_id" class="form-control" required>
+              <label for="interprete_id">Intérpretes</label>
+              <select name="interprete_id[]" class="form-control" multiple required>
                 @foreach ($interpretes as $interprete)
                   <option value="{{ $interprete->id }}">{{ $interprete->interprete }}</option>
                 @endforeach
@@ -57,6 +58,8 @@
               @enderror
             </div>
           </div>
+
+
           <div class="col-md-6">
             <div class="form-group">
               <label for="foto">Foto</label>
@@ -66,6 +69,7 @@
               @enderror
             </div>
           </div>
+
         </div>
 
         <div class="row">

@@ -13,7 +13,7 @@ class Noticia extends Model
     use CommonMethodsTrait;
     use HasFactory;
 
-    protected $fillable = ['titulo', 'slug', 'noticia', 'interprete_id', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
+    protected $fillable = ['titulo', 'categoria_id', 'slug', 'noticia', 'interprete_id', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
 
     public function categoria()
     {
@@ -24,11 +24,6 @@ class Noticia extends Model
     {
         return $this->belongsToMany(Interprete::class);
     }
-
-    // public function interprete()
-    // {
-    //     return $this->belongsTo(Interprete::class, 'interprete_id');
-    // }
 
     public function user()
     {
