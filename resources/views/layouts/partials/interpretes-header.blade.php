@@ -96,9 +96,8 @@
     <div class="card">
       {{-- <div class="card-body"> --}}
       {{-- <h5 class="card-title">Cambiar de Intérprete</h5> --}}
-      <form id="change-interprete-form">
+      {{-- <form id="change-interprete-form">
         <div class="form-group">
-          {{-- <label for="interprete-select">Seleccione un intérprete:</label> --}}
           <select class="form-control" id="interprete-select">
             <option value="">► Seleccione otro interprete -</option>
             @foreach ($interpretes as $interprete)
@@ -106,7 +105,7 @@
             @endforeach
           </select>
         </div>
-      </form>
+      </form> --}}
       {{-- </div> --}}
     </div>
   </div>

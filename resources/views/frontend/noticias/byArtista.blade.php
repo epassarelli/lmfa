@@ -47,7 +47,7 @@
                   </div>
 
                   <div class="sports-news-content">
-                    <span>Football</span>
+                    <span>{{ $noticia->categoria->nombre }}</span>
                     <h3>
                       <a
                         href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">{{ $noticia->titulo }}</a>
@@ -60,6 +60,41 @@
             @endforeach
 
           @endif
+
+          {{-- @if ($noticias->isEmpty())
+
+            <div class="warning"></div>
+            <div class="alert alert-warning" role="alert">
+              No hay noticias disponibles para {{ $interprete->interprete }} aún.
+            </div>
+          @else
+            @foreach ($noticias as $noticia)
+              <div class="col-lg-6">
+                <div class="single-sports-news-box">
+                  <div class="sports-news-image">
+                    <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">
+                      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}">
+                    </a>
+
+                    <a href="https://www.youtube.com/watch?v=UG8N5JT4QLc" class="popup-youtube">
+                      <i class="bx bx-play-circle"></i>
+                    </a>
+                  </div>
+
+                  <div class="sports-news-content">
+                    <span>Football</span>
+                    <h3>
+                      <a
+                        href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">{{ $noticia->titulo }}</a>
+                    </h3>
+                    <p><a href="#">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</a> / 28 September,
+                      2024</p>
+                  </div>
+                </div>
+              </div>
+            @endforeach
+
+          @endif --}}
 
         </div>
 
