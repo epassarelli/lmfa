@@ -31,7 +31,7 @@
   <meta name="description" content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
 
   @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-
+  @yield('styles')
 </head>
 
 <body>
@@ -43,7 +43,7 @@
   </div>
 
   @include('layouts.partials.footer')
-
+  @yield('scripts')
 </body>
 
 </html>

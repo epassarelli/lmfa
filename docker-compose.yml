@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+
+  app:
+    build: ./
+    ports:
+      - 80:80
+    working_dir: /
+    image: mfa_app
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mariadb:10.8
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: mfa
+      MYSQL_ROOT_PASSWORD: mfa
+      MYSQL_PASSWORD: mfa
+      MYSQL_USER: mfa
+    volumes:
+      - ./database_local:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin:5.1.1
+    environment:
+      PMA_HOST: db
+      PMA_USER: mfa
+      PMA_PASSWORD: mfa
+      UPLOAD_LIMIT: 64M
+    ports:
+      - 8080:80
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+networks:
+  app-network:
+

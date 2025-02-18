@@ -36,13 +36,15 @@ Route::get('biografias-de-artistas-folkloricos/{interprete:slug}', [InterpretesC
 Route::get('biografias-de-artistas-folkloricos', [InterpretesController::class, 'index'])->name('interpretes.index');
 
 // Rutas para el controlador de Noticias:
-Route::get('noticias-del-folklore-argentino/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
-Route::get('noticias-del-folklore-argentino/{interprete:slug}', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
+Route::get('noticias-del-folklore-argentino/{categoria:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('noticia.show');
+// Route::get('noticias-del-folklore-argentino/{interprete:slug}/{noticia:slug}', [NoticiasController::class, 'show'])->name('interprete.noticia.show');
+Route::get('noticias-del-folklore-argentino/interprete-{interprete:slug}', [NoticiasController::class, 'byArtista'])->name('interprete.noticias');
+Route::get('noticias-del-folklore-argentino/{categoria:slug}', [NoticiasController::class, 'byCategoria'])->name('noticias.byCategoria');
 Route::get('noticias-del-folklore-argentino', [NoticiasController::class, 'index'])->name('noticias.index');
 
 // Rutas para el controlador de Letras de canciones:
 Route::get('letras-de-canciones-folkloricas/{interprete:slug}/{cancion:slug}', [CancionesController::class, 'show'])->name('canciones.show');
-Route::get('letras-de-canciones-folkloricas/{interprete:slug}', [CancionesController::class, 'byArtista'])->name('interprete.canciones');
+Route::get('letras-de-canciones-folkloricas/interprete-{interprete:slug}', [CancionesController::class, 'byArtista'])->name('interprete.canciones');
 Route::get('letras-de-canciones-folkloricas', [CancionesController::class, 'index'])->name('canciones.index');
 
 // Rutas para el controlador de discografías:

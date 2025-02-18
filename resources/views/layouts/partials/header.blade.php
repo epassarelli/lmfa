@@ -23,10 +23,10 @@
             <a href="{{ route('interpretes.index') }}" title="Biografías de artistas folklóricos"
               class="nav-link">Biografías</a>
           </li>
-          <li class="nav-item {{ request()->segment(1) == 'noticias-de-folklore-argentino' ? 'active' : '' }}">
+          {{-- <li class="nav-item {{ request()->segment(1) == 'noticias-de-folklore-argentino' ? 'active' : '' }}">
             <a href="{{ route('noticias.index') }}" title="Noticias del folklore argentino"
               class="nav-link">Noticias</a>
-          </li>
+          </li> --}}
           <li class="nav-item {{ request()->segment(1) == 'cartelera-de-eventos-folkloricos' ? 'active' : '' }}">
             <a href="{{ route('shows.index') }}" title="Cartelera de eventos folklóricos" class="nav-link">Cartelera</a>
           </li>
@@ -124,3 +124,7 @@
     border-color: #ffbf00;
   }
 </style>
+
+{{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.carousel.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/magazine/owl.theme.default.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/magazine/style.css') }}"> --}}

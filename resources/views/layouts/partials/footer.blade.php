@@ -59,6 +59,33 @@
     <!-- FIN footer -->
 
 
+    {{-- <script src="{{ asset('js/magazine/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/magazine/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('js/magazine/main.js') }}"></script>
+
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        $('.owl-carousel').owlCarousel({
+          loop: true,
+          margin: 10,
+          nav: true,
+          responsive: {
+            0: {
+              items: 1
+            },
+            576: {
+              items: 2
+            },
+            1200: {
+              items: 2
+            }
+          }
+
+        });
+      });
+    </script> --}}
+
 
     {{-- <script src="js/jquery.min.js"></script> --}}
     <!-- <script src="libs/bootstrap/dist/js/bootstrap.min.js"></script> -->

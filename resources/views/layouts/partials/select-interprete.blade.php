@@ -1,5 +1,6 @@
 <!-- resources/views/partials/select-interprete.blade.php -->
-<div class="container mt-5 mb-4">
+<div class="container mt-5 mb-4" id="interprete-container" data-section="{{ $section }}">
+
 
   @if ($section === 'noticias')
     <h2>Explora noticias de otros Intérpretes</h2>
@@ -53,11 +54,40 @@
     </div>
   </div>
 </div>
-<script>
+{{-- <script>
   document.getElementById('interprete-select').addEventListener('change', function() {
     var slug = this.value;
     var currentUrl = window.location.href;
     var newUrl = currentUrl.replace(/\/[^\/]+$/, '/' + slug);
+    window.location.href = newUrl;
+  });
+</script> --}}
+
+<script>
+  document.getElementById('interprete-select').addEventListener('change', function() {
+    var slug = this.value;
+    if (!slug) return; // Si no se selecciona un intérprete, no hacer nada
+
+    // Obtener la sección desde el atributo data-section de PHP
+    var sectionElement = document.getElementById('interprete-container');
+    var section = sectionElement ? sectionElement.dataset.section : '';
+
+    console.log("Sección detectada:", section); // Debug: Verificar qué sección está leyendo
+    console.log("Slug seleccionado:", slug); // Debug: Verificar qué slug se está seleccionando
+
+    var currentUrl = window.location.pathname; // Obtener la URL actual sin dominio
+    var newUrl;
+
+    if (section === "noticias") {
+      // Si es noticias, agregar "interprete-" al slug
+      newUrl = currentUrl.replace(/\/[^\/]+$/, '/interprete-' + slug);
+    } else {
+      // Para cualquier otra sección, solo reemplazar el slug
+      newUrl = currentUrl.replace(/\/[^\/]+$/, '/' + slug);
+    }
+
+    console.log("Nueva URL generada:", newUrl); // Debug: Verificar qué URL se está generando
+
     window.location.href = newUrl;
   });
 </script>

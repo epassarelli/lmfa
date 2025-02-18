@@ -37,17 +37,18 @@
 
         <div class="form-group">
           <label for="noticia">Noticia</label>
-          <textarea name="noticia" id="noticia" class="form-control" required></textarea>
+          <textarea name="noticia" id="editor" class="form-control" required></textarea>
           @error('noticia')
             <div class="text-danger">{{ $message }}</div>
           @enderror
         </div>
 
         <div class="row">
+
           <div class="col-md-6">
             <div class="form-group">
-              <label for="interprete_id">Intérprete</label>
-              <select name="interprete_id" class="form-control" required>
+              <label for="interprete_id">Intérpretes</label>
+              <select name="interprete_id[]" class="form-control" multiple required>
                 @foreach ($interpretes as $interprete)
                   <option value="{{ $interprete->id }}">{{ $interprete->interprete }}</option>
                 @endforeach
@@ -57,6 +58,8 @@
               @enderror
             </div>
           </div>
+
+
           <div class="col-md-6">
             <div class="form-group">
               <label for="foto">Foto</label>
@@ -65,6 +68,30 @@
                 <div class="text-danger">{{ $message }}</div>
               @enderror
             </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="categoria_id">Categoría</label>
+              <select name="categoria_id" id="categoria_id" class="form-control" required>
+                <option value="">Seleccione una categoría</option>
+                @foreach ($categorias as $categoria)
+                  <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                @endforeach
+              </select>
+              @error('categoria_id')
+                <div class="text-danger">{{ $message }}</div>
+              @enderror
+            </div>
+          </div>
+          <div class="col-md-4">
+
+          </div>
+          <div class="col-md-4">
+
           </div>
         </div>
     </div>
@@ -87,11 +114,9 @@
 
 @stop
 
-{{-- @section('js')
-
+@section('js')
   <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
   <script>
     ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
   </script>
-
-@stop --}}
+@stop

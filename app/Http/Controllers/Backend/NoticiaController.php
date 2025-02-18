@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 use App\Models\Noticia;
@@ -26,7 +27,7 @@ class NoticiaController extends Controller
     {
         $this->authorize('viewAny', Noticia::class);
 
-        $noticias = Noticia::with(['interprete:id,interprete', 'user:id,name'])
+        $noticias = Noticia::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -40,14 +41,15 @@ class NoticiaController extends Controller
     {
         $this->authorize('create', Noticia::class);
 
+        $categorias = Categoria::all();
         $interpretes = Interprete::active()->get();
-        return view('backend.noticias.create', compact('interpretes'));
+
+        return view('backend.noticias.create', compact('interpretes', 'categorias'));
     }
+
 
     public function store(Request $request)
     {
-        // dd($request->all());
-
         $this->authorize('create', Noticia::class);
 
         $request->validate([
@@ -55,24 +57,26 @@ class NoticiaController extends Controller
             'slug' => 'required|unique:noticias',
             'noticia' => 'required',
             'foto' => 'required|image',
-            'interprete_id' => 'required|exists:interpretes,id',
+            'interprete_id' => 'required|array', // Ahora se espera un array de IDs
+            'interprete_id.*' => 'exists:interpretes,id', // Validar cada ID del array
+            'categoria_id' => 'required|exists:categorias,id',
         ]);
 
-        $noticia = new Noticia($request->all());
+        $noticia = new Noticia($request->except('interprete_id')); // Excluir interprete_id temporalmente
 
-        // Almacena la foto en disco y obtiene el nombre original del archivo
+        // Almacenar la foto en disco
         $nombreArchivo = $request->file('foto')->store('noticias', 'public');
-
-        // Almacena solo el nombre del archivo en el atributo 'foto' del modelo 'Noticia'
         $noticia->foto = basename($nombreArchivo);
         $noticia->user_id = Auth::id();
-        // dd($noticia);
         $noticia->save();
 
-        // Para mensajes de éxito
+        // Asignar los intérpretes a la noticia
+        $noticia->interpretes()->attach($request->interprete_id);
+
         Alert::success('Noticia creada', 'La noticia ha sido creada con éxito.');
         return redirect()->route('backend.noticias.index');
     }
+
 
     public function show(Noticia $noticia)
     {
@@ -81,18 +85,20 @@ class NoticiaController extends Controller
         return view('backend.noticias.show', compact('noticia'));
     }
 
+
     public function edit(Noticia $noticia)
     {
         $this->authorize('update', $noticia);
 
+        $categorias = Categoria::all();
         $interpretes = Interprete::active()->get();
-        return view('backend.noticias.edit', compact('noticia', 'interpretes'));
+
+        return view('backend.noticias.edit', compact('noticia', 'interpretes', 'categorias'));
     }
+
 
     public function update(Request $request, Noticia $noticia)
     {
-        // dd($request->all());
-
         $this->authorize('update', $noticia);
 
         $request->validate([
@@ -100,25 +106,28 @@ class NoticiaController extends Controller
             'slug' => 'required|unique:noticias,slug,' . $noticia->id,
             'noticia' => 'required',
             'foto' => 'image',
-            'interprete_id' => 'required|exists:interpretes,id',
+            'interprete_id' => 'required|array', // Ahora se espera un array de IDs
+            'interprete_id.*' => 'exists:interpretes,id', // Validar cada ID del array
+            'categoria_id' => 'required|exists:categorias,id',
         ]);
 
-        $noticia->fill($request->all());
-        if ($request->hasFile('foto')) {
-            // Almacena la foto en disco y obtiene el nombre original del archivo
-            $nombreArchivo = $request->file('foto')->store('noticias', 'public');
+        $noticia->fill($request->except('interprete_id')); // Excluir interprete_id temporalmente
 
-            // Almacena solo el nombre del archivo en el atributo 'foto' del modelo 'Noticia'
+        if ($request->hasFile('foto')) {
+            // Almacenar la nueva foto
+            $nombreArchivo = $request->file('foto')->store('noticias', 'public');
             $noticia->foto = basename($nombreArchivo);
         }
 
-        // dd($noticia);
         $noticia->save();
 
-        // Para mensajes de éxito
+        // Sincronizar los intérpretes (elimina los que no están en el array y agrega los nuevos)
+        $noticia->interpretes()->sync($request->interprete_id);
+
         Alert::success('Noticia actualizada', 'La noticia ha sido actualizada con éxito.');
-        return redirect()->route('backend.noticias.index'); //->with('success', 'La noticia ha sido actualizada con éxito.');
+        return redirect()->route('backend.noticias.index');
     }
+
 
     public function destroy(Noticia $noticia)
     {

@@ -1,3 +1,4 @@
+/database_local
 /.phpunit.cache
 /node_modules
 /public/build
@@ -20,3 +21,5 @@ yarn-error.log
 ads.txt
 /public/ads.txt
 googlebe57bffdf3c26baa.html
+
+database_local/
