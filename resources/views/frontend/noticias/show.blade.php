@@ -22,6 +22,42 @@
 
           <p class="fs-5 mb-4">{!! $noticia->noticia !!}</p>
           <p class="text-muted">Visitas: {{ $noticia->visitas }}</p>
+
+
+          {{-- <div class="most-popular-news">
+            <div class="section-title">
+              <h2>Relacionadas</h2>
+
+            </div>
+
+            <div class="row">
+              @foreach ($related as $relatedNew)
+                <div class="col-lg-4">
+                  <div class="single-most-popular-news">
+                    <div class="popular-news-image">
+                      <a href="{{ route('noticia.show', [$noticias[4]['categoria']['slug'], $noticias[4]['slug']]) }}">
+                        <img src="{{ asset('storage/noticias/' . $noticias[4]['foto']) }}"
+                          alt="{{ $noticias[4]['titulo'] }}">
+                      </a>
+                    </div>
+
+                    <div class="popular-news-content">
+                      <span>{{ $noticias[4]['categoria']['nombre'] }}</span>
+                      <h3>
+                        <a
+                          href="{{ route('noticia.show', [$noticias[4]['categoria']['slug'], $noticias[4]['slug']]) }}">{{ $noticias[4]['titulo'] }}</a>
+                      </h3>
+                      <p>
+                        {{ isset($noticias[4]['created_at']) ? \Carbon\Carbon::parse($noticias[4]['created_at'])->translatedFormat('d F, Y') : '' }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              @endforeach
+            </div>
+
+          </div> --}}
+
         </div>
 
         <div class="col-lg-4">
@@ -44,9 +80,7 @@
                         href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">{{ $noticia->titulo }}</a>
                     </h4>
                     <span>{{ $noticia->created_at ? $noticia->created_at->translatedFormat('d F, Y') : '' }}</span>
-                    {{-- <p class="card-text mt-auto">
-                      {{ $noticia->created_at ? $noticia->created_at->translatedFormat('d F, Y') : '' }}
-                    </p> --}}
+
                   </div>
                 </article>
               @endforeach

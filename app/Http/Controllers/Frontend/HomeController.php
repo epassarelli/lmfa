@@ -34,36 +34,41 @@ class HomeController extends Controller
             ->where('categoria_id', 1) // Filtrar por categoría específica
             ->with(['categoria', 'interpretes'])
             ->latest()
-            ->take(5)
-            ->get();
+            ->take(6)
+            ->get()
+            ->toArray();
 
         $festivales = Noticia::where('estado', 1)
             ->where('categoria_id', 2) // Filtrar por categoría específica
             ->with(['categoria'])
             ->latest()
-            ->take(5)
-            ->get();
+            ->take(6)
+            ->get()
+            ->toArray();
 
         $lanzamientos = Noticia::where('estado', 1)
             ->where('categoria_id', 3) // Filtrar por categoría específica
             ->with(['categoria'])
             ->latest()
-            ->take(5)
-            ->get();
+            ->take(6)
+            ->get()
+            ->toArray();
 
         $entrevistas = Noticia::where('estado', 1)
             ->where('categoria_id', 4) // Filtrar por categoría específica
             ->with(['categoria'])
             ->latest()
-            ->take(5)
-            ->get();
+            ->take(6)
+            ->get()
+            ->toArray();
 
         $cartelera = Noticia::where('estado', 1)
             ->where('categoria_id', 5) // Filtrar por categoría específica
             ->with(['categoria'])
             ->latest()
-            ->take(5)
-            ->get();
+            ->take(6)
+            ->get()
+            ->toArray();
 
         // Obtener las últimas 4 shows
         $show = new Show();
