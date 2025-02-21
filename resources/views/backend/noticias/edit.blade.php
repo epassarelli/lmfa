@@ -2,9 +2,15 @@
 
 @section('title', 'Editar Noticia')
 
+@section('css')
+  <!-- Estilos de Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endsection
+
 @section('content_header')
   <span>Editar Noticia</span>
 @stop
+
 
 @section('content')
 
@@ -48,7 +54,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="interprete_id">Intérpretes</label>
-              <select name="interprete_id[]" class="form-control" multiple required>
+              <select class="js-example-basic-multiple form-control" name="interprete_id[]" multiple="multiple">
                 @foreach ($interpretes as $interprete)
                   <option value="{{ $interprete->id }}"
                     {{ in_array($interprete->id, $noticia->interpretes->pluck('id')->toArray()) ? 'selected' : '' }}>
@@ -61,6 +67,9 @@
               @enderror
             </div>
           </div>
+
+
+
 
 
           <div class="col-md-6">
@@ -137,4 +146,13 @@
   <script>
     ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
   </script>
+
+  <!-- Scripts de Select2 -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(".js-example-basic-multiple").select2({
+      theme: "classic"
+    });
+  </script>
+
 @stop

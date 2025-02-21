@@ -117,6 +117,8 @@ class NoticiasController extends Controller
     // Incrementar el contador de visitas
     $noticia->increment('visitas');
 
+    // Trae 3 ultimas noticias relacionadas x categoria 
+    $relacionadas = "";
     // $interprete = Interprete::where('slug', $slugIterprete)->first();
     // $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
@@ -128,7 +130,7 @@ class NoticiasController extends Controller
     $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
 
     // return view('frontend.noticias.show', compact('noticia', 'interprete', 'interpretes', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
-    return view('frontend.noticias.show', compact('noticia', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.show', compact('noticia', 'ultimas_noticias', 'relacionadas', 'metaTitle', 'metaDescription'));
   }
 
 

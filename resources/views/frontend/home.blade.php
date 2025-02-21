@@ -100,7 +100,7 @@
 
           <div class="most-popular-news">
             <div class="section-title">
-              {{-- <h2>Lo más leído</h2> --}}
+              <h2>Actualidad</h2>
 
             </div>
 
@@ -108,20 +108,20 @@
               <div class="col-lg-6">
                 <div class="single-most-popular-news">
                   <div class="popular-news-image">
-                    <a href="{{ route('noticia.show', [$noticias[4]['categoria']['slug'], $noticias[4]['slug']]) }}">
-                      <img src="{{ asset('storage/noticias/' . $noticias[4]['foto']) }}"
-                        alt="{{ $noticias[4]['titulo'] }}">
+                    <a href="{{ route('noticia.show', [$noticias[0]['categoria']['slug'], $noticias[0]['slug']]) }}">
+                      <img src="{{ asset('storage/noticias/' . $noticias[0]['foto']) }}"
+                        alt="{{ $noticias[0]['titulo'] }}">
                     </a>
                   </div>
 
                   <div class="popular-news-content">
-                    <span>{{ $noticias[4]['categoria']['nombre'] }}</span>
+                    <span>{{ $noticias[0]['categoria']['nombre'] }}</span>
                     <h3>
                       <a
-                        href="{{ route('noticia.show', [$noticias[4]['categoria']['slug'], $noticias[4]['slug']]) }}">{{ $noticias[4]['titulo'] }}</a>
+                        href="{{ route('noticia.show', [$noticias[0]['categoria']['slug'], $noticias[0]['slug']]) }}">{{ $noticias[0]['titulo'] }}</a>
                     </h3>
                     <p>
-                      {{ isset($noticias[4]['created_at']) ? \Carbon\Carbon::parse($noticias[4]['created_at'])->translatedFormat('d F, Y') : '' }}
+                      {{ isset($noticias[0]['created_at']) ? \Carbon\Carbon::parse($noticias[0]['created_at'])->translatedFormat('d F, Y') : '' }}
                     </p>
                   </div>
                 </div>
@@ -420,96 +420,171 @@
           </div> --}}
 
 
-          {{-- <div class="politics-news">
+
+
+          <div class="most-popular-news">
             <div class="section-title">
-              <h2>Festivales</h2>
+              <h2>Fiestas y Festivales</h2>
+
             </div>
 
             <div class="row">
               <div class="col-lg-6">
-                <div class="single-politics-news">
-                  <div class="politics-news-image">
-                    <a href="#">
-                      <img src="img/magazine/politics-news-1.jpg" alt="image">
+                <div class="single-most-popular-news">
+                  <div class="popular-news-image">
+                    <a
+                      href="{{ route('noticia.show', [$festivales[0]['categoria']['slug'], $festivales[0]['slug']]) }}">
+                      <img src="{{ asset('storage/noticias/' . $festivales[0]['foto']) }}"
+                        alt="{{ $festivales[0]['titulo'] }}">
                     </a>
                   </div>
 
-                  <div class="politics-news-content">
-                    <span>Politics</span>
+                  <div class="popular-news-content">
+                    <span>{{ $festivales[0]['categoria']['nombre'] }}</span>
                     <h3>
-                      <a href="#">Organizing conference among our selves to make it better financially</a>
+                      <a
+                        href="{{ route('noticia.show', [$festivales[0]['categoria']['slug'], $festivales[0]['slug']]) }}">{{ $festivales[0]['titulo'] }}</a>
                     </h3>
-                    <p><a href="#">Jonson Steven</a> / 28 September, 2024</p>
+                    <p>
+                      {{ isset($festivales[0]['created_at']) ? \Carbon\Carbon::parse($festivales[0]['created_at'])->translatedFormat('d F, Y') : '' }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="single-most-popular-news">
+                  <div class="popular-news-image">
+                    <a
+                      href="{{ route('noticia.show', [$festivales[1]['categoria']['slug'], $festivales[1]['slug']]) }}">
+                      <img src="{{ asset('storage/noticias/' . $festivales[1]['foto']) }}"
+                        alt="{{ $festivales[1]['titulo'] }}">
+                    </a>
+                  </div>
+
+                  <div class="popular-news-content">
+                    <span>{{ $festivales[1]['categoria']['nombre'] }}</span>
+                    <h3>
+                      <a
+                        href="{{ route('noticia.show', [$festivales[1]['categoria']['slug'], $festivales[1]['slug']]) }}">{{ $festivales[1]['titulo'] }}</a>
+                    </h3>
+                    <p>
+                      {{ isset($festivales[1]['created_at']) ? \Carbon\Carbon::parse($festivales[1]['created_at'])->translatedFormat('d F, Y') : '' }}
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div class="col-lg-6">
-                <div class="politics-news-post">
+                <div class="most-popular-post">
                   <div class="row align-items-center">
                     <div class="col-lg-4 col-sm-4">
-                      <div class="politics-news-image">
-                        <a href="#">
-                          <img src="img/magazine/politics-news-2.jpg" alt="image">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$festivales[2]['categoria']['slug'], $festivales[2]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $festivales[2]['foto']) }}"
+                            alt="{{ $festivales[2]['titulo'] }}">
                         </a>
                       </div>
                     </div>
 
                     <div class="col-lg-8 col-sm-8">
-                      <div class="politics-news-content">
+                      <div class="post-content">
+                        <span>{{ $festivales[2]['categoria']['nombre'] }}</span>
                         <h3>
-                          <a href="#">Politically, new riots have started inside the country</a>
+                          <a
+                            href="{{ route('noticia.show', [$festivales[2]['categoria']['slug'], $festivales[2]['slug']]) }}">{{ $festivales[2]['titulo'] }}</a>
                         </h3>
-                        <p>28 September, 2024</p>
+                        <p>
+                          {{ isset($festivales[2]['created_at']) ? \Carbon\Carbon::parse($festivales[2]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="politics-news-post">
+                <div class="most-popular-post">
                   <div class="row align-items-center">
                     <div class="col-lg-4 col-sm-4">
-                      <div class="politics-news-image">
-                        <a href="#">
-                          <img src="img/magazine/politics-news-3.jpg" alt="image">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$festivales[3]['categoria']['slug'], $festivales[3]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $festivales[3]['foto']) }}"
+                            alt="{{ $festivales[3]['titulo'] }}">
                         </a>
                       </div>
                     </div>
 
                     <div class="col-lg-8 col-sm-8">
-                      <div class="politics-news-content">
+                      <div class="post-content">
+                        <span>{{ $festivales[3]['categoria']['nombre'] }}</span>
                         <h3>
-                          <a href="#">Public discussion in 5 major issues</a>
+                          <a
+                            href="{{ route('noticia.show', [$festivales[3]['categoria']['slug'], $festivales[3]['slug']]) }}">{{ $festivales[3]['titulo'] }}</a>
                         </h3>
-                        <p>28 September, 2024</p>
+                        <p>
+                          {{ isset($festivales[3]['created_at']) ? \Carbon\Carbon::parse($festivales[3]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="politics-news-post">
+                <div class="most-popular-post">
                   <div class="row align-items-center">
                     <div class="col-lg-4 col-sm-4">
-                      <div class="politics-news-image">
-                        <a href="#">
-                          <img src="img/magazine/politics-news-4.jpg" alt="image">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$festivales[4]['categoria']['slug'], $festivales[4]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $festivales[4]['foto']) }}"
+                            alt="{{ $festivales[4]['titulo'] }}">
                         </a>
                       </div>
                     </div>
 
                     <div class="col-lg-8 col-sm-8">
-                      <div class="politics-news-content">
+                      <div class="post-content">
+                        <span>{{ $festivales[4]['categoria']['nombre'] }}</span>
                         <h3>
-                          <a href="#">Preparations are being made in a new way for the elections</a>
+                          <a
+                            href="{{ route('noticia.show', [$festivales[4]['categoria']['slug'], $festivales[4]['slug']]) }}">{{ $festivales[4]['titulo'] }}</a>
                         </h3>
-                        <p>28 September, 2024</p>
+                        <p>
+                          {{ isset($festivales[4]['created_at']) ? \Carbon\Carbon::parse($festivales[4]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$festivales[5]['categoria']['slug'], $festivales[5]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $festivales[5]['foto']) }}"
+                            alt="{{ $festivales[5]['titulo'] }}">
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $festivales[5]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$festivales[5]['categoria']['slug'], $festivales[5]['slug']]) }}">{{ $festivales[5]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($festivales[5]['created_at']) ? \Carbon\Carbon::parse($festivales[5]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div> --}}
+          </div>
+
 
           {{-- <div class="business-news">
             <div class="section-title">
@@ -680,6 +755,146 @@
             </div>
           </div> --}}
 
+          {{-- <div class="row">
+            <div class="col-lg-6">
+              <div class="section-title">
+                <h2>Sports</h2>
+              </div>
+
+              <div class="single-sports-news">
+                <div class="row align-items-center">
+                  <div class="col-lg-4 col-sm-4">
+                    <div class="sports-news-image">
+                      <a href="#">
+                        <img src="img/magazine/sports-news-1.jpg" alt="image">
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8 col-sm-8">
+                    <div class="sports-news-content">
+                      <h3>
+                        <a href="#">Start a new men’s road World Championships</a>
+                      </h3>
+                      <p>28 September, 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="single-sports-news">
+                <div class="row align-items-center">
+                  <div class="col-lg-4 col-sm-4">
+                    <div class="sports-news-image">
+                      <a href="#">
+                        <img src="img/magazine/sports-news-2.jpg" alt="image">
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8 col-sm-8">
+                    <div class="sports-news-content">
+                      <h3>
+                        <a href="#">He look the first wicket with the first ball in this match.</a>
+                      </h3>
+                      <p>28 September, 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="single-sports-news">
+                <div class="row align-items-center">
+                  <div class="col-lg-4 col-sm-4">
+                    <div class="sports-news-image">
+                      <a href="#">
+                        <img src="img/magazine/sports-news-3.jpg" alt="image">
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8 col-sm-8">
+                    <div class="sports-news-content">
+                      <h3>
+                        <a href="#">The last time of the match is goning on</a>
+                      </h3>
+                      <p>28 September, 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="section-title">
+                <h2>Tech</h2>
+              </div>
+
+              <div class="single-tech-news">
+                <div class="row align-items-center">
+                  <div class="col-lg-4 col-sm-4">
+                    <div class="tech-news-image">
+                      <a href="#">
+                        <img src="img/magazine/tech-news-1.jpg" alt="image">
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8 col-sm-8">
+                    <div class="tech-news-content">
+                      <h3>
+                        <a href="#">5 more phones have come to the market with features.</a>
+                      </h3>
+                      <p>28 September, 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="single-tech-news">
+                <div class="row align-items-center">
+                  <div class="col-lg-4 col-sm-4">
+                    <div class="tech-news-image">
+                      <a href="#">
+                        <img src="img/magazine/tech-news-2.jpg" alt="image">
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8 col-sm-8">
+                    <div class="tech-news-content">
+                      <h3>
+                        <a href="#">Like humans, the new robot has a lot of memory power</a>
+                      </h3>
+                      <p>28 September, 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="single-tech-news">
+                <div class="row align-items-center">
+                  <div class="col-lg-4 col-sm-4">
+                    <div class="tech-news-image">
+                      <a href="#">
+                        <img src="img/magazine/tech-news-3.jpg" alt="image">
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8 col-sm-8">
+                    <div class="tech-news-content">
+                      <h3>
+                        <a href="#">All new gadgets are being made in technology</a>
+                      </h3>
+                      <p>28 September, 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> --}}
+
           {{-- <div class="culture-news">
             <div class="section-title">
               <h2>Cartelera folklórica</h2>
@@ -770,6 +985,167 @@
               </div>
             </div>
           </div> --}}
+
+          <div class="most-popular-news">
+            <div class="section-title">
+              <h2>Cartelera</h2>
+
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="single-most-popular-news">
+                  <div class="popular-news-image">
+                    <a href="{{ route('noticia.show', [$cartelera[0]['categoria']['slug'], $cartelera[0]['slug']]) }}">
+                      <img src="{{ asset('storage/noticias/' . $cartelera[0]['foto']) }}"
+                        alt="{{ $cartelera[0]['titulo'] }}">
+                    </a>
+                  </div>
+
+                  <div class="popular-news-content">
+                    <span>{{ $cartelera[0]['categoria']['nombre'] }}</span>
+                    <h3>
+                      <a
+                        href="{{ route('noticia.show', [$cartelera[0]['categoria']['slug'], $cartelera[0]['slug']]) }}">{{ $cartelera[0]['titulo'] }}</a>
+                    </h3>
+                    <p>
+                      {{ isset($cartelera[0]['created_at']) ? \Carbon\Carbon::parse($cartelera[0]['created_at'])->translatedFormat('d F, Y') : '' }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="single-most-popular-news">
+                  <div class="popular-news-image">
+                    <a href="{{ route('noticia.show', [$cartelera[1]['categoria']['slug'], $cartelera[1]['slug']]) }}">
+                      <img src="{{ asset('storage/noticias/' . $cartelera[1]['foto']) }}"
+                        alt="{{ $cartelera[1]['titulo'] }}">
+                    </a>
+                  </div>
+
+                  <div class="popular-news-content">
+                    <span>{{ $cartelera[1]['categoria']['nombre'] }}</span>
+                    <h3>
+                      <a
+                        href="{{ route('noticia.show', [$cartelera[1]['categoria']['slug'], $cartelera[1]['slug']]) }}">{{ $cartelera[1]['titulo'] }}</a>
+                    </h3>
+                    <p>
+                      {{ isset($cartelera[1]['created_at']) ? \Carbon\Carbon::parse($cartelera[1]['created_at'])->translatedFormat('d F, Y') : '' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$cartelera[2]['categoria']['slug'], $cartelera[2]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $cartelera[2]['foto']) }}"
+                            alt="{{ $cartelera[2]['titulo'] }}">
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $cartelera[2]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$cartelera[2]['categoria']['slug'], $cartelera[2]['slug']]) }}">{{ $cartelera[2]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($cartelera[2]['created_at']) ? \Carbon\Carbon::parse($cartelera[2]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$cartelera[3]['categoria']['slug'], $cartelera[3]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $cartelera[3]['foto']) }}"
+                            alt="{{ $cartelera[3]['titulo'] }}">
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $cartelera[3]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$cartelera[3]['categoria']['slug'], $cartelera[3]['slug']]) }}">{{ $cartelera[3]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($cartelera[3]['created_at']) ? \Carbon\Carbon::parse($cartelera[3]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$cartelera[4]['categoria']['slug'], $cartelera[4]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $cartelera[4]['foto']) }}"
+                            alt="{{ $cartelera[4]['titulo'] }}">
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $cartelera[4]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$cartelera[4]['categoria']['slug'], $cartelera[4]['slug']]) }}">{{ $cartelera[4]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($cartelera[4]['created_at']) ? \Carbon\Carbon::parse($cartelera[4]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$cartelera[5]['categoria']['slug'], $cartelera[5]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $cartelera[5]['foto']) }}"
+                            alt="{{ $cartelera[5]['titulo'] }}">
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $cartelera[5]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$cartelera[5]['categoria']['slug'], $cartelera[5]['slug']]) }}">{{ $cartelera[5]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($cartelera[5]['created_at']) ? \Carbon\Carbon::parse($cartelera[5]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {{-- <div class="health-news">
             <div class="section-title">
@@ -936,146 +1312,170 @@
             </div>
           </div> --}}
 
+          <div class="most-popular-news">
+            <div class="section-title">
+              <h2>Lanzamientos</h2>
 
-          {{-- <div class="row">
-            <div class="col-lg-6">
-              <div class="section-title">
-                <h2>Sports</h2>
-              </div>
+            </div>
 
-              <div class="single-sports-news">
-                <div class="row align-items-center">
-                  <div class="col-lg-4 col-sm-4">
-                    <div class="sports-news-image">
-                      <a href="#">
-                        <img src="img/magazine/sports-news-1.jpg" alt="image">
-                      </a>
-                    </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="single-most-popular-news">
+                  <div class="popular-news-image">
+                    <a
+                      href="{{ route('noticia.show', [$lanzamientos[0]['categoria']['slug'], $lanzamientos[0]['slug']]) }}">
+                      <img src="{{ asset('storage/noticias/' . $lanzamientos[0]['foto']) }}"
+                        alt="{{ $lanzamientos[0]['titulo'] }}">
+                    </a>
                   </div>
 
-                  <div class="col-lg-8 col-sm-8">
-                    <div class="sports-news-content">
-                      <h3>
-                        <a href="#">Start a new men’s road World Championships</a>
-                      </h3>
-                      <p>28 September, 2024</p>
-                    </div>
+                  <div class="popular-news-content">
+                    <span>{{ $lanzamientos[0]['categoria']['nombre'] }}</span>
+                    <h3>
+                      <a
+                        href="{{ route('noticia.show', [$lanzamientos[0]['categoria']['slug'], $lanzamientos[0]['slug']]) }}">{{ $lanzamientos[0]['titulo'] }}</a>
+                    </h3>
+                    <p>
+                      {{ isset($lanzamientos[0]['created_at']) ? \Carbon\Carbon::parse($lanzamientos[0]['created_at'])->translatedFormat('d F, Y') : '' }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="single-most-popular-news">
+                  <div class="popular-news-image">
+                    <a
+                      href="{{ route('noticia.show', [$lanzamientos[1]['categoria']['slug'], $lanzamientos[1]['slug']]) }}">
+                      <img src="{{ asset('storage/noticias/' . $lanzamientos[1]['foto']) }}"
+                        alt="{{ $lanzamientos[1]['titulo'] }}">
+                    </a>
+                  </div>
+
+                  <div class="popular-news-content">
+                    <span>{{ $lanzamientos[1]['categoria']['nombre'] }}</span>
+                    <h3>
+                      <a
+                        href="{{ route('noticia.show', [$lanzamientos[1]['categoria']['slug'], $lanzamientos[1]['slug']]) }}">{{ $lanzamientos[1]['titulo'] }}</a>
+                    </h3>
+                    <p>
+                      {{ isset($lanzamientos[1]['created_at']) ? \Carbon\Carbon::parse($lanzamientos[1]['created_at'])->translatedFormat('d F, Y') : '' }}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div class="single-sports-news">
-                <div class="row align-items-center">
-                  <div class="col-lg-4 col-sm-4">
-                    <div class="sports-news-image">
-                      <a href="#">
-                        <img src="img/magazine/sports-news-2.jpg" alt="image">
-                      </a>
+              <div class="col-lg-6">
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$lanzamientos[2]['categoria']['slug'], $lanzamientos[2]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $lanzamientos[2]['foto']) }}"
+                            alt="{{ $lanzamientos[2]['titulo'] }}">
+                        </a>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="col-lg-8 col-sm-8">
-                    <div class="sports-news-content">
-                      <h3>
-                        <a href="#">He look the first wicket with the first ball in this match.</a>
-                      </h3>
-                      <p>28 September, 2024</p>
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $lanzamientos[2]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$lanzamientos[2]['categoria']['slug'], $lanzamientos[2]['slug']]) }}">{{ $lanzamientos[2]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($lanzamientos[2]['created_at']) ? \Carbon\Carbon::parse($lanzamientos[2]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="single-sports-news">
-                <div class="row align-items-center">
-                  <div class="col-lg-4 col-sm-4">
-                    <div class="sports-news-image">
-                      <a href="#">
-                        <img src="img/magazine/sports-news-3.jpg" alt="image">
-                      </a>
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$lanzamientos[3]['categoria']['slug'], $lanzamientos[3]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $lanzamientos[3]['foto']) }}"
+                            alt="{{ $lanzamientos[3]['titulo'] }}">
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $lanzamientos[3]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$lanzamientos[3]['categoria']['slug'], $lanzamientos[3]['slug']]) }}">{{ $lanzamientos[3]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($lanzamientos[3]['created_at']) ? \Carbon\Carbon::parse($lanzamientos[3]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                </div>
 
-                  <div class="col-lg-8 col-sm-8">
-                    <div class="sports-news-content">
-                      <h3>
-                        <a href="#">The last time of the match is goning on</a>
-                      </h3>
-                      <p>28 September, 2024</p>
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$lanzamientos[4]['categoria']['slug'], $lanzamientos[4]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $lanzamientos[4]['foto']) }}"
+                            alt="{{ $lanzamientos[4]['titulo'] }}">
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $lanzamientos[4]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$lanzamientos[4]['categoria']['slug'], $lanzamientos[4]['slug']]) }}">{{ $lanzamientos[4]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($lanzamientos[4]['created_at']) ? \Carbon\Carbon::parse($lanzamientos[4]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="most-popular-post">
+                  <div class="row align-items-center">
+                    <div class="col-lg-4 col-sm-4">
+                      <div class="post-image">
+                        <a
+                          href="{{ route('noticia.show', [$lanzamientos[5]['categoria']['slug'], $lanzamientos[5]['slug']]) }}">
+                          <img src="{{ asset('storage/noticias/' . $lanzamientos[5]['foto']) }}"
+                            alt="{{ $lanzamientos[5]['titulo'] }}">
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-8">
+                      <div class="post-content">
+                        <span>{{ $lanzamientos[5]['categoria']['nombre'] }}</span>
+                        <h3>
+                          <a
+                            href="{{ route('noticia.show', [$lanzamientos[5]['categoria']['slug'], $lanzamientos[5]['slug']]) }}">{{ $lanzamientos[5]['titulo'] }}</a>
+                        </h3>
+                        <p>
+                          {{ isset($lanzamientos[5]['created_at']) ? \Carbon\Carbon::parse($lanzamientos[5]['created_at'])->translatedFormat('d F, Y') : '' }}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div class="col-lg-6">
-              <div class="section-title">
-                <h2>Tech</h2>
-              </div>
 
-              <div class="single-tech-news">
-                <div class="row align-items-center">
-                  <div class="col-lg-4 col-sm-4">
-                    <div class="tech-news-image">
-                      <a href="#">
-                        <img src="img/magazine/tech-news-1.jpg" alt="image">
-                      </a>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-8 col-sm-8">
-                    <div class="tech-news-content">
-                      <h3>
-                        <a href="#">5 more phones have come to the market with features.</a>
-                      </h3>
-                      <p>28 September, 2024</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="single-tech-news">
-                <div class="row align-items-center">
-                  <div class="col-lg-4 col-sm-4">
-                    <div class="tech-news-image">
-                      <a href="#">
-                        <img src="img/magazine/tech-news-2.jpg" alt="image">
-                      </a>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-8 col-sm-8">
-                    <div class="tech-news-content">
-                      <h3>
-                        <a href="#">Like humans, the new robot has a lot of memory power</a>
-                      </h3>
-                      <p>28 September, 2024</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="single-tech-news">
-                <div class="row align-items-center">
-                  <div class="col-lg-4 col-sm-4">
-                    <div class="tech-news-image">
-                      <a href="#">
-                        <img src="img/magazine/tech-news-3.jpg" alt="image">
-                      </a>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-8 col-sm-8">
-                    <div class="tech-news-content">
-                      <h3>
-                        <a href="#">All new gadgets are being made in technology</a>
-                      </h3>
-                      <p>28 September, 2024</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> --}}
 
         </div>
 
