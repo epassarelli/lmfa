@@ -8,19 +8,7 @@
   <div class="container">
 
     <h1>Recetas de comidas típicas argentinas</h1>
-    <p class="lead">Bienvenidos a nuestra sección de recetas de comidas típicas, donde te invitamos a descubrir y
-      preparar los platos
-      más tradicionales de la gastronomía argentina. Explora una variedad de recetas que reflejan la riqueza y diversidad
-      culinaria de nuestro país, desde clásicos del folklore argentino hasta delicias regionales.</p>
-    <p class="lead">Cada receta está cuidadosamente detallada con ingredientes, pasos de preparación y consejos útiles
-      para que puedas
-      recrear en casa los sabores auténticos de Argentina. Aprende a cocinar platos emblemáticos como empanadas, locro,
-      asado y muchas otras delicias que forman parte de nuestras fiestas y celebraciones.</p>
-    <p class="lead">Nuestra sección de recetas de comidas típicas es tu guía culinaria para experimentar y disfrutar de
-      la cocina
-      argentina en su máxima expresión. Sumérgete en las tradiciones culinarias que acompañan la música folklórica y las
-      festividades, y lleva a tu mesa los sabores que han deleitado a generaciones. Descubre y comparte la pasión por
-      nuestra gastronomía y cultura.</p>
+
 
     <div class="row mb-4">
       <div class="col-12">
@@ -30,13 +18,7 @@
           Estos platos no solo son deliciosos, sino que también capturan la esencia de nuestra cultura culinaria. Desde el
           tradicional asado hasta la dulce delicia del alfajor, estas recetas son las favoritas de nuestra comunidad.
         </p>
-        <p class="lead">
-          Sumérgete en el sabor auténtico de la cocina argentina con nuestras recetas de comidas típicas. Explora una
-          variedad de platos tradicionales que reflejan la rica herencia cultural de nuestro país. Desde empanadas jugosas
-          hasta el clásico locro, cada receta está cuidadosamente seleccionada para ofrecerte una experiencia culinaria
-          inigualable. Descubre los secretos de la gastronomía argentina y lleva a tu mesa los sabores que han acompañado
-          a generaciones.
-        </p>
+
 
         <div class="row justify-content-center">
           @foreach ($visitadas as $receta)
@@ -64,7 +46,13 @@
       </div>
     </div>
 
-
+    <p class="lead">
+      Sumérgete en el sabor auténtico de la cocina argentina con nuestras recetas de comidas típicas. Explora una
+      variedad de platos tradicionales que reflejan la rica herencia cultural de nuestro país. Desde empanadas jugosas
+      hasta el clásico locro, cada receta está cuidadosamente seleccionada para ofrecerte una experiencia culinaria
+      inigualable. Descubre los secretos de la gastronomía argentina y lleva a tu mesa los sabores que han acompañado
+      a generaciones.
+    </p>
 
 
 
@@ -128,6 +116,20 @@
         </div>
       </div>
     </div>
+
+    <p class="lead">Bienvenidos a nuestra sección de recetas de comidas típicas, donde te invitamos a descubrir y
+      preparar los platos
+      más tradicionales de la gastronomía argentina. Explora una variedad de recetas que reflejan la riqueza y diversidad
+      culinaria de nuestro país, desde clásicos del folklore argentino hasta delicias regionales.</p>
+    <p class="lead">Cada receta está cuidadosamente detallada con ingredientes, pasos de preparación y consejos útiles
+      para que puedas
+      recrear en casa los sabores auténticos de Argentina. Aprende a cocinar platos emblemáticos como empanadas, locro,
+      asado y muchas otras delicias que forman parte de nuestras fiestas y celebraciones.</p>
+    <p class="lead">Nuestra sección de recetas de comidas típicas es tu guía culinaria para experimentar y disfrutar de
+      la cocina
+      argentina en su máxima expresión. Sumérgete en las tradiciones culinarias que acompañan la música folklórica y las
+      festividades, y lleva a tu mesa los sabores que han deleitado a generaciones. Descubre y comparte la pasión por
+      nuestra gastronomía y cultura.</p>
 
   </div>
 

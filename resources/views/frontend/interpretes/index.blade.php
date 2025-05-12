@@ -7,25 +7,7 @@
 
   <div class="container">
     <h1>Biografías de artistas folklóricos</h1>
-    <p class="lead">Bienvenidos a nuestra sección dedicada a los intérpretes de folklore argentino. Aquí encontrarás
-      información
-      detallada sobre los cantantes y artistas más destacados que han dado vida a la rica tradición de la música
-      folklórica de Argentina. Desde leyendas consagradas hasta nuevos talentos, exploramos las historias, trayectorias y
-      contribuciones de aquellos que mantienen viva la esencia del folklore argentino.</p>
-    <p class="lead">Nuestra colección incluye biografías completas, letras de canciones emblemáticas, discografías,
-      próximos shows y
-      noticias relevantes sobre cada artista. Con un enfoque en la autenticidad y la profundidad, cada perfil de
-      intérprete te permitirá descubrir y apreciar la diversidad y el legado cultural del folklore argentino.</p>
-    <p class="lead">Ya seas un apasionado del folklore, un investigador o simplemente un amante de la buena música,
-      nuestra sección de
-      intérpretes de folklore argentino es el lugar ideal para sumergirte en el mundo de la música folklórica de nuestro
-      país. Explora y disfruta de los sonidos, historias y talentos que definen nuestra identidad cultural.</p>
 
-
-
-    {{-- <h1>Intérpretes de Folklore Argentino</h1> --}}
-    <p class="lead">Explora la rica diversidad de artistas y cantantes que han dado vida a la música folklórica
-      argentina. Encuentra biografías, discografías, letras de canciones y más.</p>
 
     {{-- <div class="row mb-4">
       <div class="col-md-8">
@@ -194,6 +176,28 @@
 
     </div>
     --}}
+
+
+    <p class="lead">Bienvenidos a nuestra sección dedicada a los intérpretes de folklore argentino. Aquí encontrarás
+      información
+      detallada sobre los cantantes y artistas más destacados que han dado vida a la rica tradición de la música
+      folklórica de Argentina. Desde leyendas consagradas hasta nuevos talentos, exploramos las historias, trayectorias y
+      contribuciones de aquellos que mantienen viva la esencia del folklore argentino.</p>
+    <p class="lead">Nuestra colección incluye biografías completas, letras de canciones emblemáticas, discografías,
+      próximos shows y
+      noticias relevantes sobre cada artista. Con un enfoque en la autenticidad y la profundidad, cada perfil de
+      intérprete te permitirá descubrir y apreciar la diversidad y el legado cultural del folklore argentino.</p>
+    <p class="lead">Ya seas un apasionado del folklore, un investigador o simplemente un amante de la buena música,
+      nuestra sección de
+      intérpretes de folklore argentino es el lugar ideal para sumergirte en el mundo de la música folklórica de nuestro
+      país. Explora y disfruta de los sonidos, historias y talentos que definen nuestra identidad cultural.</p>
+
+
+
+    {{-- <h1>Intérpretes de Folklore Argentino</h1> --}}
+    <p class="lead">Explora la rica diversidad de artistas y cantantes que han dado vida a la música folklórica
+      argentina. Encuentra biografías, discografías, letras de canciones y más.</p>
+
 
   </div>
 

@@ -8,29 +8,8 @@
   <div class="container">
 
     <h1>Mitos y leyendas argentinas</h1>
-    <p class="lead">Bienvenidos a nuestra sección de mitos y leyendas tradicionales, donde exploramos las historias y
-      relatos que
-      forman parte del rico patrimonio cultural del folklore argentino. Aquí encontrarás una colección fascinante de mitos
-      ancestrales y leyendas populares que han sido transmitidos de generación en generación, reflejando la sabiduría,
-      creencias y valores de nuestra gente.</p>
-    <p class="lead">Cada mito y leyenda está narrado con detalle, proporcionando contexto histórico y cultural para
-      ayudarte a entender
-      su significado y su relevancia en la actualidad. Descubre las historias de seres míticos, héroes legendarios y
-      fenómenos sobrenaturales que han inspirado canciones, danzas y celebraciones en la música folklórica argentina.</p>
-    <p class="lead">Sumérgete en el mundo mágico de los mitos y leyendas y conecta con las raíces profundas de nuestra
-      identidad
-      cultural. Nuestra sección es una ventana abierta a la imaginación y el misterio, invitándote a conocer y apreciar
-      las narrativas que enriquecen el folklore argentino y que continúan alimentando la creatividad y la tradición de
-      nuestro pueblo.</p>
 
-    <div class="icon-container">
-      <i class="fas fa-ghost"></i> <!-- Icono de fantasma -->
-      <i class="fas fa-dragon"></i> <!-- Icono de dragón -->
-      <i class="fas fa-moon"></i> <!-- Icono de luna -->
-      <i class="fas fa-book"></i> <!-- Icono de libro -->
-      <i class="fas fa-skull"></i> <!-- Icono de calavera -->
-      <i class="fas fa-mask"></i> <!-- Icono de máscara -->
-    </div>
+
 
 
 
@@ -47,8 +26,8 @@
         <div class="row justify-content-center">
           @foreach ($visitados as $mito)
             <div class="col-md-4 mb-4">
-              <a href="{{ route('mitos.show', $mito->slug) }}"
-                class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
+              <a href="{{ route('mitos.show', $mito->slug) }}" class="card h-100 shadow-sm text-decoration-none text-white"
+                style="background-color: #343a40;">
                 <div class="row g-0 h-100">
                   <div class="col-auto d-flex align-items-center justify-content-center p-3 bg-black">
                     <i class="fas fa-dragon fa-3x"></i>
@@ -137,7 +116,20 @@
     </div>
 
 
-
+    <p class="lead">Bienvenidos a nuestra sección de mitos y leyendas tradicionales, donde exploramos las historias y
+      relatos que
+      forman parte del rico patrimonio cultural del folklore argentino. Aquí encontrarás una colección fascinante de mitos
+      ancestrales y leyendas populares que han sido transmitidos de generación en generación, reflejando la sabiduría,
+      creencias y valores de nuestra gente.</p>
+    <p class="lead">Cada mito y leyenda está narrado con detalle, proporcionando contexto histórico y cultural para
+      ayudarte a entender
+      su significado y su relevancia en la actualidad. Descubre las historias de seres míticos, héroes legendarios y
+      fenómenos sobrenaturales que han inspirado canciones, danzas y celebraciones en la música folklórica argentina.</p>
+    <p class="lead">Sumérgete en el mundo mágico de los mitos y leyendas y conecta con las raíces profundas de nuestra
+      identidad
+      cultural. Nuestra sección es una ventana abierta a la imaginación y el misterio, invitándote a conocer y apreciar
+      las narrativas que enriquecen el folklore argentino y que continúan alimentando la creatividad y la tradición de
+      nuestro pueblo.</p>
 
 
   </div>

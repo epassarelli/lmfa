@@ -4,7 +4,7 @@
 
 @section('content_header')
   <span>Editar Interprete</span>
-@stop
+@endsection
 
 @section('content')
 
@@ -30,11 +30,12 @@
       </div>
 
     </div>
-  @stop
+  </form>
 
-  @section('js')
-    <script src="{{ asset('vendor/ckeditor5/ckeditor.js') }}"></script>
-    <script>
-      ClassicEditor.create(document.querySelector('#editor')).catch(error => console.error(error));
-    </script>
-  @stop
+@endsection
+
+@section('js')
+  @include('backend.partials.scripts._ckeditor')
+  @include('backend.partials.scripts._slug')
+  @include('backend.partials.scripts._select2')
+@endsection

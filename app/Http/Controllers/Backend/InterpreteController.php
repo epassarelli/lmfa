@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class InterpreteController extends Controller
 {
@@ -38,6 +39,7 @@ class InterpreteController extends Controller
 
   public function store(InterpreteRequest $request)
   {
+    // Valido todos los campos que lleguen antes de procesar
     $artista = new Interprete($request->validated());
 
     $artista->slug = Str::slug($artista->interprete);
@@ -45,9 +47,11 @@ class InterpreteController extends Controller
     $artista->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
     if ($request->hasFile('foto')) {
-      $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
-      $filePath = $request->file('foto')->storeAs('interpretes', $fileName, 'public');
-      $artista->foto = $fileName;
+      // Usar slug como nombre del archivo
+      $nombreArchivo = $artista->slug . '.' . $request->file('foto')->getClientOriginalExtension();
+
+      $filePath = $request->file('foto')->storeAs('interpretes', $nombreArchivo, 'public');
+      $artista->foto = $nombreArchivo;
     }
 
     $artista->save();
@@ -69,16 +73,35 @@ class InterpreteController extends Controller
 
   public function update(InterpreteRequest $request, Interprete $interprete)
   {
+    // Valido todos los campos que lleguen antes de procesar
+    $interprete->fill($request->validated());
+    $interprete->slug = Str::slug($interprete->interprete);
 
-    $interprete->fill($request->all());
+    // if ($request->hasFile('foto')) {
+
+    //   // Crear nuevo nombre con el slug actualizado
+    //   $nombreArchivo = $interprete->slug . '.' . $request->file('foto')->getClientOriginalExtension();
+
+    //   $request->file('foto')->storeAs('interpretes', $nombreArchivo, 'public');
+
+    //   // Almacena solo el nombre del archivo en el atributo 'foto' del modelo 'interprete'
+    //   $interprete->foto = basename($nombreArchivo);
+    // }
+
 
     if ($request->hasFile('foto')) {
-      // Almacena la foto en disco y obtiene el nombre original del archivo
-      $nombreArchivo = $request->file('foto')->store('interpretes', 'public');
+      // Eliminar la imagen anterior si existe
+      if ($interprete->foto && Storage::disk('public')->exists('interpretes/' . $interprete->foto)) {
+        Storage::disk('public')->delete('interpretes/' . $interprete->foto);
+      }
 
-      // Almacena solo el nombre del archivo en el atributo 'foto' del modelo 'interprete'
-      $interprete->foto = basename($nombreArchivo);
+      // Guardar nueva imagen
+      $nombreArchivo = $interprete->slug . '.' . $request->file('foto')->getClientOriginalExtension();
+      $request->file('foto')->storeAs('interpretes', $nombreArchivo, 'public');
+      $interprete->foto = $nombreArchivo;
     }
+
+
 
     $interprete->save();
 

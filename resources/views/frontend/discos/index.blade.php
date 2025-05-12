@@ -8,21 +8,7 @@
   <div class="container">
 
     <h1>Discografías del Folklore Argentino</h1>
-    <p class="lead">Bienvenidos a nuestra sección de discografías del folklore argentino, donde encontrarás una completa
-      colección de
-      álbumes y grabaciones de los más destacados artistas y cantantes de la música folklórica argentina. Explora las
-      obras maestras que han definido y enriquecido este género musical, desde los clásicos inmortales hasta los
-      lanzamientos más recientes.</p>
-    <p class="lead">Cada discografía está detalladamente organizada para ofrecerte información sobre los álbumes,
-      incluyendo listas de
-      canciones, fechas de lanzamiento y colaboraciones especiales. Descubre la evolución musical de tus artistas
-      favoritos a través de sus producciones discográficas, y sumérgete en la riqueza y diversidad de la música folklórica
-      argentina.</p>
-    <p class="lead">Nuestra sección de discografías es el recurso definitivo para los amantes del folklore que desean
-      conocer más sobre
-      la trayectoria musical de sus ídolos y explorar nuevos sonidos. Ya sea que estés buscando un álbum en particular o
-      simplemente quieras descubrir más sobre la historia musical del folklore argentino, aquí encontrarás todo lo que
-      necesitas.</p>
+
 
 
 
@@ -103,7 +89,21 @@
 
 
 
-
+    <p class="lead">Bienvenidos a nuestra sección de discografías del folklore argentino, donde encontrarás una completa
+      colección de
+      álbumes y grabaciones de los más destacados artistas y cantantes de la música folklórica argentina. Explora las
+      obras maestras que han definido y enriquecido este género musical, desde los clásicos inmortales hasta los
+      lanzamientos más recientes.</p>
+    <p class="lead">Cada discografía está detalladamente organizada para ofrecerte información sobre los álbumes,
+      incluyendo listas de
+      canciones, fechas de lanzamiento y colaboraciones especiales. Descubre la evolución musical de tus artistas
+      favoritos a través de sus producciones discográficas, y sumérgete en la riqueza y diversidad de la música folklórica
+      argentina.</p>
+    <p class="lead">Nuestra sección de discografías es el recurso definitivo para los amantes del folklore que desean
+      conocer más sobre
+      la trayectoria musical de sus ídolos y explorar nuevos sonidos. Ya sea que estés buscando un álbum en particular o
+      simplemente quieras descubrir más sobre la historia musical del folklore argentino, aquí encontrarás todo lo que
+      necesitas.</p>
 
   </div>
 

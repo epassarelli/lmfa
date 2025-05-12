@@ -8,21 +8,7 @@
   <div class="container mx-auto py-8">
 
     <h1>Festivales y Fiestas tradicionales del Folklore Argentino</h1>
-    <p class="lead">Descubre la magia de las fiestas y festivales folklóricos en nuestra sección dedicada a los eventos
-      que celebran la
-      música folklórica argentina. Aquí encontrarás información completa sobre los festivales más importantes, las fiestas
-      tradicionales y los eventos culturales que destacan la riqueza y diversidad del folklore argentino.</p>
-    <p class="lead">Cada festival y fiesta está detalladamente descrito, ofreciendo información sobre las fechas,
-      ubicaciones,
-      actividades y artistas participantes. Desde festivales nacionales que atraen a miles de visitantes hasta
-      celebraciones locales llenas de encanto y autenticidad, te ofrecemos una guía completa para disfrutar de estas
-      experiencias únicas. Aprende sobre la historia y el significado de cada evento y cómo puedes participar y disfrutar
-      de ellos.</p>
-    <p class="lead">Sumérgete en el espíritu festivo del folklore argentino y únete a las celebraciones que honran
-      nuestras tradiciones
-      y cultura. Nuestra sección de fiestas y festivales folklóricos es tu recurso definitivo para estar al tanto de los
-      próximos eventos y para conocer más sobre las celebraciones que hacen vibrar el corazón de nuestra música
-      folklórica. Vive la alegría y la pasión del folklore en cada festival y fiesta.</p>
+
 
 
 
@@ -131,6 +117,21 @@
       <!-- Fin del bloque -->
     </div> --}}
 
+    <p class="lead">Descubre la magia de las fiestas y festivales folklóricos en nuestra sección dedicada a los eventos
+      que celebran la
+      música folklórica argentina. Aquí encontrarás información completa sobre los festivales más importantes, las fiestas
+      tradicionales y los eventos culturales que destacan la riqueza y diversidad del folklore argentino.</p>
+    <p class="lead">Cada festival y fiesta está detalladamente descrito, ofreciendo información sobre las fechas,
+      ubicaciones,
+      actividades y artistas participantes. Desde festivales nacionales que atraen a miles de visitantes hasta
+      celebraciones locales llenas de encanto y autenticidad, te ofrecemos una guía completa para disfrutar de estas
+      experiencias únicas. Aprende sobre la historia y el significado de cada evento y cómo puedes participar y disfrutar
+      de ellos.</p>
+    <p class="lead">Sumérgete en el espíritu festivo del folklore argentino y únete a las celebraciones que honran
+      nuestras tradiciones
+      y cultura. Nuestra sección de fiestas y festivales folklóricos es tu recurso definitivo para estar al tanto de los
+      próximos eventos y para conocer más sobre las celebraciones que hacen vibrar el corazón de nuestra música
+      folklórica. Vive la alegría y la pasión del folklore en cada festival y fiesta.</p>
 
   </div>
 

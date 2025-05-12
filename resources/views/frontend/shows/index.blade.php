@@ -9,21 +9,7 @@
   <div class="container">
 
     <h1>Cartelera de eventos folklóricos</h1>
-    <p class="lead">Explora nuestra sección de shows y eventos del folklore argentino para mantenerte al tanto de las
-      presentaciones en
-      vivo y festivales que celebran la música folklórica argentina. Aquí encontrarás información detallada sobre los
-      próximos conciertos, festivales y eventos especiales donde podrás disfrutar de la música de tus artistas y cantantes
-      favoritos.</p>
-    <p class="lead">Obtén detalles sobre fechas, ubicaciones y horarios de los eventos más importantes, así como
-      información sobre la
-      compra de entradas y recomendaciones para disfrutar al máximo de cada espectáculo. Ya sea un concierto íntimo en una
-      peña local o un gran festival folklórico, nuestra sección te mantendrá informado sobre todas las oportunidades para
-      vivir la música folklórica argentina en vivo.</p>
-    <p class="lead">No te pierdas ninguna ocasión para celebrar y disfrutar del folklore argentino. Nuestra sección de
-      shows y eventos
-      te conecta con las experiencias en vivo más emocionantes, permitiéndote formar parte de la rica tradición musical de
-      Argentina. Desde festivales anuales hasta presentaciones exclusivas, te ofrecemos una guía completa para que no te
-      falte nada.</p>
+
 
     <div class="row">
       @if ($shows->isEmpty())
@@ -66,7 +52,21 @@
       @endif
     </div>
 
-
+    <p class="lead">Explora nuestra sección de shows y eventos del folklore argentino para mantenerte al tanto de las
+      presentaciones en
+      vivo y festivales que celebran la música folklórica argentina. Aquí encontrarás información detallada sobre los
+      próximos conciertos, festivales y eventos especiales donde podrás disfrutar de la música de tus artistas y cantantes
+      favoritos.</p>
+    <p class="lead">Obtén detalles sobre fechas, ubicaciones y horarios de los eventos más importantes, así como
+      información sobre la
+      compra de entradas y recomendaciones para disfrutar al máximo de cada espectáculo. Ya sea un concierto íntimo en una
+      peña local o un gran festival folklórico, nuestra sección te mantendrá informado sobre todas las oportunidades para
+      vivir la música folklórica argentina en vivo.</p>
+    <p class="lead">No te pierdas ninguna ocasión para celebrar y disfrutar del folklore argentino. Nuestra sección de
+      shows y eventos
+      te conecta con las experiencias en vivo más emocionantes, permitiéndote formar parte de la rica tradición musical de
+      Argentina. Desde festivales anuales hasta presentaciones exclusivas, te ofrecemos una guía completa para que no te
+      falte nada.</p>
 
   </div>
 
