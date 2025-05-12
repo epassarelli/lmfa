@@ -8,24 +8,7 @@
   <div class="container">
 
     <h1>Letras de Canciones Folklóricas</h1>
-    <p class="lead">Bienvenidos a nuestra sección de letras de canciones folklóricas, donde podrás explorar las letras de
-      las canciones
-      más emblemáticas de la música folklórica argentina. Desde clásicos inmortales hasta las composiciones
-      contemporáneas, aquí encontrarás una vasta colección de letras que reflejan la riqueza y diversidad de nuestro
-      folklore.</p>
-    <p class="lead">Cada letra está cuidadosamente transcrita y organizada por artista y álbum, facilitándote la búsqueda
-      de tus
-      canciones favoritas. Descubre el significado profundo y las historias detrás de cada letra, y cómo han influido en
-      la cultura y la tradición del folklore argentino. Nuestra colección incluye letras de los artistas y cantantes más
-      destacados, así como de talentos emergentes que están dando forma al futuro de la música folklórica.</p>
-    <p class="lead">Sumérgete en las palabras que han dado vida a la música folklórica argentina y conecta con las
-      emociones y relatos
-      que cada canción transmite. Ya sea que estés buscando una letra específica o simplemente quieras explorar el vasto
-      repertorio de nuestro folklore, nuestra sección de letras de canciones es el lugar perfecto para ti.</p>
-
-
-
-
+    <p class="lead">Bienvenidos a nuestra sección de letras de canciones folklóricas</p>
     <div class="row mb-4">
       <div class="col-12">
         <h2>Canciones folkloricas con más visitas</h2>
@@ -62,11 +45,6 @@
         </div>
       </div>
     </div>
-
-
-
-
-
 
 
 
@@ -111,10 +89,21 @@
 
 
 
-
-
-
-
+    <p class="lead">En nuestra sección de letras de canciones folklóricas podrás explorar las letras
+      de las canciones más emblemáticas de la música folklórica argentina. Desde clásicos inmortales hasta las
+      composiciones
+      contemporáneas, aquí encontrarás una vasta colección de letras que reflejan la riqueza y diversidad de nuestro
+      folklore.</p>
+    <p class="lead">Cada letra está cuidadosamente transcrita y organizada por artista y álbum, facilitándote la
+      búsqueda
+      de tus
+      canciones favoritas. Descubre el significado profundo y las historias detrás de cada letra, y cómo han influido en
+      la cultura y la tradición del folklore argentino. Nuestra colección incluye letras de los artistas y cantantes más
+      destacados, así como de talentos emergentes que están dando forma al futuro de la música folklórica.</p>
+    <p class="lead">Sumérgete en las palabras que han dado vida a la música folklórica argentina y conecta con las
+      emociones y relatos
+      que cada canción transmite. Ya sea que estés buscando una letra específica o simplemente quieras explorar el vasto
+      repertorio de nuestro folklore, nuestra sección de letras de canciones es el lugar perfecto para ti.</p>
 
   </div>
 

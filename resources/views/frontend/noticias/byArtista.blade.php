@@ -17,12 +17,7 @@
 
       <div class="col-md-9">
         <h1>Noticias de {{ $interprete->interprete }}</h1>
-        <p class="lead">
-          Mantente informado con las últimas noticias sobre {{ $interprete->interprete }}. Aquí encontrarás las
-          actualizaciones
-          más recientes, entrevistas, lanzamientos y eventos relacionados con uno de los íconos del folklore argentino. No
-          te pierdas ninguna novedad y sigue de cerca la trayectoria y los logros de {{ $interprete->interprete }}.
-        </p>
+
 
         <div class="row">
 
@@ -34,7 +29,7 @@
             </div>
           @else
             @foreach ($noticias as $noticia)
-              <div class="col-lg-6">
+              {{-- <div class="col-lg-6">
                 <div class="single-sports-news-box">
                   <div class="sports-news-image">
                     <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">
@@ -56,6 +51,9 @@
                       2024</p>
                   </div>
                 </div>
+              </div> --}}
+              <div class="col-md-6 mb-4">
+                <x-noticia-card :noticia="$noticia" />
               </div>
             @endforeach
 
@@ -95,6 +93,15 @@
             @endforeach
 
           @endif --}}
+
+
+          <p class="lead">
+            Mantente informado con las últimas noticias sobre {{ $interprete->interprete }}. Aquí encontrarás las
+            actualizaciones
+            más recientes, entrevistas, lanzamientos y eventos relacionados con uno de los íconos del folklore argentino.
+            No
+            te pierdas ninguna novedad y sigue de cerca la trayectoria y los logros de {{ $interprete->interprete }}.
+          </p>
 
         </div>
 

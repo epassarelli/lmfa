@@ -4,7 +4,7 @@
 
 @section('content_header')
   <span>Interpretes</span>
-@stop
+@endsection
 
 @section('content')
 
@@ -33,12 +33,9 @@
 
 @endsection
 
+@section('js')
+  @include('backend.partials.scripts._ckeditor')
+  @include('backend.partials.scripts._slug')
+  @include('backend.partials.scripts._select2')
+@endsection
 
-{{-- <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
-<script>
-  ClassicEditor
-    .create(document.querySelector('#biografia'))
-    .catch(error => {
-      console.error(error);
-    });
-</script> --}}
