@@ -18,9 +18,44 @@
           <div class="col-md-4 mb-3">
             <p class="h6 fw-bold text-white">Otras secciones</p>
             <ul class="list-unstyled text-white-50 light">
-              <li><a href="#" class="text-decoration-none link-light" title="Politica de privacidad"> Politica de
+              {{-- <li><a href="#" class="text-decoration-none link-light" title="Politica de privacidad"> Politica de
                   privacidad
-                </a></li>
+                </a></li> --}}
+              <li class="link-light {{ request()->segment(1) == 'biografias-de-artistas-folkloricos' ? 'active' : '' }}">
+                <a href="{{ route('interpretes.index') }}" title="Biografías de artistas folklóricos"
+                  class="nav-link">Biografías</a>
+              </li>
+              {{-- <li class="link-light {{ request()->segment(1) == 'noticias-de-folklore-argentino' ? 'active' : '' }}">
+            <a href="{{ route('noticias.index') }}" title="Noticias del folklore argentino"
+              class="nav-link">Noticias</a>
+          </li> --}}
+              <li class="link-light {{ request()->segment(1) == 'cartelera-de-eventos-folkloricos' ? 'active' : '' }}">
+                <a href="{{ route('shows.index') }}" title="Cartelera de eventos folklóricos"
+                  class="nav-link">Cartelera</a>
+              </li>
+              <li
+                class="link-light {{ request()->segment(1) == 'discografias-del-folklore-argentino' ? 'active' : '' }}">
+                <a href="{{ route('discos.index') }}" title="Discografias del folklore argentino"
+                  class="nav-link">Discos</a>
+              </li>
+              <li class="link-light {{ request()->segment(1) == 'letras-de-canciones-folkloricas' ? 'active' : '' }}">
+                <a href="{{ route('canciones.index') }}" title="Letras de canciones folklóricas"
+                  class="nav-link">Canciones</a>
+              </li>
+              <li
+                class="link-light {{ request()->segment(1) == 'festivales-y-fiestas-tradicionales' ? 'active' : '' }}">
+                <a href="{{ route('festivales.index') }}" title="Festivales y fiestas tradicionales"
+                  class="nav-link">Festivales</a>
+              </li>
+              <li class="link-light {{ request()->segment(1) == 'mitos-y-leyendas-argentinas' ? 'active' : '' }}">
+                <a href="{{ route('mitos.index') }}" title="Mitos y leyendas argentinas" class="nav-link">Mitos y
+                  Leyendas</a>
+              </li>
+              <li
+                class="link-light {{ request()->segment(1) == 'recetas-de-comidas-tipicas-argentinas' ? 'active' : '' }}">
+                <a href="{{ route('comidas.index') }}" title="Recetas de comidas típicas argentinas"
+                  class="nav-link">Comidas</a>
+              </li>
             </ul>
           </div>
 

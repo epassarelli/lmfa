@@ -103,10 +103,11 @@
 
           @php
             $bloques = [
-                'Actualidad' => $actualidad,
-                'Festivales' => $festivales,
-                'Lanzamientos' => $lanzamientos,
-                'Cartelera' => $cartelera,
+                'Ultimas noticias de folklore argentino' => $ultimasNoticias,
+                // 'Actualidad' => $actualidad,
+                // 'Festivales' => $festivales,
+                // 'Lanzamientos' => $lanzamientos,
+                // 'Cartelera' => $cartelera,
             ];
           @endphp
 
@@ -126,7 +127,9 @@
             </div>
           @endforeach
 
-
+          <h1>Mi Folklore Argentino | Todo sobre Nuestras Tradiciones y Costumbres</h1>
+          <P>Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre música,
+            danzas y más. ¡Visítanos hoy!</P>
         </div>
 
         {{-- Seccion de ultimos discos --}}
