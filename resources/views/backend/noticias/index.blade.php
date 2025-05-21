@@ -25,6 +25,7 @@
             <th>Título</th>
             <th>Interprete</th>
             <th>Vistas</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -54,10 +55,11 @@
               </td>
 
               <td>{{ $noticia->visitas }}</td>
-              {{-- <td class="text-center"><livewire:toggle-button :model="$noticia" field="estado"
-                  key="{{ $noticia->id }}" />
-              </td> --}}
+              <td class="text-center">
+                {{ $noticia->estado == 1 ? 'Publicada' : 'Inactiva' }}
+              </td>
               <td class="text-right" style="white-space: nowrap;">
+
                 @can('update', $noticia)
                   <a href="{{ route('backend.noticias.edit', $noticia) }}" class="btn btn-warning"><i
                       class="fas fa-edit"></i></a>

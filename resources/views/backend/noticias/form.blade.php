@@ -2,6 +2,7 @@
   <div class="col-md-6">
     <x-input name="titulo" label="Título" :value="$noticia->titulo ?? ''" onkeyup="autocompleteSlug(this, '#slug')" required />
   </div>
+
   <div class="col-md-6">
     <x-input name="slug" label="Slug" :value="$noticia->slug ?? ''" required />
   </div>
@@ -22,6 +23,17 @@
   <div class="col-md-12">
     <x-select name="interprete_id[]" label="Intérpretes" :options="$interpretes" :selected="old('interprete_id', isset($noticia) ? $noticia->interpretes->pluck('id')->toArray() : [])" multiple
       class="js-example-basic-multiple" />
-
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="estado" class="form-label">Estado</label>
+      <select name="estado" class="form-control" id="estado" required>
+        <option value="1" {{ old('estado', $noticia->estado ?? '') == 1 ? 'selected' : '' }}>Activo</option>
+        <option value="0" {{ old('estado', $noticia->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo</option>
+      </select>
+      @error('estado')
+        <div class="text-danger">{{ $message }}</div>
+      @enderror
+    </div>
   </div>
 </div>

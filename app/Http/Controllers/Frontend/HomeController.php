@@ -23,12 +23,12 @@ class HomeController extends Controller
 
         $categorias = Categoria::get();
 
-        $noticias = Noticia::where('estado', 1)
-            ->with(['categoria', 'interpretes']) // Carga relaciones
+        $ultimasNoticias = Noticia::where('estado', 1)
+            ->with(['categoria']) // Carga relaciones
             ->latest()
-            ->take(10)
-            ->get()
-            ->toArray();
+            ->take(20)
+            ->get();
+
 
         $actualidad = Noticia::where('estado', 1)
             ->where('categoria_id', 1) // Filtrar por categoría específica
@@ -93,6 +93,6 @@ class HomeController extends Controller
         $metaTitle = "Mi Folklore Argentino | Todo sobre Nuestras Tradiciones y Costumbres";
         $metaDescription = "Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre música, danzas y más. ¡Visítanos hoy!";
 
-        return view('frontend.home', compact('metaTitle', 'metaDescription', 'noticias', 'interpretes', 'shows', 'discos', 'canciones', 'actualidad', 'festivales', 'lanzamientos', 'entrevistas', 'cartelera', 'categorias'));
+        return view('frontend.home', compact('metaTitle', 'metaDescription', 'ultimasNoticias', 'interpretes', 'shows', 'discos', 'canciones', 'actualidad', 'festivales', 'lanzamientos', 'entrevistas', 'cartelera', 'categorias'));
     }
 }
