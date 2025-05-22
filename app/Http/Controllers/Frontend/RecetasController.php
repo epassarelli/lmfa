@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comida;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class RecetasController extends Controller
@@ -38,8 +39,8 @@ class RecetasController extends Controller
         // Incrementar el contador de visitas
         $receta->increment('visitas');
 
-        $metaTitle = "Mi Folklore Argentino";
-        $metaDescription = "El portal del folklore";
+        $metaTitle = "Receta de " . $receta->titulo . " | Comida Típica del Folklore Argentino";
+        $metaDescription = Str::limit($receta->receta, 150);
         return view('frontend.recetas.show', compact('receta', 'ultimas_recetas', 'metaTitle', 'metaDescription'));
     }
 
@@ -54,8 +55,8 @@ class RecetasController extends Controller
         // Lógica para obtener intérpretes cuya letra del título comience con $letra
         $comidas = Comida::where('titulo', 'LIKE', $letra . '%')->get();
 
-        $metaTitle = "Biografías de Interpretes folkloricos de Argentina que comienzan con $letra";
-        $metaDescription = "Biografías de Interpretes folkloricos de Argentina que comienzan con $letra";
+        $metaTitle = "Recetas de comidas típicas de Argentina que comienzan con $letra";
+        $metaDescription = "Recetas de comidas típicas de Argentina que comienzan con $letra";
 
         return view('frontend.recetas.letra', compact('ultimas', 'visitadas', 'comidas', 'letra', 'metaTitle', 'metaDescription'));
     }

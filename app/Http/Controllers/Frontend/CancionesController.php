@@ -34,7 +34,7 @@ class CancionesController extends Controller
         $section = 'canciones';
 
         $metaTitle = "Letras de canciones de " . $interprete->interprete;
-        $metaDescription = "Letras de canciones de " . $interprete->interprete . ", interprete del folklore argentino";
+        $metaDescription = "Letras de canciones de " . $interprete->interprete . ", referente del folklore argentino. Descubrí su cancionero popular y disfrutá su música.";
         return view('frontend.canciones.byArtista', compact('canciones', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
     }
 
