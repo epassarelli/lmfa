@@ -90,7 +90,7 @@ class HomeController extends Controller
         $cancion = new Cancion();
         $canciones = $cancion->getNLast(Cancion::class, 6);
 
-        $metaTitle = "Mi Folklore Argentino | Todo sobre Nuestras Tradiciones y Costumbres";
+        $metaTitle = "Mi Folklore Argentino | Nuestras Tradiciones y Costumbres";
         $metaDescription = "Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre música, danzas y más. ¡Visítanos hoy!";
 
         return view('frontend.home', compact('metaTitle', 'metaDescription', 'ultimasNoticias', 'interpretes', 'shows', 'discos', 'canciones', 'actualidad', 'festivales', 'lanzamientos', 'entrevistas', 'cartelera', 'categorias'));

@@ -20,7 +20,7 @@
         <ul class="list-group">
           @foreach ($ultimos_mitos as $ultimo_mito)
             <li class="list-group-item">
-              <a href="{{ url('mitos/' . $ultimo_mito->slug) }}"
+              <a href="{{ route('mitos.show', $ultimo_mito->slug) }}"
                 class="text-decoration-none">{{ $ultimo_mito->titulo }}</a>
             </li>
           @endforeach
