@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Festival;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
+use App\Models\Festival;
 
 class FestivalesController extends Controller
 {
@@ -35,7 +37,7 @@ class FestivalesController extends Controller
         $festival->increment('visitas');
 
         $metaTitle = $festival->titulo . " - Folklore Argentino";
-        $metaDescription = "El portal del folklore";
+        $metaDescription = Str::limit(strip_tags(html_entity_decode($festival->detalle)), 150);
         return view('frontend.festivales.show', compact('festival', 'ultimos_festivales', 'metaTitle', 'metaDescription'));
     }
 }

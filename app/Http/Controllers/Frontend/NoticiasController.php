@@ -71,8 +71,11 @@ class NoticiasController extends Controller
     // $interpretes = Interprete::getInterpretesExcluding($interprete->id);
     $section = 'noticias';
 
-    $metaTitle = "Noticias de " . $categoria->nombre;
-    $metaDescription = "Todas las novedades y noticias de " . $categoria->nombre . ". Presentaciones, próximos lanzamientos.";
+    $metaTitle = "Noticias de " . $categoria->nombre . " del Folklore Argentino";
+    $metaDescription = "Todas las noticias de {$categoria->nombre} del folklore argentino: presentaciones en vivo, lanzamientos recientes, artistas en agenda y hechos destacados del género.";
+
+
+
     return view('frontend.noticias.byCategoria', compact('categoria', 'noticias', 'ultimas', 'section', 'metaTitle', 'metaDescription'));
   }
 

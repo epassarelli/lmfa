@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 use App\Models\Interprete;
 
 class InterpretesController extends Controller
@@ -46,8 +48,9 @@ class InterpretesController extends Controller
                 'Videos' => 3,
             ];
 
-            $metaTitle = "Biografía de " . $interprete->interprete;
-            $metaDescription = "Biografía de " . $interprete->interprete . " interprete del folklore argentino";
+            $metaTitle = "Biografía de " . $interprete->interprete . " | Folklore Argentino";
+            $metaDescription = Str::limit(strip_tags(html_entity_decode($interprete->biografia)), 150);
+
             return view('frontend.interpretes.show', compact('interprete', 'biografias', 'interpretes', 'section', 'recursos', 'metaTitle', 'metaDescription'));
         } else {
             return back()->with('alert', 'El intérprete no existe.');

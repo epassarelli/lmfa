@@ -39,8 +39,8 @@ class RecetasController extends Controller
         // Incrementar el contador de visitas
         $receta->increment('visitas');
 
-        $metaTitle = "Receta de " . $receta->titulo . " | Comida Típica del Folklore Argentino";
-        $metaDescription = Str::limit($receta->receta, 150);
+        $metaTitle = "Receta de " . $receta->titulo . " | Comida Típica del Folklore";
+        $metaDescription = Str::limit(strip_tags(html_entity_decode($receta->receta)), 150);
         return view('frontend.recetas.show', compact('receta', 'ultimas_recetas', 'metaTitle', 'metaDescription'));
     }
 
@@ -56,7 +56,8 @@ class RecetasController extends Controller
         $comidas = Comida::where('titulo', 'LIKE', $letra . '%')->get();
 
         $metaTitle = "Recetas de comidas típicas de Argentina que comienzan con $letra";
-        $metaDescription = "Recetas de comidas típicas de Argentina que comienzan con $letra";
+        // $metaDescription = "Recetas de comidas típicas de Argentina que comienzan con $letra";
+        $metaDescription = "Descubrí recetas de comidas típicas del folklore argentino que comienzan con la letra {$letra}. Gastronomía tradicional, sabores auténticos.";
 
         return view('frontend.recetas.letra', compact('ultimas', 'visitadas', 'comidas', 'letra', 'metaTitle', 'metaDescription'));
     }
