@@ -24,6 +24,20 @@
     <x-select name="interprete_id[]" label="Intérpretes" :options="$interpretes" :selected="old('interprete_id', isset($noticia) ? $noticia->interpretes->pluck('id')->toArray() : [])" multiple
       class="js-example-basic-multiple" />
   </div>
+
+  <!-- Columna 3 -->
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="publicar">Fecha de Publicación</label>
+      <input type="datetime-local" name="publicar" id="publicar" class="form-control"
+        value="{{ old('publicar', isset($noticia) ? $noticia->publicar : '') }}" required>
+      @error('publicar')
+        <div class="text-danger">{{ $message }}</div>
+      @enderror
+    </div>
+  </div>
+
+
   <div class="col-md-4">
     <div class="form-group">
       <label for="estado" class="form-label">Estado</label>

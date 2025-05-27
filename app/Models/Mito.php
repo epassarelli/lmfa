@@ -13,6 +13,15 @@ class Mito extends Model
     use CommonMethodsTrait;
     use HasFactory;
 
+    protected $fillable = [
+        'titulo',
+        'mito',
+        'foto',
+        'slug',
+        'publicar',
+        'estado',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -42,7 +42,7 @@
 <div class="form-group">
   <label for="publicar">Fecha de Publicación</label>
   <input type="datetime-local" name="publicar" id="publicar" class="form-control"
-    value="{{ old('publicar', isset($mito) ? $mito->publicar->format('Y-m-d\TH:i') : '') }}" required>
+    value="{{ old('publicar', isset($mito) ? $mito->publicar : '') }}" required>
   @error('publicar')
     <div class="text-danger">{{ $message }}</div>
   @enderror

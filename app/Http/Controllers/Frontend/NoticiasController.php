@@ -23,7 +23,7 @@ class NoticiasController extends Controller
 
     $noticia = new Noticia();
     // Obtener los últimos 5 intérpretes
-    $ultimas = $noticia->getNLast(Noticia::class, 40);
+    $ultimas = $noticia->getNLast(Noticia::class, 30);
     $visitadas = $noticia->getNMostVisited(Noticia::class, 12);
 
     // $administrados = Session::get('interpretes');
