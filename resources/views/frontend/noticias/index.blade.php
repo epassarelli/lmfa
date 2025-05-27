@@ -10,10 +10,50 @@ se puede hacer? Me dices como? --}}
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 
+
+@section('styles')
+  <link rel="stylesheet" href="{{ asset('css/magazine/owl.carousel.min.css') }}">
+  {{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.theme.default.min.css') }}"> --}}
+  <link rel="stylesheet" href="{{ asset('css/magazine/style.css') }}">
+@endsection
+
+
 @section('content')
 
   <div class="container">
-    <h1>Noticias del Folklore Argentino</h1>
+
+    <!-- Listado de noticias en cards -->
+    <div class="row mt-5">
+      @php
+        $bloques = [
+            'Ultimas noticias de folklore argentino' => $ultimas,
+            // 'Actualidad' => $actualidad,
+            // 'Festivales' => $festivales,
+            // 'Lanzamientos' => $lanzamientos,
+            // 'Cartelera' => $cartelera,
+        ];
+      @endphp
+
+      @foreach ($bloques as $titulo => $noticias)
+        <div class="most-popular-news">
+          <div class="section-title">
+            <h1>{{ $titulo }}</h1>
+          </div>
+
+          <div class="row">
+            @foreach ($noticias as $noticia)
+              <div class="col-md-4 mb-4">
+                <x-noticia-card :noticia="$noticia" />
+              </div>
+            @endforeach
+          </div>
+        </div>
+      @endforeach
+    </div>
+
+
+
+
     <p class="lead">Mantente al día con las últimas noticias del folklore argentino en nuestra sección dedicada a
       mantenerte informado
       sobre todo lo relacionado con la música folklórica de nuestro país. Aquí encontrarás las actualizaciones más
@@ -29,28 +69,7 @@ se puede hacer? Me dices como? --}}
       colaborativos y homenajes, nuestra sección de noticias te mantendrá conectado con todo lo que está ocurriendo en el
       vibrante panorama de la música folklórica argentina.</p>
 
-    <!-- Listado de noticias en cards -->
-    <div class="row mt-5">
-      @foreach ($ultimas as $noticia)
-        <div class="col-md-4 mb-4">
-          <a href="{{ route('interprete.noticia.show', [$noticia->interprete->slug, $noticia->slug]) }}"
-            class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
-            <div class="card-img-top">
-              <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" class="img-fluid w-100 h-auto object-cover"
-                alt="{{ $noticia->titulo }}">
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">{{ $noticia->titulo }}</h5>
-              <p class="card-text mt-auto">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</p>
-            </div>
-          </a>
-        </div>
-      @endforeach
-    </div>
-
-
-
-    <div class="row mt-5">
+    {{-- <div class="row mt-5">
 
       <h2>Noticias Más Visitadas del Folklore Argentino</h2>
       <p class="lead">
@@ -75,7 +94,7 @@ se puede hacer? Me dices como? --}}
           </a>
         </div>
       @endforeach
-    </div>
+    </div> --}}
 
 
   </div>

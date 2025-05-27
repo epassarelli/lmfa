@@ -28,7 +28,7 @@ class NoticiaController extends Controller
         $this->authorize('viewAny', Noticia::class);
 
         $noticias = Noticia::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre'])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('publicar', 'desc')
             ->get();
 
         // dd($noticias);

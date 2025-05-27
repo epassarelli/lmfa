@@ -20,7 +20,7 @@
       <table id="noticias" class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
-            <th>Fecha</th>
+            <th>Publicar</th>
             <th>Foto</th>
             <th>Título</th>
             <th>Interprete</th>
@@ -34,10 +34,10 @@
           @foreach ($noticias as $noticia)
             <tr>
               <td>
-                @if ($noticia->created_at)
-                  {{ $noticia->created_at->format('d/m/Y H:i') }}
+                @if ($noticia->publicar)
+                  {{ $noticia->publicar }}
                 @else
-                  --- Sin fecha
+                  -Sin fecha-
                 @endif
               </td>
               <td>

@@ -32,7 +32,8 @@ class DiscosController extends Controller
         $section = 'discografias';
 
         $metaTitle = "Discografía de " . $interprete->interprete;
-        $metaDescription = "Discografía de " . $interprete->interprete . ", interprete del folklore argentino";
+        $metaDescription = "Discografía completa de {$interprete->interprete}, figura destacada del folklore argentino. Conocé sus álbumes, canciones y trayectoria musical.";
+
         return view('frontend.discos.byArtista', compact('discos', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
     }
 

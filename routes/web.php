@@ -15,6 +15,7 @@ use App\Http\Controllers\Frontend\RadiosController;
 use App\Http\Controllers\Frontend\RecetasController;
 use App\Http\Controllers\Frontend\ShowsController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\ContactoController;
 // use App\Http\Controllers\Frontend\ImagenController;
 
 use App\Http\Controllers\Auth\SocialiteController;
@@ -81,6 +82,11 @@ Route::get('recetas-de-comidas-tipicas-argentinas', [RecetasController::class, '
 Route::get('mitos-y-leyendas-argentinas/letra/{letra}', [MitosController::class, 'letra'])->name('mitos.letra');
 Route::get('mitos-y-leyendas-argentinas/{id}', [MitosController::class, 'show'])->name('mitos.show');
 Route::get('mitos-y-leyendas-argentinas', [MitosController::class, 'index'])->name('mitos.index');
+
+// Formulario contacto
+Route::get('/contacto', [ContactoController::class, 'index'])->name('contacto');
+// Envio de formulario de contacto
+Route::post('contacto', [ContactoController::class, 'store'])->name('contacto.store');
 
 
 // Rutas para el controlador de entrevistas

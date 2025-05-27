@@ -74,6 +74,8 @@ Route::group(
       'edit' => 'backend.festivales.edit',
       'update' => 'backend.festivales.update',
       'destroy' => 'backend.festivales.destroy',
+    ])->parameters([
+      'festivales' => 'festival'
     ]);
 
     Route::post('canciones/store-ajax', [CancionController::class, 'storeAjax'])->name('backend.canciones.store-ajax');

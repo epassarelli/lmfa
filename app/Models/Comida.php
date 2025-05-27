@@ -13,6 +13,14 @@ class Comida extends Model
     use CommonMethodsTrait;
     use HasFactory;
 
+    protected $fillable = [
+        'titulo',
+        'receta',
+        'slug',
+        'publicar',
+        'estado',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
