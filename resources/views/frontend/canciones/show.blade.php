@@ -44,7 +44,7 @@
             </div>
           @endif --}}
 
-          <div class="letra-cancion fs-5 fw-medium mt-4" style="min-height: 300px;">
+          <div class="letra-cancion fs-5 fw-medium mt-4">
             {!! $cancion->letra !!}
           </div>
           <p class="fs-5 fw-medium mt-4">{{ $cancion->visitas }} veces vista</p>

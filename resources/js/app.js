@@ -3,8 +3,8 @@ import './bootstrap';
 import $ from 'jquery';
 window.$ = window.jQuery = $;
 
-import 'select2/dist/css/select2.min.css';
-import 'select2/dist/js/select2.min.js';
+// import 'select2/dist/css/select2.min.css';
+// import 'select2/dist/js/select2.min.js';
 
 // import Swal from 'sweetalert2';
 // window.Swal = Swal;
