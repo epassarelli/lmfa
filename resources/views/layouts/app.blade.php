@@ -57,6 +57,28 @@
     .navbar-nav .nav-item.active .nav-link {
       transition: color 0.3s ease, background-color 0.3s ease, padding 0.3s ease;
     }
+
+    .youtube-placeholder {
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      border-radius: 0.5rem;
+    }
+
+    .youtube-play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .youtube-placeholder:hover .youtube-play-button {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
   </style>
 
   @yield('styles')

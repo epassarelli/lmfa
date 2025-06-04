@@ -38,11 +38,28 @@
         <div class="p-3">
           <h1 class="fs-4 fw-bold mb-2">{{ $cancion->cancion }}</h1>
           <p class="fs-5 fw-medium mb-4">{{ $interprete->interprete }}</p>
-          @if (!empty($cancion->youtube))
+          {{-- @if (!empty($cancion->youtube))
             <div class="ratio ratio-16x9" style="min-height: 200px;">
               <iframe src="https://www.youtube.com/embed/{{ $cancion->youtube }}" frameborder="0" allowfullscreen></iframe>
             </div>
+          @endif --}}
+
+          @if (!empty($cancion->youtube))
+            <div class="ratio ratio-16x9 youtube-placeholder" style="position: relative; cursor: pointer;"
+              data-id="{{ $cancion->youtube }}">
+              <img src="https://i.ytimg.com/vi/{{ $cancion->youtube }}/hqdefault.jpg" class="img-fluid"
+                alt="Miniatura del video" width="560" height="315"
+                style="object-fit: cover; width: 100%; height: 100%; border-radius: 0.5rem;">
+              <div class="youtube-play-button">
+                <svg width="68" height="48" viewBox="0 0 68 48">
+                  <path
+                    d="M66.52 7.58a8 8 0 0 0-5.64-5.65C56.09 0 34 0 34 0s-22.09 0-26.88 1.93a8 8 0 0 0-5.64 5.65C0 12.36 0 24 0 24s0 11.64 1.48 16.42a8 8 0 0 0 5.64 5.65C11.91 48 34 48 34 48s22.09 0 26.88-1.93a8 8 0 0 0 5.64-5.65C68 35.64 68 24 68 24s0-11.64-1.48-16.42zM27 34V14l18 10-18 10z"
+                    fill="#f00" />
+                </svg>
+              </div>
+            </div>
           @endif
+
 
           <div class="letra-cancion fs-5 fw-medium mt-4" style="min-height: 300px;">
             {!! $cancion->letra !!}
@@ -78,5 +95,27 @@
     </div>
   </div>
 
+
+@endsection
+
+@section('scripts')
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.youtube-placeholder').forEach(div => {
+        div.addEventListener('click', function() {
+          const videoId = this.dataset.id;
+          const iframe = document.createElement('iframe');
+          iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}?autoplay=1`);
+          iframe.setAttribute('frameborder', '0');
+          iframe.setAttribute('allowfullscreen', 'true');
+          iframe.setAttribute('loading', 'lazy');
+          iframe.style.width = '100%';
+          iframe.style.height = '100%';
+          this.innerHTML = '';
+          this.appendChild(iframe);
+        });
+      });
+    });
+  </script>
 
 @endsection
