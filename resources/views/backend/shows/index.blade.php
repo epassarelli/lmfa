@@ -36,7 +36,10 @@
         <tbody>
           @foreach ($shows as $show)
             <tr>
-              <td>{{ $show->fecha }}</td>
+              {{-- <td>{{ $show->fecha }}</td> --}}
+              <td data-order="{{ $show->fecha }}">
+                {{ \Carbon\Carbon::parse($show->fecha)->format('d-m-Y') }}
+              </td>
               <td>{{ $show->show }}</td>
               <td>{{ $show->interprete->interprete }}</td>
               <td>{{ $show->estado == 1 ? 'Activo' : 'Inactivo' }}</td>

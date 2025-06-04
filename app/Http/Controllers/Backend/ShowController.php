@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Show;
 use App\Models\Interprete;
 use App\Http\Requests\ShowRequest;
+use App\Models\Provincia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -40,35 +41,34 @@ class ShowController extends Controller
     public function create()
     {
         // Obtener los intérpretes activos ordenados y con los campos necesarios
+        $show = new Show();
+
         $interpretes = Interprete::active()->get();
+        $provincias = Provincia::all();
 
         $action = 'create';
-        return view('backend.shows.create', compact('interpretes', 'action'));
+        return view('backend.shows.create', compact('show', 'interpretes', 'provincias', 'action'));
     }
 
 
     public function store(ShowRequest $request)
     {
-        $show = new Show($request->validated());
-        $show->slug = Str::slug($show->show);
-        $show->user_id = Auth::id();
-        // $show->estado = Auth::user()->hasRole('prensa') ? 1 : 0;
-        $show->estado = Auth::user()->hasAnyRole(['prensa', 'administrador']) ? 1 : 0;
+        $data = $request->validated();
+        $data['user_id'] = Auth::id();
+        $data['destacado'] = $request->has('destacado');
+        $data['slug'] = $data['slug'] ?? Str::slug($data['show'] . '-' . now()->timestamp);
 
-
-        if ($request->hasFile('foto')) {
-            $filePath = $request->file('foto')->store('shows', 'public');
-            $show->foto = $filePath;
+        if ($request->hasFile('imagen_destacada')) {
+            $filename = time() . '_' . $request->file('imagen_destacada')->getClientOriginalName();
+            $path = $request->file('imagen_destacada')->storeAs('shows', $filename, 'public');
+            $data['imagen_destacada'] = $path;
         }
 
-        $show->save();
+        $data['estado'] = Auth::user()->hasAnyRole(['prensa', 'administrador']) ? 1 : 0;
 
-        if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
-            $this->sendNotification($show);
-        }
+        Show::create($data);
 
-        Alert::success('Show creado', 'El show ha sido creado con éxito.');
-        return redirect()->route('backend.shows.index');
+        return redirect()->route('shows.index')->with('success', 'Show creado correctamente.');
     }
 
 
@@ -76,30 +76,30 @@ class ShowController extends Controller
     {
         // Obtener los intérpretes activos ordenados y con los campos necesarios
         $interpretes = Interprete::active()->get();
+        $provincias = Provincia::all();
 
         $action = 'edit';
-        return view('backend.shows.edit', compact('show', 'interpretes', 'action'));
+        return view('backend.shows.edit', compact('show', 'provincias', 'interpretes', 'action'));
     }
 
 
     public function update(ShowRequest $request, Show $show)
     {
-        $show->fill($request->validated());
+        $this->authorize('update', $show);
 
-        $show->slug = Str::slug($show->show);
-        $show->user_id = Auth::id();
-        // Si es Colaborador pasa a Inactivo
-        $show->estado = Auth::user()->hasAnyRole(['prensa', 'administrador']) ? 1 : 0;
+        $data = $request->validated();
+        $data['destacado'] = $request->has('destacado');
+        $data['slug'] = $data['slug'] ?? Str::slug($data['show'] . '-' . now()->timestamp);
 
-        if ($request->hasFile('foto')) {
-            $filePath = $request->file('foto')->store('shows', 'public');
-            $show->foto = $filePath;
+        if ($request->hasFile('imagen_destacada')) {
+            $filename = time() . '_' . $request->file('imagen_destacada')->getClientOriginalName();
+            $path = $request->file('imagen_destacada')->storeAs('shows', $filename, 'public');
+            $data['imagen_destacada'] = $path;
         }
 
-        $show->save();
+        $show->update($data);
 
-        Alert::success('Show actualizado', 'El show ha sido actualizado con éxito.');
-        return redirect()->route('backend.shows.index');
+        return redirect()->route('shows.index')->with('success', 'Show actualizado correctamente.');
     }
 
 

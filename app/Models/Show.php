@@ -2,30 +2,62 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
+
 use App\Models\Interprete;
+use App\Models\Provincia;
 use App\Models\User;
+
 use App\Traits\CommonMethodsTrait;
 
 class Show extends Model
 {
-    use CommonMethodsTrait;
-    use HasFactory;
-    protected $fillable = ['show', 'slug', 'detalle', 'foto', 'visitas', 'publicar', 'user_id', 'estado', 'interprete_id', 'fecha', 'hora', 'lugar', 'direccion'];
+    protected $table = 'shows';
 
-    protected $dates = ['publicar', 'fecha'];
+    protected $fillable = [
+        'show',
+        'detalles',
+        'fecha',
+        'hora',
+        'lugar',
+        'direccion',
+        'interprete_id',
+        'precio_entrada',
+        'link_entradas',
+        'destacado',
+        'imagen_destacada',
+        'slug',
+        'lat',
+        'lng',
+        'provincia_id',
+    ];
 
+    // Relaciones
     public function interprete()
     {
-
         return $this->belongsTo(Interprete::class);
-        // return $this->belongsToMany(Interprete::class, 'interpretes_shows');
+    }
+
+    public function provincia()
+    {
+        return $this->belongsTo(Provincia::class);
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Mutator para slug automático
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($show) {
+            if (empty($show->slug)) {
+                $show->slug = Str::slug($show->show . '-' . now()->timestamp);
+            }
+        });
     }
 }
