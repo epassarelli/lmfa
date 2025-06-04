@@ -5,27 +5,90 @@
 
 @section('content')
 
-  <div class="d-flex flex-wrap py-4">
+  <section class="default-news-area">
+    <div class="container">
 
-    <div class="col-12 col-md-9 px-4">
-      <h2 class="text-3xl fw-bold mb-4">{{ $show->titulo }}</h2>
-      <img src="{{ asset('storage/mitos/' . $show->foto) }}" alt="{{ $show->titulo }}" class="mb-4 rounded-lg shadow-lg">
-      <p class="text-lg mb-4">{!! $show->receta !!}</p>
-      <p class="text-gray-600">Visitas: {{ $show->visitas }}</p>
+      <div class="row">
+
+        {{-- Seccion de bloques de noticias --}}
+        <div class="col-lg-8">
+        </div>
+
+        <div class="col-lg-4">
+
+          <aside class="widget-area">
+
+            <section class="widget widget_latest_news_thumb">
+              <h3 class="widget-title">Eventos destacados</h3>
+            </section>
+
+            <section class="widget widget_stay_connected">
+              <h3 class="widget-title">Stay connected</h3>
+
+              <ul class="stay-connected-list">
+                <li>
+                  <a href="https://templates.envytheme.com/depan/default/contact.html#">
+                    <i class="bx bxl-facebook"></i>
+                    120,345 Fans
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://templates.envytheme.com/depan/default/contact.html#" class="twitter">
+                    <i class="bx bxl-twitter"></i>
+                    25,321 Followers
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://templates.envytheme.com/depan/default/contact.html#" class="linkedin">
+                    <i class="bx bxl-linkedin"></i>
+                    7,519 Connect
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://templates.envytheme.com/depan/default/contact.html#" class="youtube">
+                    <i class="bx bxl-youtube"></i>
+                    101,545 Subscribers
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://templates.envytheme.com/depan/default/contact.html#" class="instagram">
+                    <i class="bx bxl-instagram"></i>
+                    10,129 Followers
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://templates.envytheme.com/depan/default/contact.html#" class="wifi">
+                    <i class="bx bx-wifi"></i>
+                    952 Subscribers
+                  </a>
+                </li>
+              </ul>
+            </section>
+
+            <section class="widget widget_newsletter">
+              <div class="newsletter-content">
+                <h3>Subscribe to our newsletter</h3>
+                <p>Subscribe to our newsletter to get the new updates!</p>
+              </div>
+
+              <form class="newsletter-form" data-toggle="validator" novalidate="true">
+                <input type="email" class="input-newsletter" placeholder="Enter your email" name="EMAIL"
+                  required="" autocomplete="off">
+
+                <button type="submit" class="disabled" style="pointer-events: all; cursor: pointer;">Subscribe</button>
+                <div id="validator-newsletter" class="form-result"></div>
+              </form>
+            </section>
+
+          </aside>
+        </div>
+      </div>
     </div>
-
-    <div class="col-12 col-md-3 px-4">
-      <h3 class="text-2xl fw-bold mb-4">Últimas recetas</h3>
-      <ul class="border-top border-bottom border-3 border-gray-300 py-4">
-        @foreach ($ultimos_shows as $latest_show)
-          <li class="py-2"><a href="{{ url('mitos/' . $latest_show->slug) }}"
-              class="text-lg text-decoration-none hover-underline">{{ $latest_show->titulo }}</a></li>
-          <hr class="my-2">
-        @endforeach
-      </ul>
-    </div>
-
-  </div>
-
+  </section>
 
 @endsection

@@ -31,7 +31,34 @@
   <title>@yield('metaTitle', 'Mi folklore Argentino')</title>
   <meta name="description" content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
 
+  <!-- Preconexión con el host de fuentes -->
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+
   @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+  <style>
+    /* 1. Reservar altura mínima para el header */
+    header.sticky-top {
+      min-height: 72px;
+      /* Ajustalo si tu header es más alto */
+    }
+
+    /* 2. Tamaño fijo para el botón hamburguesa */
+    .navbar-toggler {
+      width: 40px;
+      height: 40px;
+      padding: 0.25rem;
+    }
+
+    /* 3. Transiciones suaves para evitar saltos visuales */
+    .navbar-nav .nav-link {
+      transition: color 0.3s ease, background-color 0.3s ease, padding 0.3s ease;
+    }
+
+    .navbar-nav .nav-item.active .nav-link {
+      transition: color 0.3s ease, background-color 0.3s ease, padding 0.3s ease;
+    }
+  </style>
+
   @yield('styles')
 </head>
 
@@ -45,6 +72,21 @@
 
   @include('layouts.partials.footer')
   @yield('scripts')
+
+  @if (!app()->environment('local'))
+    <!-- Google tag (gtag.js) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'G-Q4QNW9JPGG');
+    </script>
+  @endif
+
 </body>
 
 </html>

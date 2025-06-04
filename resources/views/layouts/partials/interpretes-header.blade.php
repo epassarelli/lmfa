@@ -19,37 +19,38 @@
 
   <div class="row">
     {{-- <div class="col-md-11"> --}}
-    <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" class="card-img-top pl-0 pr-4"
-      alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}">
+    <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" width="400" height="400" loading="lazy"
+      class="card-img-top img-fluid" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}">
+
     {{-- <h3>{{ $interprete->interprete }}</h3> --}}
-    <div class="pl-8">
-      <div class="list-group pl-8">
-        <a href="{{ route('interprete.show', str_replace('biografia-de-', '', $interprete->slug)) }}"
-          class="list-group-item list-group-item-action {{ request()->routeIs('interprete.show') ? 'disabled active' : '' }}"
-          title="Biografía de {{ $interprete->interprete }}">
-          Biografía de {{ $interprete->interprete }}
-        </a>
-        <a href="{{ route('interprete.noticias', str_replace('biografia-de-', '', $interprete->slug)) }}"
-          class="list-group-item list-group-item-action {{ request()->routeIs('interprete.noticias') || request()->routeIs('interprete.noticia.show') ? 'disabled active' : '' }}"
-          title="Noticias de {{ $interprete->interprete }}">
-          Noticias de {{ $interprete->interprete }}
-        </a>
-        <a href="{{ route('interprete.shows', str_replace('biografia-de-', '', $interprete->slug)) }}"
-          class="list-group-item list-group-item-action {{ request()->routeIs('interprete.shows') ? 'disabled active' : '' }}"
-          title="Shows de {{ $interprete->interprete }}">
-          Shows de {{ $interprete->interprete }}
-        </a>
-        <a href="{{ route('interprete.discografia', str_replace('biografia-de-', '', $interprete->slug)) }}"
-          class="list-group-item list-group-item-action {{ request()->routeIs('interprete.discografia') || request()->routeIs('interprete.album.show') ? 'disabled active' : '' }}"
-          title="Discografía de {{ $interprete->interprete }}">
-          Discografía de {{ $interprete->interprete }}
-        </a>
-        <a href="{{ route('interprete.canciones', str_replace('biografia-de-', '', $interprete->slug)) }}"
-          class="list-group-item list-group-item-action {{ request()->routeIs('interprete.canciones') || request()->routeIs('canciones.show') ? 'disabled active' : '' }}"
-          title="Letras de canciones de {{ $interprete->interprete }}">
-          Canciones por {{ $interprete->interprete }}
-        </a>
-      </div>
+    {{-- <div class="pl-8"> --}}
+    <div class="list-group">
+      <a href="{{ route('interprete.show', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.show') ? 'disabled active' : '' }}"
+        title="Biografía de {{ $interprete->interprete }}">
+        Biografía de {{ $interprete->interprete }}
+      </a>
+      <a href="{{ route('interprete.noticias', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.noticias') || request()->routeIs('interprete.noticia.show') ? 'disabled active' : '' }}"
+        title="Noticias de {{ $interprete->interprete }}">
+        Noticias de {{ $interprete->interprete }}
+      </a>
+      <a href="{{ route('interprete.shows', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.shows') ? 'disabled active' : '' }}"
+        title="Shows de {{ $interprete->interprete }}">
+        Shows de {{ $interprete->interprete }}
+      </a>
+      <a href="{{ route('interprete.discografia', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.discografia') || request()->routeIs('interprete.album.show') ? 'disabled active' : '' }}"
+        title="Discografía de {{ $interprete->interprete }}">
+        Discografía de {{ $interprete->interprete }}
+      </a>
+      <a href="{{ route('interprete.canciones', str_replace('biografia-de-', '', $interprete->slug)) }}"
+        class="list-group-item list-group-item-action {{ request()->routeIs('interprete.canciones') || request()->routeIs('canciones.show') ? 'disabled active' : '' }}"
+        title="Letras de canciones de {{ $interprete->interprete }}">
+        Canciones por {{ $interprete->interprete }}
+      </a>
+      {{-- </div> --}}
     </div>
 
     {{-- </div> --}}
@@ -109,6 +110,7 @@
       {{-- </div> --}}
     </div>
   </div>
+
   <script>
     document.getElementById('interprete-select').addEventListener('change', function() {
       var slug = this.value;
