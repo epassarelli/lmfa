@@ -26,7 +26,7 @@ se puede hacer? Me dices como? --}}
     <div class="row mt-5">
       @php
         $bloques = [
-            'Ultimas noticias de folklore argentino' => $ultimas,
+            'Noticias de folklore argentino' => $ultimas,
             // 'Actualidad' => $actualidad,
             // 'Festivales' => $festivales,
             // 'Lanzamientos' => $lanzamientos,
