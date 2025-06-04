@@ -38,7 +38,7 @@
   <style>
     /* 1. Reservar altura mínima para el header */
     header.sticky-top {
-      min-height: 72px;
+      min-height: 60px;
       /* Ajustalo si tu header es más alto */
     }
 

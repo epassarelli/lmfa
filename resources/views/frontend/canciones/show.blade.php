@@ -9,14 +9,21 @@
     a.cancion-card:visited,
     a.cancion-card:hover,
     a.cancion-card:active {
-      background-color: #f8f9fa;
-      color: #212529 !important;
+      background-color: #f8f9fa !important;
+      color: #000000 !important;
       text-decoration: none !important;
-      border: 1px solid #dee2e6;
+      border: 1px solid #dee2e6 !important;
       display: block;
       padding: 1rem;
       border-radius: 0.5rem;
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Asegura que todos los elementos hijos se vean en negro */
+    a.cancion-card *,
+    a.cancion-card span,
+    a.cancion-card h3 {
+      color: #000000 !important;
     }
   </style>
 @endsection
@@ -45,25 +52,26 @@
 
 
         <div class="row g-3">
+
           <div class="col-12">
             <h2 class="h5 fw-bold">Otras canciones de {{ $interprete->interprete }}</h2>
           </div>
 
-          @foreach ($otrasCanciones as $cancion)
+          @foreach ($related as $cancion)
             <div class="col-12 col-md-6">
-              <a href="{{ route('letras.show', [$interprete->slug, $cancion->slug]) }}"
+              <a href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}"
                 class="cancion-card d-block rounded shadow-sm p-3">
-                <span class="fw-semibold fs-5">{{ $cancion->titulo }}</span>
+                <h3 class="fs-5 fw-semibold mb-0">{{ $cancion->titulo }}</h3>
+
               </a>
             </div>
           @endforeach
 
         </div>
 
-
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-3 my-4">
         @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
       </div>
 
