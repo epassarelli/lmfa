@@ -44,6 +44,13 @@
             </div>
           @endif --}}
 
+          <div class="letra-cancion fs-5 fw-medium mt-4" style="min-height: 300px;">
+            {!! $cancion->letra !!}
+          </div>
+          <p class="fs-5 fw-medium mt-4">{{ $cancion->visitas }} veces vista</p>
+
+
+
           @if (!empty($cancion->youtube))
             <div class="youtube-placeholder position-relative mb-4 ratio ratio-16x9" onclick="loadYouTubeIframe(this)"
               data-video-id="{{ $cancion->youtube }}"
@@ -68,10 +75,7 @@
           @endif
 
 
-          <div class="letra-cancion fs-5 fw-medium mt-4" style="min-height: 300px;">
-            {!! $cancion->letra !!}
-          </div>
-          <p class="fs-5 fw-medium mt-4">{{ $cancion->visitas }} veces vista</p>
+
         </div>
 
 
