@@ -4,101 +4,60 @@
 @section('metaDescription', $metaDescription)
 
 @section('styles')
-  {{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.carousel.min.css') }}"> --}}
-  {{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.theme.default.min.css') }}"> --}}
-  <link rel="stylesheet" href="{{ asset('css/magazine/style.css') }}">
+  {{-- Tailwind ya se encarga del diseño --}}
 @endsection
 
 @section('content')
+  <section class="py-8 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col lg:flex-row gap-8">
 
-  <section class="default-news-area">
-    <div class="container">
-      <div class="row">
-
-        <div class="col-lg-8 mb-4">
+        {{-- Contenido principal --}}
+        <div class="w-full lg:w-2/3">
           <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-            class="mb-4 img-fluid rounded shadow-lg">
-          <h1 class="fs-4">{{ $noticia->titulo }}</h1>
+            class="w-full rounded-lg shadow-md mb-6 object-cover">
 
-          <p class="fs-5 mb-4">{!! $noticia->noticia !!}</p>
-          <p class="text-muted">Visitas: {{ $noticia->visitas }}</p>
+          <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ $noticia->titulo }}</h1>
 
+          <div class="prose prose-lg max-w-none mb-6 text-gray-800">
+            {!! $noticia->noticia !!}
+          </div>
 
-          {{-- <div class="most-popular-news">
-            <div class="section-title">
-              <h2>Relacionadas</h2>
-
-            </div>
-
-            <div class="row">
-              @foreach ($related as $relatedNew)
-                <div class="col-lg-4">
-                  <div class="single-most-popular-news">
-                    <div class="popular-news-image">
-                      <a href="{{ route('noticia.show', [$noticias[4]['categoria']['slug'], $noticias[4]['slug']]) }}">
-                        <img src="{{ asset('storage/noticias/' . $noticias[4]['foto']) }}"
-                          alt="{{ $noticias[4]['titulo'] }}">
-                      </a>
-                    </div>
-
-                    <div class="popular-news-content">
-                      <span>{{ $noticias[4]['categoria']['nombre'] }}</span>
-                      <h3>
-                        <a
-                          href="{{ route('noticia.show', [$noticias[4]['categoria']['slug'], $noticias[4]['slug']]) }}">{{ $noticias[4]['titulo'] }}</a>
-                      </h3>
-                      <p>
-                        {{ isset($noticias[4]['created_at']) ? \Carbon\Carbon::parse($noticias[4]['created_at'])->translatedFormat('d F, Y') : '' }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              @endforeach
-            </div>
-
-          </div> --}}
-
+          <p class="text-sm text-gray-500">Visitas: {{ $noticia->visitas }}</p>
         </div>
 
-        <div class="col-lg-4">
-          <aside class="widget-area">
+        {{-- Aside --}}
+        <div class="w-full lg:w-1/3">
+          <aside>
+            <section class="mb-6">
+              <h3 class="text-xl font-semibold mb-4 border-b pb-2">Últimas noticias</h3>
 
-
-            <section class="widget widget_latest_news_thumb">
-              <h3 class="widget-title">Ultimas noticias</h3>
-
-
-              @foreach ($ultimas_noticias as $noticia)
-                <article class="item">
-                  <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}" class="thumb">
+              @foreach ($ultimas_noticias as $n)
+                <article class="flex items-start mb-4">
+                  <a href="{{ route('noticia.show', [$n->categoria->slug, $n->slug]) }}"
+                    class="block w-20 h-20 flex-shrink-0 rounded overflow-hidden shadow">
                     <img
-                      src="{{ file_exists(public_path('storage/noticias/' . $noticia->foto)) && $noticia->foto ? asset('storage/noticias/' . $noticia->foto) : asset('img/album.jpg') }}"
-                      alt="{{ $noticia->titulo }}">
+                      src="{{ file_exists(public_path('storage/noticias/' . $n->foto)) && $n->foto ? asset('storage/noticias/' . $n->foto) : asset('img/album.jpg') }}"
+                      alt="{{ $n->titulo }}" class="w-full h-full object-cover">
                   </a>
-                  <div class="info">
-                    <h4 class="title usmall"><a
-                        href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">{{ $noticia->titulo }}</a>
+                  <div class="ml-4">
+                    <h4 class="text-sm font-medium text-gray-800 leading-snug">
+                      <a href="{{ route('noticia.show', [$n->categoria->slug, $n->slug]) }}" class="hover:underline">
+                        {{ $n->titulo }}
+                      </a>
                     </h4>
-                    <span>{{ $noticia->created_at ? $noticia->created_at->translatedFormat('d F, Y') : '' }}</span>
-
+                    <span class="text-xs text-gray-500">
+                      {{ $n->created_at ? $n->created_at->translatedFormat('d F, Y') : '' }}
+                    </span>
                   </div>
                 </article>
               @endforeach
 
             </section>
-
-
           </aside>
         </div>
 
       </div>
     </div>
   </section>
-
-
-
-
-
-
-
 @endsection

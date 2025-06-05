@@ -1,138 +1,64 @@
-<!-- Encabezado sticky -->
-<header class="sticky-top bg-black">
+<!-- Encabezado sticky con Tailwind -->
+<header class="sticky top-0 bg-black z-50 shadow border-b border-yellow-400">
+  <nav class="container mx-auto px-4 py-2 flex items-center justify-between flex-wrap">
 
-  <nav class="container-fluid navbar navbar-expand-lg bg-black py-0 menutop shadow border-bottom border-warning">
-    <div class="container-md">
+    {{-- LOGO --}}
+    <a href="{{ route('home') }}" title="Inicio Mi Folklore Argentino" class="flex items-center mb-2 mt-2">
+      <span class="text-primary text-xl font-bold">Mi Folk</span>
+      <span class="text-white text-xl font-bold">lor</span>
+      <span class="text-yellow-400 text-xl font-bold">e</span>
+      <span class="text-white text-xl font-bold">Arg</span>
+      <span class="text-primary text-xl font-bold">entino</span>
+    </a>
 
-      <a class="navbar-brand col-6 col-md-3 col-lg-3 mb-2 mt-2" href="{{ route('home') }}"
-        title="Inicio Mi Folklore Argentino">
-        {{-- <img src="{{ asset('img/mfa.jpg') }}" width="50" alt="Mi Folklore Argentino" class="img-fluid float-left"> --}}
-        <b><span class="fs-4 text-primary">Mi Folk</span><span class="fs-4 text-white">lor</span><span
-            class="fs-4 text-warning">e</span>
-          <span class="fs-4 text-white">Arg</span><span class="fs-4 text-primary">entino</span></b>
-      </a>
+    {{-- Botón hamburguesa --}}
+    <button @click="open = !open" class="text-yellow-400 lg:hidden focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
 
-      <button class="navbar-toggler btn btn-warning" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-
-          <!-- Opciones de navegación -->
-          <li class="nav-item {{ Route::is('interpretes.index') ? 'active' : '' }}">
-            <a href="{{ route('interpretes.index') }}" title="Biografías de artistas folklóricos"
-              class="nav-link">Biografías</a>
-          </li>
-
-          <li class="nav-item {{ request()->segment(1) == 'noticias-de-folklore-argentino' ? 'active' : '' }}">
-            <a href="{{ route('noticias.index') }}" title="Noticias del folklore argentino"
-              class="nav-link">Noticias</a>
-          </li>
-
-          <li class="nav-item {{ request()->segment(1) == 'cartelera-de-eventos-folkloricos' ? 'active' : '' }}">
-            <a href="{{ route('shows.index') }}" title="Cartelera de eventos folklóricos" class="nav-link">Cartelera</a>
-          </li>
-
-          <li class="nav-item {{ request()->segment(1) == 'discografias-del-folklore-argentino' ? 'active' : '' }}">
-            <a href="{{ route('discos.index') }}" title="Discografias del folklore argentino"
-              class="nav-link">Discos</a>
-          </li>
-
-          <li class="nav-item {{ request()->segment(1) == 'letras-de-canciones-folkloricas' ? 'active' : '' }}">
-            <a href="{{ route('canciones.index') }}" title="Letras de canciones folklóricas"
-              class="nav-link">Canciones</a>
-          </li>
-
-          <li class="nav-item {{ request()->segment(1) == 'festivales-y-fiestas-tradicionales' ? 'active' : '' }}">
-            <a href="{{ route('festivales.index') }}" title="Festivales y fiestas tradicionales"
-              class="nav-link">Festivales</a>
-          </li>
-
-          {{-- <li class="nav-item {{ request()->segment(1) == 'mitos-y-leyendas-argentinas' ? 'active' : '' }}">
-            <a href="{{ route('mitos.index') }}" title="Mitos y leyendas argentinas" class="nav-link">Mitos y
-              Leyendas</a>
-          </li> --}}
-
-          {{-- <li class="nav-item {{ request()->segment(1) == 'recetas-de-comidas-tipicas-argentinas' ? 'active' : '' }}">
-            <a href="{{ route('comidas.index') }}" title="Recetas de comidas típicas argentinas"
-              class="nav-link">Comidas</a>
-          </li> --}}
-
-          {{-- <li class="nav-item {{ request()->segment(1) == 'contacto' ? 'active' : '' }}">
-            <a href="{{ route('contacto') }}" title="Contactános" class="nav-link">Contacto</a>
-          </li> --}}
-
-          <!-- Opciones de autenticación -->
-          {{-- 
-          @guest
-            <li class="nav-item">
-              <a href="{{ route('login') }}" class="btn btn-warning"><span class="fas fa-sign-in-alt ml-8"></span>
-                Ingresar</a>
-            </li>
-          @else
-            <li class="nav-item dropdown">
-              <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ Auth::user()->name }}
-              </a>
-
-              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{{ url('/admin/misdatos') }}">Mis datos</a>
-                <a class="dropdown-item" href="{{ url('/admin') }}">Mis contenidos</a>
-                <a class="dropdown-item" href="{{ route('logout') }}"
-                  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                  Salir
-                </a>
-
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                  @csrf
-                </form>
-              </div>
-            </li>
-          @endguest 
-          --}}
-        </ul>
-      </div>
+    {{-- Menú --}}
+    <div :class="{ 'block': open, 'hidden': !open }"
+      class="w-full lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0" x-data="{ open: false }">
+      <ul class="lg:flex lg:space-x-6 text-white text-sm font-medium">
+        <li>
+          <a href="{{ route('interpretes.index') }}"
+            class="block py-2 px-2 hover:text-yellow-400 transition {{ Route::is('interpretes.index') ? 'text-yellow-400' : '' }}">
+            Biografías
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('noticias.index') }}"
+            class="block py-2 px-2 hover:text-yellow-400 transition {{ request()->segment(1) == 'noticias-de-folklore-argentino' ? 'text-yellow-400' : '' }}">
+            Noticias
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('shows.index') }}"
+            class="block py-2 px-2 hover:text-yellow-400 transition {{ request()->segment(1) == 'cartelera-de-eventos-folkloricos' ? 'text-yellow-400' : '' }}">
+            Cartelera
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('discos.index') }}"
+            class="block py-2 px-2 hover:text-yellow-400 transition {{ request()->segment(1) == 'discografias-del-folklore-argentino' ? 'text-yellow-400' : '' }}">
+            Discos
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('canciones.index') }}"
+            class="block py-2 px-2 hover:text-yellow-400 transition {{ request()->segment(1) == 'letras-de-canciones-folkloricas' ? 'text-yellow-400' : '' }}">
+            Canciones
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('festivales.index') }}"
+            class="block py-2 px-2 hover:text-yellow-400 transition {{ request()->segment(1) == 'festivales-y-fiestas-tradicionales' ? 'text-yellow-400' : '' }}">
+            Festivales
+          </a>
+        </li>
+      </ul>
     </div>
   </nav>
 </header>
-
-<!-- Agrega los estilos personalizados -->
-<style>
-  .navbar {
-    background-color: #000000;
-    /* Fondo negro para el header */
-  }
-
-  .navbar-nav .nav-link {
-    color: #ffffff;
-    /* Letra blanca para los enlaces */
-    font-weight: bold;
-
-  }
-
-  .navbar-nav .nav-link:hover {
-    color: #ffc107;
-    /* Amarillo en el hover */
-  }
-
-  .navbar-nav .nav-item.active .nav-link {
-    background-color: #ffc107;
-    /* Fondo amarillo para el enlace activo */
-    color: #000000;
-    /* Letra blanca para el enlace activo */
-    border-radius: 0.25rem;
-  }
-
-  .btn-warning {
-    color: #000000;
-    /* Botón con color de fondo de advertencia y letra negra */
-    border-color: #ffc107;
-  }
-
-  .btn-warning:hover {
-    background-color: #ffca2c;
-    border-color: #ffbf00;
-  }
-</style>

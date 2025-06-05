@@ -11,109 +11,43 @@
 
 @section('content')
 
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
 
-  <div class="container mt-5">
-    <div class="row mb-4">
+      {{-- Contenido principal --}}
+      <div class="w-full lg:w-2/3">
+        <h1 class="text-3xl font-bold mb-6">Noticias de {{ $interprete->interprete }}</h1>
 
-      <div class="col-md-9">
-        <h1>Noticias de {{ $interprete->interprete }}</h1>
-
-
-        <div class="row">
-
-          @if ($noticias->isEmpty())
-
-            <div class="warning"></div>
-            <div class="alert alert-warning" role="alert">
-              No hay noticias disponibles para {{ $interprete->interprete }} aún.
-            </div>
-          @else
+        @if ($noticias->isEmpty())
+          <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+            No hay noticias disponibles para <strong>{{ $interprete->interprete }}</strong> aún.
+          </div>
+        @else
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             @foreach ($noticias as $noticia)
-              {{-- <div class="col-lg-6">
-                <div class="single-sports-news-box">
-                  <div class="sports-news-image">
-                    <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">
-                      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}">
-                    </a>
-
-                    <a href="https://www.youtube.com/watch?v=UG8N5JT4QLc" class="popup-youtube">
-                      <i class="bx bx-play-circle"></i>
-                    </a>
-                  </div>
-
-                  <div class="sports-news-content">
-                    <span>{{ $noticia->categoria->nombre }}</span>
-                    <h3>
-                      <a
-                        href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">{{ $noticia->titulo }}</a>
-                    </h3>
-                    <p><a href="#">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</a> / 28 September,
-                      2024</p>
-                  </div>
-                </div>
-              </div> --}}
-              <div class="col-md-6 mb-4">
-                <x-noticia-card :noticia="$noticia" />
-              </div>
+              <x-noticia-card :noticia="$noticia" />
             @endforeach
+          </div>
+        @endif
 
-          @endif
-
-          {{-- @if ($noticias->isEmpty())
-
-            <div class="warning"></div>
-            <div class="alert alert-warning" role="alert">
-              No hay noticias disponibles para {{ $interprete->interprete }} aún.
-            </div>
-          @else
-            @foreach ($noticias as $noticia)
-              <div class="col-lg-6">
-                <div class="single-sports-news-box">
-                  <div class="sports-news-image">
-                    <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">
-                      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}">
-                    </a>
-
-                    <a href="https://www.youtube.com/watch?v=UG8N5JT4QLc" class="popup-youtube">
-                      <i class="bx bx-play-circle"></i>
-                    </a>
-                  </div>
-
-                  <div class="sports-news-content">
-                    <span>Football</span>
-                    <h3>
-                      <a
-                        href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">{{ $noticia->titulo }}</a>
-                    </h3>
-                    <p><a href="#">{{ number_format($noticia->visitas, 0, '', ',') }} visitas</a> / 28 September,
-                      2024</p>
-                  </div>
-                </div>
-              </div>
-            @endforeach
-
-          @endif --}}
-
-
-          <p class="lead">
-            Mantente informado con las últimas noticias sobre {{ $interprete->interprete }}. Aquí encontrarás las
-            actualizaciones
-            más recientes, entrevistas, lanzamientos y eventos relacionados con uno de los íconos del folklore argentino.
-            No
-            te pierdas ninguna novedad y sigue de cerca la trayectoria y los logros de {{ $interprete->interprete }}.
-          </p>
-
-        </div>
-
+        <p class="text-lg text-gray-700 leading-relaxed mt-6">
+          Mantente informado con las últimas noticias sobre <strong>{{ $interprete->interprete }}</strong>. Aquí
+          encontrarás las
+          actualizaciones más recientes, entrevistas, lanzamientos y eventos relacionados con uno de los íconos del
+          folklore argentino.
+          No te pierdas ninguna novedad y sigue de cerca la trayectoria y los logros de {{ $interprete->interprete }}.
+        </p>
 
         @include('layouts.partials.select-interprete')
 
       </div>
 
-      <div class="col-md-3">
+      {{-- Sidebar --}}
+      <div class="w-full lg:w-1/3">
         @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
       </div>
 
     </div>
+  </div>
 
-  @endsection
+@endsection

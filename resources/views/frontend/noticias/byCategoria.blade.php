@@ -3,77 +3,57 @@
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 
-@section('styles')
-  {{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.carousel.min.css') }}"> --}}
-  {{-- <link rel="stylesheet" href="{{ asset('css/magazine/owl.theme.default.min.css') }}"> --}}
-  <link rel="stylesheet" href="{{ asset('css/magazine/style.css') }}">
-@endsection
-
 @section('content')
 
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
 
-  <div class="container mt-5">
-    <div class="row mb-4">
+      {{-- Contenido principal --}}
+      <div class="w-full lg:w-2/3">
+        <h2 class="text-3xl font-bold mb-6">Noticias de {{ $categoria->nombre }}</h2>
 
-      <div class="col-lg-8">
-        <div class="section-title">
-          <h2>Noticias de {{ $categoria->nombre }}</h2>
-        </div>
-
-
-        <div class="row">
-
-          @if ($noticias->isEmpty())
-
-            <div class="warning"></div>
-            <div class="alert alert-warning" role="alert">
-              No hay noticias disponibles para {{ $categoria->nombre }} aún.
-            </div>
-          @else
+        @if ($noticias->isEmpty())
+          <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+            No hay noticias disponibles para <strong>{{ $categoria->nombre }}</strong> aún.
+          </div>
+        @else
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             @foreach ($noticias as $noticia)
-              <div class="col-md-6 mb-4">
-                <x-noticia-card :noticia="$noticia" />
-              </div>
+              <x-noticia-card :noticia="$noticia" />
             @endforeach
-          @endif
-
-        </div>
-
-
-        {{-- @include('layouts.partials.select-interprete') --}}
-
+          </div>
+        @endif
       </div>
 
-      <div class="col-lg-4">
-        <aside class="widget-area">
-          {{-- @include('layouts.partials.interpretes-header', ['interprete' => $interprete]) --}}
-          <section class="widget widget_latest_news_thumb">
-            <h3 class="widget-title">Ultimas noticias</h3>
+      {{-- Sidebar --}}
+      <div class="w-full lg:w-1/3">
+        <aside class="space-y-6">
+          <h3 class="text-xl font-semibold border-b pb-2">Últimas noticias</h3>
 
-
-            @foreach ($ultimas as $ultima)
-              <article class="item">
-                <a href="{{ route('noticia.show', [$ultima->categoria->slug, $ultima->slug]) }}" class="thumb">
-                  <img
-                    src="{{ file_exists(public_path('storage/noticias/' . $ultima->foto)) && $ultima->foto ? asset('storage/noticias/' . $ultima->foto) : asset('img/album.jpg') }}"
-                    alt="{{ $ultima->titulo }}">
-                </a>
-                <div class="info">
-                  <h4 class="title usmall"><a
-                      href="{{ route('noticia.show', [$ultima->categoria->slug, $ultima->slug]) }}">{{ $ultima->titulo }}</a>
-                  </h4>
-                  <span>{{ $ultima->created_at ? $ultima->created_at->translatedFormat('d F, Y') : '' }}</span>
-                  {{-- <p class="card-text mt-auto">
-                      {{ $noticia->created_at ? $noticia->created_at->translatedFormat('d F, Y') : '' }}
-                    </p> --}}
-                </div>
-              </article>
-            @endforeach
-
-          </section>
+          @foreach ($ultimas as $ultima)
+            <article class="flex items-start space-x-4">
+              <a href="{{ route('noticia.show', [$ultima->categoria->slug, $ultima->slug]) }}"
+                class="shrink-0 w-20 h-20 overflow-hidden rounded">
+                <img
+                  src="{{ file_exists(public_path('storage/noticias/' . $ultima->foto)) && $ultima->foto ? asset('storage/noticias/' . $ultima->foto) : asset('img/album.jpg') }}"
+                  alt="{{ $ultima->titulo }}" class="object-cover w-full h-full">
+              </a>
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold leading-snug">
+                  <a href="{{ route('noticia.show', [$ultima->categoria->slug, $ultima->slug]) }}"
+                    class="hover:text-blue-600">
+                    {{ $ultima->titulo }}
+                  </a>
+                </h4>
+                <span
+                  class="text-xs text-gray-500">{{ $ultima->created_at ? $ultima->created_at->translatedFormat('d F, Y') : '' }}</span>
+              </div>
+            </article>
+          @endforeach
         </aside>
       </div>
 
     </div>
+  </div>
 
-  @endsection
+@endsection

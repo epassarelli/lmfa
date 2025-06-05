@@ -5,52 +5,55 @@
 
 @section('content')
 
-  <div class="container">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <div class="row">
+    <div class="flex flex-col lg:flex-row gap-8">
 
-      <div class="col-md-9">
+      <!-- Columna principal -->
+      <div class="w-full lg:w-2/3">
 
-        <h1>{{ $receta->titulo }}</h1>
+        <h1 class="text-3xl font-bold mb-4">{{ $receta->titulo }}</h1>
+
+        {{-- Imagen opcional --}}
         {{-- <img src="{{ asset('storage/recetas/' . $receta->foto) }}" alt="{{ $receta->titulo }}"
-          class="mb-4 rounded-lg shadow-lg"> --}}
-        <p class="text-lg mb-4">{!! $receta->receta !!}</p>
-        <p class="text-gray-600">Visitas: {{ $receta->visitas }}</p>
+          class="mb-4 rounded-lg shadow"> --}}
 
+        <div class="prose max-w-none mb-4">
+          {!! $receta->receta !!}
+        </div>
 
+        <p class="text-gray-600 text-sm mb-8">Visitas: {{ $receta->visitas }}</p>
 
-
-
-        <h2>Buscar por Orden Alfabético</h2>
-        <p class="lead">
-          Encuentra fácilmente tus recetas favoritas de la cocina argentina utilizando nuestro índice alfabético. Esta
-          sección te permite explorar una amplia gama de platos tradicionales, ordenados de la A a la Z, facilitando tu
-          búsqueda y ayudándote a descubrir nuevas delicias gastronómicas que puedes preparar en casa.
+        <!-- Índice alfabético -->
+        <h2 class="text-xl font-semibold mb-2">Buscar por Orden Alfabético</h2>
+        <p class="text-gray-700 mb-4">
+          Encuentra fácilmente tus recetas favoritas de la cocina argentina utilizando nuestro índice alfabético...
         </p>
-        <hr>
-        <nav>
-          <ul class="pagination pagination-sm justify-content-center">
-            @foreach (range('a', 'z') as $letra)
-              <li class="page-item"><a class="page-link" href="{{ route('comidas.letra', $letra) }}">{{ $letra }}</a>
-              </li>
-            @endforeach
-          </ul>
-        </nav>
-        <hr>
 
-      </div>
+        <hr class="my-4">
 
-      <div class="col-md-3">
-        <h3>Últimas recetas</h3>
-        <ul class="list-group">
-          @foreach ($ultimas_recetas as $ultima_receta)
-            <li class="list-group-item">
-              <a href="{{ route('comidas.show', $ultima_receta->slug) }}"
-                class="text-decoration-none">{{ $ultima_receta->titulo }}</a>
-            </li>
+        <nav class="flex flex-wrap justify-center gap-2 mb-4">
+          @foreach (range('a', 'z') as $letra)
+            <a href="{{ route('comidas.letra', $letra) }}"
+              class="bg-gray-200 text-gray-800 px-3 py-1 rounded hover:bg-gray-300 text-sm font-semibold">
+              {{ $letra }}
+            </a>
           @endforeach
-        </ul>
+        </nav>
+
+        <hr class="my-4">
       </div>
+
+      <!-- Sidebar -->
+      <div class="w-full lg:w-1/3">
+        <h3 class="text-xl font-semibold mb-4">Últimas recetas</h3>
+
+        @foreach ($ultimas_recetas as $ultima_receta)
+          <x-receta-card :receta="$ultima_receta" />
+        @endforeach
+
+      </div>
+
     </div>
 
   </div>

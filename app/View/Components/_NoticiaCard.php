@@ -8,12 +8,15 @@ use Illuminate\View\Component;
 
 class NoticiaCard extends Component
 {
+    public $noticia, $class;
+
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct($noticia, $class = '')
     {
-        //
+        $this->noticia = $noticia;
+        $this->class = $class;
     }
 
     /**

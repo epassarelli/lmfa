@@ -5,93 +5,86 @@
 
 @section('content')
 
+  <div class="container mx-auto px-4 mt-10">
+    <div class="flex flex-col lg:flex-row gap-8 mb-10">
 
-  <div class="container mt-5">
-    <div class="row mb-4">
+      {{-- Columna izquierda con portada y detalles --}}
+      <div class="lg:w-2/3 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-      <div class="col-md-9">
-
-        <div class="row">
-
-          <div class="col-md-6">
-            <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}" class="card-img-top mb-4">
-            <h1 class="fs-2">{{ $disco->anio }} - {{ $disco->album }}</h1>
-            <p class="fs-5 mb-4"><span class="font-bold">Intérprete:</span> <a
-                href="{{ route('interprete.show', $disco->interprete->slug) }}">{{ $disco->interprete->interprete }}</a>
+          {{-- Portada y título --}}
+          <div>
+            <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->album }}"
+              class="w-full rounded shadow">
+            <h1 class="text-2xl font-bold mt-4">{{ $disco->anio }} - {{ $disco->album }}</h1>
+            <p class="text-lg text-gray-700 mt-2">
+              <span class="font-semibold">Intérprete:</span>
+              <a href="{{ route('interprete.show', $disco->interprete->slug) }}" class="text-blue-600 hover:underline">
+                {{ $disco->interprete->interprete }}
+              </a>
             </p>
           </div>
 
-          <div class="col-md-6">
-
-            <h4>Listado de Canciones</h4>
-            <hr>
-            <ol>
+          {{-- Listado de canciones --}}
+          <div>
+            <h2 class="text-xl font-semibold mb-2">Listado de Canciones</h2>
+            <hr class="mb-4">
+            <ol class="space-y-2">
               @foreach ($disco->canciones as $cancion)
-                <li class="fs-5 mb-2">
+                <li class="text-lg">
                   <a href="{{ route('canciones.show', [$disco->interprete->slug, $cancion->slug]) }}"
-                    class="h-100 shadow-sm text-decoration-none">{{ $cancion->cancion }}
-                    <span class="float-end">
-                      <i class="fas fa-file-alt"></i>
+                    class="flex justify-between items-center text-gray-800 hover:bg-gray-100 p-2 rounded transition">
+                    {{ $cancion->cancion }}
+                    <span class="text-gray-500">
+                      <i class="fas fa-file-alt mr-1"></i>
                       <i class="fas fa-video"></i>
                     </span>
                   </a>
                 </li>
               @endforeach
-              </ul>
+            </ol>
           </div>
-          <hr>
-
-          @if ($disco->spotify !== '')
-            <div class="mb-4">
-              {!! $disco->spotify !!}
-            </div>
-          @endif
         </div>
 
-
-
-        <div class="row">
-
-          <h3 class="fs-2">Otros díscos de {{ $interprete->interprete }} </h3>
-
-          @if ($related->isEmpty())
-
-            <div class="warning"></div>
-            <div class="alert alert-warning" role="alert">
-              No hay discos relacionados disponibles para {{ $interprete->interprete }} aún.
-            </div>
-          @else
-            @foreach ($related as $disco)
-              <div class="col-md-4 mb-4">
-                <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}"
-                  class="card h-100 shadow-sm text-decoration-none text-white" style="background-color: #343a40;">
-                  <div class="card-img-top">
-                    <img src="{{ asset('storage/albunes/' . $disco->foto) }}" class="img-fluid w-100 h-auto object-cover"
-                      alt="{{ $disco->album }}">
-                  </div>
-                  <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mb-2">{{ $disco->anio }} - {{ $disco->album }}</h5>
-                    <p class="card-text mb-2" style="font-size: 1.1rem; color: #ffc107;">
-                      {{ $disco->interprete->interprete }}
-                    </p>
-                    <p class="card-text mt-auto">{{ number_format($disco->visitas, 0, '', ',') }} visitas</p>
-                  </div>
-                </a>
-              </div>
-            @endforeach
-
-          @endif
-
-        </div>
-
-
-
+        {{-- Spotify Embed --}}
+        @if ($disco->spotify !== '')
+          <div class="mt-8">
+            {!! $disco->spotify !!}
+          </div>
+        @endif
       </div>
 
-      <div class="col-md-3">
+      {{-- Columna derecha con info del intérprete --}}
+      <div class="lg:w-1/3">
         @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
       </div>
-
     </div>
 
-  @endsection
+    {{-- Otros discos del intérprete --}}
+    <div>
+      <h3 class="text-2xl font-bold mb-6">Otros discos de {{ $interprete->interprete }}</h3>
+
+      @if ($related->isEmpty())
+        <div class="bg-yellow-100 text-yellow-800 p-4 rounded shadow mb-6">
+          No hay discos relacionados disponibles para {{ $interprete->interprete }} aún.
+        </div>
+      @else
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @foreach ($related as $disco)
+            <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}"
+              class="bg-gray-800 text-white rounded overflow-hidden shadow-md hover:shadow-lg transition duration-200">
+              <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->album }}"
+                class="w-full h-48 object-cover">
+              <div class="p-4 flex flex-col h-full">
+                <h4 class="text-lg font-semibold mb-1">{{ $disco->anio }} - {{ $disco->album }}</h4>
+                <p class="text-sm text-yellow-400 mb-2">{{ $disco->interprete->interprete }}</p>
+                <p class="text-sm mt-auto">{{ number_format($disco->visitas, 0, '', ',') }} visitas</p>
+              </div>
+            </a>
+          @endforeach
+        </div>
+      @endif
+    </div>
+  </div>
+
+@endsection
