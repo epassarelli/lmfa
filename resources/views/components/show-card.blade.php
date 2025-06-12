@@ -2,8 +2,8 @@
   <!-- Live as if you were to die tomorrow. Learn as if you were to live forever. - Mahatma Gandhi -->
   @props(['show'])
 
-  <a href="{{ route('shows.show', $show->slug) }}"
-    class="block rounded-xl overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
+  <a href="{{ route('shows.index', $show->slug) }}"
+    class="block rounded overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
     <div class="overflow-hidden">
       <img src="{{ asset('storage/interpretes/' . $show->interprete->foto) }}" alt="{{ $show->interprete->interprete }}"
         class="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105">

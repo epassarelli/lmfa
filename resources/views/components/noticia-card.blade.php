@@ -3,7 +3,7 @@
   @props(['noticia'])
 
   <article
-    class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col h-full group">
+    class="bg-white rounded overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col h-full group">
     <div class="overflow-hidden">
       <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">
         <img
@@ -13,8 +13,9 @@
       </a>
     </div>
     <div class="p-4 flex flex-col flex-grow">
-      <div class="mb-2 text-sm text-gray-500 uppercase font-medium">{{ $noticia->categoria->nombre }}</div>
-      <h2 class="text-xl font-bold text-gray-900 leading-snug mb-2 group-hover:text-[#ff661f]">
+      <div class="mb-2 text-sm uppercase font-medium text-[#ff661f]">{{ $noticia->categoria->nombre }}
+      </div>
+      <h2 class="text-lg font-semibold text-gray-900 leading-snug mb-2 group-hover:text-[#ff661f]">
         <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}">{{ $noticia->titulo }}</a>
       </h2>
       <p class="text-sm text-gray-600 line-clamp-3">{{ strip_tags(Str::limit($noticia->cuerpo, 130)) }}</p>

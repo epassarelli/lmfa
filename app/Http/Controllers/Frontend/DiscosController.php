@@ -49,9 +49,11 @@ class DiscosController extends Controller
 
         $related = $interprete->getRelatedContent($interprete, 'discos', $disco, 'anio', 'desc');
         // dd($disco);
+
         $metaTitle = $disco->album . " (" . $disco->anio . ") - Disco de " . $interprete->interprete . " | Folklore Argentino";
         $metaDescription = $disco->album . " (" . $disco->anio . ") - Disco de " . $interprete->interprete . ". Escuchá y descubrí este álbum emblemático del folklore argentino con sus canciones, historia y más.";
         // dd($disco);
+        
         return view('frontend.discos.show', compact('disco', 'interprete', 'interpretes', 'related', 'metaTitle', 'metaDescription'));
     }
 }

@@ -10,7 +10,7 @@
       </div>
       <div class="flex-1">
         <h3 class="text-lg font-semibold text-gray-800 hover:text-[#ff661f] transition-colors duration-300">
-          {{ $letra->titulo }}
+          {{ $letra->cancion }}
         </h3>
         <p class="text-sm text-gray-500 mt-1">{{ number_format($letra->visitas, 0, '', '.') }} visitas</p>
       </div>

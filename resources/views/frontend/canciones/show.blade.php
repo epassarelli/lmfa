@@ -33,11 +33,14 @@
               <div
                 class="w-16 h-16 bg-red-600 text-white text-3xl rounded-full shadow-lg flex items-center justify-center">
                 ▶
+                
               </div>
             </div>
           </div>
         @endif
 
+
+        
         {{-- Otras canciones --}}
         <div class="mt-10">
           <h2 class="text-xl font-semibold text-gray-800 mb-4">Otras canciones de {{ $interprete->interprete }}</h2>

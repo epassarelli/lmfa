@@ -41,4 +41,8 @@ class Festival extends Model
     {
         return $this->belongsTo(Mes::class);
     }
+
+    public function getByPr(){
+        return ;
+    }
 }

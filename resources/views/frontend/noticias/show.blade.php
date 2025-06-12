@@ -24,6 +24,27 @@
           </div>
 
           <p class="text-sm text-gray-500">Visitas: {{ $noticia->visitas }}</p>
+
+          {{-- Muestro ls redes p compartir --}}
+          <div class="redes">
+
+          </div>
+
+          {{-- Muestro los buttons con interpretes paar ver noticis de ellos --}}
+          <div class="more">
+
+          </div>
+
+          {{-- Muestro 3 noticis relcionads X ????????????? --}}
+          <div class="related">
+
+          </div>
+
+          {{-- Posiblemente comments de FB --}}
+          <div class="comments">
+
+          </div>
+
         </div>
 
         {{-- Aside --}}
@@ -33,6 +54,8 @@
               <h3 class="text-xl font-semibold mb-4 border-b pb-2">Últimas noticias</h3>
 
               @foreach ($ultimas_noticias as $n)
+                {{-- convertir en component --}}
+
                 <article class="flex items-start mb-4">
                   <a href="{{ route('noticia.show', [$n->categoria->slug, $n->slug]) }}"
                     class="block w-20 h-20 flex-shrink-0 rounded overflow-hidden shadow">

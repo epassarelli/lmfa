@@ -20,6 +20,19 @@
         </div>
 
         <p class="text-sm text-gray-500">Visitas: {{ number_format($festival->visitas, 0, '', '.') }}</p>
+
+        {{-- button pr ir l de ls provincis --}}
+        <div class="more"></div>
+
+        {{-- comprtir en redes --}}
+        <div class="share"></div>
+
+        {{-- comments --}}
+        <div class="comments"></div>
+
+        {{-- relted --}}
+        <div class="related"></div>
+
       </div>
 
       {{-- SIDEBAR: ÚLTIMOS FESTIVALES --}}

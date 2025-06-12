@@ -21,10 +21,17 @@ class NoticiasController extends Controller
   public function index()
   {
 
-    $noticia = new Noticia();
+    // $noticia = new Noticia();
     // Obtener los últimos 5 intérpretes
-    $ultimas = $noticia->getNLast(Noticia::class, 30);
-    $visitadas = $noticia->getNMostVisited(Noticia::class, 12);
+    // $ultimas = $noticia->getNLast(Noticia::class, 30);
+
+    $ultimas = Noticia::where('estado', 1)
+      ->with(['categoria']) // Carga relaciones
+      ->latest()
+      ->take(20)
+      ->get();
+    // dd($ultimas);
+    // $visitadas = $noticia->getNMostVisited(Noticia::class, 12);
 
     // $administrados = Session::get('interpretes');
 
@@ -32,7 +39,7 @@ class NoticiasController extends Controller
     $metaDescription = "Descubre las últimas noticias del folklore argentino. Mantente al tanto de los eventos, festivales y novedades culturales más importantes. ¡Explora nuestra cobertura completa hoy mismo!";
 
     // Renderizar la vista con las noticias y las últimas noticias
-    return view('frontend.noticias.index', compact('visitadas', 'ultimas', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.index', compact('ultimas', 'metaTitle', 'metaDescription'));
   }
 
 

@@ -4,11 +4,11 @@
 
     {{-- LOGO --}}
     <a href="{{ route('home') }}" title="Inicio Mi Folklore Argentino" class="flex items-center mb-2 mt-2">
-      <span class="text-primary text-xl font-bold">Mi Folk</span>
+      <span class="text-blue-300 text-xl font-bold">Mi Folk</span>
       <span class="text-white text-xl font-bold">lor</span>
       <span class="text-yellow-400 text-xl font-bold">e</span>
       <span class="text-white text-xl font-bold">Arg</span>
-      <span class="text-primary text-xl font-bold">entino</span>
+      <span class="text-blue-300 text-xl font-bold">entino</span>
     </a>
 
     {{-- Botón hamburguesa --}}

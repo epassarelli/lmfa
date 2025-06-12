@@ -37,10 +37,10 @@
             <i class="fa-brands fa-facebook fa-2xl" style="color: #3b5998;"></i>
           </a>
           <a href="https://www.instagram.com/mifolkloreargentino/" target="_blank" title="Instagram">
-            <i class="fab fa-instagram fa-2xl" style="color: #c32aa3;"></i>
+            <i class="fas fa-instagram fa-2xl" style="color: #c32aa3;"></i>
           </a>
           <a href="https://www.twitter.com/mifolklorearg/" target="_blank" title="Twitter">
-            <i class="fab fa-twitter fa-2xl" style="color: #1da1f2;"></i>
+            <i class="fas fa-twitter fa-2xl" style="color: #1da1f2;"></i>
           </a>
         </div>
       </div>
