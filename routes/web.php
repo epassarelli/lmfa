@@ -19,7 +19,7 @@ use App\Http\Controllers\Frontend\ContactoController;
 // use App\Http\Controllers\Frontend\ImagenController;
 
 use App\Http\Controllers\Auth\SocialiteController;
-
+use App\Http\Controllers\Frontend\BusquedaController;
 
 // Folklore Argentino
 // Letras de canciones folklóricas
@@ -88,6 +88,7 @@ Route::get('/contacto', [ContactoController::class, 'index'])->name('contacto');
 // Envio de formulario de contacto
 Route::post('contacto', [ContactoController::class, 'store'])->name('contacto.store');
 
+Route::get('/buscar', [BusquedaController::class, 'index'])->name('buscar');
 
 // Rutas para el controlador de entrevistas
 // Route::get('{interprete:slug}/entrevistas', [EntrevistasController::class, 'byArtista'])->name('interprete.entrevistas');

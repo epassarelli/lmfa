@@ -33,23 +33,23 @@
               <div
                 class="w-16 h-16 bg-red-600 text-white text-3xl rounded-full shadow-lg flex items-center justify-center">
                 ▶
-                
+
               </div>
             </div>
           </div>
         @endif
 
 
-        
+
         {{-- Otras canciones --}}
         <div class="mt-10">
           <h2 class="text-xl font-semibold text-gray-800 mb-4">Otras canciones de {{ $interprete->interprete }}</h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach ($related as $cancion)
               <a href="{{ route('canciones.show', [$interprete->slug, $cancion->slug]) }}"
-                class="block bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg p-4 transition duration-200 shadow-sm">
-                <h3 class="text-lg font-medium text-gray-800">{{ $cancion->titulo }}</h3>
+                class="block bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg p-2 transition duration-200 shadow-sm">
+                <h3 class="text-md font-medium text-gray-800">{{ $cancion->cancion }}</h3>
               </a>
             @endforeach
           </div>
