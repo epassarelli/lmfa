@@ -24,6 +24,11 @@
 
         <p class="text-gray-600 text-sm mb-8">Visitas: {{ $receta->visitas }}</p>
 
+        {{-- Muestro ls redes p compartir --}}
+        <div class="redes">
+          <x-compartir-redes :titulo="$receta->titulo" :url="Request::url()" />
+        </div>
+
         <!-- Índice alfabético -->
         <h2 class="text-xl font-semibold mb-2">Buscar por Orden Alfabético</h2>
         <p class="text-gray-700 mb-4">

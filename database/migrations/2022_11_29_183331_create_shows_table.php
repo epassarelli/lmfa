@@ -17,7 +17,7 @@ class CreateShowsTable extends Migration
             $table->id();
 
             $table->string('show');
-            $table->string('slug');
+
             $table->text('detalle');
             $table->string('foto');
 

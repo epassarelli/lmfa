@@ -39,7 +39,10 @@
           </div>
         @endif
 
-
+        {{-- Muestro ls redes p compartir --}}
+        <div class="redes">
+          <x-compartir-redes :titulo="$cancion->cancion" :url="Request::url()" />
+        </div>
 
         {{-- Otras canciones --}}
         <div class="mt-10">

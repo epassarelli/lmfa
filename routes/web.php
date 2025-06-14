@@ -90,6 +90,9 @@ Route::post('contacto', [ContactoController::class, 'store'])->name('contacto.st
 
 Route::get('/buscar', [BusquedaController::class, 'index'])->name('buscar');
 
+Route::post('/compartir', [CompartirController::class, 'store'])->name('compartir.store');
+
+
 // Rutas para el controlador de entrevistas
 // Route::get('{interprete:slug}/entrevistas', [EntrevistasController::class, 'byArtista'])->name('interprete.entrevistas');
 // Route::get('{interprete:slug}/entrevistas/{id}', [EntrevistasController::class, 'show'])->name('interprete.entrevista.show');

@@ -52,6 +52,13 @@
             {!! $disco->spotify !!}
           </div>
         @endif
+
+
+        {{-- Muestro ls redes p compartir --}}
+        <div class="redes">
+          <x-compartir-redes :titulo="$disco->album" :url="Request::url()" />
+        </div>
+
       </div>
 
       {{-- Columna derecha con info del intérprete --}}

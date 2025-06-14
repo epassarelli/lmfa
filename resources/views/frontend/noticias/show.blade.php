@@ -27,7 +27,7 @@
 
           {{-- Muestro ls redes p compartir --}}
           <div class="redes">
-
+            <x-compartir-redes :titulo="$noticia->titulo" :url="Request::url()" />
           </div>
 
           {{-- Muestro los buttons con interpretes paar ver noticis de ellos --}}

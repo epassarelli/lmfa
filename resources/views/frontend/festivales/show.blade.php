@@ -24,8 +24,10 @@
         {{-- button pr ir l de ls provincis --}}
         <div class="more"></div>
 
-        {{-- comprtir en redes --}}
-        <div class="share"></div>
+        {{-- Muestro ls redes p compartir --}}
+        <div class="redes">
+          <x-compartir-redes :titulo="$festival->titulo" :url="Request::url()" />
+        </div>
 
         {{-- comments --}}
         <div class="comments"></div>
