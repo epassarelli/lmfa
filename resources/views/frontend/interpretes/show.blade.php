@@ -16,8 +16,14 @@
           {!! $interprete->biografia !!}
         </div>
 
+        {{-- Muestro ls redes p compartir --}}
+        <div class="redes">
+          <x-compartir-redes :titulo="$interprete->interprete" :url="Request::url()" />
+        </div>
+
         {{-- Selector de intérprete --}}
-        @include('layouts.partials.select-interprete')
+        {{-- @include('layouts.partials.select-interprete') --}}
+
       </div>
 
       {{-- Sidebar --}}

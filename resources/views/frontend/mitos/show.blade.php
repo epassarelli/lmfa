@@ -21,6 +21,12 @@
         </div>
 
         <p class="text-sm text-gray-600">Visitas: {{ $mito->visitas }}</p>
+
+        {{-- Muestro ls redes p compartir --}}
+        <div class="redes">
+          <x-compartir-redes :titulo="$mito->titulo" :url="Request::url()" />
+        </div>
+
       </div>
 
       {{-- Barra lateral --}}
