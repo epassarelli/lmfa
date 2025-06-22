@@ -4,34 +4,31 @@
 @section('metaDescription', $metaDescription)
 
 @section('content')
+  <section class="bg-white p-2 rounded shadow-sm mb-4">
+    {{-- Contenido principal --}}
+    <h1 class="text-2xl font-semibold mb-6">Biografía de {{ $interprete->interprete }}</h1>
 
-  <div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="flex flex-col lg:flex-row gap-8">
-
-      {{-- Contenido principal --}}
-      <div class="w-full lg:w-3/4">
-        <h1 class="text-3xl font-bold mb-6">Biografía de {{ $interprete->interprete }}</h1>
-
-        <div class="prose max-w-none prose-lg prose-slate">
-          {!! $interprete->biografia !!}
-        </div>
-
-        {{-- Muestro ls redes p compartir --}}
-        <div class="redes">
-          <x-compartir-redes :titulo="$interprete->interprete" :url="Request::url()" />
-        </div>
-
-        {{-- Selector de intérprete --}}
-        {{-- @include('layouts.partials.select-interprete') --}}
-
-      </div>
-
-      {{-- Sidebar --}}
-      <div class="w-full lg:w-1/4">
-        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-      </div>
-
+    <div class="prose max-w-none prose-lg prose-slate">
+      {!! $interprete->biografia !!}
     </div>
+
+
+  </section>
+
+  {{-- Muestro las redes p/ compartir --}}
+  <div class="redes">
+    <x-compartir-redes :titulo="$interprete->interprete" :url="Request::url()" />
   </div>
+  {{-- Selector de intérprete --}}
+  {{-- @include('layouts.partials.select-interprete') --}}
+
+
+
+@endsection
+
+@section('sidebar')
+  @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
+  <br>
+  <x-sidebar.social-links />
 
 @endsection

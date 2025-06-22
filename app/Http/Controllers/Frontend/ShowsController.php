@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Interprete;
 use App\Models\Show;
 use Illuminate\Http\Request;
-
+use Psy\Util\Str;
 
 class ShowsController extends Controller
 {

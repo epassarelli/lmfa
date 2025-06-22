@@ -80,11 +80,11 @@ class HomeController extends Controller
 
         // Obtener los últimos 3 intérpretes
         $interprete = new Interprete();
-        $interpretes = $interprete->getNLast(Interprete::class, 5);
+        $ultimosArtistas = $interprete->getNLast(Interprete::class, 5);
 
         // Obtener los últimos 3 intérpretes
         $disco = new Album();
-        $discos = $disco->getNLast(Album::class, 4);
+        $ultimosDiscos = $disco->getNLast(Album::class, 4);
 
         // Obtener los últimos 3 intérpretes
         $cancion = new Cancion();
@@ -93,6 +93,6 @@ class HomeController extends Controller
         $metaTitle = "Mi Folklore Argentino | Nuestras Tradiciones y Costumbres";
         $metaDescription = "Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre música, danzas y más. ¡Visítanos hoy!";
 
-        return view('frontend.home', compact('metaTitle', 'metaDescription', 'ultimasNoticias', 'interpretes', 'shows', 'discos', 'canciones', 'actualidad', 'festivales', 'lanzamientos', 'entrevistas', 'cartelera', 'categorias'));
+        return view('frontend.home', compact('metaTitle', 'metaDescription', 'ultimasNoticias', 'ultimosArtistas', 'shows', 'ultimosDiscos', 'canciones', 'actualidad', 'festivales', 'lanzamientos', 'entrevistas', 'cartelera', 'categorias'));
     }
 }

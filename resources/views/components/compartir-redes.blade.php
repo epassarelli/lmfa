@@ -2,7 +2,7 @@
   <!-- The best way to take care of the future is to take care of the present moment. - Thich Nhat Hanh -->
   @props(['titulo' => '', 'url' => request()->url()])
 
-  <div class="mt-8">
+  <div class="mt-8 mb-8 bg-white p-2 pb-4">
     <h3 class="text-lg font-semibold mb-2 text-gray-800  border-b-2 border-[#ff661f]">Compartir en:</h3>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <!-- Facebook -->
