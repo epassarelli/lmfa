@@ -27,15 +27,27 @@
 
 </head>
 
-<body>
+<body class="bg-gray-100 text-gray-900">
 
   @include('layouts.partials.header')
 
-  <div class="mt-4 mb-4">
+  <main class="container mx-auto grid grid-cols-1 lg:grid-cols-12 mt-6">
 
-    @yield('content')
+    {{-- Contenido principal --}}
+    <div class="lg:col-span-9 px-4 mb-4">
+      @yield('content')
+    </div>
 
-  </div>
+    {{-- Sidebar dinámico o por defecto --}}
+    <aside class="lg:col-span-3 px-4 mb-4">
+      @hasSection('sidebar')
+        @yield('sidebar')
+      @else
+        @include('layouts.partials.sidebar.default')
+      @endif
+    </aside>
+
+  </main>
 
   @include('layouts.partials.footer')
 

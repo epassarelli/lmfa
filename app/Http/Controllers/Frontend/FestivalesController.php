@@ -21,16 +21,16 @@ class FestivalesController extends Controller
 
         $metaTitle = "Festivales y Fiestas del Folklore Argentino: Tradición y Cultura";
         $metaDescription = "Descubre los festivales y fiestas tradicionales del folklore argentino. Mantente informado sobre los eventos culturales más importantes de Argentina. ¡Explora nuestras guías de festivales ahora!";
-        
+
         return view('frontend.festivales.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
     }
 
     public function show($slug)
     {
         $festival = Festival::where('slug', $slug)->firstOrFail();
-        
+
         // Relciondos x prov
-$relted = Festival::get;
+        // $relted = Festival::get;
 
         $ultimos_festivales = Festival::where('estado', 1)
             ->where('id', '<>', $festival->id)

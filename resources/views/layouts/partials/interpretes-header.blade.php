@@ -52,27 +52,27 @@
     @php $segment = request()->segment(1); @endphp
 
     @if ($segment === 'noticias-de-folklore-argentino')
-      <h2 class="text-xl font-bold mb-2">Explora noticias de otros Intérpretes</h2>
+      <h2 class="text-xl font-semibold mb-2">Explora noticias de otros Intérpretes</h2>
       <p class="text-gray-700">
         Explora las últimas noticias de otros intérpretes del folklore argentino...
       </p>
     @elseif($segment === 'discografias-del-folklore-argentino')
-      <h2 class="text-xl font-bold mb-2">Explora más Discografías</h2>
+      <h2 class="text-xl font-semibold mb-2">Explora más Discografías</h2>
       <p class="text-gray-700">
         Descubre la música de otros intérpretes del folklore argentino...
       </p>
     @elseif($segment === 'letras-de-canciones-folkloricas')
-      <h2 class="text-xl font-bold mb-2">Encuentra más Letras de Canciones</h2>
+      <h2 class="text-xl font-semibold mb-2">Encuentra más Letras de Canciones</h2>
       <p class="text-gray-700">
         Explora las letras de canciones de otros intérpretes del folklore argentino...
       </p>
     @elseif($segment === 'cartelera-de-eventos-folkloricos')
-      <h2 class="text-xl font-bold mb-2">Descubre más Shows y Eventos</h2>
+      <h2 class="text-xl font-semibold mb-2">Descubre más Shows y Eventos</h2>
       <p class="text-gray-700">
         No te pierdas la oportunidad de ver en vivo a otros intérpretes...
       </p>
     @elseif($segment === 'biografias-de-artistas-folkloricos')
-      <h2 class="text-xl font-bold mb-2">Explora más Biografías</h2>
+      <h2 class="text-xl font-semibold mb-2">Explora más Biografías</h2>
       <p class="text-gray-700">
         Conoce la historia y el legado de otros intérpretes del folklore argentino...
       </p>
@@ -82,12 +82,12 @@
   {{-- Selector de intérpretes --}}
   <div class="w-full">
     <div class="bg-white shadow rounded p-4">
-      <label for="interprete-select" class="block text-sm font-medium text-gray-700 mb-1">
+      <h3 class="text-md font-semibold text-gray-800 mb-2 border-b pb-1 border-b-2 border-[#ff661f]">
         Cambiar de Intérprete
-      </label>
+      </h3>
       <select id="interprete-select"
         class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-yellow-400">
-        <option value="">► Seleccione otro intérprete</option>
+        <option value="">Otro intérprete</option>
         @foreach ($interpretes as $item)
           <option value="{{ $item->slug }}">{{ $item->interprete }}</option>
         @endforeach

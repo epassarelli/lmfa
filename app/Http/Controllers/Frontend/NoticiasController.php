@@ -35,11 +35,13 @@ class NoticiasController extends Controller
 
     // $administrados = Session::get('interpretes');
 
+    $categorias = Categoria::get();
+
     $metaTitle = "Noticias de Folklore Argentino: Novedades y Eventos Recientes";
     $metaDescription = "Descubre las últimas noticias del folklore argentino. Mantente al tanto de los eventos, festivales y novedades culturales más importantes. ¡Explora nuestra cobertura completa hoy mismo!";
 
     // Renderizar la vista con las noticias y las últimas noticias
-    return view('frontend.noticias.index', compact('ultimas', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.index', compact('ultimas', 'categorias', 'metaTitle', 'metaDescription'));
   }
 
 
@@ -77,13 +79,14 @@ class NoticiasController extends Controller
 
     // $interpretes = Interprete::getInterpretesExcluding($interprete->id);
     $section = 'noticias';
+    $categorias = Categoria::get();
 
     $metaTitle = "Noticias de " . $categoria->nombre . " del Folklore Argentino";
     $metaDescription = "Todas las noticias de {$categoria->nombre} del folklore argentino: presentaciones en vivo, lanzamientos recientes, artistas en agenda y hechos destacados del género.";
 
 
 
-    return view('frontend.noticias.byCategoria', compact('categoria', 'noticias', 'ultimas', 'section', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.byCategoria', compact('categoria', 'categorias', 'noticias', 'ultimas', 'section', 'metaTitle', 'metaDescription'));
   }
 
   // public function show($slugIterprete, $slugNoticia)

@@ -45,3 +45,15 @@
   </div>
 
 @endsection
+
+@section('sidebar')
+
+  {{-- <x-sidebar.newsletter-form /> --}}
+  <x-sidebar.social-links />
+  {{-- <x-sidebar.top-news :noticias="$noticiasMasLeidas" /> --}}
+  {{-- <x-sidebar.upcoming-shows :eventos="$eventosSidebar" /> --}}
+  {{-- <x-sidebar.artist-of-the-month :artista="$artistaDelMes" /> --}}
+  {{-- <x-sidebar.advertisement /> --}}
+  {{-- <x-sidebar.invite-to-publish /> --}}
+
+@endsection
