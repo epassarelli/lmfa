@@ -28,6 +28,10 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        // 🛡️ Evita que slugs como /admin, /login, etc. sean interpretados como intérpretes
+        $reservedSlugs = ['admin', 'login', 'logout', 'register', 'password', 'auth', 'api'];
+        Route::pattern('interprete', '^(?!' . implode('|', $reservedSlugs) . ')[a-z0-9\-]+$');
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')

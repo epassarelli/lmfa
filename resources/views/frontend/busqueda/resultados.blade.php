@@ -24,7 +24,7 @@
       @if ($resultados[$key]->isNotEmpty())
         <section class="mb-10">
           <h2 class="text-2xl font-semibold border-b-2 border-[#ff661f] pb-2 mb-4">{{ $titulo }}</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             @foreach ($resultados[$key] as $item)
               @switch($key)
                 @case('noticias')
@@ -71,4 +71,16 @@
       </div>
     @endif
   </div>
+@endsection
+
+@section('sidebar')
+
+  {{-- <x-sidebar.newsletter-form /> --}}
+  <x-sidebar.social-links />
+  {{-- <x-sidebar.top-news :noticias="$noticiasMasLeidas" /> --}}
+  {{-- <x-sidebar.upcoming-shows :eventos="$eventosSidebar" /> --}}
+  {{-- <x-sidebar.artist-of-the-month :artista="$artistaDelMes" /> --}}
+  {{-- <x-sidebar.advertisement /> --}}
+  {{-- <x-sidebar.invite-to-publish /> --}}
+
 @endsection

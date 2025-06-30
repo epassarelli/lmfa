@@ -2,7 +2,11 @@
   <!-- Always remember that you are absolutely unique. Just like everyone else. - Margaret Mead -->
   @props(['disco'])
 
-  <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}"
+  {{-- <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}"
+    class="block rounded overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full"> --}}
+  <a href="{{ $disco->interprete
+      ? route('artista.disco', [$disco->interprete->slug, $disco->slug])
+      : route('discos.show', $disco->slug) }}"
     class="block rounded overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
     <div class="overflow-hidden">
       <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}"

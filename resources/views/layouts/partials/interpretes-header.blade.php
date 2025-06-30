@@ -1,88 +1,86 @@
-<div class="flex flex-col items-center gap-6">
+<div class="flex flex-col items-center">
 
-  {{-- Imagen del intérprete --}}
-  <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" loading="lazy" width="400" height="400"
-    class="rounded shadow-md object-cover" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}">
-
-  {{-- Menú de navegación por secciones --}}
   <div class="w-full">
-    <nav class="flex flex-col border border-gray-700 rounded overflow-hidden">
-      @php
-        $slugLimpio = str_replace('biografia-de-', '', $interprete->slug);
-      @endphp
+    {{-- Imagen del intérprete --}}
+    <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" loading="lazy" width="400" height="400"
+      class="rounded shadow-md object-cover" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}">
+
+    {{-- Menú de navegación por secciones --}}
+    <nav class="flex flex-col border border-gray-300 rounded overflow-hidden shadow-md">
 
       @php
-        function itemClass($condition)
+        function activeItem($routeName)
         {
-            return $condition
-                ? 'bg-yellow-400 text-black pointer-events-none font-semibold px-4 py-3'
-                : 'bg-gray-800 text-white hover:text-yellow-400 px-4 py-3 transition-colors';
+            return request()->routeIs($routeName)
+                ? 'bg-[#ff661f] text-white font-semibold'
+                : 'bg-white text-gray-800 hover:bg-[#fff4ee] hover:text-[#ff661f]';
         }
       @endphp
 
-      <a href="{{ route('interprete.show', $slugLimpio) }}"
-        class="{{ itemClass(request()->routeIs('interprete.show')) }}">
+      <a href="{{ route('artista.biografia', $interprete->slug) }}"
+        class="px-4 py-3 border-b border-gray-200 transition-colors {{ activeItem('artista.biografia') }}">
         Biografía de {{ $interprete->interprete }}
       </a>
 
-      <a href="{{ route('interprete.noticias', $slugLimpio) }}"
-        class="{{ itemClass(request()->routeIs('interprete.noticias') || request()->routeIs('interprete.noticia.show')) }}">
+      <a href="{{ route('artista.noticias', $interprete->slug) }}"
+        class="px-4 py-3 border-b border-gray-200 transition-colors {{ activeItem('artista.noticias') }}">
         Noticias de {{ $interprete->interprete }}
       </a>
 
-      <a href="{{ route('interprete.shows', $slugLimpio) }}"
-        class="{{ itemClass(request()->routeIs('interprete.shows')) }}">
+      <a href="{{ route('artista.shows', $interprete->slug) }}"
+        class="px-4 py-3 border-b border-gray-200 transition-colors {{ activeItem('artista.shows') }}">
         Shows de {{ $interprete->interprete }}
       </a>
 
-      <a href="{{ route('interprete.discografia', $slugLimpio) }}"
-        class="{{ itemClass(request()->routeIs('interprete.discografia') || request()->routeIs('interprete.album.show')) }}">
+      <a href="{{ route('artista.discografia', $interprete->slug) }}"
+        class="px-4 py-3 border-b border-gray-200 transition-colors {{ activeItem('artista.discografia') }}">
         Discografía de {{ $interprete->interprete }}
       </a>
 
-      <a href="{{ route('interprete.canciones', $slugLimpio) }}"
-        class="{{ itemClass(request()->routeIs('interprete.canciones') || request()->routeIs('canciones.show')) }}">
+      <a href="{{ route('artista.canciones', $interprete->slug) }}"
+        class="px-4 py-3 transition-colors {{ activeItem('artista.canciones') }}">
         Canciones por {{ $interprete->interprete }}
       </a>
+
     </nav>
   </div>
 
   {{-- Texto contextual según sección --}}
-  <div class="w-full">
-    @php $segment = request()->segment(1); @endphp
+  <div class="w-full my-4 shadow-md">
+    <div class="bg-white rounded p-4">
+      @php $segment = request()->segment(2); @endphp
 
-    @if ($segment === 'noticias-de-folklore-argentino')
-      <h2 class="text-xl font-semibold mb-2">Explora noticias de otros Intérpretes</h2>
-      <p class="text-gray-700">
-        Explora las últimas noticias de otros intérpretes del folklore argentino...
-      </p>
-    @elseif($segment === 'discografias-del-folklore-argentino')
-      <h2 class="text-xl font-semibold mb-2">Explora más Discografías</h2>
-      <p class="text-gray-700">
-        Descubre la música de otros intérpretes del folklore argentino...
-      </p>
-    @elseif($segment === 'letras-de-canciones-folkloricas')
-      <h2 class="text-xl font-semibold mb-2">Encuentra más Letras de Canciones</h2>
-      <p class="text-gray-700">
-        Explora las letras de canciones de otros intérpretes del folklore argentino...
-      </p>
-    @elseif($segment === 'cartelera-de-eventos-folkloricos')
-      <h2 class="text-xl font-semibold mb-2">Descubre más Shows y Eventos</h2>
-      <p class="text-gray-700">
-        No te pierdas la oportunidad de ver en vivo a otros intérpretes...
-      </p>
-    @elseif($segment === 'biografias-de-artistas-folkloricos')
-      <h2 class="text-xl font-semibold mb-2">Explora más Biografías</h2>
-      <p class="text-gray-700">
-        Conoce la historia y el legado de otros intérpretes del folklore argentino...
-      </p>
-    @endif
-  </div>
+      @if ($segment === 'noticias')
+        <h2 class="text-md font-semibold mb-2">Noticias de otros artistas</h2>
+        <p class="text-gray-700">
+          Explora las últimas noticias de otros intérpretes del folklore argentino...
+        </p>
+      @elseif($segment === 'discografia')
+        <h2 class="text-md font-semibold mb-2">Discografía de otros artistas</h2>
+        <p class="text-gray-700">
+          Descubre la música de otros intérpretes del folklore argentino...
+        </p>
+      @elseif($segment === 'letras')
+        <h2 class="text-md font-semibold mb-2">Letras de otros artistas</h2>
+        <p class="text-gray-700">
+          Explora las letras de canciones de otros intérpretes del folklore argentino...
+        </p>
+      @elseif($segment === 'shows')
+        <h2 class="text-md font-semibold mb-2">Shows de otros artistas</h2>
+        <p class="text-gray-700">
+          No te pierdas la oportunidad de ver en vivo a otros intérpretes...
+        </p>
+      @elseif($segment === 'biografia')
+        <h2 class="text-md font-semibold mb-2">Biografías de otros artistas</h2>
+        <p class="text-gray-700">
+          Conoce la historia y el legado de otros intérpretes del folklore argentino...
+        </p>
+      @endif
 
-  {{-- Selector de intérpretes --}}
-  <div class="w-full">
-    <div class="bg-white shadow rounded p-4">
-      <h3 class="text-md font-semibold text-gray-800 mb-2 border-b pb-1 border-b-2 border-[#ff661f]">
+
+      {{-- Selector de intérpretes --}}
+
+      <h3 class="text-md font-semibold text-gray-800 mt-4 mb-2 pb-1 border-b-2 border-[#ff661f]">
         Cambiar de Intérprete
       </h3>
       <select id="interprete-select"
@@ -92,6 +90,7 @@
           <option value="{{ $item->slug }}">{{ $item->interprete }}</option>
         @endforeach
       </select>
+
     </div>
   </div>
 

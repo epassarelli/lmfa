@@ -1,28 +1,42 @@
 # Redirigir todo el tráfico al directorio /public
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
-    # Redirección de URLs antiguas a nuevas
-    # Redirección para biografías
-    RewriteRule ^biografia-de-(.*)$ /biografias-de-artistas-folkloricos/$1 [R=301,L]
+    # Redirección de biografías
+RewriteRule ^biografias-de-artistas-folkloricos/(.*)$ /$1/biografia [R=301,L]
 
-    # Redirección para noticias específicas
-    RewriteRule ^noticias-de-(.*?)/(.*)$ /noticias-del-folklore-argentino/$1/$2 [R=301,L]
+# Redirección de discografías
+RewriteRule ^discografias-del-folklore-argentino/(.*)$ /$1/discografia [R=301,L]
 
-    # Redirección para el listado de noticias
-    RewriteRule ^noticias-de-(.*)$ /noticias-del-folklore-argentino/$1 [R=301,L]
+# Redirección de listado de letras
+RewriteRule ^letras-de-canciones-folkloricas/interprete-(.*)$ /$1/letras [R=301,L]
 
-    # Redirección para discografía específica
-    RewriteRule ^discografia-de-(.*?)/(.*)$ /discografias-del-folklore-argentino/$1/$2 [R=301,L]
+# Redirección de letra específica
+RewriteRule ^letras-de-canciones-folkloricas/([^/]+)/([^/]+)$ /$1/letras/$2 [R=301,L]
 
-    # Redirección para el listado de discografías
-    RewriteRule ^discografia-de-(.*)$ /discografias-del-folklore-argentino/$1 [R=301,L]
+# Redirección antigua: /biografia-de-lucio-rojas → /lucio-rojas/biografia
+RewriteRule ^biografia-de-(.*)$ /$1/biografia [R=301,L]
 
-    # Redirección para una letra de canción específica
-    RewriteRule ^letras-de-canciones-de-(.*?)/(.*)$ /letras-de-canciones-folkloricas/$1/$2 [R=301,L]
+# Redirección de noticias específicas del artista
+RewriteRule ^noticias-de-([^/]+)/([^/]+)$ /$1/noticias/$2 [R=301,L]
 
-    # Redirección para el listado de letras de canciones
-    RewriteRule ^letras-de-canciones-de-(.*)$ /letras-de-canciones-folkloricas/$1 [R=301,L]
+# Redirección de listado de noticias del artista
+RewriteRule ^noticias-de-(.*)$ /$1/noticias [R=301,L]
+
+# Redirección de disco específico del artista
+RewriteRule ^discografia-de-([^/]+)/([^/]+)$ /$1/discografia/$2 [R=301,L]
+
+# Redirección de listado de discografías del artista
+RewriteRule ^discografia-de-(.*)$ /$1/discografia [R=301,L]
+
+# Redirección de canción específica
+RewriteRule ^letras-de-canciones-de-([^/]+)/([^/]+)$ /$1/letras/$2 [R=301,L]
+
+# Redirección de listado de letras del artista
+RewriteRule ^letras-de-canciones-de-(.*)$ /$1/letras [R=301,L]
+
+
 
     # Redirigir todo el tráfico al directorio /public
     RewriteCond %{REQUEST_URI} !^/public/

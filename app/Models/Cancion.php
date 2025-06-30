@@ -16,7 +16,16 @@ class Cancion extends Model
     use HasFactory;
     protected $table = 'canciones';
     protected $fillable = [
-        'cancion', 'slug', 'letra', 'youtube', 'spotify', 'visitas', 'publicar', 'estado', 'user_id', 'interprete_id'
+        'cancion',
+        'slug',
+        'letra',
+        'youtube',
+        'spotify',
+        'visitas',
+        'publicar',
+        'estado',
+        'user_id',
+        'interprete_id'
     ];
 
 
@@ -33,5 +42,17 @@ class Cancion extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getUrl(): string
+    {
+        if ($this->interprete) {
+            return route('artista.cancion', [
+                'interprete' => $this->interprete->slug,
+                'cancion' => $this->slug
+            ]);
+        }
+
+        return route('canciones.index'); // fallback
     }
 }

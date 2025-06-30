@@ -60,4 +60,16 @@ class Show extends Model
             }
         });
     }
+
+    public function getUrl(): string
+    {
+        if ($this->interprete) {
+            return route('artista.showdetalle', [
+                'interprete' => $this->interprete->slug,
+                'slug' => $this->slug
+            ]);
+        }
+
+        return route('cartelera.show', ['slug' => $this->slug]);
+    }
 }

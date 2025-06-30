@@ -16,7 +16,8 @@
   @else
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       @foreach ($noticias as $noticia)
-        <x-noticia-card :noticia="$noticia" />
+        {{-- <x-noticia-card :noticia="$noticia" /> --}}
+        <x-noticia-card-artista :noticia="$noticia" :interprete="$interprete" />
       @endforeach
     </div>
   @endif
