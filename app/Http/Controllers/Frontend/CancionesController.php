@@ -22,7 +22,7 @@ class CancionesController extends Controller
 
         $metaTitle = "Letras de Canciones del Folklore Argentino | Cancionero Popular";
         $metaDescription = "Encuentra las letras de tus canciones favoritas del folklore argentino. Nuestro cancionero folklórico tiene todas las letras que necesitas para cantar. ¡Visítanos!";
-        
+
         return view('frontend.canciones.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription'));
     }
 
@@ -30,13 +30,19 @@ class CancionesController extends Controller
     {
         // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
-        $canciones = $interprete->canciones()->where('estado', 1)->orderBy('cancion', 'asc')->get();
+        // $canciones = $interprete->canciones()->where('estado', 1)->orderBy('cancion', 'asc')->get();
+        $canciones = $interprete->canciones()
+            ->where('estado', 1)
+            ->with('albunes') // Cargar los discos relacionados
+            ->orderBy('cancion', 'asc')
+            ->get();
+
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
         $section = 'canciones';
 
         $metaTitle = "Letras de canciones de " . $interprete->interprete;
         $metaDescription = "Letras de canciones de " . $interprete->interprete . ", referente del folklore argentino. Descubrí su cancionero popular y disfrutá su música.";
-        
+
         return view('frontend.canciones.byArtista', compact('canciones', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
     }
 

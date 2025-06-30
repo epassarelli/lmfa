@@ -87,4 +87,17 @@ class ShowsController extends Controller
             'noticiasRelacionadas'
         ));
     }
+
+
+    public function showGeneral($slug)
+    {
+        $show = Show::where('slug', $slug)->with('interprete')->firstOrFail();
+
+        $canonical = $show->interprete
+            ? route('artista.show.detalle', [$show->interprete->slug, $show->slug])
+            : route('cartelera.show', $show->slug);
+
+        return view('frontend.shows.show', compact('show', 'canonical'));
+    }
+
 }

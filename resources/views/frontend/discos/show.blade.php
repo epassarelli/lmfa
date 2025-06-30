@@ -5,31 +5,58 @@
 
 @section('content')
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    <x-disco-card :disco="$disco" />
+
+  <div class="grid grid-cols-12 gap-6">
+
+    {{-- Izquierda: Datos del disco --}}
+    <div class="col-span-12 md:col-span-4">
+      <div class="bg-white rounded shadow p-2 space-y-2">
+        @if ($disco->foto)
+          <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}" class="rounded mb-4 w-full">
+        @endif
+
+        <h1 class="text-2xl font-bold text-gray-800">{{ $disco->titulo }}</h1>
+
+        @if ($disco->anio)
+          <p class="text-sm text-gray-500"><strong>Año:</strong> {{ $disco->anio }}</p>
+        @endif
+
+        @if ($disco->interprete)
+          <p class="text-sm text-gray-500"><strong>Intérprete:</strong> {{ $disco->interprete->interprete }}</p>
+        @endif
+      </div>
+    </div>
+
+    {{-- Derecha: Listado de canciones (si hay), sino Spotify --}}
+    @if ($disco->canciones && $disco->canciones->count())
+      <div class="col-span-12 md:col-span-8">
+        <h2 class="text-xl font-semibold mb-3">Listado de Canciones</h2>
+        <ul class="divide-y divide-gray-200 border rounded overflow-hidden">
+          @foreach ($disco->canciones as $cancion)
+            <li>
+              <a href="{{ route('artista.cancion', [$disco->interprete->slug, $cancion->slug]) }}"
+                class="flex justify-between items-center px-4 py-2 text-gray-800 hover:bg-[#ff661f]/10 transition-colors">
+                <span>{{ $cancion->cancion }}</span>
+                <span class="text-gray-500 flex gap-2">
+                  <i class="fas fa-file-alt"></i>
+                  <i class="fas fa-video"></i>
+                </span>
+              </a>
+            </li>
+          @endforeach
+        </ul>
+      </div>
+    @elseif ($disco->spotify !== '')
+      <div class="col-span-12 md:col-span-8">
+        {!! $disco->spotify !!}
+      </div>
+    @endif
+
   </div>
 
 
-  {{-- Listado de canciones --}}
-
-  <h2 class="text-xl font-semibold mb-2">Listado de Canciones</h2>
-  <ol class="space-y-2">
-    @foreach ($disco->canciones as $cancion)
-      <li class="text-lg">
-        <a href="{{ route('canciones.show', [$disco->interprete->slug, $cancion->slug]) }}"
-          class="flex justify-between items-center text-gray-800 hover:bg-gray-100 p-2 rounded transition">
-          {{ $cancion->cancion }}
-          <span class="text-gray-500">
-            <i class="fas fa-file-alt mr-1"></i>
-            <i class="fas fa-video"></i>
-          </span>
-        </a>
-      </li>
-    @endforeach
-  </ol>
-
-  {{-- Spotify Embed --}}
-  @if ($disco->spotify !== '')
+  {{-- Spotify Embed en sección separada si hay canciones --}}
+  @if ($disco->canciones && $disco->canciones->count() && $disco->spotify !== '')
     <div class="mt-8">
       {!! $disco->spotify !!}
     </div>
@@ -40,7 +67,6 @@
   <div class="redes">
     <x-compartir-redes :titulo="$disco->album" :url="Request::url()" />
   </div>
-
 
 
   {{-- Otros discos del intérprete --}}

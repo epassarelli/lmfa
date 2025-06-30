@@ -45,6 +45,30 @@ class NoticiasController extends Controller
   }
 
 
+  public function noticias(Interprete $interprete)
+  {
+    $noticias = Noticia::where('estado', 1)
+      ->where(function ($query) use ($interprete) {
+        $query->where('interprete_id', $interprete->id)
+          ->orWhereHas('interpretes', function ($q) use ($interprete) {
+            $q->where('interprete_id', $interprete->id);
+          });
+      })
+      ->orderBy('created_at', 'desc')
+      ->distinct()
+      ->paginate(10);
+
+    $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+    $section = 'noticias';
+
+    $metaTitle = "Noticias de " . $interprete->interprete;
+    $metaDescription = "Todas las novedades y noticias de " . $interprete->interprete . ". Presentaciones, próximos lanzamientos.";
+    return view('frontend.noticias.byArtista', compact('noticias', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
+
+    // return view('frontend.interpretes.noticias', compact('interprete', 'noticias'));
+  }
+
+
 
   public function byArtista($slug)
   {
@@ -58,6 +82,8 @@ class NoticiasController extends Controller
     $metaDescription = "Todas las novedades y noticias de " . $interprete->interprete . ". Presentaciones, próximos lanzamientos.";
     return view('frontend.noticias.byArtista', compact('noticias', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
   }
+
+
 
 
   public function byCategoria($slug)
@@ -146,6 +172,24 @@ class NoticiasController extends Controller
     return view('frontend.noticias.show', compact('noticia', 'ultimas_noticias', 'relacionadas', 'metaTitle', 'metaDescription'));
   }
 
+
+  public function generalShow($slug)
+  {
+    $noticia = Noticia::where('slug', $slug)->with('interprete', 'categoria')->firstOrFail();
+
+    $canonical = $noticia->interprete
+      ? route('artista.noticia', [$noticia->interprete->slug, $noticia->slug])
+      : route('noticias.show', $noticia->slug);
+
+    $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
+    $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
+
+    $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
+    // Elimina los saltos de línea
+    $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
+
+    return view('frontend.noticias.show', compact('noticia', 'canonical', 'metaTitle', 'metaDescription'));
+  }
 
 
   public function busqueda(Request $request)

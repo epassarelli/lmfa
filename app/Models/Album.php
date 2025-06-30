@@ -15,7 +15,15 @@ class Album extends Model
     use HasFactory;
     protected $table = 'albunes';
     protected $fillable = [
-        'album', 'slug', 'anio', 'foto', 'spotify', 'visitas', 'estado', 'user_id', 'interprete_id'
+        'album',
+        'slug',
+        'anio',
+        'foto',
+        'spotify',
+        'visitas',
+        'estado',
+        'user_id',
+        'interprete_id'
     ];
 
     public function interprete()
@@ -33,5 +41,17 @@ class Album extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getUrl(): string
+    {
+        if ($this->interprete) {
+            return route('artista.disco', [
+                'interprete' => $this->interprete->slug,
+                'slug' => $this->slug
+            ]);
+        }
+
+        return route('discografias.index'); // fallback o error si no hay interprete
     }
 }

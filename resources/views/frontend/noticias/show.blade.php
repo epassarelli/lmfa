@@ -31,6 +31,23 @@
 
     {{-- Muestro 3 noticis relcionads X ????????????? --}}
     <div class="related">
+      @if ($noticia->interpretes->count() > 1)
+        <div class="mt-6 border-t pt-4 text-sm text-gray-700">
+          <p class="font-semibold text-gray-800 mb-2">También participan:</p>
+          <ul class="flex flex-wrap gap-2">
+            @foreach ($noticia->interpretes as $interprete)
+              @if ($interprete->id !== $noticia->interprete_id)
+                <li>
+                  <a href="{{ route('artista.noticias', $interprete->slug) }}"
+                    class="inline-block bg-orange-100 text-orange-700 px-3 py-1 rounded-full hover:bg-orange-200 transition">
+                    {{ $interprete->interprete }}
+                  </a>
+                </li>
+              @endif
+            @endforeach
+          </ul>
+        </div>
+      @endif
 
     </div>
 
@@ -55,11 +72,10 @@
 
   {{-- <x-sidebar.card-biografias :interpretes="$ultimosArtistas" /> --}}
 
-  <section class="mb-6">
+  {{-- <section class="mb-6">
     <h3 class="text-xl font-semibold mb-4 border-b pb-2">Últimas noticias</h3>
 
     @foreach ($ultimas_noticias as $n)
-      {{-- convertir en component --}}
 
       <article class="flex items-start mb-4">
         <a href="{{ route('noticia.show', [$n->categoria->slug, $n->slug]) }}"
@@ -81,5 +97,6 @@
       </article>
     @endforeach
 
-  </section>
+  </section> --}}
+
 @endsection

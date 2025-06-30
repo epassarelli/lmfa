@@ -41,7 +41,7 @@
   <x-sidebar.social-links />
 
   <!-- Categorías -->
-  <section class="bg-white p-2 rounded shadow-sm mb-4">
+  {{-- <section class="bg-white p-2 rounded shadow-sm mb-4">
     <h3 class="text-xl font-semibold text-gray-800  mb-4 border-b-2 border-[#ff661f]">Categorías</h3>
     <div class="flex flex-wrap gap-2">
       @foreach ($categorias as $cat)
@@ -49,12 +49,12 @@
           class="bg-gray-200 text-sm px-3 py-1 rounded hover:bg-gray-300">{{ $cat->nombre }}</a>
       @endforeach
     </div>
-  </section>
+  </section> --}}
 
-  <x-sidebar.card-discos :discos="$ultimosDiscos" />
+  {{-- <x-sidebar.card-discos :discos="$ultimosDiscos" /> --}}
 
 
-  <x-sidebar.card-biografias :interpretes="$ultimosArtistas" />
+  {{-- <x-sidebar.card-biografias :interpretes="$ultimosArtistas" /> --}}
 
 
 @endsection

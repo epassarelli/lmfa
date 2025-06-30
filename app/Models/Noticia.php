@@ -19,6 +19,11 @@ class Noticia extends Model
     {
         return $this->belongsTo(Categoria::class);
     }
+    
+    public function interprete()
+    {
+        return $this->belongsTo(Interprete::class);
+    }
 
     public function interpretes()
     {
@@ -28,5 +33,17 @@ class Noticia extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getUrl(): string
+    {
+        if ($this->interprete) {
+            return route('artista.noticia', [
+                'interprete' => $this->interprete->slug,
+                'noticia' => $this->slug
+            ]);
+        }
+
+        return route('noticias.show', ['slug' => $this->slug]);
     }
 }

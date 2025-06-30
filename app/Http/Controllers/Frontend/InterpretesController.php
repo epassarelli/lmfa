@@ -25,10 +25,10 @@ class InterpretesController extends Controller
         return view('frontend.interpretes.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
     }
 
-    public function show($slug)
+    public function biografia($slug)
     {
         // Obtener el intérprete actual
-        $interprete = Interprete::where('slug', $slug)->first();
+        $interprete = Interprete::where('slug', $slug)->firstOrFail();
         $biografias = Interprete::where('estado', 1)->orderBy('interprete', 'ASC')->get();
 
         // return view('frontend.interpretes.show', compact('interprete', 'noticiasCount', 'showsCount', 'discosCount', 'cancionesCount', 'fotosCount', 'videosCount'));
@@ -56,6 +56,32 @@ class InterpretesController extends Controller
             return back()->with('alert', 'El intérprete no existe.');
         }
     }
+
+    public function show(Interprete $interprete)
+    {
+        $noticias = $interprete->noticias()->latest()->take(3)->get();
+        $canciones = $interprete->canciones()->latest()->take(3)->get();
+        $discos = $interprete->discos()->latest()->take(2)->get();
+        $shows = $interprete->shows()->where('fecha', '>=', now())->orderBy('fecha')->take(2)->get();
+        $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+
+        $metaTitle = "Biografía de " . $interprete->interprete . " | Folklore Argentino";
+        $metaDescription = Str::limit(strip_tags(html_entity_decode($interprete->biografia)), 150);
+
+        // dd($interprete);
+
+        return view('frontend.interpretes.home-artista', compact(
+            'interprete',
+            'noticias',
+            'canciones',
+            'discos',
+            'shows',
+            'interpretes',
+            'metaTitle',
+            'metaDescription'
+        ));
+    }
+
 
     public function busqueda(Request $request)
     {

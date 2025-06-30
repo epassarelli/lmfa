@@ -2,7 +2,7 @@
   <!-- Simplicity is the essence of happiness. - Cedric Bledsoe -->
   @props(['interprete'])
 
-  <a href="{{ route('interprete.show', str_replace('biografia-de-', '', $interprete->slug)) }}"
+  <a href="{{ route('artista.show', str_replace('biografia-de-', '', $interprete->slug)) }}"
     class="block rounded overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
 
     <div class="overflow-hidden">
