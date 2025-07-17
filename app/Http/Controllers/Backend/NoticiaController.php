@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Categoria;
-use Illuminate\Http\Request;
+use App\Http\Requests\NoticiaRequest;
 
+use App\Models\Categoria;
 use App\Models\Noticia;
 use App\Models\Interprete;
 
@@ -48,30 +48,58 @@ class NoticiaController extends Controller
     }
 
 
-    public function store(Request $request)
+    // public function store(Request $request)
+    // {
+    //     $this->authorize('create', Noticia::class);
+
+    //     $request->validate([
+    //         'titulo' => 'required',
+    //         'slug' => 'required|unique:noticias',
+    //         'noticia' => 'required',
+    //         'foto' => 'required|image',
+    //         'interprete_id' => 'required|array', // Ahora se espera un array de IDs
+    //         'interprete_id.*' => 'exists:interpretes,id', // Validar cada ID del array
+    //         'categoria_id' => 'required|exists:categorias,id',
+    //     ]);
+
+    //     $noticia = new Noticia($request->except('interprete_id')); // Excluir interprete_id temporalmente
+
+    //     // Almacenar la foto en disco
+    //     $nombreArchivo = $request->file('foto')->store('noticias', 'public');
+    //     $noticia->foto = basename($nombreArchivo);
+    //     $noticia->user_id = Auth::id();
+    //     $noticia->save();
+
+    //     // Asignar los intérpretes a la noticia
+    //     $noticia->interpretes()->attach($request->interprete_id);
+
+    //     Alert::success('Noticia creada', 'La noticia ha sido creada con éxito.');
+    //     return redirect()->route('backend.noticias.index');
+    // }
+
+    public function store(NoticiaRequest $request)
     {
-        $this->authorize('create', Noticia::class);
+        $data = $request->validated();
 
-        $request->validate([
-            'titulo' => 'required',
-            'slug' => 'required|unique:noticias',
-            'noticia' => 'required',
-            'foto' => 'required|image',
-            'interprete_id' => 'required|array', // Ahora se espera un array de IDs
-            'interprete_id.*' => 'exists:interpretes,id', // Validar cada ID del array
-            'categoria_id' => 'required|exists:categorias,id',
-        ]);
+        $noticia = new Noticia();
+        $noticia->fill($data);
+        $noticia->interprete_id = $data['interprete_principal_id'] ?? null;
+        $noticia->user_id = auth()->id();
 
-        $noticia = new Noticia($request->except('interprete_id')); // Excluir interprete_id temporalmente
+        // Guardar fecha de publicación si existe
+        if (!empty($data['publicar'])) {
+            $noticia->publicar = $data['publicar'];
+        }
 
-        // Almacenar la foto en disco
-        $nombreArchivo = $request->file('foto')->store('noticias', 'public');
-        $noticia->foto = basename($nombreArchivo);
-        $noticia->user_id = Auth::id();
+        if ($request->hasFile('foto')) {
+            $noticia->foto = $request->file('foto')->store('noticias', 'public');
+        }
+
         $noticia->save();
 
-        // Asignar los intérpretes a la noticia
-        $noticia->interpretes()->attach($request->interprete_id);
+        if (!empty($data['interprete_secundarios'])) {
+            $noticia->interpretes()->sync($data['interprete_secundarios']);
+        }
 
         Alert::success('Noticia creada', 'La noticia ha sido creada con éxito.');
         return redirect()->route('backend.noticias.index');
@@ -97,36 +125,36 @@ class NoticiaController extends Controller
     }
 
 
-    public function update(Request $request, Noticia $noticia)
+    public function update(NoticiaRequest $request, Noticia $noticia)
     {
         $this->authorize('update', $noticia);
 
-        $request->validate([
-            'titulo' => 'required',
-            'slug' => 'required|unique:noticias,slug,' . $noticia->id,
-            'noticia' => 'required',
-            'foto' => 'image',
-            'interprete_id' => 'required|array', // Ahora se espera un array de IDs
-            'interprete_id.*' => 'exists:interpretes,id', // Validar cada ID del array
-            'categoria_id' => 'required|exists:categorias,id',
-        ]);
+        $data = $request->validated();
 
-        $noticia->fill($request->except('interprete_id')); // Excluir interprete_id temporalmente
+        // Cargar campos básicos
+        $noticia->fill($data);
+        $noticia->interprete_id = $data['interprete_principal_id'] ?? null;
 
+        // Guardar fecha de publicación si existe
+        if (!empty($data['publicar'])) {
+            $noticia->publicar = $data['publicar'];
+        }
+
+        // Actualizar imagen si fue cargada
         if ($request->hasFile('foto')) {
-            // Almacenar la nueva foto
             $nombreArchivo = $request->file('foto')->store('noticias', 'public');
             $noticia->foto = basename($nombreArchivo);
         }
 
         $noticia->save();
 
-        // Sincronizar los intérpretes (elimina los que no están en el array y agrega los nuevos)
-        $noticia->interpretes()->sync($request->interprete_id);
+        // Sincronizar intérpretes secundarios (tabla pivote)
+        $noticia->interpretes()->sync($data['interprete_secundarios'] ?? []);
 
         Alert::success('Noticia actualizada', 'La noticia ha sido actualizada con éxito.');
         return redirect()->route('backend.noticias.index');
     }
+
 
 
     public function destroy(Noticia $noticia)

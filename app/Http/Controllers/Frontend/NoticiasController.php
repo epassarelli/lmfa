@@ -177,6 +177,9 @@ class NoticiasController extends Controller
   {
     $noticia = Noticia::where('slug', $slug)->with('interprete', 'categoria')->firstOrFail();
 
+    // Incrementar el contador de visitas
+    $noticia->increment('visitas');
+
     $canonical = $noticia->interprete
       ? route('artista.noticia', [$noticia->interprete->slug, $noticia->slug])
       : route('noticias.show', $noticia->slug);

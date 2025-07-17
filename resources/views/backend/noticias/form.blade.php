@@ -20,10 +20,17 @@
     <x-textarea name="noticia" label="Contenido" :value="$noticia->noticia ?? ''" editor />
   </div>
 
-  <div class="col-md-12">
-    <x-select name="interprete_id[]" label="Intérpretes" :options="$interpretes" :selected="old('interprete_id', isset($noticia) ? $noticia->interpretes->pluck('id')->toArray() : [])" multiple
-      class="js-example-basic-multiple" />
+
+  <div class="col-md-4">
+    <x-select name="interprete_principal_id" label="Intérprete principal" :options="$interpretes" :selected="old('interprete_principal_id', $noticia->interprete_id ?? '')" />
+
   </div>
+
+  <div class="col-md-8">
+    <x-select name="interprete_secundarios[]" label="Intérpretes secundarios" :options="$interpretes" :selected="old('interprete_secundarios', isset($noticia) ? $noticia->interpretes->pluck('id')->toArray() : [])"
+      multiple class="js-example-basic-multiple" />
+  </div>
+
 
   <!-- Columna 3 -->
   <div class="col-md-4">
