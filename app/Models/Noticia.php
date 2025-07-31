@@ -13,7 +13,18 @@ class Noticia extends Model
     use CommonMethodsTrait;
     use HasFactory;
 
-    protected $fillable = ['titulo', 'categoria_id', 'slug', 'noticia', 'interprete_id', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
+    protected $fillable = [
+        'titulo', 
+        'categoria_id', 
+        'slug', 
+        'noticia', 
+        'interprete_id', 
+        'foto', 
+        'visitas', 
+        'publicar', 
+        'user_id', 
+        'estado'
+];
 
     public function categoria()
     {

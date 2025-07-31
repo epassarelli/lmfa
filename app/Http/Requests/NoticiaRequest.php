@@ -30,6 +30,7 @@ class NoticiaRequest extends FormRequest
             'interprete_secundarios.*' => 'exists:interpretes,id',
             'categoria_id' => 'required|exists:categorias,id',
             'publicar' => 'nullable|date',
+            'estado' => 'required|in:0,1',
         ];
     }
 
