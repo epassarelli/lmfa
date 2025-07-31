@@ -64,11 +64,18 @@
 
               <td class="text-right" style="white-space: nowrap;">
 
-                {{-- <div class="d-inline-block align-middle">
-
-                  <livewire:toggle-button :model="$noticia" field="estado" :key="$noticia->id" />
-
-                </div> --}}
+              <div class="d-inline-block align-middle">
+               
+              @if($noticia->estado)
+                <span class="text-success" title="Activo">
+                  <i class="fas fa-toggle-on fa-lg"></i>
+                </span>
+              @else
+                <span class="text-secondary" title="Inactivo">
+                  <i class="fas fa-toggle-off fa-lg"></i>
+                </span>
+              @endif
+            </div>
 
                 @can('update', $noticia)
                   <a href="{{ route('backend.noticias.edit', $noticia) }}" class="btn btn-xs  btn-warning"><i
