@@ -58,6 +58,9 @@
     </div>
   </section> --}}
 
+  
   <x-sidebar.social-links />
+
+  <x-sidebar.donate />
   
 @endsection
