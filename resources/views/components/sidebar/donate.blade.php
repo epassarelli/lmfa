@@ -8,7 +8,7 @@
     </p>
 
     <div class="flex flex-col space-y-2 text-sm">
-      <a href="https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=TUIDAQUÍ" target="_blank"
+      <a href="https://mpago.la/2b3LGE3" target="_blank"
         class="bg-gray-100 text-gray-800  text-center py-2 px-4 rounded-lg hover:bg-[#ff661f] hover:text-white transition">
         Donar con Mercado Pago
       </a>

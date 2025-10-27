@@ -40,6 +40,8 @@
   {{-- tu sidebar específico --}}
   <x-sidebar.social-links />
 
+  <x-sidebar.donate />
+
   <!-- Categorías -->
   {{-- <section class="bg-white p-2 rounded shadow-sm mb-4">
     <h3 class="text-xl font-semibold text-gray-800  mb-4 border-b-2 border-[#ff661f]">Categorías</h3>

@@ -69,6 +69,10 @@
 @section('sidebar')
 
   <x-sidebar.social-links />
+  <x-sidebar.donate />
+
+  
+  
 
   {{-- <x-sidebar.card-biografias :interpretes="$ultimosArtistas" /> --}}
 
