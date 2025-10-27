@@ -13,15 +13,15 @@
         Donar con Mercado Pago
       </a>
 
-      <a href="https://www.paypal.me/tucuenta" target="_blank"
+      {{-- <a href="https://www.paypal.me/tucuenta" target="_blank"
         class="bg-gray-100 text-gray-800 text-center py-2 px-4 rounded-lg hover:bg-[#ff661f] hover:text-white transition">
         Donar con PayPal
-      </a>
+      </a> --}}
 
-      <a href="https://cafecito.app/tucuenta" target="_blank"
+      {{-- <a href="https://cafecito.app/tucuenta" target="_blank"
         class="bg-gray-100 text-gray-800 text-center py-2 px-4 rounded-lg hover:bg-[#ff661f] hover:text-white transition">
         Invitarnos un café ☕
-      </a>
+      </a> --}}
     </div>
   </div>
 
