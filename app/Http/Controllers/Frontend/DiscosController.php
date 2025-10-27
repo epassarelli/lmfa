@@ -14,7 +14,7 @@ class DiscosController extends Controller
         // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
         $disco = new Album();
         // Obtener los últimos 5 intérpretes
-        $ultimos = $disco->getNLast(Album::class, 40);
+        $ultimos = $disco->getNLast(Album::class, 48);
         $visitados = $disco->getNMostVisited(Album::class, 40);
 
 

@@ -15,7 +15,7 @@ class InterpretesController extends Controller
         $interprete = new Interprete();
         // Obtener los últimos 5 intérpretes
         $ultimos = $interprete->getNLast(Interprete::class, 20);
-        $visitados = $interprete->getNMostVisited(Interprete::class, 20);
+        $visitados = $interprete->getNMostVisited(Interprete::class, 48);
 
 
         // dd($interpretes);
