@@ -16,7 +16,7 @@ class CancionesController extends Controller
         // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
         $cancion = new Cancion();
         // Obtener los últimos 5 intérpretes
-        $ultimas = $cancion->getNLast(Cancion::class, 20);
+        $ultimas = $cancion->getNLast(Cancion::class, 50);
         $visitadas = $cancion->getNMostVisited(Cancion::class, 40);
 
 

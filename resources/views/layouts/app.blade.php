@@ -7,8 +7,8 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q4QNW9JPGG"></script>
 
     <!-- Google AdSense -->
-    {{-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7042088525718719"
-      crossorigin="anonymous"></script> --}}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7042088525718719"
+      crossorigin="anonymous"></script>
   @endif
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">

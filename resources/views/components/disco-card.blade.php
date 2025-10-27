@@ -10,7 +10,7 @@
     class="block rounded overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
     <div class="overflow-hidden">
       <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}"
-        class="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105">
+        class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105">
     </div>
 
     <div class="p-4 flex flex-col justify-between flex-grow">

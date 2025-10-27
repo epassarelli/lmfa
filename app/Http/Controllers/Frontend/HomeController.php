@@ -26,7 +26,7 @@ class HomeController extends Controller
         $ultimasNoticias = Noticia::where('estado', 1)
             ->with(['categoria']) // Carga relaciones
             ->latest()
-            ->take(20)
+            ->take(50)
             ->get();
 
 

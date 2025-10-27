@@ -28,7 +28,7 @@ class NoticiasController extends Controller
     $ultimas = Noticia::where('estado', 1)
       ->with(['categoria']) // Carga relaciones
       ->latest()
-      ->take(20)
+      ->take(100)
       ->get();
     // dd($ultimas);
     // $visitadas = $noticia->getNMostVisited(Noticia::class, 12);
