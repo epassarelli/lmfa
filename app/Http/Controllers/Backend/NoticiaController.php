@@ -81,6 +81,9 @@ class NoticiaController extends Controller
     {
         $data = $request->validated();
 
+        // Remover foto de $data para manejarla por separado
+        unset($data['foto']);
+
         $noticia = new Noticia();
         $noticia->fill($data);
         $noticia->interprete_id = $data['interprete_principal_id'] ?? null;
@@ -91,8 +94,10 @@ class NoticiaController extends Controller
             $noticia->publicar = $data['publicar'];
         }
 
+        // Guardar imagen si fue cargada
         if ($request->hasFile('foto')) {
-            $noticia->foto = $request->file('foto')->store('noticias', 'public');
+            $nombreArchivo = $request->file('foto')->store('noticias', 'public');
+            $noticia->foto = basename($nombreArchivo);
         }
 
         $noticia->save();
