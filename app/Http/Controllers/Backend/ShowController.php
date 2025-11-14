@@ -55,20 +55,17 @@ class ShowController extends Controller
     {
         $data = $request->validated();
         $data['user_id'] = Auth::id();
-        $data['destacado'] = $request->has('destacado');
         $data['slug'] = $data['slug'] ?? Str::slug($data['show'] . '-' . now()->timestamp);
 
-        if ($request->hasFile('imagen_destacada')) {
-            $filename = time() . '_' . $request->file('imagen_destacada')->getClientOriginalName();
-            $path = $request->file('imagen_destacada')->storeAs('shows', $filename, 'public');
-            $data['imagen_destacada'] = $path;
-        }
 
-        $data['estado'] = Auth::user()->hasAnyRole(['prensa', 'administrador']) ? 1 : 0;
+        // Si no viene estado del formulario, asignarlo según el rol del usuario
+        if (!isset($data['estado'])) {
+            $data['estado'] = Auth::user()->hasAnyRole(['prensa', 'administrador']) ? 1 : 0;
+        }
 
         Show::create($data);
 
-        return redirect()->route('shows.index')->with('success', 'Show creado correctamente.');
+        return redirect()->route('backend.shows.index')->with('success', 'Show creado correctamente.');
     }
 
 
@@ -87,19 +84,43 @@ class ShowController extends Controller
     {
         $this->authorize('update', $show);
 
-        $data = $request->validated();
-        $data['destacado'] = $request->has('destacado');
-        $data['slug'] = $data['slug'] ?? Str::slug($data['show'] . '-' . now()->timestamp);
+        // Verificar que el show existe y tiene ID
+        if (!$show->exists || !$show->id) {
+            return redirect()->route('backend.shows.index')->with('error', 'Show no encontrado.');
+        }
 
+        $data = $request->validated();
+
+        // Preservar slug si viene y no está vacío, sino mantener el actual
+        if (isset($data['slug']) && empty($data['slug'])) {
+            unset($data['slug']);
+        } elseif (!isset($data['slug'])) {
+            // Si no viene slug, mantener el actual (no generar uno nuevo)
+            unset($data['slug']);
+        }
+
+        // Remover campos que pueden no existir en la BD o que no queremos actualizar
+        unset($data['precio_entrada'], $data['link_entradas'], $data['lat'], $data['lng']);
+
+        // Manejar imagen destacada si viene
         if ($request->hasFile('imagen_destacada')) {
             $filename = time() . '_' . $request->file('imagen_destacada')->getClientOriginalName();
             $path = $request->file('imagen_destacada')->storeAs('shows', $filename, 'public');
             $data['imagen_destacada'] = $path;
         }
 
-        $show->update($data);
+        // Manejar destacado
+        if ($request->has('destacado')) {
+            $data['destacado'] = (bool) $request->input('destacado', 0);
+        } else {
+            unset($data['destacado']);
+        }
 
-        return redirect()->route('shows.index')->with('success', 'Show actualizado correctamente.');
+        // Actualizar el registro existente (no crear uno nuevo)
+        $show->fill($data);
+        $show->save();
+
+        return redirect()->route('backend.shows.index')->with('success', 'Show actualizado correctamente.');
     }
 
 
