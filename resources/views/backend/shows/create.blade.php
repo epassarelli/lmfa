@@ -35,7 +35,7 @@
   <script>
     $(function() {
       ClassicEditor
-        .create(document.querySelector('#detalle2'))
+        .create(document.querySelector('#detalle'))
         .catch(error => {
           console.error(error);
         });
