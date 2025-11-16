@@ -17,6 +17,7 @@ class Show extends Model
 
     protected $fillable = [
         'show',
+        'detalle',
         'detalles',
         'fecha',
         'hora',
@@ -31,6 +32,9 @@ class Show extends Model
         'lat',
         'lng',
         'provincia_id',
+        'estado',
+        'publicar',
+        'user_id',
     ];
 
     // Relaciones

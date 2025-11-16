@@ -15,7 +15,7 @@ class ShowRequest extends FormRequest
   {
     return [
       'show' => 'required|string|max:255',
-      'detalles' => 'nullable|string',
+      'detalle' => 'required|string',
       'fecha' => 'required|date',
       'hora' => 'nullable|string|max:10',
       'lugar' => 'nullable|string|max:255',
@@ -23,14 +23,16 @@ class ShowRequest extends FormRequest
       'interprete_id' => 'nullable|exists:interpretes,id',
 
       // Nuevos campos
-      'precio_entrada' => 'nullable|string|max:100',
-      'link_entradas' => 'nullable|url|max:255',
-      'destacado' => 'nullable|boolean',
-      'imagen_destacada' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-      'slug' => 'nullable|string|max:255|unique:shows,slug,' . $this->route('show'),
+      //'precio_entrada' => 'nullable|string|max:100',
+      //'link_entradas' => 'nullable|url|max:255',
+      //'destacado' => 'nullable|boolean',
+      //'imagen_destacada' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+      'slug' => 'nullable|string|max:255|unique:shows,slug,' . (optional($this->route('show'))->id ?? ''),
       'lat' => 'nullable|numeric|between:-90,90',
       'lng' => 'nullable|numeric|between:-180,180',
-      'provincia_id' => 'nullable|exists:provincias,id',
+      //'provincia_id' => 'nullable|exists:provincias,id',
+      'estado' => 'nullable|integer|in:0,1',
+      'publicar' => 'nullable|date',
     ];
   }
 }
