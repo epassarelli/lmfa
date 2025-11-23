@@ -35,13 +35,20 @@ class NoticiasController extends Controller
 
     // $administrados = Session::get('interpretes');
 
+    // Últimas 10 noticias para el sidebar
+    $ultimasSidebar = Noticia::where('estado', 1)
+      ->with(['categoria', 'interprete'])
+      ->latest()
+      ->take(10)
+      ->get();
+
     $categorias = Categoria::get();
 
     $metaTitle = "Noticias de Folklore Argentino: Novedades y Eventos Recientes";
     $metaDescription = "Descubre las últimas noticias del folklore argentino. Mantente al tanto de los eventos, festivales y novedades culturales más importantes. ¡Explora nuestra cobertura completa hoy mismo!";
 
     // Renderizar la vista con las noticias y las últimas noticias
-    return view('frontend.noticias.index', compact('ultimas', 'categorias', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.index', compact('ultimas', 'categorias', 'ultimasSidebar', 'metaTitle', 'metaDescription'));
   }
 
 
@@ -143,11 +150,11 @@ class NoticiasController extends Controller
 
   public function show($slugIterprete, $slugNoticia)
   {
-
-    $noticia = Noticia::where('slug', $slugNoticia)->firstOrFail();
+    $noticia = Noticia::where('slug', $slugNoticia)
+      ->with(['categoria', 'interprete', 'interpretes'])
+      ->firstOrFail();
 
     $ultimas_noticias = Noticia::where('estado', 1)
-      // ->with('interprete')
       ->where('id', '<>', $noticia->id)
       ->orderByDesc('created_at')
       ->take(5)
@@ -156,10 +163,32 @@ class NoticiasController extends Controller
     // Incrementar el contador de visitas
     $noticia->increment('visitas');
 
-    // Trae 3 ultimas noticias relacionadas x categoria 
-    $relacionadas = "";
-    // $interprete = Interprete::where('slug', $slugIterprete)->first();
-    // $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+    // Obtener 3 noticias relacionadas
+    // Prioridad: misma categoría, mismo intérprete principal, o intérpretes secundarios comunes
+    $relacionadas = Noticia::where('estado', 1)
+      ->where('id', '<>', $noticia->id)
+      ->where(function ($query) use ($noticia) {
+        // Por categoría
+        if ($noticia->categoria_id) {
+          $query->where('categoria_id', $noticia->categoria_id);
+        }
+        // Por intérprete principal
+        if ($noticia->interprete_id) {
+          $query->orWhere('interprete_id', $noticia->interprete_id);
+        }
+        // Por intérpretes secundarios (si existen)
+        $interpreteIds = $noticia->interpretes->pluck('id')->toArray();
+        if (!empty($interpreteIds)) {
+          $query->orWhereHas('interpretes', function ($q) use ($interpreteIds) {
+            $q->whereIn('interprete_id', $interpreteIds);
+          });
+        }
+      })
+      ->with(['categoria', 'interprete'])
+      ->orderByDesc('created_at')
+      ->distinct()
+      ->take(3)
+      ->get();
 
     $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
     $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
@@ -168,8 +197,15 @@ class NoticiasController extends Controller
     // Elimina los saltos de línea
     $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
 
-    // return view('frontend.noticias.show', compact('noticia', 'interprete', 'interpretes', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
-    return view('frontend.noticias.show', compact('noticia', 'ultimas_noticias', 'relacionadas', 'metaTitle', 'metaDescription'));
+    // Últimas 10 noticias para el sidebar (excluyendo la noticia actual)
+    $ultimasSidebar = Noticia::where('estado', 1)
+      ->where('id', '<>', $noticia->id)
+      ->with(['categoria', 'interprete'])
+      ->latest()
+      ->take(10)
+      ->get();
+
+    return view('frontend.noticias.show', compact('noticia', 'ultimas_noticias', 'relacionadas', 'ultimasSidebar', 'metaTitle', 'metaDescription'));
   }
 
 
