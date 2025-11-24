@@ -26,19 +26,8 @@
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @foreach ($interpretes as $visitado2)
-          <a href="{{ route('interprete.show', $visitado2->slug) }}"
-            class="bg-gray-800 text-white rounded shadow overflow-hidden hover:scale-[1.01] transition-transform duration-200 flex flex-col">
-            <img
-              src="{{ file_exists(public_path('storage/interpretes/' . $visitado2->foto)) && $visitado2->foto !== ''
-                  ? asset('storage/interpretes/' . $visitado2->foto)
-                  : asset('storage/img/imagennodisponible600x400.jpg') }}"
-              alt="{{ $visitado2->interprete }}" class="w-full h-48 object-cover">
-            <div class="p-4 flex-1 flex flex-col">
-              <h5 class="text-yellow-400 text-lg font-semibold mb-2">{{ $visitado2->interprete }}</h5>
-              <p class="mt-auto text-sm">{{ number_format($visitado2->visitas, 0, '', ',') }} visitas</p>
-            </div>
-          </a>
+        @foreach ($interpretes as $interprete)
+          <x-biografia-card :interprete="$interprete" />
         @endforeach
       </div>
     </div>

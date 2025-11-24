@@ -6,16 +6,16 @@
     </h3>
 
     <div class="space-y-3 text-sm text-gray-700">
+
       @foreach ($noticias ?? [] as $noticia)
         @php
           $url = $noticia->interprete
-            ? route('artista.noticia', [$noticia->interprete->slug, $noticia->slug])
-            : route('noticias.show', ['slug' => $noticia->slug]);
+              ? route('artista.noticia', [$noticia->interprete->slug, $noticia->slug])
+              : route('noticias.show', ['slug' => $noticia->slug]);
         @endphp
         <article class="bg-white border border-gray-100 p-2 rounded-lg shadow-sm hover:shadow transition">
           <h4 class="font-semibold leading-tight text-gray-800">
-            <a href="{{ $url }}"
-              class="hover:text-[#ff661f] transition">
+            <a href="{{ $url }}" class="hover:text-[#ff661f] transition">
               {{ Str::limit($noticia->titulo, 70) }}
             </a>
           </h4>

@@ -154,11 +154,11 @@ class NoticiasController extends Controller
       ->with(['categoria', 'interprete', 'interpretes'])
       ->firstOrFail();
 
-    $ultimas_noticias = Noticia::where('estado', 1)
-      ->where('id', '<>', $noticia->id)
-      ->orderByDesc('created_at')
-      ->take(5)
-      ->get();
+    // $ultimas_noticias = Noticia::where('estado', 1)
+    //   ->where('id', '<>', $noticia->id)
+    //   ->orderByDesc('created_at')
+    //   ->take(5)
+    //   ->get();
 
     // Incrementar el contador de visitas
     $noticia->increment('visitas');
@@ -205,7 +205,9 @@ class NoticiasController extends Controller
       ->take(10)
       ->get();
 
-    return view('frontend.noticias.show', compact('noticia', 'ultimas_noticias', 'relacionadas', 'ultimasSidebar', 'metaTitle', 'metaDescription'));
+    //dd($ultimasSidebar);
+
+    return view('frontend.noticias.show', compact('noticia', 'relacionadas', 'ultimasSidebar', 'metaTitle', 'metaDescription'));
   }
 
 

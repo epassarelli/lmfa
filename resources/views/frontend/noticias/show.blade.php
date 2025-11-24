@@ -64,13 +64,13 @@
   </div>
 
   {{-- Noticias relacionadas --}}
-  @if($relacionadas && $relacionadas->count() > 0)
+  @if ($relacionadas && $relacionadas->count() > 0)
     <section class="bg-white p-2 mb-4">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-[#ff661f] pb-2">
         Noticias relacionadas
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        @foreach($relacionadas as $noticiaRelacionada)
+        @foreach ($relacionadas as $noticiaRelacionada)
           <x-noticia-card :noticia="$noticiaRelacionada" />
         @endforeach
       </div>
@@ -82,15 +82,15 @@
 
 @section('sidebar')
 
-  @if(isset($ultimasSidebar) && $ultimasSidebar->count() > 0)
+  @if (isset($ultimasSidebar) && $ultimasSidebar->count() > 0)
     <x-sidebar.card-noticias :noticias="$ultimasSidebar" />
   @endif
 
   <x-sidebar.social-links />
   <x-sidebar.donate />
 
-  
-  
+
+
 
   {{-- <x-sidebar.card-biografias :interpretes="$ultimosArtistas" /> --}}
 

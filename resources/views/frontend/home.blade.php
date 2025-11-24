@@ -9,7 +9,7 @@
     <!-- Sección de noticias -->
     @php
       $bloques = [
-          'El portal del folklore argentino' => $ultimasNoticias,
+        'El portal del folklore argentino' => $ultimasNoticias,
       ];
     @endphp
 
@@ -35,6 +35,37 @@
   </section>
 @endsection
 
+@push('json-ld')
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "name": "Mi Folklore Argentino",
+            "url": "{{ url('/') }}",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "{{ route('buscar') }}?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "Organization",
+            "name": "Mi Folklore Argentino",
+            "url": "{{ url('/') }}",
+            "logo": "{{ asset('img/logo.png') }}",
+            "sameAs": [
+              "https://www.facebook.com/MiFolkloreArgentino/",
+              "https://www.instagram.com/mifolkloreargentino/",
+              "https://x.com/MiFolkloreArg"
+            ]
+          }
+        ]
+      }
+    </script>
+@endpush
+
 
 @section('sidebar')
   {{-- tu sidebar específico --}}
@@ -47,8 +78,8 @@
     <h3 class="text-xl font-semibold text-gray-800  mb-4 border-b-2 border-[#ff661f]">Categorías</h3>
     <div class="flex flex-wrap gap-2">
       @foreach ($categorias as $cat)
-        <a href="{{ route('noticias.byCategoria', [$cat->slug]) }}"
-          class="bg-gray-200 text-sm px-3 py-1 rounded hover:bg-gray-300">{{ $cat->nombre }}</a>
+      <a href="{{ route('noticias.byCategoria', [$cat->slug]) }}"
+        class="bg-gray-200 text-sm px-3 py-1 rounded hover:bg-gray-300">{{ $cat->nombre }}</a>
       @endforeach
     </div>
   </section> --}}
