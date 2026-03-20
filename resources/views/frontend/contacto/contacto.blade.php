@@ -1,29 +1,6 @@
 @extends('layouts.app')
 
-{{-- @push('head')
 
-    <script src={{ 'https://www.google.com/recaptcha/api.js?render=' . config('services.recaptcha.site_key') }}></script>
-
-    <script>
-        document.addEventListener('submit', (e) => {
-            e.preventDefault();
-            grecaptcha.ready(function() {
-                grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {
-                    action: 'submit'
-                }).then(function(token) {
-                    let form = e.target;
-                    let input = document.createElement('input');
-                    input.type = "hidden";
-                    input.name = "g-recaptcha-response";
-                    input.value = token;
-
-                    form.appendChild(input);
-                    form.submit();
-                });
-            });
-        });
-    </script>
-@endpush --}}
 
 @section('content')
 
@@ -60,22 +37,6 @@
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>
-              <select
-                class="form-select contact-content @error('issue')
-                          is-invalid my-1
-                        @enderror"
-                name="issue" aria-label="Default select example">
-                <option value="">Asunto:</option>
-                <option value="Consulta" @selected(old('issue') == 'Consulta')>Consulta</option>
-                <option value="Presupuesto" @selected(old('issue') == 'Presupuesto')>Presupuesto</option>
-                <option value="Reclamo" @selected(old('issue') == 'Reclamo')>Reclamo</option>
-                <option value="Otros" @selected(old('issue') == 'Otros')>Otros</option>
-              </select>
-              <div class="my-2">
-                @error('issue')
-                  <span class="text-danger">{{ $message }}</span>
-                @enderror
-              </div>
               <input type="text" name="email" value="{{ old('email') }}"
                 class="form-control contact-content @error('email')
                           is-invalid my-1
@@ -86,13 +47,21 @@
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>
-              <input type="text" name="phone" value="{{ old('phone') }}"
-                class="form-control contact-content @error('phone')
+              <select
+                class="form-select contact-content @error('issue')
                           is-invalid my-1
                         @enderror"
-                placeholder="Teléfono de contacto:" aria-label="Teléfono de contacto:">
+                name="issue" aria-label="Default select example">
+                <option value="">Asunto:</option>
+                <option value="Consulta General" @selected(old('issue') == 'Consulta General')>Consulta General</option>
+                <option value="Sugerencia" @selected(old('issue') == 'Sugerencia')>Sugerencia</option>
+                <option value="Reclamo" @selected(old('issue') == 'Reclamo')>Reclamo</option>
+                <option value="Quiero publicitar en el sitio" @selected(old('issue') == 'Quiero publicitar en el sitio')>Quiero publicitar en el sitio</option>
+                <option value="Me gustaría colaborar con material" @selected(old('issue') == 'Me gustaría colaborar con material')>Me gustaría colaborar con material</option>
+                <option value="Otros" @selected(old('issue') == 'Otros')>Otros</option>
+              </select>
               <div class="my-2">
-                @error('phone')
+                @error('issue')
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>
@@ -100,33 +69,25 @@
           </div>
           <div class="col-lg-6">
             <div class="content-colum-contact-der">
-              <select
-                class="form-select contact-content @error('company')
-                          is-invalid my-1
-                        @enderror"
-                aria-label="Default select example" name="company">
-                <option value="">Empresa:</option>
-                <option value="Distribuidor" @selected(old('company') == 'Distribuidor')>Distribuidor</option>
-                <option value="Carpintero" @selected(old('company') == 'Carpintero')>Carpintero</option>
-                <option value="Fabricante" @selected(old('company') == 'Fabricante')>Fabricante</option>
-                <option value="Arquitecto" @selected(old('company') == 'Arquitecto')>Arquitecto</option>
-                <option value="Consumidor final" @selected(old('company') == 'Consumidor final')>Consumidor final</option>
-              </select>
-              <div class="my-2">
-                @error('company')
-                  <span class="text-danger">{{ $message }}</span>
-                @enderror
-              </div>
               <textarea
                 class="form-control contact-content @error('message')
                           is-invalid my-1
                         @enderror"
-                name="message" id="Mensaje" rows="8" placeholder="Mensaje:" aria-label="Mensaje:">{{ old('message') }}</textarea>
+                name="message" id="Mensaje" rows="5" placeholder="Mensaje:" aria-label="Mensaje:">{{ old('message') }}</textarea>
               <div class="my-2">
                 @error('message')
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>
+
+              <div class="mb-3">
+                  <label for="captcha" class="form-label">Para verificar que eres humano, ¿cuánto es 3 + 4?</label>
+                  <input type="number" name="captcha" class="form-control contact-content @error('captcha') is-invalid @enderror" placeholder="Respuesta" aria-label="Captcha">
+                  @error('captcha')
+                      <span class="text-danger">{{ $message }}</span>
+                  @enderror
+              </div>
+
               <button type="submit" class="btn btn-primary btn-contact">Enviar</button>
             </div>
           </div>
