@@ -7,11 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Interprete;
 use App\Models\User;
 use App\Traits\CommonMethodsTrait;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Noticia extends Model
 {
     use CommonMethodsTrait;
     use HasFactory;
+
+    /**
+     * Get all of the noticia's images.
+     */
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 
     protected $fillable = [
         'titulo', 

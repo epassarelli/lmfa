@@ -23,8 +23,7 @@ return new class extends Migration
             $table->integer('visitas')->default(0);
             $table->integer('user_id')->default(1);
             $table->boolean('estado')->default(false);
-            $table->timestamp('created_at')->useCurrentOnUpdate()->useCurrent();
-            $table->timestamp('updated_at')->default('0000-00-00 00:00:00');
+            $table->timestamps();
         });
     }
 
