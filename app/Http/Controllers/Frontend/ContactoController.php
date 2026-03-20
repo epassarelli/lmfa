@@ -3,39 +3,46 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-// use Anhskohbo\NoCaptcha\Facades\NoCaptcha;
 use Illuminate\Http\Request;
-// use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\Frontend\ContactoRequest;
+use App\Http\Requests\Frontend\ContactMessageRequest;
 use App\Mail\ContactRecieveEmail;
 use App\Mail\ContactSendEmail;
-use App\Models\Contact;
-
-
+use App\Models\ContactMessage;
 use Illuminate\Support\Facades\Mail;
 
 class ContactoController extends Controller
 {
   public function index()
   {
-    // $contact = Contact::first();
     return view('frontend.contacto.contacto');
   }
 
-  public function store(ContactoRequest $request): RedirectResponse
+  public function store(ContactMessageRequest $request)
   {
-    $contact = $request->validated();
+    // Create message in DB
+    $message = ContactMessage::create([
+        'nombre' => $request->name . ' ' . $request->lastName,
+        'email' => $request->email,
+        'asunto' => $request->issue,
+        'mensaje' => $request->message,
+        'fecha_envio' => now(),
+    ]);
 
-    $response = NoCaptcha::verifyResponse($request->input('g-recaptcha-response'));
-
-    if ($response) {
-      Mail::send(new ContactSendEmail($request->input('email'), $request->input('name'), $request->input('lastName')));
-      Mail::send(new ContactRecieveEmail($contact));
-      toast('Los datos se envíaron correctamente', 'success');
-      return redirect()->route('contacto');
-    } else {
-      toast('No se pudo enviar los datos', 'error');
-      return redirect()->route('contacto');
+    // Send email to admin
+    try {
+        Mail::send(new ContactRecieveEmail($message->toArray()));
+    } catch (\Exception $e) {
+        // Log error if needed
     }
+
+    // Send confirmation to user
+    try {
+        Mail::send(new ContactSendEmail($request->email, $request->name, $request->lastName));
+    } catch (\Exception $e) {
+        // Log error if needed
+    }
+
+    toast('Gracias por contactarnos, te responderemos a la brevedad.', 'success');
+    return redirect()->route('contacto');
   }
 }
