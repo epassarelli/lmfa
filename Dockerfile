@@ -2,7 +2,7 @@
 FROM php:8.2-apache
 
 # Instalar dependencias
-RUN apt-get update && apt-get install -y curl libzip-dev zip unzip \
+RUN apt-get update && apt-get install -y curl libzip-dev zip unzip git \
   && docker-php-ext-configure zip \
   && docker-php-ext-install zip pdo_mysql
 
@@ -28,12 +28,13 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Instalar dependencias de Composer
+RUN cp -n .env.example .env || true
 RUN cd /var/www/html && composer install --ignore-platform-reqs --optimize-autoloader --no-dev
 
 # Generar key de Laravel
 RUN php artisan key:generate
 
-RUN php artisan storage:link
+RUN php artisan storage:link || true
 
 RUN composer dump-autoload
 
@@ -46,7 +47,8 @@ RUN chown -R www-data:www-data \
 RUN apt-get update && apt-get install -y ca-certificates curl gnupg
 
 # Descargar y agregar la clave GPG al anillo de claves
-RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
 
 # Configurar el repositorio de Node.js
 ARG NODE_MAJOR=20
