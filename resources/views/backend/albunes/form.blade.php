@@ -65,7 +65,12 @@
           <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png">
           <small class="form-text text-muted">La imagen debe ser en formato .jpg, de 400 x 400px y no debe superar los
             200KB.</small>
-          @if (isset($album) && $album->foto)
+          @if (isset($album) && $album->images->isNotEmpty())
+            <div class="mt-2 text-center">
+              <label>Previsualización (Nueva):</label><br>
+              <x-optimized-image :image="$album->images->first()" variant="main" style="max-height: 80px;" class="img-thumbnail" />
+            </div>
+          @elseif (isset($album) && $album->foto)
             <div class="mt-2">
               <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}"
                 style="max-height: 80px;">

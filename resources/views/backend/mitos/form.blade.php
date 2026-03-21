@@ -18,7 +18,12 @@
 <div class="form-group">
   <label for="foto">Foto</label>
   <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png">
-  @if (isset($mito) && $mito->foto)
+  @if (isset($mito) && $mito->images->isNotEmpty())
+    <div class="mt-2 text-center">
+      <label>Previsualización (Nueva):</label><br>
+      <x-optimized-image :image="$mito->images->first()" variant="card" style="max-height: 80px;" class="img-thumbnail" />
+    </div>
+  @elseif (isset($mito) && $mito->foto)
     <div class="mt-2">
       <img src="{{ asset('storage/' . $mito->foto) }}" alt="Foto de {{ $mito->titulo }}" style="max-height: 80px;">
     </div>

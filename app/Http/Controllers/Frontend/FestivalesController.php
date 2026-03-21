@@ -27,7 +27,7 @@ class FestivalesController extends Controller
 
     public function show($slug)
     {
-        $festival = Festival::where('slug', $slug)->firstOrFail();
+        $festival = Festival::where('slug', $slug)->with('images')->firstOrFail();
 
         // Relciondos x prov
         // $relted = Festival::get;

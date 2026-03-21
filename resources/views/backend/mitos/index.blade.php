@@ -25,7 +25,7 @@
         <thead>
           <tr>
             <th>Título</th>
-            {{-- <th>Usuario</th> --}}
+            <th>Foto</th>
             <th>Caract's</th>
             <th>Visitas</th>
             <th>Estado</th>
@@ -36,6 +36,14 @@
           @foreach ($mitos as $mito)
             <tr>
               <td>{{ $mito->titulo }}</td>
+              <td>
+                @if ($mito->images->isNotEmpty())
+                  <x-optimized-image :image="$mito->images->first()" variant="card" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+                @else
+                  <img src="{{ asset('storage/' . $mito->foto) }}" alt="{{ $mito->titulo }}"
+                    style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
+                @endif
+              </td>
               {{-- <td>{{ $mito->user->name }}</td> --}}
               <td>{{ strlen(strip_tags($mito->mito)) }}</td>
               <td>{{ $mito->visitas }}</td>

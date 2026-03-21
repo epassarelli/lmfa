@@ -27,6 +27,7 @@
         <thead>
           <tr>
             <th>Fecha</th>
+            <th>Foto</th>
             <th>Show</th>
             <th>Intérprete</th>
             <th>Estado</th>
@@ -39,6 +40,14 @@
               {{-- <td>{{ $show->fecha }}</td> --}}
               <td data-order="{{ $show->fecha }}">
                 {{ \Carbon\Carbon::parse($show->fecha)->format('d-m-Y') }}
+              </td>
+              <td>
+                @if ($show->images->isNotEmpty())
+                  <x-optimized-image :image="$show->images->first()" variant="card" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+                @else
+                  <img src="{{ asset('storage/' . $show->imagen_destacada) }}" alt="{{ $show->show }}"
+                    style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
+                @endif
               </td>
               <td>{{ $show->show }}</td>
               <td>{{ $show->interprete->interprete }}</td>

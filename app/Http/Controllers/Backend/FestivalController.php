@@ -12,13 +12,16 @@ use Illuminate\Support\Str;
 use App\Models\Provincia;
 use App\Models\Mes;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Services\ImageUploadService;
 
 class FestivalController extends Controller
 {
-  public function __construct()
+  protected $imageService;
+
+  public function __construct(ImageUploadService $imageService)
   {
     $this->middleware('auth');
-    // $this->authorizeResource(Festival::class, 'festival');
+    $this->imageService = $imageService;
   }
 
   public function index()
@@ -31,7 +34,7 @@ class FestivalController extends Controller
       ->when($user->hasRole('prensa'), function ($query) use ($user) {
         $query->where('user_id', $user->id);
       })
-      ->with('user')
+      ->with(['user', 'images'])
       ->get();
 
     return view('backend.festivales.index', compact('festivales'));
@@ -53,12 +56,16 @@ class FestivalController extends Controller
     $festival->user_id = Auth::id();
     $festival->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
     // dd($festival);
-    // Almacena la foto en disco y obtiene el nombre original del archivo
-    $nombreArchivo = $request->file('foto')->store('festivales', 'public');
-
-    // Almacena solo el nombre del archivo en el atributo 'foto' del modelo 'Noticia'
-    $festival->foto = basename($nombreArchivo);
     $festival->save();
+
+    if ($request->hasFile('foto')) {
+      $this->imageService->process(
+        $request->file('foto'),
+        $festival,
+        'news_full', // Use news_full as it's a general content profile
+        'festivales'
+      );
+    }
 
     if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
       $this->sendNotification($festival);
@@ -80,6 +87,16 @@ class FestivalController extends Controller
     $festival->fill($request->validated());
     $festival->slug = Str::slug($festival->titulo);
     $festival->save();
+
+    if ($request->hasFile('foto')) {
+      $this->imageService->process(
+        $request->file('foto'),
+        $festival,
+        'news_full',
+        'festivales',
+        true
+      );
+    }
 
     Alert::success('Festival actualizado', 'El festival ha sido actualizado con éxito.');
     return redirect()->route('backend.festivales.index');

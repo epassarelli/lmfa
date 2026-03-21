@@ -11,13 +11,16 @@ use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ImageUploadService;
 
 class InterpreteController extends Controller
 {
-  public function __construct()
+  protected $imageService;
+
+  public function __construct(ImageUploadService $imageService)
   {
     $this->middleware('auth');
-    // $this->authorizeResource(Album::class, 'album');
+    $this->imageService = $imageService;
   }
 
   public function index()
@@ -25,7 +28,7 @@ class InterpreteController extends Controller
     $user = Auth::user();
     // $interpretes = Interprete::all();
     $interpretes = Interprete::withCount(['noticias', 'shows', 'discos', 'canciones'])
-      ->with('noticias', 'shows', 'discos', 'canciones')
+      ->with(['noticias', 'shows', 'discos', 'canciones', 'images'])
       ->orderByDesc('noticias_count')
       ->get();
     return view('backend.interpretes.index', compact('interpretes'));
@@ -46,15 +49,16 @@ class InterpreteController extends Controller
     $artista->user_id = Auth::id();
     $artista->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
-    if ($request->hasFile('foto')) {
-      // Usar slug como nombre del archivo
-      $nombreArchivo = $artista->slug . '.' . $request->file('foto')->getClientOriginalExtension();
-
-      $filePath = $request->file('foto')->storeAs('interpretes', $nombreArchivo, 'public');
-      $artista->foto = $nombreArchivo;
-    }
-
     $artista->save();
+
+    if ($request->hasFile('foto')) {
+      $this->imageService->process(
+        $request->file('foto'),
+        $artista,
+        'artist',
+        'interpretes'
+      );
+    }
 
     return redirect()->route('backend.interpretes.index')
       ->with('success', 'Interprete creado correctamente.');
@@ -90,15 +94,13 @@ class InterpreteController extends Controller
 
 
     if ($request->hasFile('foto')) {
-      // Eliminar la imagen anterior si existe
-      if ($interprete->foto && Storage::disk('public')->exists('interpretes/' . $interprete->foto)) {
-        Storage::disk('public')->delete('interpretes/' . $interprete->foto);
-      }
-
-      // Guardar nueva imagen
-      $nombreArchivo = $interprete->slug . '.' . $request->file('foto')->getClientOriginalExtension();
-      $request->file('foto')->storeAs('interpretes', $nombreArchivo, 'public');
-      $interprete->foto = $nombreArchivo;
+      $this->imageService->process(
+        $request->file('foto'),
+        $interprete,
+        'artist',
+        'interpretes',
+        true // Reemplazar anterior
+      );
     }
 
 

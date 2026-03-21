@@ -16,8 +16,12 @@
 
   <article class="bg-white shadow-md rounded overflow-hidden hover:shadow-lg transition-all duration-200 mb-4">
     <a href="{{ $url }}">
-      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-        class="w-full h-48 object-cover" loading="lazy">
+      @if ($noticia->images->isNotEmpty())
+        <x-optimized-image :image="$noticia->images->first()" variant="card" class="w-full h-48 object-cover" loading="lazy" />
+      @else
+        <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+          class="w-full h-48 object-cover" loading="lazy">
+      @endif
     </a>
 
     <div class="p-4">

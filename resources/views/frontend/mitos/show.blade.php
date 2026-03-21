@@ -13,8 +13,13 @@
       <div class="w-full lg:w-2/3">
         <h1 class="text-3xl font-bold mb-4">{{ $mito->titulo }}</h1>
 
-        {{-- Imagen (descomentá si la querés mostrar) --}}
-        {{-- <img src="{{ asset('storage/mitos/' . $mito->foto) }}" alt="{{ $mito->titulo }}" class="mb-6 rounded-lg shadow-lg"> --}}
+        @if ($mito->images->isNotEmpty())
+          <div class="mb-6">
+            <x-optimized-image :image="$mito->images->first()" variant="hero" class="rounded-lg shadow-lg w-full" />
+          </div>
+        @elseif ($mito->foto)
+          <img src="{{ asset('storage/mitos/' . $mito->foto) }}" alt="{{ $mito->titulo }}" class="mb-6 rounded-lg shadow-lg w-full">
+        @endif
 
         <div class="text-lg text-gray-800 mb-6">
           {!! $mito->mito !!}

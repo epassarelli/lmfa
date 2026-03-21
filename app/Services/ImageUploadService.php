@@ -22,14 +22,16 @@ class ImageUploadService
     }
 
     /**
-     * Procesa una imagen, genera variantes y la guarda en la base de datos.
+     * Procesa una imagen, genera variantes y la asocia al modelo.
      */
     public function process(
-        UploadedFile $file,
+        \Illuminate\Http\UploadedFile $file,
+        \Illuminate\Database\Eloquent\Model $model,
         string $profile,
         string $folder,
+        bool $replace = false,
         ?string $filename = null
-    ): array {
+    ) {
         $config = config("image_profiles.{$profile}");
 
         if (!$config) {
@@ -38,10 +40,10 @@ class ImageUploadService
 
         $now = Carbon::now();
         $datePath = $now->format('Y/m');
-        $basePath = "public/{$folder}/{$datePath}";
+        $basePath = "{$folder}/{$datePath}";
         
         // Asegurar que el directorio existe
-        Storage::makeDirectory($basePath);
+        Storage::disk('public')->makeDirectory($basePath);
 
         $filename = $filename ?: Str::random(20);
         $originalExtension = $file->getClientOriginalExtension();
@@ -49,7 +51,7 @@ class ImageUploadService
         $originalPath = "{$basePath}/{$originalName}";
 
         // Guardar original
-        Storage::putFileAs($basePath, $file, $originalName);
+        Storage::disk('public')->putFileAs($basePath, $file, $originalName);
 
         // Obtener dimensiones originales
         $img = $this->manager->read($file->getRealPath());
@@ -89,19 +91,24 @@ class ImageUploadService
                 }
 
                 $encoded = $imgVariant->toWebp(85);
-                Storage::put($variantPath, $encoded);
+                Storage::disk('public')->put($variantPath, $encoded);
 
-                $variantsData[$variantName][$size] = Storage::url($variantPath);
+                $variantsData[$variantName][$size] = Storage::disk('public')->url($variantPath);
             }
         }
 
-        return [
+        if ($replace) {
+            $model->images()->delete();
+        }
+
+        return $model->images()->create([
             'profile' => $profile,
-            'original' => Storage::url($originalPath),
-            'variants' => $variantsData,
+            'original_path' => Storage::disk('public')->url($originalPath),
+            'variants_json' => $variantsData,
             'original_width' => $originalWidth,
             'original_height' => $originalHeight,
             'mime' => $mime,
-        ];
+            'alt' => $model->titulo ?? $model->interprete ?? $model->album ?? $model->show ?? $model->name ?? '',
+        ]);
     }
 }

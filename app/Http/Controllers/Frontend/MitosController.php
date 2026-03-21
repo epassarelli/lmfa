@@ -25,7 +25,7 @@ class MitosController extends Controller
 
     public function show($slug)
     {
-        $mito = Mito::where('slug', $slug)->firstOrFail();
+        $mito = Mito::where('slug', $slug)->with('images')->firstOrFail();
         $ultimos_mitos = Mito::where('estado', 1)
             ->where('id', '<>', $mito->id)
             ->orderByDesc('created_at')

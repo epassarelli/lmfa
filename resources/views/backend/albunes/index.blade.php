@@ -42,8 +42,12 @@
             <tr>
               <td>{{ $album->id }}</td>
               <td>
-                <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}"
-                  style="max-height: 50px;">
+                @if ($album->images->isNotEmpty())
+                  <x-optimized-image :image="$album->images->first()" variant="card" style="max-height: 50px;" />
+                @else
+                  <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}"
+                    style="max-height: 50px;">
+                @endif
               </td>
               <td>{{ $album->anio }}</td>
               <td>{{ $album->album }}</td>

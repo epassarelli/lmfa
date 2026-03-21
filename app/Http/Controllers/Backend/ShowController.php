@@ -11,14 +11,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Services\ImageUploadService;
 
 use Illuminate\Http\Request;
 
 class ShowController extends Controller
 {
-    public function __construct()
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
     {
         $this->middleware('auth');
+        $this->imageService = $imageService;
         $this->authorizeResource(Show::class, 'show');
     }
 
@@ -31,7 +35,7 @@ class ShowController extends Controller
                 $query->where('user_id', $user->id);
             })
             ->where('fecha', '>=', now())
-            ->with('user', 'interprete')
+            ->with(['user', 'interprete', 'images'])
             ->get();
 
         return view('backend.shows.index', compact('shows'));
@@ -63,7 +67,16 @@ class ShowController extends Controller
             $data['estado'] = Auth::user()->hasAnyRole(['prensa', 'administrador']) ? 1 : 0;
         }
 
-        Show::create($data);
+        $show = Show::create($data);
+
+        if ($request->hasFile('imagen_destacada')) {
+            $this->imageService->process(
+                $request->file('imagen_destacada'),
+                $show,
+                'news_full',
+                'shows'
+            );
+        }
 
         return redirect()->route('backend.shows.index')->with('success', 'Show creado correctamente.');
     }
@@ -104,9 +117,13 @@ class ShowController extends Controller
 
         // Manejar imagen destacada si viene
         if ($request->hasFile('imagen_destacada')) {
-            $filename = time() . '_' . $request->file('imagen_destacada')->getClientOriginalName();
-            $path = $request->file('imagen_destacada')->storeAs('shows', $filename, 'public');
-            $data['imagen_destacada'] = $path;
+            $this->imageService->process(
+                $request->file('imagen_destacada'),
+                $show,
+                'news_full',
+                'shows',
+                true
+            );
         }
 
         // Manejar destacado

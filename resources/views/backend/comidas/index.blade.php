@@ -25,6 +25,7 @@
         <thead>
           <tr>
             <th>Título</th>
+            <th>Foto</th>
             <th>Caract's</th>
             <th>Visitas</th>
             <th>Estado</th>
@@ -35,6 +36,14 @@
           @foreach ($comidas as $comida)
             <tr>
               <td>{{ $comida->titulo }}</td>
+              <td>
+                @if ($comida->images->isNotEmpty())
+                  <x-optimized-image :image="$comida->images->first()" variant="card" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+                @else
+                  <img src="{{ asset('storage/' . $comida->foto) }}" alt="{{ $comida->titulo }}"
+                    style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
+                @endif
+              </td>
               <td>{{ strlen(strip_tags($comida->receta)) }}</td>
               {{-- <td>{{ $comida->user->name }}</td> --}}
               <td>{{ $comida->visitas }}</td>

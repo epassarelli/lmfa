@@ -22,8 +22,13 @@ trait CommonMethodsTrait
 
   public static function getNLast($model, $n, $orderColumn = 'id', $orderDirection = 'desc')
   {
-    return $model::where('estado', 1)
-      ->orderBy($orderColumn, $orderDirection)
+    $query = $model::where('estado', 1);
+
+    if (method_exists($model, 'images')) {
+      $query->with('images');
+    }
+
+    return $query->orderBy($orderColumn, $orderDirection)
       ->take($n)
       ->get();
   }
@@ -39,8 +44,13 @@ trait CommonMethodsTrait
 
   public static function getNMostVisited($model, $n, $visitColumn = 'visitas')
   {
-    return $model::where('estado', 1)
-      ->orderBy($visitColumn, 'desc')
+    $query = $model::where('estado', 1);
+
+    if (method_exists($model, 'images')) {
+      $query->with('images');
+    }
+
+    return $query->orderBy($visitColumn, 'desc')
       ->take($n)
       ->get();
   }
@@ -57,9 +67,14 @@ trait CommonMethodsTrait
 
   public static function getNStartsWith($model, $n, $letter, $titleColumn = 'title')
   {
-    return $model::where($titleColumn, 'LIKE', $letter . '%')
-      ->where('estado', 1)
-      ->take($n)
+    $query = $model::where($titleColumn, 'LIKE', $letter . '%')
+      ->where('estado', 1);
+
+    if (method_exists($model, 'images')) {
+      $query->with('images');
+    }
+
+    return $query->take($n)
       ->get();
   }
 
@@ -112,10 +127,17 @@ trait CommonMethodsTrait
     $relationMethod = $this->getRelationMethod($seccion);
 
     if (method_exists($interprete, $relationMethod)) {
-      return $interprete->$relationMethod()
+      $query = $interprete->$relationMethod()
         ->where('estado', 1)
-        ->where('id', '!=', $contenidoActual->id)
-        ->orderBy($orderBy, $direction)
+        ->where('id', '!=', $contenidoActual->id);
+
+      // Si el modelo relacionado tiene relación 'images', cargarla
+      $relatedModel = $interprete->$relationMethod()->getRelated();
+      if (method_exists($relatedModel, 'images')) {
+        $query->with('images');
+      }
+
+      return $query->orderBy($orderBy, $direction)
         ->get();
     }
 

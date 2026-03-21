@@ -14,9 +14,14 @@
 
         <h1 class="text-3xl font-bold mb-4">{{ $receta->titulo }}</h1>
 
-        {{-- Imagen opcional --}}
-        {{-- <img src="{{ asset('storage/recetas/' . $receta->foto) }}" alt="{{ $receta->titulo }}"
-          class="mb-4 rounded-lg shadow"> --}}
+        @if ($receta->images->isNotEmpty())
+          <div class="mb-4">
+            <x-optimized-image :image="$receta->images->first()" variant="card" class="rounded-lg shadow w-full" />
+          </div>
+        @elseif ($receta->foto)
+          <img src="{{ asset('storage/recetas/' . $receta->foto) }}" alt="{{ $receta->titulo }}"
+            class="mb-4 rounded-lg shadow w-full">
+        @endif
 
         <div class="prose max-w-none mb-4">
           {!! $receta->receta !!}

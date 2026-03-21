@@ -2,9 +2,18 @@
 FROM php:8.2-apache
 
 # Instalar dependencias
-RUN apt-get update && apt-get install -y curl libzip-dev zip unzip git \
-  && docker-php-ext-configure zip \
-  && docker-php-ext-install zip pdo_mysql
+RUN apt-get update && apt-get install -y \
+    curl \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+  && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+  && docker-php-ext-install -j$(nproc) zip pdo_mysql gd opcache
 
 # Configurar Apache
 COPY ./apache.conf /etc/apache2/sites-available/000-default.conf

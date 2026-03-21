@@ -41,9 +41,13 @@
               <td class="position-relative">
                 <span class="noticia-titulo" style="cursor: default;">
                   {{ $noticia->titulo }}
-                  @if ($noticia->foto)
+                  @if ($noticia->images->isNotEmpty())
                     <div class="noticia-hover-img">
-                      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="Imagen de noticia">
+                      <x-optimized-image :image="$noticia->images->first()" variant="card" alt="Imagen de noticia" />
+                    </div>
+                  @elseif ($noticia->foto)
+                    <div class="noticia-hover-img">
+                      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="Imagen de noticia legacy">
                     </div>
                   @endif
                 </span>

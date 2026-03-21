@@ -5,8 +5,14 @@
   <a href="#"
     class="block rounded overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
     <div class="overflow-hidden">
-      <img src="{{ asset('storage/interpretes/' . $show->interprete->foto) }}" alt="{{ $show->interprete->interprete }}"
-        class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105">
+      @if ($show->images->isNotEmpty())
+        <x-optimized-image :image="$show->images->first()" variant="card" class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105" />
+      @elseif ($show->interprete && $show->interprete->images->isNotEmpty())
+        <x-optimized-image :image="$show->interprete->images->first()" variant="card" class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105" />
+      @else
+        <img src="{{ asset('storage/interpretes/' . ($show->interprete->foto ?? 'default.jpg')) }}" alt="{{ $show->interprete->interprete ?? $show->titulo }}"
+          class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105">
+      @endif
     </div>
 
     <div class="p-4 flex flex-col justify-between flex-grow">

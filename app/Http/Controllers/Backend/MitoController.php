@@ -11,13 +11,16 @@ use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Provincia;
 use App\Models\Mes;
+use App\Services\ImageUploadService;
 
 class MitoController extends Controller
 {
-  public function __construct()
+  protected $imageService;
+
+  public function __construct(ImageUploadService $imageService)
   {
     $this->middleware('auth');
-    // $this->authorizeResource(Mito::class, 'mito');
+    $this->imageService = $imageService;
   }
 
   public function index()
@@ -30,7 +33,7 @@ class MitoController extends Controller
       ->when($user->hasRole('prensa'), function ($query) use ($user) {
         $query->where('user_id', $user->id);
       })
-      ->with('user')
+      ->with(['user', 'images'])
       ->get();
 
     return view('backend.mitos.index', compact('mitos'));
@@ -50,6 +53,15 @@ class MitoController extends Controller
     $mito->user_id = Auth::id();
     $mito->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
     $mito->save();
+
+    if ($request->hasFile('foto')) {
+      $this->imageService->process(
+        $request->file('foto'),
+        $mito,
+        'news_full',
+        'mitos'
+      );
+    }
 
     if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
       $this->sendNotification($mito);
@@ -72,9 +84,17 @@ class MitoController extends Controller
     $mito->slug = Str::slug($mito->titulo);
     $mito->user_id = Auth::id();
     $mito->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
-
-
     $mito->save();
+
+    if ($request->hasFile('foto')) {
+      $this->imageService->process(
+        $request->file('foto'),
+        $mito,
+        'news_full',
+        'mitos',
+        true
+      );
+    }
 
     Alert::success('Mito actualizado', 'El mito ha sido actualizado con éxito.');
     return redirect()->route('backend.mitos.index');

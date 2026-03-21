@@ -16,14 +16,17 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Services\ImageUploadService;
 
 class AlbumController extends Controller
 {
 
-  public function __construct()
+  protected $imageService;
+
+  public function __construct(ImageUploadService $imageService)
   {
     $this->middleware('auth');
-    // $this->authorizeResource(Album::class, 'album');
+    $this->imageService = $imageService;
   }
 
   public function index()
@@ -37,13 +40,8 @@ class AlbumController extends Controller
           $user->id
         );
       })
-      ->with('interprete', 'user')
+      ->with('interprete', 'user', 'images')
       ->withCount('canciones') // Cuenta las canciones del álbum
-      // ->withCount(['interprete as interprete_canciones_count' => function ($query) {
-      //   $query->select(DB::raw('count(*)'))
-      //     ->from('canciones')
-      //     ->whereColumn('canciones.interprete_id', 'albums.interprete_id');
-      // }])
       ->get();
 
     return view('backend.albunes.index', compact('albums'));
@@ -66,13 +64,16 @@ class AlbumController extends Controller
     $album->visitas = 0;
 
     // Trar el slug del interprete y concatenarlo delante del album
-    if ($request->hasFile('foto')) {
-      $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
-      $filePath = $request->file('foto')->storeAs('albunes', $fileName, 'public');
-      $album->foto = $fileName;
-    }
-
     $album->save();
+
+    if ($request->hasFile('foto')) {
+      $this->imageService->process(
+        $request->file('foto'),
+        $album,
+        'album',
+        'albunes'
+      );
+    }
 
     if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
       $this->sendNotification($album);
@@ -108,9 +109,13 @@ class AlbumController extends Controller
     $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
     if ($request->hasFile('foto')) {
-      $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
-      $filePath = $request->file('foto')->storeAs('albunes', $fileName, 'public');
-      $album->foto = $fileName;
+      $this->imageService->process(
+        $request->file('foto'),
+        $album,
+        'album',
+        'albunes',
+        true
+      );
     }
     $canciones = $request->input('canciones', []);
     $ordenes = $request->input('ordenes', []);

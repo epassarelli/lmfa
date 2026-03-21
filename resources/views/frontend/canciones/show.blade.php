@@ -22,8 +22,12 @@
   @if (!empty($cancion->youtube))
     <div class="relative mb-8 cursor-pointer aspect-video overflow-hidden rounded-lg shadow-md"
       onclick="loadYouTubeIframe(this)" data-video-id="{{ $cancion->youtube }}">
-      <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="Reproducir video de {{ $cancion->cancion }}"
-        class="w-full h-full object-cover" />
+      @if ($interprete->images->isNotEmpty())
+        <x-optimized-image :image="$interprete->images->first()" variant="card" class="w-full h-full object-cover" />
+      @else
+        <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="Reproducir video de {{ $cancion->cancion }}"
+          class="w-full h-full object-cover" />
+      @endif
 
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="w-16 h-16 bg-red-600 text-white text-3xl rounded-full shadow-lg flex items-center justify-center">

@@ -79,6 +79,11 @@ class Interprete extends Model
         return $this->hasMany(Cancion::class);
     }
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function users()
     {
         return $this->hasMany(User::class);

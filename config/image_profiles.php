@@ -47,4 +47,22 @@ return [
         ],
     ],
 
+    'album' => [
+        'variants' => [
+            'main' => [
+                'ratio' => [1, 1],
+                'sizes' => [300, 600, 800],
+            ],
+        ],
+    ],
+
+    'recipe' => [
+        'variants' => [
+            'main' => [
+                'ratio' => [4, 3],
+                'sizes' => [400, 800],
+            ],
+        ],
+    ],
+
 ];

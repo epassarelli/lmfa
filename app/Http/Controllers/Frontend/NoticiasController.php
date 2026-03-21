@@ -26,7 +26,7 @@ class NoticiasController extends Controller
     // $ultimas = $noticia->getNLast(Noticia::class, 30);
 
     $ultimas = Noticia::where('estado', 1)
-      ->with(['categoria']) // Carga relaciones
+      ->with(['categoria', 'images']) // Carga relaciones e imágenes
       ->latest()
       ->take(100)
       ->get();
@@ -37,7 +37,7 @@ class NoticiasController extends Controller
 
     // Últimas 10 noticias para el sidebar
     $ultimasSidebar = Noticia::where('estado', 1)
-      ->with(['categoria', 'interprete'])
+      ->with(['categoria', 'interprete', 'images'])
       ->latest()
       ->take(10)
       ->get();
@@ -61,6 +61,7 @@ class NoticiasController extends Controller
             $q->where('interprete_id', $interprete->id);
           });
       })
+      ->with(['images', 'categoria'])
       ->orderBy('created_at', 'desc')
       ->distinct()
       ->paginate(10);
@@ -80,7 +81,7 @@ class NoticiasController extends Controller
   public function byArtista($slug)
   {
     $interprete = Interprete::where('slug', $slug)->first();
-    $noticias = $interprete->noticias()->where('estado', 1)->get();
+    $noticias = $interprete->noticias()->with('images')->where('estado', 1)->get();
     // dd($noticias);
     $interpretes = Interprete::getInterpretesExcluding($interprete->id);
     $section = 'noticias';
@@ -101,11 +102,12 @@ class NoticiasController extends Controller
     // Traer las noticias de esa categoría con sus intérpretes
     $noticias = Noticia::where('categoria_id', $categoria->id)
       ->where('estado', 1)
-      ->with(['interpretes'])
+      ->with(['interpretes', 'images'])
       ->latest()
       ->paginate(10); // Paginación para mejor rendimiento
 
     $ultimas = Noticia::where('estado', 1)
+      ->with('images')
       ->orderByDesc('created_at')
       ->take(5)
       ->get();
@@ -151,7 +153,7 @@ class NoticiasController extends Controller
   public function show($slugIterprete, $slugNoticia)
   {
     $noticia = Noticia::where('slug', $slugNoticia)
-      ->with(['categoria', 'interprete', 'interpretes'])
+      ->with(['categoria', 'interprete', 'interpretes', 'images'])
       ->firstOrFail();
 
     // $ultimas_noticias = Noticia::where('estado', 1)
@@ -184,7 +186,7 @@ class NoticiasController extends Controller
           });
         }
       })
-      ->with(['categoria', 'interprete'])
+      ->with(['categoria', 'interprete', 'images'])
       ->orderByDesc('created_at')
       ->distinct()
       ->take(3)
@@ -200,7 +202,7 @@ class NoticiasController extends Controller
     // Últimas 10 noticias para el sidebar (excluyendo la noticia actual)
     $ultimasSidebar = Noticia::where('estado', 1)
       ->where('id', '<>', $noticia->id)
-      ->with(['categoria', 'interprete'])
+      ->with(['categoria', 'interprete', 'images'])
       ->latest()
       ->take(10)
       ->get();
@@ -213,7 +215,7 @@ class NoticiasController extends Controller
 
   public function generalShow($slug)
   {
-    $noticia = Noticia::where('slug', $slug)->with('interprete', 'categoria')->firstOrFail();
+    $noticia = Noticia::where('slug', $slug)->with('interprete', 'categoria', 'images')->firstOrFail();
 
     // Incrementar el contador de visitas
     $noticia->increment('visitas');

@@ -28,7 +28,7 @@ class InterpretesController extends Controller
     public function biografia($slug)
     {
         // Obtener el intérprete actual
-        $interprete = Interprete::where('slug', $slug)->firstOrFail();
+        $interprete = Interprete::where('slug', $slug)->with('images')->firstOrFail();
         $biografias = Interprete::where('estado', 1)->orderBy('interprete', 'ASC')->get();
 
         // return view('frontend.interpretes.show', compact('interprete', 'noticiasCount', 'showsCount', 'discosCount', 'cancionesCount', 'fotosCount', 'videosCount'));
@@ -59,7 +59,8 @@ class InterpretesController extends Controller
 
     public function show(Interprete $interprete)
     {
-        $noticias = $interprete->noticias()->latest()->take(3)->get();
+        $interprete->load('images');
+        $noticias = $interprete->noticias()->with('images')->latest()->take(3)->get();
         $canciones = $interprete->canciones()->latest()->take(3)->get();
         $discos = $interprete->discos()->latest()->take(2)->get();
         $shows = $interprete->shows()->where('fecha', '>=', now())->orderBy('fecha')->take(2)->get();

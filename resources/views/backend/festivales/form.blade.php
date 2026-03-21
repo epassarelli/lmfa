@@ -83,7 +83,12 @@
   <div class="form-group col-md-8">
     <label for="foto">Foto</label>
     <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png">
-    @if (isset($festival) && $festival->foto)
+    @if (isset($festival) && $festival->images->isNotEmpty())
+      <div class="mt-2 text-center">
+        <label>Previsualización (Nueva):</label><br>
+        <x-optimized-image :image="$festival->images->first()" variant="card" style="max-height: 80px;" class="img-thumbnail" />
+      </div>
+    @elseif (isset($festival) && $festival->foto)
       <div class="mt-2">
         <img src="{{ asset('storage/' . $festival->foto) }}" alt="Foto de {{ $festival->titulo }}"
           style="max-height: 80px;">
