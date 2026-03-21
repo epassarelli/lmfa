@@ -3,6 +3,14 @@
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 @section('metaImage', $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : asset('storage/noticias/' . $noticia->foto))
+@section('ogType', 'article')
+
+@section('ogArticleTags')
+  <meta property="article:published_time" content="{{ $noticia->created_at->toIso8601String() }}">
+  <meta property="article:modified_time" content="{{ $noticia->updated_at->toIso8601String() }}">
+  <meta property="article:author" content="{{ $noticia->interprete ? route('artista.show', $noticia->interprete->slug) : url('/') }}">
+  <meta property="article:section" content="{{ $noticia->categoria->nombre ?? 'Folklóre' }}">
+@endsection
 
 @push('json-ld')
 <script type="application/ld+json">

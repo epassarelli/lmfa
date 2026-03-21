@@ -158,4 +158,17 @@ class SitemapController extends Controller
 
     return Response::make($content, 200, ['Content-Type' => 'text/xml']);
   }
+
+  public function newsIndex()
+  {
+    // Google News Sitemap: articles from last 2 days (48 hours)
+    $noticias = Noticia::where('estado', 1)
+      ->where('created_at', '>=', now()->subDays(2))
+      ->latest()
+      ->get();
+
+    $content = view('sitemap-news', compact('noticias'))->render();
+
+    return Response::make($content, 200, ['Content-Type' => 'text/xml']);
+  }
 }

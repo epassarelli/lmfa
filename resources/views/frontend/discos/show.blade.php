@@ -3,6 +3,7 @@
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 @section('metaImage', $disco->images->isNotEmpty() ? $disco->images->first()->original_path : asset('storage/albunes/' . $disco->foto))
+@section('ogType', 'music.album')
 
 @push('json-ld')
 <script type="application/ld+json">

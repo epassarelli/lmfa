@@ -27,12 +27,13 @@
   <meta name="description" content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
 
   <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="@yield('ogType', 'website')">
   <meta property="og:url" content="{{ url()->current() }}">
   <meta property="og:title" content="@yield('metaTitle', 'Mi folklore Argentino')">
   <meta property="og:description"
     content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
   <meta property="og:image" content="@yield('metaImage', asset('img/logo-share.jpg'))">
+  @yield('ogArticleTags')
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">

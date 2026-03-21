@@ -23,6 +23,7 @@ use App\Http\Controllers\Frontend\SitemapController;
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+Route::get('/sitemap-news.xml', [SitemapController::class, 'newsIndex']);
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');

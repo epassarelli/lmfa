@@ -3,6 +3,11 @@
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 @section('metaImage', $receta->images->isNotEmpty() ? $receta->images->first()->original_path : asset('storage/comidas/' . $receta->foto))
+@section('ogType', 'article')
+
+@section('ogArticleTags')
+  <meta property="article:section" content="Cocina Regional Argentina">
+@endsection
 
 @push('json-ld')
 <script type="application/ld+json">
