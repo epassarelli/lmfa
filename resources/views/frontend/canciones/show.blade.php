@@ -3,7 +3,24 @@
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MusicRecording",
+  "name": "{{ $cancion->cancion }}",
+  "byArtist": {
+    "@type": "MusicGroup",
+    "name": "{{ $interprete->interprete }}"
+  }
+}
+</script>
+@endpush
+
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   {{-- Contenido principal --}}
 

@@ -4,6 +4,9 @@
 @section('metaDescription', $metaDescription)
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   <!-- Más visitados -->
 

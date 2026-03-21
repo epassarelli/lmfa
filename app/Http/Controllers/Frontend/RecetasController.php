@@ -24,7 +24,11 @@ class RecetasController extends Controller
         $metaTitle = "Recetas de Comidas Típicas del Folklore Argentino: Sabores Tradicionales";
         $metaDescription = "Descubre las recetas de comidas típicas del folklore argentino. Aprende a preparar platos tradicionales con nuestras instrucciones fáciles de seguir. ¡Explora nuestras recetas ahora!";
 
-        return view('frontend.recetas.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription'));
+        $breadcrumbs = [
+            ['label' => 'Comidas', 'url' => route('comidas.index')]
+        ];
+
+        return view('frontend.recetas.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function show($slug)
@@ -41,7 +45,13 @@ class RecetasController extends Controller
 
         $metaTitle = "Receta de " . $receta->titulo . " | Comida Típica del Folklore";
         $metaDescription = Str::limit(strip_tags(html_entity_decode($receta->receta)), 150);
-        return view('frontend.recetas.show', compact('receta', 'ultimas_recetas', 'metaTitle', 'metaDescription'));
+
+        $breadcrumbs = [
+            ['label' => 'Comidas', 'url' => route('comidas.index')],
+            ['label' => $receta->titulo]
+        ];
+
+        return view('frontend.recetas.show', compact('receta', 'ultimas_recetas', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function letra($letra)

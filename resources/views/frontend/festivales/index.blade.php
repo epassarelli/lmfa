@@ -4,6 +4,9 @@
 @section('metaDescription', $metaDescription)
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
     @foreach ($visitados as $festival)

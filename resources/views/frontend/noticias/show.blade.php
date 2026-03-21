@@ -2,12 +2,36 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
+@section('metaImage', $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : asset('storage/noticias/' . $noticia->foto))
+
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "{{ $noticia->titulo }}",
+  "image": [
+    "{{ $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : asset('storage/noticias/' . $noticia->foto) }}"
+  ],
+  "datePublished": "{{ $noticia->created_at->toIso8601String() }}",
+  "dateModified": "{{ $noticia->updated_at->toIso8601String() }}",
+  "author": [{
+      "@type": "Person",
+      "name": "{{ $noticia->interprete->interprete ?? 'Redacción' }}",
+      "url": "{{ $noticia->interprete ? route('artista.show', $noticia->interprete->slug) : url('/') }}"
+    }]
+}
+</script>
+@endpush
 
 @section('styles')
   {{-- Tailwind ya se encarga del diseño --}}
 @endsection
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
   <section class="bg-white p-2 mb-4">
 
     {{-- Contenido principal --}}

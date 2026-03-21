@@ -6,6 +6,11 @@
 @section('content')
 
   <div class="container mx-auto py-8">
+    @if(isset($breadcrumbs))
+      <x-breadcrumbs :items="$breadcrumbs" />
+    @endif
+
+    <h1 class="text-3xl font-bold mb-8">Peñas Folkloricas de Argentina</h1>
     <div class="flex flex-wrap justify-center">
       @foreach ($penias as $penia)
         <div class="w-full sm:w-1/2 md:w-1/3 p-4">

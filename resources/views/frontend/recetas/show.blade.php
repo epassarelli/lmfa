@@ -2,10 +2,31 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
+@section('metaImage', $receta->images->isNotEmpty() ? $receta->images->first()->original_path : asset('storage/comidas/' . $receta->foto))
+
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "{{ $receta->titulo }}",
+  "image": "{{ $receta->images->isNotEmpty() ? $receta->images->first()->original_path : asset('storage/comidas/' . $receta->foto) }}",
+  "description": "{{ $metaDescription }}",
+  "recipeCategory": "Cocina Regional Argentina",
+  "author": {
+    "@type": "Organization",
+    "name": "Mi Folklore Argentino"
+  }
+}
+</script>
+@endpush
 
 @section('content')
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    @if(isset($breadcrumbs))
+      <x-breadcrumbs :items="$breadcrumbs" />
+    @endif
 
     <div class="flex flex-col lg:flex-row gap-8">
 

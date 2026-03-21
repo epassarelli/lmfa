@@ -2,8 +2,24 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
+@section('metaImage', $festival->images->isNotEmpty() ? $festival->images->first()->original_path : asset('storage/festivales/' . $festival->foto))
+
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "{{ $festival->titulo }}",
+  "image": "{{ $festival->images->isNotEmpty() ? $festival->images->first()->original_path : asset('storage/festivales/' . $festival->foto) }}",
+  "description": "{{ $metaDescription }}"
+}
+</script>
+@endpush
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   {{-- CONTENIDO PRINCIPAL --}}
 

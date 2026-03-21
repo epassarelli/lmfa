@@ -4,6 +4,9 @@
 @section('metaDescription', $metaDescription)
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   <h1 class="text-3xl font-bold mb-4 text-gray-900">Letras de Canciones Folklóricas</h1>
   <p class="text-lg text-gray-700 mb-8">Bienvenidos a nuestra sección de letras de canciones folklóricas</p>

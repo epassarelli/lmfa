@@ -7,6 +7,9 @@
 @section('content')
 
   {{-- Contenido principal --}}
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
   <h1 class="text-xl font-semibold mb-6">Noticias de {{ $interprete->interprete }}</h1>
 
   @if ($noticias->isEmpty())

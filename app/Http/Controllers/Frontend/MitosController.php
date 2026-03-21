@@ -20,7 +20,11 @@ class MitosController extends Controller
 
         $metaTitle = "Mitos y Leyendas del Folklore Argentino: Historias y Tradiciones";
         $metaDescription = "Explora los mitos y leyendas más fascinantes del folklore argentino. Conoce historias y tradiciones que han pasado de generación en generación. ¡Visítanos para saber más!";
-        return view('frontend.mitos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
+        $breadcrumbs = [
+            ['label' => 'Mitos', 'url' => route('mitos.index')]
+        ];
+
+        return view('frontend.mitos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function show($slug)
@@ -35,8 +39,14 @@ class MitosController extends Controller
         $mito->increment('visitas');
 
         $metaTitle = $mito->titulo . " | Mitos y leyendas urbanas";
-        $metaDescription = Str::limit(strip_tags(html_entity_decode($mito->mito)), 150);;
-        return view('frontend.mitos.show', compact('mito', 'ultimos_mitos', 'metaTitle', 'metaDescription'));
+        $metaDescription = Str::limit(strip_tags(html_entity_decode($mito->mito)), 150);
+
+        $breadcrumbs = [
+            ['label' => 'Mitos', 'url' => route('mitos.index')],
+            ['label' => $mito->titulo]
+        ];
+
+        return view('frontend.mitos.show', compact('mito', 'ultimos_mitos', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
 
