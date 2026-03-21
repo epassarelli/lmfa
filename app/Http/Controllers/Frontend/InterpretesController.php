@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 use App\Models\Interprete;
-
-use App\Models\Interprete;
 use App\Services\LinkService;
 
 class InterpretesController extends Controller

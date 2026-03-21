@@ -22,7 +22,7 @@ class DiscosController extends Controller
         $metaDescription = "Explora las discografías completas del folklore argentino. Encuentra álbumes y canciones clásicas de artistas destacados. ¡Descubre la música tradicional de Argentina aquí!";
 
         $breadcrumbs = [
-            ['label' => 'Discos', 'url' => route('discos.index')]
+            ['label' => 'Discos', 'url' => route('discografias.index')]
         ];
 
         return view('frontend.discos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription', 'breadcrumbs'));
@@ -66,7 +66,7 @@ class DiscosController extends Controller
         $breadcrumbs = [
             ['label' => 'Artistas', 'url' => route('interpretes.index')],
             ['label' => $interprete->interprete, 'url' => route('artista.show', $interprete->slug)],
-            ['label' => 'Discos', 'url' => route('artista.discos', $interprete->slug)],
+            ['label' => 'Discos', 'url' => route('artista.discografia', $interprete->slug)],
             ['label' => $disco->album]
         ];
 

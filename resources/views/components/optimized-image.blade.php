@@ -4,7 +4,8 @@
     'sizes' => '100vw', // Atributo sizes para el navegador
     'alt' => null,
     'class' => '',
-    'loading' => 'lazy'
+    'loading' => 'lazy',
+    'fetchpriority' => 'auto'
 ])
 
 @php
@@ -41,6 +42,7 @@
         alt="{{ $alt ?? $image->alt }}" 
         class="{{ $class }}"
         loading="{{ $loading }}"
+        fetchpriority="{{ $fetchpriority }}"
         @if(isset($maxWidth)) width="{{ $maxWidth }}" height="{{ $maxHeight }}" @endif
     >
 @else

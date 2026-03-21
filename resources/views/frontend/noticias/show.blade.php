@@ -43,12 +43,15 @@
   <section class="bg-white p-2 mb-4">
 
     {{-- Contenido principal --}}
-    @if ($noticia->images->isNotEmpty())
-      <x-optimized-image :image="$noticia->images->first()" variant="detail" class="w-full rounded-lg shadow-md mb-6 object-cover" />
-    @else
-      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-        class="w-full rounded-lg shadow-md mb-6 object-cover">
-    @endif
+        @if ($noticia->images->isNotEmpty())
+          <div class="mb-4">
+            <x-optimized-image :image="$noticia->images->first()" variant="detail" class="rounded shadow-lg w-full"
+              :alt="$noticia->titulo" fetchpriority="high" />
+          </div>
+        @else
+          <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+            class="w-full rounded-lg shadow-md mb-6 object-cover">
+        @endif
 
     <h1 class="text-2xl font-semibold text-gray-800 mb-4">{{ $noticia->titulo }}</h1>
 

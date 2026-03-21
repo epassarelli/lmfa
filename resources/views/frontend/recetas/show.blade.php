@@ -42,7 +42,7 @@
 
         @if ($receta->images->isNotEmpty())
           <div class="mb-4">
-            <x-optimized-image :image="$receta->images->first()" variant="card" class="rounded-lg shadow w-full" />
+            <x-optimized-image :image="$receta->images->first()" variant="card" class="rounded-lg shadow w-full" :alt="$receta->titulo" fetchpriority="high" />
           </div>
         @elseif ($receta->foto)
           <img src="{{ asset('storage/recetas/' . $receta->foto) }}" alt="{{ $receta->titulo }}"

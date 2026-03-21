@@ -17,6 +17,30 @@
   "genre": "Folklore Argentino"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Quién es {{ $interprete->interprete }}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ Str::limit(strip_tags($interprete->biografia), 200) }}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuál es la trayectoria de {{ $interprete->interprete }} en el folklore?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Conoce la biografía completa, discos y canciones de {{ $interprete->interprete }} en Mi Folklore Argentino."
+      }
+    }
+  ]
+}
+</script>
 @endpush
 
 @section('content')
@@ -46,6 +70,12 @@
 @endsection
 
 @section('sidebar')
+  @if ($interprete->images->isNotEmpty())
+    <div class="mb-4">
+      <x-optimized-image :image="$interprete->images->first()" variant="card" width="400" height="400"
+        class="rounded shadow-md object-cover w-full" :alt="$interprete->interprete" fetchpriority="high" />
+    </div>
+  @endif
   @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
   <br>
   <x-sidebar.social-links />

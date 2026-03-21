@@ -59,7 +59,7 @@
           @foreach ($discos as $disco)
             <x-disco-card :disco="$disco" />
           @endforeach
-
+        </div>
       </section>
     @endif
 
