@@ -28,7 +28,7 @@ class ShowsController extends Controller
             $query->where('interprete_id', $request->interprete_id);
         }
 
-        $shows = $query->orderBy('fecha')->paginate(12);
+        $shows = $query->with(['interprete', 'images'])->orderBy('fecha')->paginate(12);
 
         $interpretes = \App\Models\Interprete::orderBy('interprete')->get();
         $provincias = \App\Models\Provincia::orderBy('nombre')->get();
@@ -53,7 +53,7 @@ class ShowsController extends Controller
     {
         // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
-        $shows = $interprete->shows()->get();
+        $shows = $interprete->shows()->with('images')->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
         $section = 'shows';
@@ -65,7 +65,7 @@ class ShowsController extends Controller
 
     public function show($slug)
     {
-        $show = Show::with(['interprete', 'provincia'])->where('slug', $slug)->firstOrFail();
+        $show = Show::with(['interprete', 'provincia', 'images'])->where('slug', $slug)->firstOrFail();
 
         $ultimos_shows = Show::where('estado', 1)
             ->where('id', '<>', $show->id)

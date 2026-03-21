@@ -24,7 +24,7 @@ class HomeController extends Controller
         $categorias = Categoria::get();
 
         $ultimasNoticias = Noticia::where('estado', 1)
-            ->with(['categoria']) // Carga relaciones
+            ->with(['categoria', 'images']) // Carga relaciones e imágenes
             ->latest()
             ->take(50)
             ->get();
@@ -32,7 +32,7 @@ class HomeController extends Controller
 
         $actualidad = Noticia::where('estado', 1)
             ->where('categoria_id', 1) // Filtrar por categoría específica
-            ->with(['categoria', 'interpretes'])
+            ->with(['categoria', 'interpretes', 'images'])
             ->latest()
             ->take(6)
             ->get();
@@ -40,7 +40,7 @@ class HomeController extends Controller
 
         $festivales = Noticia::where('estado', 1)
             ->where('categoria_id', 2) // Filtrar por categoría específica
-            ->with(['categoria'])
+            ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
@@ -48,7 +48,7 @@ class HomeController extends Controller
 
         $lanzamientos = Noticia::where('estado', 1)
             ->where('categoria_id', 3) // Filtrar por categoría específica
-            ->with(['categoria'])
+            ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
@@ -56,7 +56,7 @@ class HomeController extends Controller
 
         $entrevistas = Noticia::where('estado', 1)
             ->where('categoria_id', 4) // Filtrar por categoría específica
-            ->with(['categoria'])
+            ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
@@ -64,7 +64,7 @@ class HomeController extends Controller
 
         $cartelera = Noticia::where('estado', 1)
             ->where('categoria_id', 5) // Filtrar por categoría específica
-            ->with(['categoria'])
+            ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();

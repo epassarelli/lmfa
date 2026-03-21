@@ -27,8 +27,8 @@ class ContactRecieveEmail extends Mailable
   public function envelope(): Envelope
   {
     return new Envelope(
-      subject: 'Nuevo Contacto',
-      to: config('mail.form.contact'),
+      subject: 'Nuevo Mensaje de Contacto',
+      to: 'mifolkloreargentino@gmail.com',
     );
   }
 
@@ -38,7 +38,7 @@ class ContactRecieveEmail extends Mailable
   public function content(): Content
   {
     return new Content(
-      view: 'mail.contact.recieve',
+      view: 'emails.contact_message',
       with: [
         'contact' => $this->contact,
       ]

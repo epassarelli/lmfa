@@ -42,8 +42,12 @@
             <tr>
               <td>{{ $interprete->id }}</td>
               <td>
-                <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
-                  class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                @if ($interprete->images->isNotEmpty())
+                  <x-optimized-image :image="$interprete->images->first()" variant="card" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" />
+                @else
+                  <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
+                    class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                @endif
               </td>
               <td>{{ $interprete->interprete }}</td>
               <td>{{ $interprete->correo }}</td>

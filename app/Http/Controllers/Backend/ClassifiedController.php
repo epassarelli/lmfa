@@ -9,12 +9,20 @@ use App\Models\Classified;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use App\Services\ImageUploadService;
 
 class ClassifiedController extends Controller
 {
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->middleware('auth');
+        $this->imageService = $imageService;
+    }
     public function index()
     {
-        $classifieds = Classified::with('category', 'tags', 'images')->get();
+        $classifieds = Classified::with(['category', 'tags', 'images'])->get();
         return view('backend.classifieds.index', compact('classifieds'));
     }
 
@@ -35,8 +43,12 @@ class ClassifiedController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('classified_images');
-                $classified->images()->create(['image_path' => $path]);
+                $this->imageService->process(
+                    $image,
+                    $classified,
+                    'news_full', // Use news_full for now
+                    'classifieds'
+                );
             }
         }
 
@@ -62,8 +74,12 @@ class ClassifiedController extends Controller
         if ($request->hasFile('images')) {
             $classified->images()->delete(); // Remove old images
             foreach ($request->file('images') as $image) {
-                $path = $image->store('classified_images');
-                $classified->images()->create(['image_path' => $path]);
+                $this->imageService->process(
+                    $image,
+                    $classified,
+                    'news_full',
+                    'classifieds'
+                );
             }
         }
 

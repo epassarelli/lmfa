@@ -11,7 +11,9 @@
     {{-- Izquierda: Datos del disco --}}
     <div class="col-span-12 md:col-span-4">
       <div class="bg-white rounded shadow p-2 space-y-2">
-        @if ($disco->foto)
+        @if ($disco->images->isNotEmpty())
+          <x-optimized-image :image="$disco->images->first()" variant="card" class="rounded mb-4 w-full" />
+        @elseif ($disco->foto)
           <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}" class="rounded mb-4 w-full">
         @endif
 

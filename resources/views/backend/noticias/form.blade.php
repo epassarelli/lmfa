@@ -12,8 +12,17 @@
   </div>
 
   <div class="col-md-6">
-    <x-file name="foto" label="Foto" :value="$noticia->foto ?? null" path="noticias" :required="$action == 'create'" />
-    <small class="form-text text-muted">Debe ser formato .jpg, 800 x 450px y no superar los 200 Kb.</small>
+    <label for="foto">Foto</label>
+    @if(isset($noticia) && $noticia->images->count() > 0)
+      <div class="mb-2">
+        <x-optimized-image :image="$noticia->images->first()" variant="card" class="img-thumbnail" style="max-width: 200px" />
+      </div>
+    @endif
+    <input type="file" name="foto" id="foto" class="form-control @error('foto') is-invalid @enderror">
+    @error('foto')
+      <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+    <small class="form-text text-muted">Debe ser formato .jpg, 800 x 450px y no superar los 200 Kb. (Ahora se convertirá a WebP automáticamente)</small>
   </div>
 
   <div class="col-md-12">

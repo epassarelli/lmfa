@@ -27,7 +27,7 @@ class DiscosController extends Controller
     public function byArtista($slug)
     {
         $interprete = Interprete::where('slug', $slug)->first();
-        $discos = $interprete->discos()->where('estado', 1)->orderby('anio', 'desc')->get();
+        $discos = $interprete->discos()->where('estado', 1)->with('images')->orderby('anio', 'desc')->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
         $section = 'discografias';
 
@@ -40,7 +40,7 @@ class DiscosController extends Controller
     public function show($slugInterprete, $slugDisco)
     {
         $interprete = Interprete::where('slug', $slugInterprete)->first();
-        $disco = Album::where('slug', $slugDisco)->firstOrFail();
+        $disco = Album::where('slug', $slugDisco)->with('images')->firstOrFail();
 
         // Incrementar el contador de visitas
         $disco->increment('visitas');

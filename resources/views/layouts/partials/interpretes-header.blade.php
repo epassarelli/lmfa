@@ -2,8 +2,13 @@
 
   <div class="w-full">
     {{-- Imagen del intérprete --}}
-    <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" loading="lazy" width="400" height="400"
-      class="rounded shadow-md object-cover" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}">
+    @if ($interprete->images->isNotEmpty())
+      <x-optimized-image :image="$interprete->images->first()" variant="card" width="400" height="400"
+        class="rounded shadow-md object-cover w-full" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}" />
+    @else
+      <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" loading="lazy" width="400" height="400"
+        class="rounded shadow-md object-cover" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}">
+    @endif
 
     {{-- Menú de navegación por secciones --}}
     <nav class="flex flex-col border border-gray-300 rounded overflow-hidden shadow-md">

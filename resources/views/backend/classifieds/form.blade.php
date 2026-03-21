@@ -102,6 +102,15 @@
         <div class="form-group">
           <label for="images">Images</label>
           <input type="file" name="images[]" id="images" class="form-control" multiple>
+          @if (isset($classified) && $classified->images->isNotEmpty())
+            <div class="mt-3 d-flex flex-wrap gap-2">
+              @foreach ($classified->images as $image)
+                <div class="text-center">
+                  <x-optimized-image :image="$image" variant="card" style="width: 100px; height: 100px; object-fit: cover;" class="img-thumbnail" />
+                </div>
+              @endforeach
+            </div>
+          @endif
           @error('images.*')
             <div class="text-danger">{{ $message }}</div>
           @enderror

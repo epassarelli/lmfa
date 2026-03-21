@@ -22,6 +22,11 @@ class Mito extends Model
         'estado',
     ];
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

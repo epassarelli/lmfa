@@ -33,6 +33,10 @@ use App\Http\Controllers\Frontend\BusquedaController;
 
 // Rutas para el controlador de biografia
 Route::get('biografias-de-artistas-folkloricos/letra/{letra}', [InterpretesController::class, 'letra'])->name('interprete.letra');
+// Ruta alternativa con formato solicitado: redirect a la ruta canonical
+Route::get('biografias-de-artistas-folkloricos-con-letra-{letra}', function ($letra) {
+	return redirect()->route('interprete.letra', $letra);
+});
 Route::get('biografias-de-artistas-folkloricos/{interprete:slug}', [InterpretesController::class, 'show'])->name('interprete.show');
 Route::get('biografias-de-artistas-folkloricos', [InterpretesController::class, 'index'])->name('interpretes.index');
 

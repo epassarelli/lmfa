@@ -26,19 +26,8 @@
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @foreach ($interpretes as $visitado2)
-          <a href="{{ route('interprete.show', $visitado2->slug) }}"
-            class="bg-gray-800 text-white rounded shadow overflow-hidden hover:scale-[1.01] transition-transform duration-200 flex flex-col">
-            <img
-              src="{{ file_exists(public_path('storage/interpretes/' . $visitado2->foto)) && $visitado2->foto !== ''
-                  ? asset('storage/interpretes/' . $visitado2->foto)
-                  : asset('storage/img/imagennodisponible600x400.jpg') }}"
-              alt="{{ $visitado2->interprete }}" class="w-full h-48 object-cover">
-            <div class="p-4 flex-1 flex flex-col">
-              <h5 class="text-yellow-400 text-lg font-semibold mb-2">{{ $visitado2->interprete }}</h5>
-              <p class="mt-auto text-sm">{{ number_format($visitado2->visitas, 0, '', ',') }} visitas</p>
-            </div>
-          </a>
+        @foreach ($interpretes as $interprete)
+          <x-biografia-card :interprete="$interprete" />
         @endforeach
       </div>
     </div>
@@ -65,8 +54,12 @@
         @foreach ($visitados as $visitado)
           <a href="{{ route('interprete.show', $visitado->slug) }}"
             class="bg-gray-800 text-white rounded shadow overflow-hidden hover:scale-[1.01] transition-transform duration-200 flex flex-col">
-            <img src="{{ asset('storage/interpretes/' . $visitado->foto) }}" alt="{{ $visitado->interprete }}"
-              class="w-full h-48 object-cover">
+            @if ($visitado->images->isNotEmpty())
+              <x-optimized-image :image="$visitado->images->first()" variant="card" class="w-full h-48 object-cover" />
+            @else
+              <img src="{{ asset('storage/interpretes/' . $visitado->foto) }}" alt="{{ $visitado->interprete }}"
+                class="w-full h-48 object-cover">
+            @endif
             <div class="p-4 flex-1 flex flex-col">
               <h5 class="text-yellow-400 text-lg font-semibold mb-2">{{ $visitado->interprete }}</h5>
               <p class="mt-auto text-sm">{{ number_format($visitado->visitas, 0, '', ',') }} visitas</p>
@@ -85,8 +78,12 @@
         @foreach ($ultimos as $ultimo)
           <a href="{{ route('interprete.show', $ultimo->slug) }}"
             class="bg-gray-800 text-white rounded shadow overflow-hidden hover:scale-[1.01] transition-transform duration-200 flex flex-col">
-            <img src="{{ asset('storage/interpretes/' . $ultimo->foto) }}" alt="{{ $ultimo->interprete }}"
-              class="w-full h-48 object-cover">
+            @if ($ultimo->images->isNotEmpty())
+               <x-optimized-image :image="$ultimo->images->first()" variant="card" class="w-full h-48 object-cover" />
+            @else
+               <img src="{{ asset('storage/interpretes/' . $ultimo->foto) }}" alt="{{ $ultimo->interprete }}"
+                 class="w-full h-48 object-cover">
+            @endif
             <div class="p-4 flex-1 flex flex-col">
               <h5 class="text-yellow-400 text-lg font-semibold mb-2">{{ $ultimo->interprete }}</h5>
               <p class="mt-auto text-sm">{{ number_format($ultimo->visitas, 0, '', ',') }} visitas</p>

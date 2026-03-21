@@ -11,8 +11,12 @@
   <section class="bg-white p-2 mb-4">
 
     {{-- Contenido principal --}}
-    <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-      class="w-full rounded-lg shadow-md mb-6 object-cover">
+    @if ($noticia->images->isNotEmpty())
+      <x-optimized-image :image="$noticia->images->first()" variant="detail" class="w-full rounded-lg shadow-md mb-6 object-cover" />
+    @else
+      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+        class="w-full rounded-lg shadow-md mb-6 object-cover">
+    @endif
 
     <h1 class="text-2xl font-semibold text-gray-800 mb-4">{{ $noticia->titulo }}</h1>
 
@@ -63,16 +67,34 @@
     <x-compartir-redes :titulo="$noticia->titulo" :url="Request::url()" />
   </div>
 
+  {{-- Noticias relacionadas --}}
+  @if ($relacionadas && $relacionadas->count() > 0)
+    <section class="bg-white p-2 mb-4">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-[#ff661f] pb-2">
+        Noticias relacionadas
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        @foreach ($relacionadas as $noticiaRelacionada)
+          <x-noticia-card :noticia="$noticiaRelacionada" />
+        @endforeach
+      </div>
+    </section>
+  @endif
+
 @endsection
 
 
 @section('sidebar')
 
+  @if (isset($ultimasSidebar) && $ultimasSidebar->count() > 0)
+    <x-sidebar.card-noticias :noticias="$ultimasSidebar" />
+  @endif
+
   <x-sidebar.social-links />
   <x-sidebar.donate />
 
-  
-  
+
+
 
   {{-- <x-sidebar.card-biografias :interpretes="$ultimosArtistas" /> --}}
 

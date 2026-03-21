@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -20,6 +19,10 @@ use App\Http\Controllers\Frontend\ContactoController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Frontend\BusquedaController;
 use App\Http\Controllers\Frontend\CompartirController;
+use App\Http\Controllers\Frontend\SitemapController;
+
+// Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -45,9 +48,11 @@ Route::get('/penias-folkloricas-de-argentina', [PeniasController::class, 'index'
 Route::get('/penias-folkloricas-de-argentina/{slug}', [PeniasController::class, 'show'])->name('penias.show');
 
 Route::get('/mitos-y-leyendas-argentinas', [MitosController::class, 'index'])->name('mitos.index');
+Route::get('/mitos-y-leyendas-argentinas/letra/{slug}', [MitosController::class, 'letra'])->name('mitos.letra');
 Route::get('/mitos-y-leyendas-argentinas/{slug}', [MitosController::class, 'show'])->name('mitos.show');
 
 Route::get('/recetas-de-comidas-tipicas-argentinas', [RecetasController::class, 'index'])->name('comidas.index');
+Route::get('/recetas-de-comidas-tipicas-argentinas/letra/{slug}', [RecetasController::class, 'letra'])->name('comidas.letra');
 Route::get('/recetas-de-comidas-tipicas-argentinas/{slug}', [RecetasController::class, 'show'])->name('comidas.show');
 
 // Contacto

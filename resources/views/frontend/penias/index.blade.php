@@ -11,8 +11,12 @@
         <div class="w-full sm:w-1/2 md:w-1/3 p-4">
           <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <a href="{{ route('noticias.show', $penia->slug) }}">
-              <img src="{{ asset('storage/noticias/' . $penia->foto) }}" alt="{{ $penia->titulo }}"
-                class="w-full h-48 object-cover">
+              @if ($penia->images->isNotEmpty())
+                <x-optimized-image :image="$penia->images->first()" variant="card" class="w-full h-48 object-cover" />
+              @else
+                <img src="{{ asset('storage/noticias/' . $penia->foto) }}" alt="{{ $penia->titulo }}"
+                  class="w-full h-48 object-cover">
+              @endif
               <div class="p-4">
                 <h3 class="font-bold text-xl mb-2">{{ $penia->titulo }}</h3>
               </div>

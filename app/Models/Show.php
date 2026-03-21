@@ -38,6 +38,11 @@ class Show extends Model
     ];
 
     // Relaciones
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function interprete()
     {
         return $this->belongsTo(Interprete::class);

@@ -1,0 +1,772 @@
+{
+    "info": {
+        "name": "MFA Internal API",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Noticias",
+            "item": [
+                {
+                    "name": "Listar Noticias",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/news",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "news"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear Noticias",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Ejemplo\",\n    \"publicar\": \"2024-01-01\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/news",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "news"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ver Noticias",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/news\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "news",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar Noticias",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Actualizado\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/news\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "news",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar Noticias",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/news\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "news",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Albumes",
+            "item": [
+                {
+                    "name": "Listar Albumes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/albums",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "albums"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear Albumes",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Ejemplo\",\n    \"publicar\": \"2024-01-01\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/albums",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "albums"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ver Albumes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/albums\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "albums",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar Albumes",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Actualizado\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/albums\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "albums",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar Albumes",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/albums\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "albums",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Canciones",
+            "item": [
+                {
+                    "name": "Listar Canciones",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/songs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "songs"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear Canciones",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Ejemplo\",\n    \"publicar\": \"2024-01-01\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/songs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "songs"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ver Canciones",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/songs\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "songs",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar Canciones",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Actualizado\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/songs\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "songs",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar Canciones",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/songs\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "songs",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Comidas",
+            "item": [
+                {
+                    "name": "Listar Comidas",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/foods",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "foods"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear Comidas",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Ejemplo\",\n    \"publicar\": \"2024-01-01\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/foods",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "foods"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ver Comidas",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/foods\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "foods",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar Comidas",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Actualizado\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/foods\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "foods",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar Comidas",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/foods\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "foods",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Festivales",
+            "item": [
+                {
+                    "name": "Listar Festivales",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/festivals",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "festivals"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear Festivales",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Ejemplo\",\n    \"publicar\": \"2024-01-01\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/festivals",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "festivals"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ver Festivales",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/festivals\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "festivals",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar Festivales",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Actualizado\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/festivals\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "festivals",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar Festivales",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/festivals\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "festivals",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Interpretes",
+            "item": [
+                {
+                    "name": "Listar Interpretes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/artists",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "artists"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear Interpretes",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Ejemplo\",\n    \"publicar\": \"2024-01-01\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/artists",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "artists"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ver Interpretes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/artists\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "artists",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar Interpretes",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Actualizado\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/artists\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "artists",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar Interpretes",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/artists\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "artists",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Mitos",
+            "item": [
+                {
+                    "name": "Listar Mitos",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/myths",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "myths"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear Mitos",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Ejemplo\",\n    \"publicar\": \"2024-01-01\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/myths",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "myths"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ver Mitos",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/myths\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "myths",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar Mitos",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Actualizado\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}\/myths\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "myths",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar Mitos",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}\/myths\/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "myths",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http:\/\/localhost\/api\/v1",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}

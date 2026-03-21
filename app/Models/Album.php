@@ -26,6 +26,11 @@ class Album extends Model
         'interprete_id'
     ];
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function interprete()
     {
         return $this->belongsTo(Interprete::class, 'interprete_id');

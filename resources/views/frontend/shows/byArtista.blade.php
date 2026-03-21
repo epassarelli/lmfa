@@ -35,9 +35,13 @@
           <!-- Detalle -->
           <div class="w-full md:w-4/5 p-4">
             <div class="flex items-center gap-3 mb-3">
-              <img src="{{ asset('storage/interpretes/' . $evento->interprete->foto) }}"
-                alt="{{ $evento->interprete->interprete }}"
-                class="w-12 h-12 rounded-full object-cover border border-gray-300">
+              @if ($evento->interprete && $evento->interprete->images->isNotEmpty())
+                <x-optimized-image :image="$evento->interprete->images->first()" variant="card" class="w-12 h-12 rounded-full object-cover border border-gray-300" />
+              @else
+                <img src="{{ asset('storage/interpretes/' . ($evento->interprete->foto ?? 'default.jpg')) }}"
+                  alt="{{ $evento->interprete->interprete ?? 'Artista' }}"
+                  class="w-12 h-12 rounded-full object-cover border border-gray-300">
+              @endif
               <h5 class="text-lg font-semibold">{{ $evento->interprete->interprete }}</h5>
             </div>
             <h6 class="text-gray-700 font-medium mb-2"><strong>Show:</strong> {{ $evento->show }}</h6>

@@ -29,7 +29,7 @@ class RecetasController extends Controller
 
     public function show($slug)
     {
-        $receta = Comida::where('slug', $slug)->firstOrFail();
+        $receta = Comida::where('slug', $slug)->with('images')->firstOrFail();
         $ultimas_recetas = Comida::where('estado', 1)
             ->where('id', '<>', $receta->id)
             ->orderByDesc('created_at')

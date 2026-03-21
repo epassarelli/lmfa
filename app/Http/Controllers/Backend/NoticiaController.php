@@ -9,17 +9,19 @@ use App\Models\Categoria;
 use App\Models\Noticia;
 use App\Models\Interprete;
 
+use App\Services\ImageUploadService;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Log;
 
 class NoticiaController extends Controller
 {
-    public function __construct()
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
     {
         $this->middleware('auth');
-        // $this->authorize('access', Noticia::class);
-        // $this->middleware('permission:access noticia');
+        $this->imageService = $imageService;
     }
 
 
@@ -27,7 +29,7 @@ class NoticiaController extends Controller
     {
         $this->authorize('viewAny', Noticia::class);
 
-        $noticias = Noticia::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre'])
+        $noticias = Noticia::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre', 'images'])
             ->orderBy('publicar', 'desc')
             ->get();
 
@@ -94,13 +96,18 @@ class NoticiaController extends Controller
             $noticia->publicar = $data['publicar'];
         }
 
-        // Guardar imagen si fue cargada
-        if ($request->hasFile('foto')) {
-            $nombreArchivo = $request->file('foto')->store('noticias', 'public');
-            $noticia->foto = basename($nombreArchivo);
-        }
-
         $noticia->save();
+
+        if ($request->hasFile('foto')) {
+            $this->imageService->process(
+                $request->file('foto'),
+                $noticia,
+                'news_full',
+                'noticias',
+                false,
+                $noticia->slug
+            );
+        }
 
         if (!empty($data['interprete_secundarios'])) {
             $noticia->interpretes()->sync($data['interprete_secundarios']);
@@ -145,13 +152,19 @@ class NoticiaController extends Controller
             $noticia->publicar = $data['publicar'];
         }
 
-        // Actualizar imagen si fue cargada
-        if ($request->hasFile('foto')) {
-            $nombreArchivo = $request->file('foto')->store('noticias', 'public');
-            $noticia->foto = basename($nombreArchivo);
-        }
-
         $noticia->save();
+
+        // Actualizar imagen si fue cargada usando el nuevo sistema
+        if ($request->hasFile('foto')) {
+            $this->imageService->process(
+                $request->file('foto'),
+                $noticia,
+                'news_full',
+                'noticias',
+                true, // Replace existing
+                $noticia->slug
+            );
+        }
 
         // Sincronizar intérpretes secundarios (tabla pivote)
         $noticia->interpretes()->sync($data['interprete_secundarios'] ?? []);

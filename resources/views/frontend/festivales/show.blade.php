@@ -8,8 +8,12 @@
   {{-- CONTENIDO PRINCIPAL --}}
 
 
-  <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
-    class="rounded shadow-lg w-full object-cover max-h-[500px]">
+  @if ($festival->images->isNotEmpty())
+    <x-optimized-image :image="$festival->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px]" />
+  @else
+    <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
+      class="rounded shadow-lg w-full object-cover max-h-[500px]">
+  @endif
   
     <div class="bg-white p-2">
 

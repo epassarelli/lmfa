@@ -9,7 +9,11 @@
             @foreach($classifieds as $classified)
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src="{{ $classified->images->first()->image_path ?? 'placeholder.jpg' }}" class="card-img-top" alt="{{ $classified->title }}">
+                        @if ($classified->images->isNotEmpty())
+                            <x-optimized-image :image="$classified->images->first()" variant="card" class="card-img-top" />
+                        @else
+                            <img src="{{ asset('placeholder.jpg') }}" class="card-img-top" alt="{{ $classified->title }}">
+                        @endif
                         <div class="card-body">
                             <h5 class="card-title">{{ $classified->title }}</h5>
                             <p class="card-text">{{ Str::limit($classified->description, 100) }}</p>

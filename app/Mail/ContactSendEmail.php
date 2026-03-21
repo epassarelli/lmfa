@@ -29,7 +29,7 @@ class ContactSendEmail extends Mailable
   public function envelope(): Envelope
   {
     return new Envelope(
-      subject: 'EURO-HARD',
+      subject: 'Gracias por contactarnos - Mi Folklore Argentino',
       to: $this->contactEmail,
     );
   }
@@ -40,7 +40,7 @@ class ContactSendEmail extends Mailable
   public function content(): Content
   {
     return new Content(
-      view: 'mail.contact.send',
+      view: 'emails.contact_confirmation',
       with: [
         'name' => $this->name,
         'lastName' => $this->lastName

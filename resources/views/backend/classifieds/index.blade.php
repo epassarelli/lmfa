@@ -12,6 +12,7 @@
     <thead>
       <tr>
         <th>ID</th>
+        <th>Foto</th>
         <th>Title</th>
         <th>Category</th>
         <th>Location</th>
@@ -23,6 +24,13 @@
       @foreach ($classifieds as $classified)
         <tr>
           <td>{{ $classified->id }}</td>
+          <td>
+            @if ($classified->images->isNotEmpty())
+              <x-optimized-image :image="$classified->images->first()" variant="card" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+            @else
+              <span class="text-muted">No image</span>
+            @endif
+          </td>
           <td>{{ $classified->title }}</td>
           <td>{{ $classified->category->name }}</td>
           <td>{{ $classified->location }}</td>

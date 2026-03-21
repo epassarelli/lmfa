@@ -10,6 +10,12 @@
   <div class="col-md-4">
     <x-file name="foto" label="Foto" :value="$interprete->foto ?? null" path="interpretes" :required="$action == 'create'" />
     <small class="form-text text-muted">Debe ser formato .jpg, 400 x 400px y no superar los 200 Kb.</small>
+    @if (isset($interprete) && $interprete->images->isNotEmpty())
+      <div class="mt-2 text-center">
+        <label>Previsualización (Nueva):</label><br>
+        <x-optimized-image :image="$interprete->images->first()" variant="main" style="width: 100px; height: auto;" class="img-thumbnail" />
+      </div>
+    @endif
   </div>
 </div>
 

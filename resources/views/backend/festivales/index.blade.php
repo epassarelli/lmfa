@@ -26,6 +26,7 @@
         <thead>
           <tr>
             <th>Título</th>
+            <th>Foto</th>
             <th>Caract's</th>
             <th>Provincia</th>
             <th>Mes</th>
@@ -38,6 +39,14 @@
           @foreach ($festivales as $festival)
             <tr>
               <td>{{ $festival->titulo }}</td>
+              <td>
+                @if ($festival->images->isNotEmpty())
+                  <x-optimized-image :image="$festival->images->first()" variant="card" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+                @else
+                  <img src="{{ asset('storage/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
+                    style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
+                @endif
+              </td>
               <td>{{ strlen(strip_tags($festival->detalle)) }}</td>
               <td>{{ $festival->provincia_id }}</td>
               <td>{{ $festival->mes_id }}</td>

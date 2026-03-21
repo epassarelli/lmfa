@@ -11,13 +11,16 @@ use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Provincia;
 use App\Models\Mes;
+use App\Services\ImageUploadService;
 
 class ComidaController extends Controller
 {
-    public function __construct()
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
     {
         $this->middleware('auth');
-        // $this->authorizeResource(Comida::class, 'comida');
+        $this->imageService = $imageService;
     }
 
     public function index()
@@ -30,7 +33,7 @@ class ComidaController extends Controller
             ->when($user->hasRole('prensa'), function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
-            ->with('user')
+            ->with(['user', 'images'])
             ->get();
 
         return view('backend.comidas.index', compact('comidas'));
@@ -50,6 +53,15 @@ class ComidaController extends Controller
         $comida->user_id = Auth::id();
         $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
         $comida->save();
+
+        if ($request->hasFile('foto')) {
+            $this->imageService->process(
+                $request->file('foto'),
+                $comida,
+                'recipe',
+                'comidas'
+            );
+        }
 
         if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
             $this->sendNotification($comida);
@@ -73,6 +85,16 @@ class ComidaController extends Controller
         $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
         $comida->save();
+
+        if ($request->hasFile('foto')) {
+            $this->imageService->process(
+                $request->file('foto'),
+                $comida,
+                'recipe',
+                'comidas',
+                true
+            );
+        }
 
         Alert::success('Comida actualizada', 'La comida ha sido actualizada con éxito.');
         return redirect()->route('backend.comidas.index');

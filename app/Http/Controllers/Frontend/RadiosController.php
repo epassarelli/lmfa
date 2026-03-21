@@ -12,8 +12,13 @@ class RadiosController extends Controller
     {
         // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
         $radios = Radio::where('estado', 1)
+            ->with('images')
             ->orderBy('publicar', 'desc')
             ->paginate(12);
-        return view('frontend.radios.index', compact('radios'));
+        
+        $metaTitle = "Radios de Folklore Argentino: Escuchá Nuestra Música en Vivo";
+        $metaDescription = "Directorio de radios que transmiten folklore argentino. Sintonizá la mejor música tradicional y programas culturales de todo el país.";
+
+        return view('frontend.radios.index', compact('radios', 'metaTitle', 'metaDescription'));
     }
 }

@@ -58,6 +58,9 @@
     </div>
   </section> --}}
 
+  @if(isset($ultimasSidebar) && $ultimasSidebar->count() > 0)
+    <x-sidebar.card-noticias :noticias="$ultimasSidebar" />
+  @endif
   
   <x-sidebar.social-links />
 

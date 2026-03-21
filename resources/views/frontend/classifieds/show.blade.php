@@ -8,8 +8,11 @@
     <div class="row">
       <div class="col-md-8">
         <div class="card mb-4">
-          <img src="{{ $classified->images->first()->image_path ?? 'placeholder.jpg' }}" class="card-img-top"
-            alt="{{ $classified->title }}">
+          @if ($classified->images->isNotEmpty())
+            <x-optimized-image :image="$classified->images->first()" variant="card" class="card-img-top" />
+          @else
+            <img src="{{ asset('placeholder.jpg') }}" class="card-img-top" alt="{{ $classified->title }}">
+          @endif
           <div class="card-body">
             <h5 class="card-title">{{ $classified->title }}</h5>
             <p class="card-text">{{ $classified->description }}</p>

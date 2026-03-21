@@ -16,15 +16,36 @@
   <meta name="author" content="Passarelli Eduardo">
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="{{ url()->current() }}" />
+
   <!-- .ico -->
   <link rel="shortcut icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
+
   <title>@yield('metaTitle', 'Mi folklore Argentino')</title>
   <meta name="description" content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:title" content="@yield('metaTitle', 'Mi folklore Argentino')">
+  <meta property="og:description"
+    content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
+  <meta property="og:image" content="@yield('metaImage', asset('img/logo-share.jpg'))">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="{{ url()->current() }}">
+  <meta property="twitter:title" content="@yield('metaTitle', 'Mi folklore Argentino')">
+  <meta property="twitter:description"
+    content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
+  <meta property="twitter:image" content="@yield('metaImage', asset('img/logo-share.jpg'))">
 
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
   @yield('styles')
-
+  @stack('json-ld')
 </head>
 
 <body class="bg-gray-100 text-gray-900">

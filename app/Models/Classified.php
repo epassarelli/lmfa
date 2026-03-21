@@ -21,6 +21,11 @@ class Classified extends Model
         'is_active',
     ];
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -29,11 +34,6 @@ class Classified extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function images()
-    {
-        return $this->hasMany(ClassifiedImage::class);
     }
 
     public function tags()
