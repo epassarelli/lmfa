@@ -13,10 +13,17 @@ use App\Models\Cancion;
 use App\Models\Categoria;
 use App\Models\Foto;
 use App\Models\Video;
+use App\Services\LinkService;
 use Illuminate\Support\Facades\Session;
 
 class NoticiasController extends Controller
 {
+    protected $linkService;
+
+    public function __construct(LinkService $linkService)
+    {
+        $this->linkService = $linkService;
+    }
 
   public function index()
   {
@@ -47,8 +54,12 @@ class NoticiasController extends Controller
     $metaTitle = "Noticias de Folklore Argentino: Novedades y Eventos Recientes";
     $metaDescription = "Descubre las últimas noticias del folklore argentino. Mantente al tanto de los eventos, festivales y novedades culturales más importantes. ¡Explora nuestra cobertura completa hoy mismo!";
 
+    $breadcrumbs = [
+      ['label' => 'Noticias', 'url' => route('noticias.index')]
+    ];
+
     // Renderizar la vista con las noticias y las últimas noticias
-    return view('frontend.noticias.index', compact('ultimas', 'categorias', 'ultimasSidebar', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.index', compact('ultimas', 'categorias', 'ultimasSidebar', 'metaTitle', 'metaDescription', 'breadcrumbs'));
   }
 
 
@@ -69,9 +80,12 @@ class NoticiasController extends Controller
     $interpretes = Interprete::getInterpretesExcluding($interprete->id);
     $section = 'noticias';
 
-    $metaTitle = "Noticias de " . $interprete->interprete;
-    $metaDescription = "Todas las novedades y noticias de " . $interprete->interprete . ". Presentaciones, próximos lanzamientos.";
-    return view('frontend.noticias.byArtista', compact('noticias', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
+    $breadcrumbs = [
+      ['label' => 'Noticias', 'url' => route('noticias.index')],
+      ['label' => $interprete->interprete]
+    ];
+
+    return view('frontend.noticias.byArtista', compact('noticias', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription', 'breadcrumbs'));
 
     // return view('frontend.interpretes.noticias', compact('interprete', 'noticias'));
   }
@@ -86,9 +100,12 @@ class NoticiasController extends Controller
     $interpretes = Interprete::getInterpretesExcluding($interprete->id);
     $section = 'noticias';
 
-    $metaTitle = "Noticias de " . $interprete->interprete;
-    $metaDescription = "Todas las novedades y noticias de " . $interprete->interprete . ". Presentaciones, próximos lanzamientos.";
-    return view('frontend.noticias.byArtista', compact('noticias', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
+    $breadcrumbs = [
+      ['label' => 'Noticias', 'url' => route('noticias.index')],
+      ['label' => $interprete->interprete]
+    ];
+
+    return view('frontend.noticias.byArtista', compact('noticias', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription', 'breadcrumbs'));
   }
 
 
@@ -118,6 +135,16 @@ class NoticiasController extends Controller
 
     $metaTitle = "Noticias de " . $categoria->nombre . " del Folklore Argentino";
     $metaDescription = "Todas las noticias de {$categoria->nombre} del folklore argentino: presentaciones en vivo, lanzamientos recientes, artistas en agenda y hechos destacados del género.";
+
+    $breadcrumbs = [
+      ['label' => 'Noticias', 'url' => route('noticias.index')],
+      ['label' => $categoria->nombre]
+    ];
+
+    $breadcrumbs = [
+      ['label' => 'Noticias', 'url' => route('noticias.index')],
+      ['label' => $categoria->nombre]
+    ];
 
 
 
@@ -196,8 +223,12 @@ class NoticiasController extends Controller
     $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
 
     $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
-    // Elimina los saltos de línea
     $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
+
+    $breadcrumbs = [
+      ['label' => 'Noticias', 'url' => route('noticias.index')],
+      ['label' => $noticia->titulo]
+    ];
 
     // Últimas 10 noticias para el sidebar (excluyendo la noticia actual)
     $ultimasSidebar = Noticia::where('estado', 1)
@@ -209,7 +240,14 @@ class NoticiasController extends Controller
 
     //dd($ultimasSidebar);
 
-    return view('frontend.noticias.show', compact('noticia', 'relacionadas', 'ultimasSidebar', 'metaTitle', 'metaDescription'));
+    $breadcrumbs = [
+      ['label' => 'Noticias', 'url' => route('noticias.index')],
+      ['label' => $noticia->titulo]
+    ];
+
+    $noticia->noticia = $this->linkService->autoLinkArtists($noticia->noticia);
+
+    return view('frontend.noticias.show', compact('noticia', 'relacionadas', 'ultimasSidebar', 'metaTitle', 'metaDescription', 'breadcrumbs'));
   }
 
 
@@ -230,6 +268,8 @@ class NoticiasController extends Controller
     $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
     // Elimina los saltos de línea
     $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
+
+    $noticia->noticia = $this->linkService->autoLinkArtists($noticia->noticia);
 
     return view('frontend.noticias.show', compact('noticia', 'canonical', 'metaTitle', 'metaDescription'));
   }

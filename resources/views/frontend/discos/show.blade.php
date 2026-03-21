@@ -2,8 +2,29 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
+@section('metaImage', $disco->images->isNotEmpty() ? $disco->images->first()->original_path : asset('storage/albunes/' . $disco->foto))
+@section('ogType', 'music.album')
+
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MusicAlbum",
+  "name": "{{ $disco->album }}",
+  "image": "{{ $disco->images->isNotEmpty() ? $disco->images->first()->original_path : asset('storage/albunes/' . $disco->foto) }}",
+  "datePublished": "{{ $disco->anio }}",
+  "byArtist": {
+    "@type": "MusicGroup",
+    "name": "{{ $disco->interprete->interprete ?? 'Varios Artistas' }}"
+  }
+}
+</script>
+@endpush
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
 
   <div class="grid grid-cols-12 gap-6">

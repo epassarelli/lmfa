@@ -4,6 +4,9 @@
 @section('metaDescription', $metaDescription)
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   <div class="bg-white p-2 rounded shadow-sm mb-4 ">
     <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-[#ff661f]">Discos folklóricos Más Visitados</h2>

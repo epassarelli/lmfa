@@ -1,2 +1,5 @@
 User-agent: *
 Disallow:
+
+Sitemap: https://mifolkloreargentino.com.ar/sitemap.xml
+Sitemap: https://mifolkloreargentino.com.ar/sitemap-news.xml

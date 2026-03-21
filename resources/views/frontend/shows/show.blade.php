@@ -2,8 +2,36 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
+@section('metaImage', $show->images->isNotEmpty() ? $show->images->first()->original_path : ($show->interprete && $show->interprete->images->isNotEmpty() ? $show->interprete->images->first()->original_path : asset('storage/' . $show->imagen_destacada)))
+
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "{{ $show->titulo }}",
+  "startDate": "{{ $show->fecha ? $show->fecha->toIso8601String() : '' }}",
+  "location": {
+    "@type": "Place",
+    "name": "{{ $show->lugar }}",
+    "address": "{{ $show->direccion ?? $show->lugar }}"
+  },
+  "image": "{{ $show->images->isNotEmpty() ? $show->images->first()->original_path : ($show->interprete && $show->interprete->images->isNotEmpty() ? $show->interprete->images->first()->original_path : asset('storage/' . $show->imagen_destacada)) }}",
+  "description": "{{ $metaDescription }}",
+  "performer": {
+    "@type": "MusicGroup",
+    "name": "{{ $show->interprete->interprete ?? 'Artistas Varios' }}"
+  }
+}
+</script>
+@endpush
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <div class="container mx-auto px-4 mt-4">
+      <x-breadcrumbs :items="$breadcrumbs" />
+    </div>
+  @endif
   <section class="py-8 bg-white">
     <div class="container mx-auto px-4">
       <div class="flex flex-col lg:flex-row gap-8">

@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 use App\Models\Interprete;
+use App\Services\LinkService;
 
 class InterpretesController extends Controller
 {
+    protected $linkService;
+
+    public function __construct(LinkService $linkService)
+    {
+        $this->linkService = $linkService;
+    }
     public function index()
     {
         $interprete = new Interprete();
@@ -22,7 +29,11 @@ class InterpretesController extends Controller
         $metaTitle = "Biografías de Artistas del Folklore Argentino: Historia y Trayectoria";
         $metaDescription = "Conoce la historia y trayectoria de los artistas e intérpretes del folklore argentino. Descubre sus biografías completas y su contribución a la música tradicional. ¡Explora ahora!";
         // return view('home', compact('metaTitle', 'metaDescription'));
-        return view('frontend.interpretes.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription'));
+        $breadcrumbs = [
+            ['label' => 'Artistas', 'url' => route('interpretes.index')]
+        ];
+
+        return view('frontend.interpretes.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function biografia($slug)
@@ -51,7 +62,15 @@ class InterpretesController extends Controller
             $metaTitle = "Biografía de " . $interprete->interprete . " | Folklore Argentino";
             $metaDescription = Str::limit(strip_tags(html_entity_decode($interprete->biografia)), 150);
 
-            return view('frontend.interpretes.show', compact('interprete', 'biografias', 'interpretes', 'section', 'recursos', 'metaTitle', 'metaDescription'));
+            $interprete->biografia = $this->linkService->autoLinkArtists($interprete->biografia);
+
+            $breadcrumbs = [
+                ['label' => 'Artistas', 'url' => route('interpretes.index')],
+                ['label' => $interprete->interprete, 'url' => route('artista.show', $interprete->slug)],
+                ['label' => 'Biografía']
+            ];
+
+            return view('frontend.interpretes.show', compact('interprete', 'biografias', 'interpretes', 'section', 'recursos', 'metaTitle', 'metaDescription', 'breadcrumbs'));
         } else {
             return back()->with('alert', 'El intérprete no existe.');
         }
@@ -69,7 +88,12 @@ class InterpretesController extends Controller
         $metaTitle = "Biografía de " . $interprete->interprete . " | Folklore Argentino";
         $metaDescription = Str::limit(strip_tags(html_entity_decode($interprete->biografia)), 150);
 
-        // dd($interprete);
+        $interprete->biografia = $this->linkService->autoLinkArtists($interprete->biografia);
+
+        $breadcrumbs = [
+            ['label' => 'Artistas', 'url' => route('interpretes.index')],
+            ['label' => $interprete->interprete]
+        ];
 
         return view('frontend.interpretes.home-artista', compact(
             'interprete',

@@ -4,6 +4,9 @@
 @section('metaDescription', $metaDescription)
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   {{-- BLOQUE PRINCIPAL --}}
   <h1 class="text-2xl font-semibold mb-6">Cartelera folklórica</h1>
@@ -19,7 +22,6 @@
       @endforeach
     </div>
   @endif
-  </div>
 
 @endsection
 

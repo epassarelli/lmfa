@@ -2,21 +2,56 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
+@section('metaImage', $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : asset('storage/noticias/' . $noticia->foto))
+@section('ogType', 'article')
+
+@section('ogArticleTags')
+  <meta property="article:published_time" content="{{ $noticia->created_at->toIso8601String() }}">
+  <meta property="article:modified_time" content="{{ $noticia->updated_at->toIso8601String() }}">
+  <meta property="article:author" content="{{ $noticia->interprete ? route('artista.show', $noticia->interprete->slug) : url('/') }}">
+  <meta property="article:section" content="{{ $noticia->categoria->nombre ?? 'Folklóre' }}">
+@endsection
+
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "{{ $noticia->titulo }}",
+  "image": [
+    "{{ $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : asset('storage/noticias/' . $noticia->foto) }}"
+  ],
+  "datePublished": "{{ $noticia->created_at->toIso8601String() }}",
+  "dateModified": "{{ $noticia->updated_at->toIso8601String() }}",
+  "author": [{
+      "@type": "Person",
+      "name": "{{ $noticia->interprete->interprete ?? 'Redacción' }}",
+      "url": "{{ $noticia->interprete ? route('artista.show', $noticia->interprete->slug) : url('/') }}"
+    }]
+}
+</script>
+@endpush
 
 @section('styles')
   {{-- Tailwind ya se encarga del diseño --}}
 @endsection
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
   <section class="bg-white p-2 mb-4">
 
     {{-- Contenido principal --}}
-    @if ($noticia->images->isNotEmpty())
-      <x-optimized-image :image="$noticia->images->first()" variant="detail" class="w-full rounded-lg shadow-md mb-6 object-cover" />
-    @else
-      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-        class="w-full rounded-lg shadow-md mb-6 object-cover">
-    @endif
+        @if ($noticia->images->isNotEmpty())
+          <div class="mb-4">
+            <x-optimized-image :image="$noticia->images->first()" variant="detail" class="rounded shadow-lg w-full"
+              :alt="$noticia->titulo" fetchpriority="high" />
+          </div>
+        @else
+          <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+            class="w-full rounded-lg shadow-md mb-6 object-cover">
+        @endif
 
     <h1 class="text-2xl font-semibold text-gray-800 mb-4">{{ $noticia->titulo }}</h1>
 

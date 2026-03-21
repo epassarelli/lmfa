@@ -38,13 +38,18 @@ class ShowsController extends Controller
         $metaTitle = "Cartelera de Eventos del Folklore Argentino: Festivales y Shows";
         $metaDescription = "Consulta la cartelera de eventos del folklore argentino. Encuentra información sobre festivales, conciertos y shows en todo el país. ¡Mantente al día con nuestra agenda!";
 
+        $breadcrumbs = [
+            ['label' => 'Cartelera', 'url' => route('cartelera.index')]
+        ];
+
         return view('frontend.shows.index', compact(
             'shows',
             'interpretes',
             'provincias',
             'metaTitle',
             'metaDescription',
-            'sinResultados'
+            'sinResultados',
+            'breadcrumbs'
         ));
     }
 
@@ -60,7 +65,14 @@ class ShowsController extends Controller
 
         $metaTitle = "Shows de " . $interprete->interprete;
         $metaDescription = "Cartelera de shows de " . $interprete->interprete . ", interprete del folklore argentino";
-        return view('frontend.shows.byArtista', compact('shows', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
+
+        $breadcrumbs = [
+            ['label' => 'Artistas', 'url' => route('interpretes.index')],
+            ['label' => $interprete->interprete, 'url' => route('artista.show', $interprete->slug)],
+            ['label' => 'Shows']
+        ];
+
+        return view('frontend.shows.byArtista', compact('shows', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function show($slug)
@@ -77,14 +89,20 @@ class ShowsController extends Controller
         $noticiasRelacionadas = $show->noticias ?? collect();
 
         $metaTitle = $show->titulo . ' - Show de folklore argentino';
-        $metaDescription = Str::limit(strip_tags($show->detalles), 150);
+        $metaDescription = \Illuminate\Support\Str::limit(strip_tags($show->detalles), 150);
+
+        $breadcrumbs = [
+            ['label' => 'Cartelera', 'url' => route('cartelera.index')],
+            ['label' => $show->titulo]
+        ];
 
         return view('frontend.shows.show', compact(
             'show',
             'ultimos_shows',
             'metaTitle',
             'metaDescription',
-            'noticiasRelacionadas'
+            'noticiasRelacionadas',
+            'breadcrumbs'
         ));
     }
 

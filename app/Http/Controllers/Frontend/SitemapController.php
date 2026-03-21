@@ -45,6 +45,7 @@ class SitemapController extends Controller
         'priority' => '0.9',
         'changefreq' => 'weekly',
         'lastmod' => $noticia->updated_at->toAtomString(),
+        'image' => $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : ($noticia->foto ? asset('storage/noticias/' . $noticia->foto) : null),
       ];
     }
 
@@ -56,6 +57,7 @@ class SitemapController extends Controller
         'priority' => '0.8',
         'changefreq' => 'monthly',
         'lastmod' => $interprete->updated_at->toAtomString(),
+        'image' => $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : ($interprete->foto ? asset('storage/interpretes/' . $interprete->foto) : null),
       ];
     }
 
@@ -78,6 +80,7 @@ class SitemapController extends Controller
         'priority' => '0.7',
         'changefreq' => 'monthly',
         'lastmod' => $disco->updated_at->toAtomString(),
+        'image' => $disco->images->isNotEmpty() ? $disco->images->first()->original_path : ($disco->foto ? asset('storage/albunes/' . $disco->foto) : null),
       ];
     }
 
@@ -102,6 +105,7 @@ class SitemapController extends Controller
         'priority' => '0.8',
         'changefreq' => 'monthly',
         'lastmod' => $festival->updated_at->toAtomString(),
+        'image' => $festival->images->isNotEmpty() ? $festival->images->first()->original_path : ($festival->foto ? asset('storage/festivales/' . $festival->foto) : null),
       ];
     }
 
@@ -146,10 +150,24 @@ class SitemapController extends Controller
         'priority' => '0.7',
         'changefreq' => 'monthly',
         'lastmod' => $receta->updated_at->toAtomString(),
+        'image' => $receta->images->isNotEmpty() ? $receta->images->first()->original_path : ($receta->foto ? asset('storage/comidas/' . $receta->foto) : null),
       ];
     }
 
     $content = view('sitemap', compact('urls'))->render();
+
+    return Response::make($content, 200, ['Content-Type' => 'text/xml']);
+  }
+
+  public function newsIndex()
+  {
+    // Google News Sitemap: articles from last 2 days (48 hours)
+    $noticias = Noticia::where('estado', 1)
+      ->where('created_at', '>=', now()->subDays(2))
+      ->latest()
+      ->get();
+
+    $content = view('sitemap-news', compact('noticias'))->render();
 
     return Response::make($content, 200, ['Content-Type' => 'text/xml']);
   }

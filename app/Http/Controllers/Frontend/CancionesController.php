@@ -23,7 +23,11 @@ class CancionesController extends Controller
         $metaTitle = "Letras de Canciones del Folklore Argentino | Cancionero Popular";
         $metaDescription = "Encuentra las letras de tus canciones favoritas del folklore argentino. Nuestro cancionero folklórico tiene todas las letras que necesitas para cantar. ¡Visítanos!";
 
-        return view('frontend.canciones.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription'));
+        $breadcrumbs = [
+            ['label' => 'Cancionero', 'url' => route('canciones.index')]
+        ];
+
+        return view('frontend.canciones.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function byArtista($slug)
@@ -43,7 +47,13 @@ class CancionesController extends Controller
         $metaTitle = "Letras de canciones de " . $interprete->interprete;
         $metaDescription = "Letras de canciones de " . $interprete->interprete . ", referente del folklore argentino. Descubrí su cancionero popular y disfrutá su música.";
 
-        return view('frontend.canciones.byArtista', compact('canciones', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription'));
+        $breadcrumbs = [
+            ['label' => 'Artistas', 'url' => route('interpretes.index')],
+            ['label' => $interprete->interprete, 'url' => route('artista.show', $interprete->slug)],
+            ['label' => 'Canciones']
+        ];
+
+        return view('frontend.canciones.byArtista', compact('canciones', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function show($slugInterprete, $slugCancion)
@@ -76,6 +86,14 @@ class CancionesController extends Controller
         }
         // Elimina los saltos de línea
         $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
-        return view('frontend.canciones.show', compact('cancion', 'interprete', 'interpretes', 'related', 'metaTitle', 'metaDescription'));
+
+        $breadcrumbs = [
+            ['label' => 'Artistas', 'url' => route('interpretes.index')],
+            ['label' => $interprete->interprete, 'url' => route('artista.show', $interprete->slug)],
+            ['label' => 'Canciones', 'url' => route('artista.canciones', $interprete->slug)],
+            ['label' => $cancion->cancion]
+        ];
+
+        return view('frontend.canciones.show', compact('cancion', 'interprete', 'interpretes', 'related', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 }

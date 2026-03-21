@@ -1,13 +1,28 @@
 @extends('layouts.app')
 
-@section('title', $interprete->nombre)
-@section('description',
-  'Descubrí la trayectoria y los contenidos de ' .
-  $interprete->nombre .
-  ' en Mi Folklore
-  Argentino.')
+@section('metaTitle', $metaTitle)
+@section('metaDescription', $metaDescription)
+@section('metaImage', $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : asset('storage/interpretes/' . $interprete->foto))
+
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@id": "{{ url()->current() }}",
+  "@type": "MusicGroup",
+  "name": "{{ $interprete->interprete }}",
+  "description": "{{ $metaDescription }}",
+  "url": "{{ url()->current() }}",
+  "image": "{{ $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : asset('storage/interpretes/' . $interprete->foto) }}",
+  "genre": "Folklore Argentino"
+}
+</script>
+@endpush
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
   <div class="container my-5">
 
     <h1 class="fw-bold font-bold pb-4 text-3xl text-gray-800">{{ $interprete->interprete }}</h1>
@@ -44,7 +59,7 @@
           @foreach ($discos as $disco)
             <x-disco-card :disco="$disco" />
           @endforeach
-
+        </div>
       </section>
     @endif
 

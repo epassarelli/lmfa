@@ -3,7 +3,39 @@
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MusicRecording",
+  "name": "{{ $cancion->cancion }}",
+  "byArtist": {
+    "@type": "MusicGroup",
+    "name": "{{ $interprete->interprete }}"
+  }
+}
+</script>
+
+@if (!empty($cancion->youtube))
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "{{ $cancion->cancion }} - {{ $interprete->interprete }}",
+  "description": "Video y letra de la canción {{ $cancion->cancion }} por {{ $interprete->interprete }}.",
+  "thumbnailUrl": "{{ $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : asset('storage/interpretes/' . $interprete->foto) }}",
+  "uploadDate": "{{ $cancion->created_at->toIso8601String() }}",
+  "contentUrl": "https://www.youtube.com/watch?v={{ $cancion->youtube }}",
+  "embedUrl": "https://www.youtube.com/embed/{{ $cancion->youtube }}"
+}
+</script>
+@endif
+@endpush
+
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   {{-- Contenido principal --}}
 
