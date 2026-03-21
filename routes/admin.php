@@ -128,6 +128,13 @@ Route::group(
     ]);
 
 
+    Route::resource('contributions', \App\Http\Controllers\Backend\ContributionController::class)->only(['index', 'show'])->names([
+      'index' => 'backend.contributions.index',
+      'show' => 'backend.contributions.show',
+    ]);
+    Route::post('contributions/{id}/approve', [\App\Http\Controllers\Backend\ContributionController::class, 'approve'])->name('backend.contributions.approve');
+    Route::post('contributions/{id}/reject', [\App\Http\Controllers\Backend\ContributionController::class, 'reject'])->name('backend.contributions.reject');
+
     Route::get('/', [Dashboard::class, 'index'])->name('dashboard');
   }
 );

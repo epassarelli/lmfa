@@ -51,7 +51,12 @@
               class="mb-6 rounded shadow-lg w-full object-cover max-h-[500px]">
           @endif
           
-          <h1 class="text-3xl font-bold mb-4">{{ $show->titulo }}</h1>
+          <h1 class="text-3xl font-bold mb-2">{{ $show->titulo }}</h1>
+          <div class="mb-4">
+            <a href="{{ route('contributions.create', ['type' => 'show', 'id' => $show->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
+              📅 Sugerir corrección de datos del evento
+            </a>
+          </div>
           <div class="prose max-w-none mb-6">
             {!! $show->detalle !!}
           </div>

@@ -28,6 +28,8 @@ class User extends Authenticatable
         'password',
         'google_id',
         'facebook_id',
+        'points',
+        'rank',
     ];
 
     /**
@@ -59,4 +61,9 @@ class User extends Authenticatable
     protected $appends = [
         // 'profile_photo_url',
     ];
+
+    public function contributions()
+    {
+        return $this->hasMany(Contribution::class);
+    }
 }

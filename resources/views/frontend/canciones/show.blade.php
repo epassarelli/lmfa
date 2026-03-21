@@ -41,6 +41,11 @@
 
   <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $cancion->cancion }}</h1>
+    <div class="mb-4">
+      <a href="{{ route('contributions.create', ['type' => 'cancion', 'id' => $cancion->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
+        🎸 Sugerir corrección de letra
+      </a>
+    </div>
     <p class="text-lg text-gray-700 mb-4">{{ $interprete->interprete }}</p>
 
     <div class="prose prose-lg max-w-none text-gray-800">
