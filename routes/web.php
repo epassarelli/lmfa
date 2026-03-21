@@ -20,6 +20,7 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Frontend\BusquedaController;
 use App\Http\Controllers\Frontend\CompartirController;
 use App\Http\Controllers\Frontend\SitemapController;
+use App\Http\Controllers\Frontend\ContributionController;
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
@@ -63,6 +64,13 @@ Route::post('/contacto', [ContactoController::class, 'store'])->name('contacto.s
 // Buscador y compartir
 Route::get('/buscar', [BusquedaController::class, 'index'])->name('buscar');
 Route::post('/compartir', [CompartirController::class, 'store'])->name('compartir.store');
+
+// Colaboraciones (UGC) - Mover ARRIBA para evitar colisión con slugs de artistas
+Route::middleware(['auth'])->prefix('colaborar')->group(function () {
+    Route::get('/', [ContributionController::class, 'index'])->name('contributions.index');
+    Route::get('/{type}/{id?}', [ContributionController::class, 'create'])->name('contributions.create');
+    Route::post('/store', [ContributionController::class, 'store'])->name('contributions.store');
+});
 
 // Miniportal del artista y secciones internas
 Route::get('/{interprete:slug}', [InterpretesController::class, 'show'])->name('artista.show');

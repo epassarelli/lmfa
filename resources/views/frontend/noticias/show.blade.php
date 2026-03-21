@@ -53,7 +53,12 @@
             class="w-full rounded-lg shadow-md mb-6 object-cover">
         @endif
 
-    <h1 class="text-2xl font-semibold text-gray-800 mb-4">{{ $noticia->titulo }}</h1>
+    <h1 class="text-2xl font-semibold text-gray-800 mb-2">{{ $noticia->titulo }}</h1>
+    <div class="mb-4">
+      <a href="{{ route('contributions.create', ['type' => 'noticia', 'id' => $noticia->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
+        ✏️ Sugerir corrección o actualización
+      </a>
+    </div>
 
     <div class="prose prose-lg max-w-none mb-6 text-gray-800">
       {!! $noticia->noticia !!}

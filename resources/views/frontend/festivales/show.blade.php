@@ -34,7 +34,12 @@
     <div class="bg-white p-2">
 
 
-    <h1 class="text-3xl font-bold mb-4">{{ $festival->titulo }}</h1>
+    <h1 class="text-3xl font-bold mb-2">{{ $festival->titulo }}</h1>
+    <div class="mb-4">
+      <a href="{{ route('contributions.create', ['type' => 'festival', 'id' => $festival->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
+        🎡 Sugerir corrección o actualización
+      </a>
+    </div>
 
     <div class="prose max-w-none mb-6">
       {!! $festival->detalle !!}

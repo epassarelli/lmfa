@@ -39,6 +39,7 @@ class Dashboard extends Controller
             'discos' => Album::count(),
             'comidas' => Comida::count(),
             'festivales' => Festival::count(),
+            'contributions' => \App\Models\Contribution::where('status', 'pending')->count(),
         ];
 
 

@@ -326,6 +326,16 @@ return [
         //     'can' => 'manage-blog',
         // ],
 
+        ['header' => 'Gestión de Contenidos'],
+
+        [
+            'text' => 'Moderación UGC',
+            'url' => 'admin/contributions',
+            'icon' => 'fas fa-fw fa-tasks',
+            'label' => 'Revisar',
+            'label_color' => 'warning',
+        ],
+
         [
             'text' => 'Usuarios',
             'url' => 'admin/users',
