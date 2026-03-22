@@ -37,6 +37,7 @@
           <li><a href="{{ route('interpretes.index') }}" class="block py-2 hover:text-[#ff661f]">Aristas</a></li>
           <li><a href="{{ route('noticias.index') }}" class="block py-2 hover:text-[#ff661f]">Noticias</a></li>
           <li><a href="{{ route('cartelera.index') }}" class="block py-2 hover:text-[#ff661f]">Cartelera</a></li>
+          <li><a href="{{ route('classifieds.index') }}" class="block py-2 hover:text-[#ff661f]">Clasificados</a></li>
           <li><a href="{{ route('discografias.index') }}" class="block py-2 hover:text-[#ff661f]">Discos</a></li>
           <li><a href="{{ route('canciones.index') }}" class="block py-2 hover:text-[#ff661f]">Canciones</a></li>
           <li><a href="{{ route('festivales.index') }}" class="block py-2 hover:text-[#ff661f]">Festivales</a></li>

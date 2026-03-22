@@ -30,7 +30,19 @@ Route::group(
     Route::resource('users', UserController::class)->names('users');
     Route::resource('permissions', PermissionController::class)->names('permissions');
     Route::resource('categories', CategoryController::class);
-    Route::resource('classifieds', ClassifiedController::class);
+    
+    Route::resource('classifieds', ClassifiedController::class)->names([
+        'index' => 'backend.classifieds.index',
+        'create' => 'backend.classifieds.create',
+        'store' => 'backend.classifieds.store',
+        'show' => 'backend.classifieds.show',
+        'edit' => 'backend.classifieds.edit',
+        'update' => 'backend.classifieds.update',
+        'destroy' => 'backend.classifieds.destroy',
+    ]);
+    Route::post('classifieds/{classified}/approve', [ClassifiedController::class, 'approve'])->name('backend.classifieds.approve');
+    Route::post('classifieds/{classified}/reject', [ClassifiedController::class, 'reject'])->name('backend.classifieds.reject');
+    
     Route::resource('tags', TagController::class);
 
     Route::resource('shows', ShowController::class)->names([

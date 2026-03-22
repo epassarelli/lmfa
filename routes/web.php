@@ -21,6 +21,7 @@ use App\Http\Controllers\Frontend\BusquedaController;
 use App\Http\Controllers\Frontend\CompartirController;
 use App\Http\Controllers\Frontend\SitemapController;
 use App\Http\Controllers\Frontend\ContributionController;
+use App\Http\Controllers\Frontend\ClassifiedsController;
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
@@ -64,6 +65,16 @@ Route::post('/contacto', [ContactoController::class, 'store'])->name('contacto.s
 // Buscador y compartir
 Route::get('/buscar', [BusquedaController::class, 'index'])->name('buscar');
 Route::post('/compartir', [CompartirController::class, 'store'])->name('compartir.store');
+
+// Clasificados
+Route::prefix('avisos-clasificados')->name('classifieds.')->group(function () {
+    Route::get('/', [ClassifiedsController::class, 'index'])->name('index');
+    Route::get('/publicar', [ClassifiedsController::class, 'create'])->name('create')->middleware('auth');
+    Route::post('/publicar', [ClassifiedsController::class, 'store'])->name('store')->middleware('auth');
+    Route::get('/mis-avisos', [ClassifiedsController::class, 'misAvisos'])->name('mis-avisos')->middleware('auth');
+    Route::post('/renovar/{classified}', [ClassifiedsController::class, 'renovar'])->name('renovar')->middleware('auth');
+    Route::get('/{classified:slug}', [ClassifiedsController::class, 'show'])->name('show');
+});
 
 // Colaboraciones (UGC) - Mover ARRIBA para evitar colisión con slugs de artistas
 Route::middleware(['auth'])->prefix('colaborar')->group(function () {

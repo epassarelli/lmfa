@@ -9,7 +9,7 @@
 @section('content')
   <div class="card">
     <div class="card-body">
-      <form action="{{ isset($classified) ? route('classifieds.update', $classified) : route('classifieds.store') }}"
+      <form action="{{ isset($classified) ? route('backend.classifieds.update', $classified) : route('backend.classifieds.store') }}"
         method="POST" enctype="multipart/form-data">
         @csrf
         @if (isset($classified))
@@ -117,7 +117,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{{ route('classifieds.index') }}" class="btn btn-secondary">Cancel</a>
+        <a href="{{ route('backend.classifieds.index') }}" class="btn btn-secondary">Cancel</a>
       </form>
     </div>
   </div>
