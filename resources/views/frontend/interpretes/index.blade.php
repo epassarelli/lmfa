@@ -17,9 +17,13 @@
       </p> --}}
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    @foreach ($visitados as $interprete)
+    @foreach ($interpretes as $interprete)
       <x-biografia-card :interprete="$interprete" />
     @endforeach
+  </div>
+
+  <div class="my-6">
+    {{ $interpretes->links() }}
   </div>
 
   <section class="bg-white p-2 rounded shadow-sm mt-4 mb-4">
@@ -27,39 +31,25 @@
 
 
     <!-- Índice alfabético -->
-    {{-- <section class="mb-12">
+    <section class="mb-12 mt-8">
       <h2 class="text-xl font-semibold mb-2">Buscar por Orden Alfabético</h2>
-      <p class="text-base text-gray-300 mb-4">
-        Encuentra fácilmente a tu intérprete favorito de folklore argentino utilizando nuestro índice alfabético...
+      <p class="text-base text-gray-600 mb-4">
+        Encuentra fácilmente a tu intérprete favorito de folklore argentino utilizando nuestro índice alfabético.
       </p>
 
-      <div class="border-t border-gray-600 my-4"></div>
+      <div class="border-t border-gray-200 my-4"></div>
       <ul class="flex flex-wrap justify-center gap-2 text-sm">
         @foreach (range('a', 'z') as $letra)
           <li>
-            <a href="{{ route('interprete.letra', $letra) }}"
-              class="px-3 py-1 bg-gray-700 rounded hover:bg-yellow-500 hover:text-black transition">
+            <a href="{{ route('interpretes.letra', $letra) }}"
+              class="px-4 py-2 bg-gray-100 text-gray-800 rounded hover:bg-[#ff661f] hover:text-white transition uppercase font-semibold">
               {{ $letra }}
             </a>
           </li>
         @endforeach
       </ul>
-      <div class="border-t border-gray-600 my-4"></div>
-    </section> --}}
-
-    <!-- Últimos agregados -->
-    {{-- <section class="mb-12">
-      <h2 class="text-xl font-semibold mb-2">Últimos Intérpretes Agregados</h2>
-      <p class="text-base text-gray-300 mb-6">
-        Descubre los nuevos talentos y las voces emergentes del folklore argentino...
-      </p>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        @foreach ($ultimos as $interprete)
-          <x-biografia-card :interprete="$interprete" />
-        @endforeach
-      </div>
-    </section> --}}
+      <div class="border-t border-gray-200 my-4"></div>
+    </section>
 
     <!-- Textos finales -->
 

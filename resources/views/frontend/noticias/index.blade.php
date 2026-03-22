@@ -8,22 +8,17 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
-  @php
-    $bloques = [
-        'Noticias de folklore argentino' => $ultimas,
-    ];
-  @endphp
+  <section class="mb-12">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
+      @foreach ($ultimas as $noticia)
+        <x-noticia-card :noticia="$noticia" />
+      @endforeach
+    </div>
 
-  @foreach ($bloques as $titulo => $noticias)
-    <section class="mb-12">
-      {{-- <h1 class="text-2xl font-semibold mb-6">{{ $titulo }}</h1> --}}
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-        @foreach ($noticias as $noticia)
-          <x-noticia-card :noticia="$noticia" />
-        @endforeach
-      </div>
-    </section>
-  @endforeach
+    <div class="my-6">
+      {{ $ultimas->links() }}
+    </div>
+  </section>
 
   <section class="bg-white p-2 rounded shadow-sm mb-4">
     <h1 class="text-2xl font-semibold  mb-4 border-b-2 border-[#ff661f]">Noticias del Folklore Argentino</h1>

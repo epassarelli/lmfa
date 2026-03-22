@@ -35,8 +35,7 @@ class NoticiasController extends Controller
     $ultimas = Noticia::where('estado', 1)
       ->with(['categoria', 'images']) // Carga relaciones e imágenes
       ->latest()
-      ->take(100)
-      ->get();
+      ->paginate(16);
     // dd($ultimas);
     // $visitadas = $noticia->getNMostVisited(Noticia::class, 12);
 

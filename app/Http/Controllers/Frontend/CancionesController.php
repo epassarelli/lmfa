@@ -12,13 +12,7 @@ class CancionesController extends Controller
 {
     public function index()
     {
-
-        // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
-        $cancion = new Cancion();
-        // Obtener los últimos 5 intérpretes
-        $ultimas = $cancion->getNLast(Cancion::class, 50);
-        $visitadas = $cancion->getNMostVisited(Cancion::class, 40);
-
+        $canciones = Cancion::where('estado', 1)->orderBy('cancion', 'asc')->paginate(48);
 
         $metaTitle = "Letras de Canciones del Folklore Argentino | Cancionero Popular";
         $metaDescription = "Encuentra las letras de tus canciones favoritas del folklore argentino. Nuestro cancionero folklórico tiene todas las letras que necesitas para cantar. ¡Visítanos!";
@@ -27,7 +21,25 @@ class CancionesController extends Controller
             ['label' => 'Cancionero', 'url' => route('canciones.index')]
         ];
 
-        return view('frontend.canciones.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.canciones.index', compact('canciones', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+    }
+
+    public function letra($letra)
+    {
+        $canciones = Cancion::where('estado', 1)
+            ->where('cancion', 'LIKE', $letra . '%')
+            ->orderBy('cancion', 'asc')
+            ->paginate(48);
+
+        $metaTitle = "Letras de Canciones folklóricas de Argentina que comienzan con $letra";
+        $metaDescription = "Letras de Canciones folklóricas de Argentina que comienzan con $letra";
+
+        $breadcrumbs = [
+            ['label' => 'Cancionero', 'url' => route('canciones.index')],
+            ['label' => 'Letra ' . strtoupper($letra)]
+        ];
+
+        return view('frontend.canciones.letra', compact('canciones', 'letra', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function byArtista($slug)

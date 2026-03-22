@@ -38,7 +38,9 @@ Route::get('/cartelera-de-eventos-folkloricos', [ShowsController::class, 'index'
 Route::get('/cartelera-de-eventos-folkloricos/{slug}', [ShowsController::class, 'showGeneral'])->name('cartelera.show');
 
 Route::get('/biografias-de-artistas-folkloricos', [InterpretesController::class, 'index'])->name('interpretes.index');
+Route::get('/biografias-de-artistas-folkloricos/letra/{letra}', [InterpretesController::class, 'letra'])->name('interpretes.letra');
 Route::get('/letras-de-canciones-folkloricas', [CancionesController::class, 'index'])->name('canciones.index');
+Route::get('/letras-de-canciones-folkloricas/letra/{letra}', [CancionesController::class, 'letra'])->name('canciones.letra');
 Route::get('/discografias-del-folklore-argentino', [DiscosController::class, 'index'])->name('discografias.index');
 
 Route::get('/festivales-y-fiestas-tradicionales', [FestivalesController::class, 'index'])->name('festivales.index');

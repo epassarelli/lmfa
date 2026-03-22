@@ -19,21 +19,16 @@ class InterpretesController extends Controller
     }
     public function index()
     {
-        $interprete = new Interprete();
-        // Obtener los últimos 5 intérpretes
-        $ultimos = $interprete->getNLast(Interprete::class, 20);
-        $visitados = $interprete->getNMostVisited(Interprete::class, 48);
+        $interpretes = Interprete::where('estado', 1)->orderBy('interprete', 'asc')->paginate(24);
 
-
-        // dd($interpretes);
         $metaTitle = "Biografías de Artistas del Folklore Argentino: Historia y Trayectoria";
         $metaDescription = "Conoce la historia y trayectoria de los artistas e intérpretes del folklore argentino. Descubre sus biografías completas y su contribución a la música tradicional. ¡Explora ahora!";
-        // return view('home', compact('metaTitle', 'metaDescription'));
+        
         $breadcrumbs = [
             ['label' => 'Artistas', 'url' => route('interpretes.index')]
         ];
 
-        return view('frontend.interpretes.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.interpretes.index', compact('interpretes', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function biografia($slug)
@@ -130,19 +125,21 @@ class InterpretesController extends Controller
 
     public function letra($letra)
     {
-        $interprete = new Interprete();
-        // Obtener los últimos 5 intérpretes
-        $ultimos = $interprete->getNLast(Interprete::class, 20);
-        $visitados = $interprete->getNMostVisited(Interprete::class, 40);
-
-
         // Lógica para obtener intérpretes cuya letra del título comience con $letra
-        $interpretes = Interprete::where('interprete', 'LIKE', $letra . '%')->get();
+        $interpretes = Interprete::where('estado', 1)
+            ->where('interprete', 'LIKE', $letra . '%')
+            ->orderBy('interprete', 'asc')
+            ->paginate(24);
 
         $metaTitle = "Biografías de Interpretes folkloricos de Argentina que comienzan con $letra";
         $metaDescription = "Biografías de Interpretes folkloricos de Argentina que comienzan con $letra";
 
-        return view('frontend.interpretes.letra', compact('interpretes', 'ultimos', 'visitados', 'letra', 'metaTitle', 'metaDescription'));
+        $breadcrumbs = [
+            ['label' => 'Artistas', 'url' => route('interpretes.index')],
+            ['label' => 'Letra ' . strtoupper($letra)]
+        ];
+
+        return view('frontend.interpretes.letra', compact('interpretes', 'letra', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function buscar(Request $request)

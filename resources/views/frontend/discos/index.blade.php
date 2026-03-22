@@ -20,9 +20,13 @@
 
   {{-- Aquí van tus discos --}}
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    @foreach ($visitados as $disco)
+    @foreach ($discos as $disco)
       <x-disco-card :disco="$disco" />
     @endforeach
+  </div>
+
+  <div class="my-6 border-t pt-4">
+    {{ $discos->links() }}
   </div>
 
   <div class="bg-white p-2 rounded shadow-sm my-4 ">
