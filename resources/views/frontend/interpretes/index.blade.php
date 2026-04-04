@@ -64,7 +64,7 @@
 
 
 @section('sidebar')
-  {{-- <x-sidebar.newsletter-form /> --}}
+  <x-sidebar.newsletter-form />
   <x-sidebar.donate />
   <x-sidebar.social-links />
   {{-- 

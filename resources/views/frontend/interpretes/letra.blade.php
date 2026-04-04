@@ -52,3 +52,8 @@
   </div>
 
 @endsection
+
+@section('sidebar')
+  <x-sidebar.newsletter-form />
+  <x-sidebar.social-links />
+@endsection

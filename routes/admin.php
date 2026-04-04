@@ -147,6 +147,11 @@ Route::group(
     Route::post('contributions/{id}/approve', [\App\Http\Controllers\Backend\ContributionController::class, 'approve'])->name('backend.contributions.approve');
     Route::post('contributions/{id}/reject', [\App\Http\Controllers\Backend\ContributionController::class, 'reject'])->name('backend.contributions.reject');
 
+    Route::resource('newsletter-subscribers', \App\Http\Controllers\Backend\NewsletterSubscriberController::class)->only(['index'])->names([
+      'index' => 'backend.newsletter.index'
+    ]);
+    Route::post('newsletter-subscribers/{subscriber}/toggle', [\App\Http\Controllers\Backend\NewsletterSubscriberController::class, 'toggleStatus'])->name('backend.newsletter.toggle');
+
     Route::get('/', [Dashboard::class, 'index'])->name('dashboard');
   }
 );

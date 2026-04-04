@@ -72,7 +72,7 @@
   </div> --}}
 
 
-  {{-- <x-sidebar.newsletter-form /> --}}
+  <x-sidebar.newsletter-form />
   <x-sidebar.social-links />
   {{-- <x-sidebar.top-news :noticias="$noticiasMasLeidas" /> --}}
   {{-- <x-sidebar.upcoming-shows :eventos="$eventosSidebar" /> --}}

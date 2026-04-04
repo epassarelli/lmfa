@@ -113,4 +113,8 @@ Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCal
 Route::get('auth/facebook', [SocialiteController::class, 'redirectToFacebook'])->name('auth.facebook');
 Route::get('auth/facebook/callback', [SocialiteController::class, 'handleFacebookCallback']);
 
+// Newsletter
+Route::post('/newsletter/subscribe', [\App\Http\Controllers\Frontend\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+
 Auth::routes();
