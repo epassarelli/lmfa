@@ -201,7 +201,9 @@
             "id": "PC-07-HU-03",
             "title": "Implementar jobs y colas",
             "description": "Configurar Redis y Laravel Queue",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "Infraestructura ya existía: QUEUE_CONNECTION=database, tabla jobs, PublishToProviderJob (3 intentos, backoff 60s), EventReminderJob en scheduler diario. Tests Feature (PublishToProviderJobTest.php) cubren: NativePortalConnector exitoso/fallido, idempotencia, target inexistente, contador de intentos, Facebook API (Http fake). 7/7 passing.",
             "priority": "high",
             "dependencies": [
                 "PC-07-HU-02"
