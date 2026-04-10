@@ -118,3 +118,24 @@ Route::post('/newsletter/subscribe', [\App\Http\Controllers\Frontend\NewsletterC
 Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
 Auth::routes();
+
+// =============================================================================
+// Pasarela de Contenidos — Panel del Publicador
+// PC-06-HU-01: Cuentas sociales
+// PC-07-HU-01: Publication requests
+// PC-10-HU-01: Dashboard publicador
+// =============================================================================
+Route::middleware(['auth'])->prefix('pasarela')->name('pasarela.')->group(function () {
+
+    // Dashboard publicador
+    Route::get('/', [\App\Http\Controllers\Backend\PublisherDashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // Cuentas sociales: listar, conectar, desconectar
+    Route::get('cuentas-sociales', [\App\Http\Controllers\Pasarela\SocialAccountController::class, 'index'])
+        ->name('social-accounts.index');
+    Route::post('cuentas-sociales', [\App\Http\Controllers\Pasarela\SocialAccountController::class, 'store'])
+        ->name('social-accounts.store');
+    Route::delete('cuentas-sociales/{socialAccount}', [\App\Http\Controllers\Pasarela\SocialAccountController::class, 'destroy'])
+        ->name('social-accounts.destroy');
+});

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('provincias', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->string('nombre')->unique('nombre');
+            $table->string('nombre')->unique();
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });

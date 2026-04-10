@@ -1,0 +1,349 @@
+{
+    "project": "pasarela_contenidos",
+    "version": "1.0",
+    "tasks": [
+        {
+            "id": "PC-01-HU-01",
+            "title": "Registro de publicador",
+            "description": "Implementar registro de usuarios con perfil de publicador",
+            "status": "done",
+            "priority": "high",
+            "dependencies": [],
+            "doc_refs": [
+                "01_funcional.md#usuarios",
+                "05_migraciones.md#users"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-01-HU-03",
+            "title": "Alta de organización",
+            "description": "Crear organizaciones asociadas a usuarios",
+            "status": "done",
+            "priority": "high",
+            "dependencies": [
+                "PC-01-HU-01"
+            ],
+            "doc_refs": [
+                "01_funcional.md#organizaciones",
+                "05_migraciones.md#organizations"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-01-HU-04",
+            "title": "Gestión de miembros de organización",
+            "description": "Permitir agregar usuarios a organizaciones con roles",
+            "status": "done",
+            "priority": "medium",
+            "dependencies": [
+                "PC-01-HU-03"
+            ],
+            "doc_refs": [
+                "02_modelo_datos.md#organization_members"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-02-HU-01",
+            "title": "Crear evento en borrador",
+            "description": "CRUD básico de eventos con estado draft",
+            "status": "done",
+            "priority": "high",
+            "dependencies": [
+                "PC-01-HU-03"
+            ],
+            "doc_refs": [
+                "01_funcional.md#eventos",
+                "05_migraciones.md#events"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-02-HU-02",
+            "title": "Subida de media para eventos",
+            "description": "Implementar subida de imágenes y flyers",
+            "status": "done",
+            "priority": "high",
+            "dependencies": [
+                "PC-02-HU-01"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#media",
+                "05_migraciones.md#media_assets"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-02-HU-03",
+            "title": "Relación evento-artistas",
+            "description": "Permitir asignar artistas a eventos",
+            "status": "done",
+            "priority": "medium",
+            "dependencies": [
+                "PC-02-HU-01"
+            ],
+            "doc_refs": [
+                "02_modelo_datos.md#event_artists"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-03-HU-01",
+            "title": "Crear noticia en borrador",
+            "description": "CRUD básico de noticias",
+            "status": "done",
+            "priority": "high",
+            "dependencies": [
+                "PC-01-HU-03"
+            ],
+            "doc_refs": [
+                "01_funcional.md#noticias",
+                "05_migraciones.md#news"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-04-HU-01",
+            "title": "Panel de moderación",
+            "description": "Listado de contenidos pendientes",
+            "status": "done",
+            "priority": "high",
+            "dependencies": [
+                "PC-02-HU-01",
+                "PC-03-HU-01"
+            ],
+            "doc_refs": [
+                "01_funcional.md#moderacion"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-04-HU-02",
+            "title": "Aprobar / rechazar contenido",
+            "description": "Implementar estados editoriales",
+            "status": "done",
+            "priority": "high",
+            "dependencies": [
+                "PC-04-HU-01"
+            ],
+            "doc_refs": [
+                "01_funcional.md#workflow"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-05-HU-01",
+            "title": "Publicación en portal",
+            "description": "Publicar eventos y noticias en frontend",
+            "status": "done",
+            "priority": "high",
+            "dependencies": [
+                "PC-04-HU-02"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#contenido"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-06-HU-01",
+            "title": "Conectar cuentas sociales",
+            "description": "Guardar cuentas sociales del usuario",
+            "status": "done",
+            "completed_at": "2026-04-09",
+            "notes": "Controller, rutas, vistas y tests creados. Tests escritos en tests/Feature/Pasarela/SocialAccountTest.php (9 casos). Ejecutar dentro del contenedor: docker exec lmfa-app-1 sh -c 'cd /var/www/html && php artisan test tests/Feature/Pasarela/SocialAccountTest.php'",
+            "priority": "high",
+            "dependencies": [
+                "PC-01-HU-01"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#social",
+                "05_migraciones.md#social_accounts"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-07-HU-01",
+            "title": "Crear publication_request",
+            "description": "Registrar intención multicanal",
+            "status": "in_progress",
+            "priority": "high",
+            "dependencies": [
+                "PC-04-HU-02",
+                "PC-06-HU-01"
+            ],
+            "doc_refs": [
+                "01_funcional.md#workflow",
+                "02_modelo_datos.md#publication_requests"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-07-HU-02",
+            "title": "Generar publication_targets",
+            "description": "Crear targets por red social",
+            "status": "pending",
+            "priority": "high",
+            "dependencies": [
+                "PC-07-HU-01"
+            ],
+            "doc_refs": [
+                "02_modelo_datos.md#publication_targets"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-07-HU-03",
+            "title": "Implementar jobs y colas",
+            "description": "Configurar Redis y Laravel Queue",
+            "status": "pending",
+            "priority": "high",
+            "dependencies": [
+                "PC-07-HU-02"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#colas"
+            ],
+            "type": "infra"
+        },
+        {
+            "id": "PC-07-HU-04",
+            "title": "Implementar publicación Facebook",
+            "description": "Conector Facebook",
+            "status": "pending",
+            "priority": "high",
+            "dependencies": [
+                "PC-07-HU-03"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#conectores"
+            ],
+            "type": "integration"
+        },
+        {
+            "id": "PC-07-HU-05",
+            "title": "Implementar publicación Instagram",
+            "description": "Conector Instagram",
+            "status": "pending",
+            "priority": "high",
+            "dependencies": [
+                "PC-07-HU-03"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#conectores"
+            ],
+            "type": "integration"
+        },
+        {
+            "id": "PC-07-HU-06",
+            "title": "Implementar publicación Telegram",
+            "description": "Conector Telegram",
+            "status": "pending",
+            "priority": "medium",
+            "dependencies": [
+                "PC-07-HU-03"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#conectores"
+            ],
+            "type": "integration"
+        },
+        {
+            "id": "PC-07-HU-07",
+            "title": "Registrar publication_attempts",
+            "description": "Guardar cada intento de publicación",
+            "status": "pending",
+            "priority": "high",
+            "dependencies": [
+                "PC-07-HU-02"
+            ],
+            "doc_refs": [
+                "05_migraciones.md#publication_attempts"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-08-HU-01",
+            "title": "Templates por canal",
+            "description": "Generar copys para cada red",
+            "status": "pending",
+            "priority": "medium",
+            "dependencies": [
+                "PC-07-HU-01"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#templates"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-09-HU-01",
+            "title": "Recordatorios automáticos",
+            "description": "Scheduler de eventos futuros",
+            "status": "pending",
+            "priority": "medium",
+            "dependencies": [
+                "PC-07-HU-03"
+            ],
+            "doc_refs": [
+                "04_arquitectura.md#scheduler"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-10-HU-01",
+            "title": "Dashboard publicador",
+            "description": "Ver estado de publicaciones",
+            "status": "pending",
+            "priority": "medium",
+            "dependencies": [
+                "PC-07-HU-07"
+            ],
+            "doc_refs": [
+                "01_funcional.md#dashboard"
+            ],
+            "type": "frontend"
+        },
+        {
+            "id": "PC-11-HU-01",
+            "title": "Dashboard admin",
+            "description": "Ver errores, estados y métricas",
+            "status": "pending",
+            "priority": "medium",
+            "dependencies": [
+                "PC-07-HU-07"
+            ],
+            "doc_refs": [
+                "01_funcional.md#admin"
+            ],
+            "type": "frontend"
+        },
+        {
+            "id": "PC-12-HU-01",
+            "title": "Sistema de notificaciones",
+            "description": "Notificar estados de publicación",
+            "status": "pending",
+            "priority": "medium",
+            "dependencies": [
+                "PC-07-HU-07"
+            ],
+            "doc_refs": [
+                "05_migraciones.md#notifications"
+            ],
+            "type": "backend"
+        },
+        {
+            "id": "PC-13-HU-01",
+            "title": "Auditoría",
+            "description": "Registrar acciones del sistema",
+            "status": "pending",
+            "priority": "low",
+            "dependencies": [],
+            "doc_refs": [
+                "05_migraciones.md#audit_logs"
+            ],
+            "type": "backend"
+        }
+    ]
+}
