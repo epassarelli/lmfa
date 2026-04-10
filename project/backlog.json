@@ -361,7 +361,9 @@
             "id": "PC-13-HU-01",
             "title": "Auditoría",
             "description": "Registrar acciones del sistema",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "AuditLog model corregido (columnas old_values/new_values/ip_address alineadas con BD). Helper AuditLog::log() estático. 4/4 tests cubren: usuario autenticado, sin usuario, timestamps, valores vacíos.",
             "priority": "low",
             "dependencies": [],
             "doc_refs": [

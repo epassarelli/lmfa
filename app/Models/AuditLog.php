@@ -16,19 +16,17 @@ class AuditLog extends Model
         'entity_type',
         'entity_id',
         'action',
-        'old_values_json',
-        'new_values_json',
-        'meta_json',
-        'ip',
+        'old_values',
+        'new_values',
+        'ip_address',
         'user_agent',
         'created_at',
     ];
 
     protected $casts = [
-        'old_values_json' => 'array',
-        'new_values_json' => 'array',
-        'meta_json'       => 'array',
-        'created_at'      => 'datetime',
+        'old_values' => 'array',
+        'new_values' => 'array',
+        'created_at' => 'datetime',
     ];
 
     public function user()
@@ -44,19 +42,18 @@ class AuditLog extends Model
         int $entityId,
         string $action,
         array $oldValues = [],
-        array $newValues = [],
-        array $meta = []
+        array $newValues = []
     ): static {
         return static::create([
-            'user_id'         => auth()->id(),
-            'entity_type'     => $entityType,
-            'entity_id'       => $entityId,
-            'action'          => $action,
-            'old_values_json' => $oldValues ?: null,
-            'new_values_json' => $newValues ?: null,
-            'meta_json'       => $meta ?: null,
-            'ip'              => request()->ip(),
-            'user_agent'      => request()->userAgent(),
+            'user_id'     => auth()->id(),
+            'entity_type' => $entityType,
+            'entity_id'   => $entityId,
+            'action'      => $action,
+            'old_values'  => $oldValues ?: null,
+            'new_values'  => $newValues ?: null,
+            'ip_address'  => request()->ip(),
+            'user_agent'  => request()->userAgent(),
+            'created_at'  => now(),
         ]);
     }
 }
