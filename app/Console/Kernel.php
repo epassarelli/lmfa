@@ -12,8 +12,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Newsletter - weekly (Monday 10:00)
         $schedule->command('newsletter:send-weekly')->weeklyOn(1, '10:00');
+
+        // PC-09: Event reminders — runs daily at 08:00
+        $schedule->job(new \App\Jobs\Publication\EventReminderJob())->dailyAt('08:00');
+
+        // Process queued publication jobs (if not using an external worker like Supervisor)
+        $schedule->command('queue:work --stop-when-empty --tries=3')->everyFiveMinutes()->withoutOverlapping();
     }
 
     /**

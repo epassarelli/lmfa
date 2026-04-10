@@ -66,7 +66,14 @@ class Interprete extends Model
 
     public function shows()
     {
-        return $this->hasMany(Show::class);
+        return $this->hasMany(Show::class); // Legacy relationship
+    }
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event_interprete', 'interprete_id', 'event_id')
+                    ->withPivot('sort_order')
+                    ->withTimestamps();
     }
 
     public function discos()

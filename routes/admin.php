@@ -152,6 +152,9 @@ Route::group(
     ]);
     Route::post('newsletter-subscribers/{subscriber}/toggle', [\App\Http\Controllers\Backend\NewsletterSubscriberController::class, 'toggleStatus'])->name('backend.newsletter.toggle');
 
+    Route::get('moderation', [\App\Http\Controllers\Backend\ModerationController::class, 'index'])->name('backend.moderation.index');
+    Route::post('moderation/action', [\App\Http\Controllers\Backend\ModerationController::class, 'action'])->name('backend.moderation.action');
+
     Route::get('/', [Dashboard::class, 'index'])->name('dashboard');
   }
 );
