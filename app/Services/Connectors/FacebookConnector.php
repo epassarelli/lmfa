@@ -3,8 +3,8 @@
 namespace App\Services\Connectors;
 
 use App\Models\PublicationTarget;
+use App\Services\Publication\TemplateService;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class FacebookConnector extends BaseConnector
 {
@@ -20,8 +20,8 @@ class FacebookConnector extends BaseConnector
             return $this->errorResult('CONTENT_NOT_FOUND', 'El contenido no fue encontrado.', false);
         }
 
-        // Build post text
-        $text = $this->buildPostText($content);
+        // Build post text via TemplateService (falls back to title+excerpt)
+        $text = app(TemplateService::class)->render($target, $content);
 
         // Build the request payload
         $payload = [

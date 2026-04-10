@@ -148,4 +148,20 @@ Route::middleware(['auth'])->prefix('pasarela')->name('pasarela.')->group(functi
         ->name('publication-requests.store');
     Route::get('publicaciones/{publicationRequest}', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'show'])
         ->name('publication-requests.show');
+
+    // PC-08-HU-01: Templates por canal
+    Route::get('admin/templates', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'index'])
+        ->name('templates.index');
+    Route::get('admin/templates/nuevo', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'create'])
+        ->name('templates.create');
+    Route::post('admin/templates', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'store'])
+        ->name('templates.store');
+    Route::get('admin/templates/{template}', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'edit'])
+        ->name('templates.edit');
+    Route::put('admin/templates/{template}', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'update'])
+        ->name('templates.update');
+    Route::delete('admin/templates/{template}', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'destroy'])
+        ->name('templates.destroy');
+    Route::post('admin/templates/preview', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'preview'])
+        ->name('templates.preview');
 });

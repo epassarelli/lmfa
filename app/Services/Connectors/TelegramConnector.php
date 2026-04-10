@@ -3,6 +3,7 @@
 namespace App\Services\Connectors;
 
 use App\Models\PublicationTarget;
+use App\Services\Publication\TemplateService;
 use Illuminate\Support\Facades\Http;
 
 class TelegramConnector extends BaseConnector
@@ -24,7 +25,10 @@ class TelegramConnector extends BaseConnector
         $botToken  = $account->token_encrypted;
         $chatId    = $account->account_external_id;
 
-        $text = $this->buildMessage($content);
+        // Use TemplateService; Telegram wraps in HTML tags below if no template
+        $raw = app(TemplateService::class)->render($target, $content);
+        // Wrap in Telegram HTML format (bold title)
+        $text = $this->wrapHtml($raw);
 
         $payload = [
             'chat_id'    => $chatId,
@@ -80,6 +84,17 @@ class TelegramConnector extends BaseConnector
 
             return ['success' => false, 'attempt_id' => $attempt->id, 'error' => $e->getMessage()];
         }
+    }
+
+    protected function wrapHtml(string $text): string
+    {
+        // If template already contains HTML tags, pass as-is
+        if (str_contains($text, '<b>') || str_contains($text, '<i>')) {
+            return $text;
+        }
+
+        // Otherwise escape and return as-is (plain text from template or default)
+        return htmlspecialchars($text, ENT_QUOTES | ENT_HTML5);
     }
 
     protected function buildMessage(object $content): string

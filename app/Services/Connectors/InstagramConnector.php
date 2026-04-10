@@ -3,6 +3,7 @@
 namespace App\Services\Connectors;
 
 use App\Models\PublicationTarget;
+use App\Services\Publication\TemplateService;
 use Illuminate\Support\Facades\Http;
 
 class InstagramConnector extends BaseConnector
@@ -24,7 +25,7 @@ class InstagramConnector extends BaseConnector
         $igUserId    = $account->account_external_id;
         $accessToken = $account->token_encrypted;
 
-        $caption  = $this->buildCaption($content);
+        $caption  = app(TemplateService::class)->render($target, $content);
         $imageUrl = $this->resolveImageUrl($content);
 
         if (!$imageUrl) {

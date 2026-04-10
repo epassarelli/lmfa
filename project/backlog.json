@@ -281,7 +281,9 @@
             "id": "PC-08-HU-01",
             "title": "Templates por canal",
             "description": "Generar copys para cada red",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "TemplateService con resolución por exactitud (content_type+provider+variant), fallback a provider, fallback a copy por defecto. CRUD admin vía PublicationTemplateController. Vista preview con JS. Integrado en Facebook/Instagram/TelegramConnector. Fix: venue token usa relationLoaded para evitar error App\\Models\\Venue. 11/11 tests pasando.",
             "priority": "medium",
             "dependencies": [
                 "PC-07-HU-01"

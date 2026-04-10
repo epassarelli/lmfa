@@ -1,9 +1,51 @@
 SET FOREIGN_KEY_CHECKS=0;
 
--- Fix missing unique on organization_members
-ALTER TABLE organization_members ADD UNIQUE KEY org_member_unique (organization_id, user_id);
+-- ============================================================
+-- TABLAS BASE (users, organizations, organization_members)
+-- ============================================================
 
--- events table (fresh, alongside existing shows)
+CREATE TABLE IF NOT EXISTS organizations (
+  id bigint unsigned NOT NULL AUTO_INCREMENT,
+  type varchar(50) NOT NULL DEFAULT 'productora',
+  name varchar(255) NOT NULL,
+  slug varchar(255) NOT NULL,
+  description text DEFAULT NULL,
+  website varchar(255) DEFAULT NULL,
+  email varchar(255) DEFAULT NULL,
+  phone varchar(50) DEFAULT NULL,
+  province_id bigint unsigned DEFAULT NULL,
+  city varchar(100) DEFAULT NULL,
+  address varchar(255) DEFAULT NULL,
+  logo_path varchar(255) DEFAULT NULL,
+  banner_path varchar(255) DEFAULT NULL,
+  social_links json DEFAULT NULL,
+  status varchar(30) NOT NULL DEFAULT 'active',
+  created_by bigint unsigned DEFAULT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY organizations_slug_unique (slug)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS organization_members (
+  id bigint unsigned NOT NULL AUTO_INCREMENT,
+  organization_id bigint unsigned NOT NULL,
+  user_id bigint unsigned NOT NULL,
+  role varchar(50) NOT NULL DEFAULT 'member',
+  status varchar(30) NOT NULL DEFAULT 'active',
+  invited_at timestamp NULL DEFAULT NULL,
+  accepted_at timestamp NULL DEFAULT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY org_member_unique (organization_id, user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- TABLAS DE CONTENIDO
+-- ============================================================
+
+-- events table
 CREATE TABLE IF NOT EXISTS events (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   organization_id bigint unsigned DEFAULT NULL,
@@ -38,6 +80,8 @@ CREATE TABLE IF NOT EXISTS events (
   approved_at timestamp NULL DEFAULT NULL,
   published_at timestamp NULL DEFAULT NULL,
   created_by bigint unsigned DEFAULT NULL,
+  `show` tinyint(1) DEFAULT NULL,
+  detalles text DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL,
   PRIMARY KEY (id),
@@ -60,7 +104,7 @@ CREATE TABLE IF NOT EXISTS venues (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- news table (pasarela, separate from noticias)
+-- news table
 CREATE TABLE IF NOT EXISTS news (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   organization_id bigint unsigned DEFAULT NULL,
@@ -87,7 +131,7 @@ CREATE TABLE IF NOT EXISTS news (
   UNIQUE KEY news_slug_unique (slug)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- media_assets table (pasarela, separate from images)
+-- media_assets table
 CREATE TABLE IF NOT EXISTS media_assets (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   imageable_type varchar(255) DEFAULT NULL,
@@ -111,7 +155,10 @@ CREATE TABLE IF NOT EXISTS media_assets (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- event_interprete pivot
+-- ============================================================
+-- TABLAS DE MODERACIÓN Y SOCIALES
+-- ============================================================
+
 CREATE TABLE IF NOT EXISTS event_interprete (
   event_id bigint unsigned NOT NULL,
   interprete_id bigint unsigned NOT NULL,
@@ -120,7 +167,6 @@ CREATE TABLE IF NOT EXISTS event_interprete (
   PRIMARY KEY (event_id, interprete_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- moderation_reviews
 CREATE TABLE IF NOT EXISTS moderation_reviews (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   content_type varchar(100) NOT NULL,
@@ -133,7 +179,6 @@ CREATE TABLE IF NOT EXISTS moderation_reviews (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- social_accounts
 CREATE TABLE IF NOT EXISTS social_accounts (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   owner_type varchar(255) NOT NULL,
@@ -152,7 +197,10 @@ CREATE TABLE IF NOT EXISTS social_accounts (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- publication_requests
+-- ============================================================
+-- TABLAS DE PASARELA (publicación)
+-- ============================================================
+
 CREATE TABLE IF NOT EXISTS publication_requests (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   content_type varchar(100) NOT NULL,
@@ -170,7 +218,6 @@ CREATE TABLE IF NOT EXISTS publication_requests (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- publication_targets
 CREATE TABLE IF NOT EXISTS publication_targets (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   publication_request_id bigint unsigned NOT NULL,
@@ -186,7 +233,6 @@ CREATE TABLE IF NOT EXISTS publication_targets (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- publication_attempts
 CREATE TABLE IF NOT EXISTS publication_attempts (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   publication_target_id bigint unsigned NOT NULL,
@@ -206,12 +252,11 @@ CREATE TABLE IF NOT EXISTS publication_attempts (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- publication_templates
 CREATE TABLE IF NOT EXISTS publication_templates (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
-  content_type varchar(100) NOT NULL,
+  content_type varchar(100) DEFAULT NULL,
   provider varchar(50) NOT NULL,
-  variant_name varchar(50) NOT NULL DEFAULT 'default',
+  variant_name varchar(100) NOT NULL DEFAULT 'default',
   template_text text NOT NULL,
   is_active tinyint(1) NOT NULL DEFAULT 1,
   created_at timestamp NULL DEFAULT NULL,
@@ -219,7 +264,10 @@ CREATE TABLE IF NOT EXISTS publication_templates (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- notifications
+-- ============================================================
+-- NOTIFICACIONES, AUDITORÍA Y COLAS
+-- ============================================================
+
 CREATE TABLE IF NOT EXISTS notifications (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   user_id bigint unsigned NOT NULL,
@@ -234,7 +282,6 @@ CREATE TABLE IF NOT EXISTS notifications (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- audit_logs
 CREATE TABLE IF NOT EXISTS audit_logs (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   user_id bigint unsigned DEFAULT NULL,
@@ -249,7 +296,6 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- jobs table for Laravel Queue
 CREATE TABLE IF NOT EXISTS jobs (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   queue varchar(255) NOT NULL,
@@ -261,8 +307,12 @@ CREATE TABLE IF NOT EXISTS jobs (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Mark all pending migrations as done (batch 3)
+-- ============================================================
+-- MIGRATIONS: marcar todas como ejecutadas
+-- ============================================================
+
 INSERT IGNORE INTO migrations (migration, batch) VALUES
+  ('2026_04_09_032400_create_organizations_table', 2),
   ('2026_04_09_032700_create_organization_members_table', 3),
   ('2026_04_09_033200_transform_shows_to_events_table', 3),
   ('2026_04_09_033230_create_venues_table', 3),
