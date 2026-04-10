@@ -149,6 +149,14 @@ Route::middleware(['auth'])->prefix('pasarela')->name('pasarela.')->group(functi
     Route::get('publicaciones/{publicationRequest}', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'show'])
         ->name('publication-requests.show');
 
+    // PC-10-HU-01: Dashboard publicador
+    Route::get('dashboard', [\App\Http\Controllers\Pasarela\DashboardPublicadorController::class, 'index'])
+        ->name('dashboard');
+
+    // PC-11-HU-01: Dashboard admin
+    Route::get('admin/dashboard', [\App\Http\Controllers\Pasarela\DashboardAdminController::class, 'index'])
+        ->name('admin.dashboard');
+
     // PC-08-HU-01: Templates por canal
     Route::get('admin/templates', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'index'])
         ->name('templates.index');

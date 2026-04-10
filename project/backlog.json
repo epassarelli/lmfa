@@ -311,7 +311,9 @@
             "id": "PC-10-HU-01",
             "title": "Dashboard publicador",
             "description": "Ver estado de publicaciones",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "DashboardPublicadorController: totales, estado por canal, últimas solicitudes, próximos eventos, fallos recientes. Vista pasarela/dashboard_publicador.blade.php. 4/4 tests.",
             "priority": "medium",
             "dependencies": [
                 "PC-07-HU-07"
@@ -325,7 +327,9 @@
             "id": "PC-11-HU-01",
             "title": "Dashboard admin",
             "description": "Ver errores, estados y métricas",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "DashboardAdminController: pending moderación, publicaciones del día, fallos por canal (24h), tokens por vencer, top publicadores, targets de hoy. Vista dashboard_admin.blade.php. 2/2 tests.",
             "priority": "medium",
             "dependencies": [
                 "PC-07-HU-07"
