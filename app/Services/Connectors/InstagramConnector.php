@@ -111,7 +111,9 @@ class InstagramConnector extends BaseConnector
         if ($images->isEmpty()) return null;
 
         $first = $images->first();
-        $path  = $first->path_webp ?? $first->path_original ?? null;
+        // Check variants_json for webp, otherwise fall back to original_path
+        $variants = $first->variants_json ?? [];
+        $path = $variants['webp'] ?? $variants['thumbnail'] ?? $first->original_path ?? null;
         if (!$path) return null;
 
         return asset('storage/' . $path);

@@ -53,7 +53,12 @@ class PublishToProviderJob implements ShouldQueue
             if ($result['success']) {
                 Log::info("[PublishToProviderJob] Published target #{$this->targetId} via {$target->provider}.");
             } else {
-                Log::warning("[PublishToProviderJob] Failed target #{$this->targetId}: " . ($result['error'] ?? 'unknown'));
+                Log::warning("[PublishToProviderJob] Failed target #{$this->targetId}: " . ($result['error'] ?? $result['error_message'] ?? 'unknown'));
+                // Ensure target is marked failed if connector returned early without recording an attempt
+                $target->refresh();
+                if ($target->status === 'processing') {
+                    $target->update(['status' => 'failed']);
+                }
             }
 
         } catch (\Exception $e) {

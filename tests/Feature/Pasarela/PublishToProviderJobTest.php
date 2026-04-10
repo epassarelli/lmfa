@@ -303,4 +303,179 @@ class PublishToProviderJobTest extends TestCase
             'error_code'            => '190',
         ]);
     }
+
+    // -------------------------------------------------------------------------
+    // InstagramConnector (PC-07-HU-05)
+    // -------------------------------------------------------------------------
+
+    public function test_instagram_connector_publishes_successfully(): void
+    {
+        [$user, $org] = $this->makeUserWithOrg();
+        $event = $this->makeEvent($org);
+
+        $account = SocialAccount::create([
+            'owner_type'          => get_class($user),
+            'owner_id'            => $user->id,
+            'provider'            => 'instagram',
+            'account_name'        => 'Mi IG',
+            'account_external_id' => 'ig_user_789',
+            'token_encrypted'     => 'fake_ig_token',
+            'status'              => 'active',
+        ]);
+
+        // Instagram requires an image — create a media_asset associated to the event
+        \App\Models\Image::create([
+            'imageable_type' => get_class($event),
+            'imageable_id'   => $event->id,
+            'original_path'  => 'events/test.jpg',
+        ]);
+
+        $request = $this->makePublicationRequest($event, $user, ['wants_portal_publish' => false]);
+        $target  = $this->makeTarget($request, [
+            'provider'          => 'instagram',
+            'social_account_id' => $account->id,
+            'destination_type'  => 'feed',
+            'template_variant'  => 'instagram_default',
+        ]);
+
+        // Instagram 2-step flow: first call creates container, second publishes it
+        Http::fake(function ($request) {
+            if (str_contains($request->url(), 'media_publish')) {
+                return Http::response(['id' => 'ig_post_222'], 200);
+            }
+            return Http::response(['id' => 'container_111'], 200);
+        });
+
+        $job = new PublishToProviderJob($target->id);
+        $job->handle();
+
+        $this->assertEquals('success', $target->fresh()->status);
+
+        $this->assertDatabaseHas('publication_attempts', [
+            'publication_target_id' => $target->id,
+            'status'                => 'success',
+            'external_post_id'      => 'ig_post_222',
+        ]);
+    }
+
+    public function test_instagram_connector_fails_when_no_image(): void
+    {
+        [$user, $org] = $this->makeUserWithOrg();
+        $event = $this->makeEvent($org);
+
+        $account = SocialAccount::create([
+            'owner_type'          => get_class($user),
+            'owner_id'            => $user->id,
+            'provider'            => 'instagram',
+            'account_name'        => 'Mi IG',
+            'account_external_id' => 'ig_user_no_img',
+            'token_encrypted'     => 'fake_ig_token',
+            'status'              => 'active',
+        ]);
+
+        $request = $this->makePublicationRequest($event, $user, ['wants_portal_publish' => false]);
+        $target  = $this->makeTarget($request, [
+            'provider'          => 'instagram',
+            'social_account_id' => $account->id,
+            'destination_type'  => 'feed',
+            'template_variant'  => 'instagram_default',
+        ]);
+
+        // Event has no images — resolveImageUrl returns null — connector returns NO_IMAGE without HTTP call
+        $job = new PublishToProviderJob($target->id);
+        $job->handle();
+
+        // The connector returns error result without recordAttempt (no Http call made),
+        // but the job marks target as failed
+        $this->assertEquals('failed', $target->fresh()->status);
+    }
+
+    // -------------------------------------------------------------------------
+    // TelegramConnector (PC-07-HU-06)
+    // -------------------------------------------------------------------------
+
+    public function test_telegram_connector_publishes_successfully(): void
+    {
+        [$user, $org] = $this->makeUserWithOrg();
+        $event = $this->makeEvent($org);
+
+        $account = SocialAccount::create([
+            'owner_type'          => get_class($user),
+            'owner_id'            => $user->id,
+            'provider'            => 'telegram',
+            'account_name'        => 'Mi Canal TG',
+            'account_external_id' => '@mifolklore',
+            'token_encrypted'     => 'bot_fake_token',
+            'status'              => 'active',
+        ]);
+
+        $request = $this->makePublicationRequest($event, $user, ['wants_portal_publish' => false]);
+        $target  = $this->makeTarget($request, [
+            'provider'          => 'telegram',
+            'social_account_id' => $account->id,
+            'destination_type'  => 'feed',
+            'template_variant'  => 'telegram_default',
+        ]);
+
+        Http::fake([
+            'api.telegram.org/*' => Http::response([
+                'ok'     => true,
+                'result' => ['message_id' => 999],
+            ], 200),
+        ]);
+
+        $job = new PublishToProviderJob($target->id);
+        $job->handle();
+
+        $this->assertEquals('success', $target->fresh()->status);
+
+        $this->assertDatabaseHas('publication_attempts', [
+            'publication_target_id' => $target->id,
+            'status'                => 'success',
+            'external_post_id'      => '999',
+        ]);
+    }
+
+    public function test_telegram_connector_handles_bot_error(): void
+    {
+        [$user, $org] = $this->makeUserWithOrg();
+        $event = $this->makeEvent($org);
+
+        $account = SocialAccount::create([
+            'owner_type'          => get_class($user),
+            'owner_id'            => $user->id,
+            'provider'            => 'telegram',
+            'account_name'        => 'Canal Error',
+            'account_external_id' => '@canal_err',
+            'token_encrypted'     => 'bad_token',
+            'status'              => 'active',
+        ]);
+
+        $request = $this->makePublicationRequest($event, $user, ['wants_portal_publish' => false]);
+        $target  = $this->makeTarget($request, [
+            'provider'          => 'telegram',
+            'social_account_id' => $account->id,
+            'destination_type'  => 'feed',
+            'template_variant'  => 'telegram_default',
+        ]);
+
+        Http::fake([
+            'api.telegram.org/*' => Http::response([
+                'ok'          => false,
+                'error_code'  => 401,
+                'description' => 'Unauthorized',
+            ], 401),
+        ]);
+
+        $job = new PublishToProviderJob($target->id);
+        $job->handle();
+
+        $this->assertEquals('failed', $target->fresh()->status);
+
+        $this->assertDatabaseHas('publication_attempts', [
+            'publication_target_id' => $target->id,
+            'status'                => 'failed',
+            'error_code'            => '401',
+        ]);
+    }
 }

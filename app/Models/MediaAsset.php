@@ -15,7 +15,6 @@ class MediaAsset extends Model
         'imageable_type',
         'imageable_id',
         'disk',
-        'path',
         'original_name',
         'mime_type',
         'size',
@@ -52,15 +51,15 @@ class MediaAsset extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Compatibility accessors
-    public function getOriginalPathAttribute()
+    // path is an alias for the real DB column original_path
+    public function getPathAttribute(): ?string
     {
-        return $this->path;
+        return $this->attributes['original_path'] ?? null;
     }
 
-    public function setOriginalPathAttribute($value)
+    public function setPathAttribute($value): void
     {
-        $this->path = $value;
+        $this->attributes['original_path'] = $value;
     }
 
     public function getMimeAttribute()
