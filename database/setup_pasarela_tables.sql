@@ -9,6 +9,9 @@ CREATE TABLE IF NOT EXISTS organizations (
   type varchar(50) NOT NULL DEFAULT 'productora',
   name varchar(255) NOT NULL,
   slug varchar(255) NOT NULL,
+  legal_name varchar(255) DEFAULT NULL,
+  bio_short text DEFAULT NULL,
+  bio_long longtext DEFAULT NULL,
   description text DEFAULT NULL,
   website varchar(255) DEFAULT NULL,
   email varchar(255) DEFAULT NULL,
@@ -18,7 +21,10 @@ CREATE TABLE IF NOT EXISTS organizations (
   address varchar(255) DEFAULT NULL,
   logo_path varchar(255) DEFAULT NULL,
   banner_path varchar(255) DEFAULT NULL,
+  logo_media_id bigint unsigned DEFAULT NULL,
+  cover_media_id bigint unsigned DEFAULT NULL,
   social_links json DEFAULT NULL,
+  is_verified tinyint(1) NOT NULL DEFAULT 0,
   status varchar(30) NOT NULL DEFAULT 'active',
   created_by bigint unsigned DEFAULT NULL,
   created_at timestamp NULL DEFAULT NULL,
@@ -93,12 +99,16 @@ CREATE TABLE IF NOT EXISTS venues (
   id bigint unsigned NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   slug varchar(255) DEFAULT NULL,
+  description text DEFAULT NULL,
   address varchar(255) DEFAULT NULL,
   city varchar(255) DEFAULT NULL,
   province_id bigint unsigned DEFAULT NULL,
   latitude decimal(10,8) DEFAULT NULL,
   longitude decimal(11,8) DEFAULT NULL,
   capacity int DEFAULT NULL,
+  phone varchar(255) DEFAULT NULL,
+  website varchar(255) DEFAULT NULL,
+  status varchar(30) NOT NULL DEFAULT 'active',
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL,
   PRIMARY KEY (id)
@@ -125,6 +135,9 @@ CREATE TABLE IF NOT EXISTS news (
   published_at timestamp NULL DEFAULT NULL,
   created_by bigint unsigned DEFAULT NULL,
   estado tinyint(1) NOT NULL DEFAULT 1,
+  interprete_id bigint unsigned DEFAULT NULL,
+  categoria_id int NOT NULL DEFAULT 1,
+  visitas int NOT NULL DEFAULT 0,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL,
   PRIMARY KEY (id),
@@ -188,6 +201,7 @@ CREATE TABLE IF NOT EXISTS social_accounts (
   account_external_id varchar(255) NOT NULL,
   page_or_profile_name varchar(255) DEFAULT NULL,
   token_encrypted text DEFAULT NULL,
+  refresh_token_encrypted text DEFAULT NULL,
   token_expires_at timestamp NULL DEFAULT NULL,
   scopes_json json DEFAULT NULL,
   status varchar(30) NOT NULL DEFAULT 'active',
@@ -308,10 +322,25 @@ CREATE TABLE IF NOT EXISTS jobs (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
+-- ALTER: campos publisher en users (tabla ya existente)
+-- ============================================================
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS points int NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS rank varchar(255) NOT NULL DEFAULT 'Colaborador Bronce',
+  ADD COLUMN IF NOT EXISTS phone varchar(255) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS status varchar(30) NOT NULL DEFAULT 'active',
+  ADD COLUMN IF NOT EXISTS is_verified_publisher tinyint(1) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS publisher_type_default varchar(50) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS last_login_at timestamp NULL DEFAULT NULL;
+
+-- ============================================================
 -- MIGRATIONS: marcar todas como ejecutadas
 -- ============================================================
 
 INSERT IGNORE INTO migrations (migration, batch) VALUES
+  ('2026_03_22_041551_create_categories_and_classifieds_tables', 2),
+  ('2026_03_23_024951_create_newsletter_subscribers_table', 2),
+  ('2026_04_09_031600_add_publisher_fields_to_users_table', 3),
   ('2026_04_09_032400_create_organizations_table', 2),
   ('2026_04_09_032700_create_organization_members_table', 3),
   ('2026_04_09_033200_transform_shows_to_events_table', 3),

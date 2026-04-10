@@ -32,8 +32,8 @@ class News extends Model
         'published_at',
         'created_by',
         'interprete_id',
-        'visitas',
         'categoria_id',
+        'visitas',
         'estado',
         // Compatibility
         'titulo',
@@ -57,7 +57,10 @@ class News extends Model
         });
     }
 
-    // Compatibility accessors
+    // -------------------------------------------------------
+    // Compatibility accessors (old noticias field names)
+    // -------------------------------------------------------
+
     public function getTituloAttribute()
     {
         return $this->title;
@@ -88,6 +91,15 @@ class News extends Model
         $this->featured_image_path = $value;
     }
 
+    public function getFechaPublicacionAttribute()
+    {
+        return $this->published_at ?? $this->created_at;
+    }
+
+    // -------------------------------------------------------
+    // Relations
+    // -------------------------------------------------------
+
     public function organization()
     {
         return $this->belongsTo(Organization::class);
@@ -98,13 +110,35 @@ class News extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Relación principal de categoría (nombre canónico en inglés).
+     */
     public function category()
     {
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 
+    /**
+     * Alias de category() para compatibilidad con vistas que usan $noticia->categoria.
+     */
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class, 'categoria_id');
+    }
+
+    /**
+     * Intérprete principal (campo directo interprete_id).
+     */
     public function interprete()
     {
         return $this->belongsTo(Interprete::class);
+    }
+
+    /**
+     * Intérpretes secundarios via tabla pivote interprete_noticia.
+     */
+    public function interpretes()
+    {
+        return $this->belongsToMany(Interprete::class, 'interprete_noticia', 'noticia_id', 'interprete_id');
     }
 }

@@ -70,7 +70,15 @@ class Event extends Model
         });
     }
 
-    // Compatibility accessors for old 'show' field
+    // -------------------------------------------------------
+    // Compatibility accessors (old shows field names)
+    // -------------------------------------------------------
+
+    public function getTituloAttribute()
+    {
+        return $this->title;
+    }
+
     public function getShowAttribute()
     {
         return $this->title;
@@ -86,9 +94,38 @@ class Event extends Model
         return $this->body;
     }
 
+    public function getDetalleAttribute()
+    {
+        return $this->body;
+    }
+
     public function setDetallesAttribute($value)
     {
         $this->body = $value;
+    }
+
+    public function getFechaAttribute()
+    {
+        return $this->start_at;
+    }
+
+    public function getLugarAttribute()
+    {
+        return $this->city;
+    }
+
+    public function getDireccionAttribute()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Primer intérprete asociado (para compatibilidad con show-card).
+     * Requiere que la relación interpretes esté eager-loaded.
+     */
+    public function getInterpreteAttribute()
+    {
+        return $this->relationLoaded('interpretes') ? $this->interpretes->first() : null;
     }
 
     public function organization()
@@ -111,5 +148,10 @@ class Event extends Model
         return $this->belongsToMany(Interprete::class, 'event_interprete', 'event_id', 'interprete_id')
                     ->withPivot('sort_order')
                     ->withTimestamps();
+    }
+
+    public function provincia()
+    {
+        return $this->belongsTo(Provincia::class, 'province_id');
     }
 }

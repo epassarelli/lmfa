@@ -16,28 +16,25 @@ class MediaAsset extends Model
         'imageable_id',
         'disk',
         'original_name',
-        'mime_type',
+        'original_path',
+        'original_width',
+        'original_height',
+        'mime',
         'size',
-        'width',
-        'height',
-        'alt_text',
+        'alt',
         'caption',
         'group',
         'sort_order',
-        'profile', // Old field
+        'profile',
         'created_by',
         'variants_json',
-        // Compatibility
-        'original_path',
-        'mime',
-        'alt',
     ];
 
     protected $casts = [
         'variants_json' => 'array',
         'size' => 'integer',
-        'width' => 'integer',
-        'height' => 'integer',
+        'original_width' => 'integer',
+        'original_height' => 'integer',
         'sort_order' => 'integer',
     ];
 
@@ -51,7 +48,9 @@ class MediaAsset extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // path is an alias for the real DB column original_path
+    /**
+     * Alias: $asset->path → original_path (columna real en BD).
+     */
     public function getPathAttribute(): ?string
     {
         return $this->attributes['original_path'] ?? null;
@@ -60,25 +59,5 @@ class MediaAsset extends Model
     public function setPathAttribute($value): void
     {
         $this->attributes['original_path'] = $value;
-    }
-
-    public function getMimeAttribute()
-    {
-        return $this->mime_type;
-    }
-
-    public function setMimeAttribute($value)
-    {
-        $this->mime_type = $value;
-    }
-
-    public function getAltAttribute()
-    {
-        return $this->alt_text;
-    }
-
-    public function setAltAttribute($value)
-    {
-        $this->alt_text = $value;
     }
 }

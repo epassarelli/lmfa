@@ -4,7 +4,7 @@ namespace Tests\Feature\Pasarela;
 
 use App\Models\SocialAccount;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 /**
@@ -19,7 +19,7 @@ use Tests\TestCase;
  */
 class SocialAccountTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     // -------------------------------------------------------------------------
     // index
