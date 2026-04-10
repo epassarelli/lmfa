@@ -185,7 +185,9 @@
             "id": "PC-07-HU-02",
             "title": "Generar publication_targets",
             "description": "Crear targets por red social",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "Lógica de generateTargets ya existía en PublicationService. Se crearon 10 tests Feature (PublicationTargetTest.php) cubriendo: portal_only, social propio, sin cuentas, cuenta inactiva, portal social, modo full, scheduled_at propagado, dispatch de jobs, tipo News. Queue::fake() para evitar jobs reales. 10/10 passing.",
             "priority": "high",
             "dependencies": [
                 "PC-07-HU-01"
