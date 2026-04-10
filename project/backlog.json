@@ -297,7 +297,9 @@
             "id": "PC-09-HU-01",
             "title": "Recordatorios automáticos",
             "description": "Scheduler de eventos futuros",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "EventReminderJob ya existía: procesa eventos en ventana 48h sin publication_request existente, notifica al creador. Scheduler diario a las 08:00. 4/4 tests.",
             "priority": "medium",
             "dependencies": [
                 "PC-07-HU-03"
@@ -343,7 +345,9 @@
             "id": "PC-12-HU-01",
             "title": "Sistema de notificaciones",
             "description": "Notificar estados de publicación",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "NotificationController: listado paginado, marcar leída, marcar todas leídas, endpoint /count JSON. Vista pasarela/notifications/index.blade.php. 7/7 tests.",
             "priority": "medium",
             "dependencies": [
                 "PC-07-HU-07"

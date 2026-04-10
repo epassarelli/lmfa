@@ -157,6 +157,16 @@ Route::middleware(['auth'])->prefix('pasarela')->name('pasarela.')->group(functi
     Route::get('admin/dashboard', [\App\Http\Controllers\Pasarela\DashboardAdminController::class, 'index'])
         ->name('admin.dashboard');
 
+    // PC-12-HU-01: Notificaciones
+    Route::get('notificaciones', [\App\Http\Controllers\Pasarela\NotificationController::class, 'index'])
+        ->name('notifications.index');
+    Route::post('notificaciones/{notification}/leida', [\App\Http\Controllers\Pasarela\NotificationController::class, 'markRead'])
+        ->name('notifications.mark-read');
+    Route::post('notificaciones/leidas-todas', [\App\Http\Controllers\Pasarela\NotificationController::class, 'markAllRead'])
+        ->name('notifications.mark-all-read');
+    Route::get('notificaciones/count', [\App\Http\Controllers\Pasarela\NotificationController::class, 'unreadCount'])
+        ->name('notifications.unread-count');
+
     // PC-08-HU-01: Templates por canal
     Route::get('admin/templates', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'index'])
         ->name('templates.index');
