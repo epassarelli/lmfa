@@ -217,7 +217,9 @@
             "id": "PC-07-HU-04",
             "title": "Implementar publicación Facebook",
             "description": "Conector Facebook",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "FacebookConnector con Graph API v19.0. Tests en PublishToProviderJobTest.php.",
             "priority": "high",
             "dependencies": [
                 "PC-07-HU-03"
@@ -231,7 +233,9 @@
             "id": "PC-07-HU-05",
             "title": "Implementar publicación Instagram",
             "description": "Conector Instagram",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "InstagramConnector 2-step. Fix original_path en MediaAsset. Tests: éxito y sin imagen.",
             "priority": "high",
             "dependencies": [
                 "PC-07-HU-03"
@@ -245,7 +249,9 @@
             "id": "PC-07-HU-06",
             "title": "Implementar publicación Telegram",
             "description": "Conector Telegram",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "TelegramConnector via Bot API sendMessage HTML. Tests: éxito y error 401.",
             "priority": "medium",
             "dependencies": [
                 "PC-07-HU-03"
@@ -259,7 +265,9 @@
             "id": "PC-07-HU-07",
             "title": "Registrar publication_attempts",
             "description": "Guardar cada intento de publicación",
-            "status": "pending",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "BaseConnector::recordAttempt() ya implementado. Registra attempt_number, started_at, finished_at, request/response payloads, external_post_id, external_url, status, error_code, is_retryable. Tests en PublishToProviderJobTest.php.",
             "priority": "high",
             "dependencies": [
                 "PC-07-HU-02"
