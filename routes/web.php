@@ -138,4 +138,14 @@ Route::middleware(['auth'])->prefix('pasarela')->name('pasarela.')->group(functi
         ->name('social-accounts.store');
     Route::delete('cuentas-sociales/{socialAccount}', [\App\Http\Controllers\Pasarela\SocialAccountController::class, 'destroy'])
         ->name('social-accounts.destroy');
+
+    // PC-07-HU-01: Solicitudes de publicación multicanal
+    Route::get('publicaciones', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'index'])
+        ->name('publication-requests.index');
+    Route::get('publicaciones/nueva', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'create'])
+        ->name('publication-requests.create');
+    Route::post('publicaciones', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'store'])
+        ->name('publication-requests.store');
+    Route::get('publicaciones/{publicationRequest}', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'show'])
+        ->name('publication-requests.show');
 });

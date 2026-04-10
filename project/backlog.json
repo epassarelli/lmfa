@@ -167,7 +167,9 @@
             "id": "PC-07-HU-01",
             "title": "Crear publication_request",
             "description": "Registrar intención multicanal",
-            "status": "in_progress",
+            "status": "done",
+            "completed_at": "2026-04-10",
+            "notes": "Controller, rutas, vistas y tests creados. 12 tests Feature pasando (DatabaseTransactions sobre mfa). Se resolvió además el problema de migraciones pendientes: tablas creadas via SQL directo en MariaDB para evitar crashes por ALTER TABLE en filesystem Windows. SQL de setup en database/setup_pasarela_tables.sql.",
             "priority": "high",
             "dependencies": [
                 "PC-04-HU-02",
