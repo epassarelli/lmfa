@@ -32,10 +32,10 @@ class ShowController extends Controller
         $user = Auth::user();
         $shows = Show::query()
             ->when($user->hasRole(['colaborador', 'prensa']), function ($query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->where('created_by', $user->id);
             })
-            ->where('fecha', '>=', now())
-            ->with(['user', 'interprete', 'images'])
+            ->where('start_at', '>=', now())
+            ->with(['user', 'interpretes', 'images'])
             ->get();
 
         return view('backend.shows.index', compact('shows'));
@@ -58,9 +58,12 @@ class ShowController extends Controller
     public function store(ShowRequest $request)
     {
         $data = $request->validated();
-        $data['user_id'] = Auth::id();
+        $data['created_by'] = Auth::id();
         $data['slug'] = $data['slug'] ?? Str::slug($data['show'] . '-' . now()->timestamp);
 
+        // Extraer interprete_id para sincronizar después (es many-to-many)
+        $interpreteId = $data['interprete_id'] ?? null;
+        unset($data['interprete_id']);
 
         // Si no viene estado del formulario, asignarlo según el rol del usuario
         if (!isset($data['estado'])) {
@@ -68,6 +71,11 @@ class ShowController extends Controller
         }
 
         $show = Show::create($data);
+
+        // Sincronizar intérprete principal en la tabla pivote
+        if ($interpreteId) {
+            $show->interpretes()->sync([$interpreteId]);
+        }
 
         if ($request->hasFile('imagen_destacada')) {
             $this->imageService->process(
@@ -104,15 +112,18 @@ class ShowController extends Controller
 
         $data = $request->validated();
 
+        // Extraer interprete_id para sincronizar después (es many-to-many)
+        $interpreteId = $data['interprete_id'] ?? null;
+        unset($data['interprete_id']);
+
         // Preservar slug si viene y no está vacío, sino mantener el actual
         if (isset($data['slug']) && empty($data['slug'])) {
             unset($data['slug']);
         } elseif (!isset($data['slug'])) {
-            // Si no viene slug, mantener el actual (no generar uno nuevo)
             unset($data['slug']);
         }
 
-        // Remover campos que pueden no existir en la BD o que no queremos actualizar
+        // Remover campos que no existen en la BD de events
         unset($data['precio_entrada'], $data['link_entradas'], $data['lat'], $data['lng']);
 
         // Manejar imagen destacada si viene
@@ -133,9 +144,14 @@ class ShowController extends Controller
             unset($data['destacado']);
         }
 
-        // Actualizar el registro existente (no crear uno nuevo)
+        // Actualizar el registro existente
         $show->fill($data);
         $show->save();
+
+        // Sincronizar intérprete en la tabla pivote
+        if ($interpreteId) {
+            $show->interpretes()->sync([$interpreteId]);
+        }
 
         return redirect()->route('backend.shows.index')->with('success', 'Show actualizado correctamente.');
     }

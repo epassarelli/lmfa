@@ -44,8 +44,15 @@ class Event extends Model
         'approved_at',
         'published_at',
         'created_by',
-        'show', // Compatibility
-        'detalles', // Compatibility
+        // Compatibility (nombres legacy del esquema shows)
+        'show',
+        'detalles',
+        'fecha',
+        'lugar',
+        'direccion',
+        'user_id',
+        'publicar',
+        'estado',
     ];
 
     protected $casts = [
@@ -109,14 +116,59 @@ class Event extends Model
         return $this->start_at;
     }
 
+    public function setFechaAttribute($value)
+    {
+        $this->attributes['start_at'] = $value;
+    }
+
     public function getLugarAttribute()
     {
         return $this->city;
     }
 
+    public function setLugarAttribute($value)
+    {
+        $this->attributes['city'] = $value;
+    }
+
     public function getDireccionAttribute()
     {
         return $this->address;
+    }
+
+    public function setDireccionAttribute($value)
+    {
+        $this->attributes['address'] = $value;
+    }
+
+    public function getUserIdAttribute()
+    {
+        return $this->created_by;
+    }
+
+    public function setUserIdAttribute($value)
+    {
+        $this->attributes['created_by'] = $value;
+    }
+
+    public function getPublicarAttribute()
+    {
+        return $this->published_at;
+    }
+
+    public function setPublicarAttribute($value)
+    {
+        $this->attributes['published_at'] = $value;
+    }
+
+    public function getEstadoAttribute()
+    {
+        return $this->editorial_status === 'published' ? 1 : 0;
+    }
+
+    public function setEstadoAttribute($value)
+    {
+        $this->attributes['editorial_status'] = $value ? 'published' : 'draft';
     }
 
     /**
@@ -143,11 +195,19 @@ class Event extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Alias de creator() para compatibilidad con eager-loads legacy.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function interpretes()
     {
+        // event_interprete NO tiene columnas de timestamps — no usar withTimestamps()
         return $this->belongsToMany(Interprete::class, 'event_interprete', 'event_id', 'interprete_id')
-                    ->withPivot('sort_order')
-                    ->withTimestamps();
+                    ->withPivot('sort_order');
     }
 
     public function provincia()

@@ -75,9 +75,9 @@ class Interprete extends Model
 
     public function events()
     {
+        // event_interprete NO tiene columnas de timestamps — no usar withTimestamps()
         return $this->belongsToMany(Event::class, 'event_interprete', 'interprete_id', 'event_id')
-                    ->withPivot('sort_order')
-                    ->withTimestamps();
+                    ->withPivot('sort_order');
     }
 
     public function discos()

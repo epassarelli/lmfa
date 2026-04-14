@@ -50,7 +50,7 @@
                 @endif
               </td>
               <td>{{ $show->show }}</td>
-              <td>{{ $show->interprete->interprete }}</td>
+              <td>{{ $show->interprete?->interprete ?? '—' }}</td>
               <td>{{ $show->estado == 1 ? 'Activo' : 'Inactivo' }}</td>
               <td class="text-right" style="white-space: nowrap;">
                 <a href="{{ route('backend.shows.edit', $show) }}" class="btn btn-warning">

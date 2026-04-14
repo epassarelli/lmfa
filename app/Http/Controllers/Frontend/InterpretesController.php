@@ -77,7 +77,7 @@ class InterpretesController extends Controller
         $noticias = $interprete->noticias()->with('images')->latest()->take(3)->get();
         $canciones = $interprete->canciones()->latest()->take(3)->get();
         $discos = $interprete->discos()->latest()->take(2)->get();
-        $shows = $interprete->shows()->where('fecha', '>=', now())->orderBy('fecha')->take(2)->get();
+        $shows = $interprete->shows()->where('start_at', '>=', now())->orderBy('start_at')->with('images')->take(2)->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
         $metaTitle = "Biografía de " . $interprete->interprete . " | Folklore Argentino";

@@ -27,7 +27,7 @@ class ShowRequest extends FormRequest
       //'link_entradas' => 'nullable|url|max:255',
       //'destacado' => 'nullable|boolean',
       //'imagen_destacada' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-      'slug' => 'nullable|string|max:255|unique:shows,slug,' . (optional($this->route('show'))->id ?? ''),
+      'slug' => 'nullable|string|max:255|unique:events,slug,' . (optional($this->route('show'))->id ?? ''),
       'lat' => 'nullable|numeric|between:-90,90',
       'lng' => 'nullable|numeric|between:-180,180',
       //'provincia_id' => 'nullable|exists:provincias,id',
