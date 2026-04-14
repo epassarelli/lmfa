@@ -7,9 +7,16 @@ use App\Models\Cancion;
 use App\Models\Interprete;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\LinkService;
 
 class CancionesController extends Controller
 {
+    protected $linkService;
+
+    public function __construct(LinkService $linkService)
+    {
+        $this->linkService = $linkService;
+    }
     public function index()
     {
         $canciones = Cancion::where('estado', 1)->orderBy('cancion', 'asc')->paginate(48);
@@ -105,6 +112,8 @@ class CancionesController extends Controller
             ['label' => 'Canciones', 'url' => route('artista.canciones', $interprete->slug)],
             ['label' => $cancion->cancion]
         ];
+
+        $cancion->letra = $this->linkService->autoLinkArtists($cancion->letra);
 
         return view('frontend.canciones.show', compact('cancion', 'interprete', 'interpretes', 'related', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }

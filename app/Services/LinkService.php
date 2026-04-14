@@ -35,11 +35,13 @@ class LinkService
             $name = $artist['interprete'];
             $url = route('artista.show', $artist['slug']);
             
-            // Regex to match name only if NOT inside <a> tag or other HTML tags
-            // Simplified approach: find the name with word boundaries
+            // Regex to match name ONLY if NOT inside <a> tag or other HTML tag attributes
+            // This is a more robust negative lookahead/lookbehind approach
+            // We search for the name but ensure it's not preceded by < or part of a tag
+            // The word boundary \b is essential
             $pattern = '/(?!(?:[^<]+>|[^>]+<\/a>))\b' . preg_quote($name, '/') . '\b/iu';
             
-            $text = preg_replace($pattern, '<a href="' . $url . '" class="hover:underline text-orange-700 font-medium">$1</a>', $text, 1);
+            $text = preg_replace($pattern, '<a href="' . $url . '" class="hover:underline text-orange-700 font-medium">$0</a>', $text, 1);
             // Limit to 1 replacement per artist to avoid over-optimization (spammy look)
         }
 

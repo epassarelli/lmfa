@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 use App\Models\Mito;
+use App\Services\LinkService;
 
 class MitosController extends Controller
 {
+    protected $linkService;
+
+    public function __construct(LinkService $linkService)
+    {
+        $this->linkService = $linkService;
+    }
     public function index()
     {
         // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
@@ -30,23 +37,36 @@ class MitosController extends Controller
     public function show($slug)
     {
         $mito = Mito::where('slug', $slug)->with('images')->firstOrFail();
-        $ultimos_mitos = Mito::where('estado', 1)
+        
+        // Relacionados: misma letra inicial (excluyendo el actual)
+        $relacionados = Mito::where('estado', 1)
             ->where('id', '<>', $mito->id)
-            ->orderByDesc('created_at')
-            ->take(10)
+            ->where('titulo', 'LIKE', substr($mito->titulo, 0, 1) . '%')
+            ->take(6)
             ->get();
+
+        if ($relacionados->isEmpty()) {
+            $relacionados = Mito::where('estado', 1)
+                ->where('id', '<>', $mito->id)
+                ->latest()
+                ->take(6)
+                ->get();
+        }
+
         // Incrementar el contador de visitas
         $mito->increment('visitas');
 
         $metaTitle = $mito->titulo . " | Mitos y leyendas urbanas";
         $metaDescription = Str::limit(strip_tags(html_entity_decode($mito->mito)), 150);
 
+        $mito->mito = $this->linkService->autoLinkArtists($mito->mito);
+
         $breadcrumbs = [
             ['label' => 'Mitos', 'url' => route('mitos.index')],
             ['label' => $mito->titulo]
         ];
 
-        return view('frontend.mitos.show', compact('mito', 'ultimos_mitos', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.mitos.show', compact('mito', 'relacionados', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
 
