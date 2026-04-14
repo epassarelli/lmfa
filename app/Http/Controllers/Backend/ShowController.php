@@ -59,7 +59,7 @@ class ShowController extends Controller
     {
         $data = $request->validated();
         $data['created_by'] = Auth::id();
-        $data['slug'] = $data['slug'] ?? Str::slug($data['show'] . '-' . now()->timestamp);
+        $data['slug'] = $data['slug'] ?? Str::slug($data['title'] . '-' . now()->timestamp);
 
         // Extraer interprete_id para sincronizar después (es many-to-many)
         $interpreteId = $data['interprete_id'] ?? null;
@@ -123,8 +123,8 @@ class ShowController extends Controller
             unset($data['slug']);
         }
 
-        // Remover campos que no existen en la BD de events
-        unset($data['precio_entrada'], $data['link_entradas'], $data['lat'], $data['lng']);
+        // Remover campos que no se persisten directamente
+        unset($data['lat'], $data['lng']);
 
         // Manejar imagen destacada si viene
         if ($request->hasFile('imagen_destacada')) {
