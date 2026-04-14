@@ -39,6 +39,8 @@ class News extends Model
         'titulo',
         'noticia',
         'foto',
+        'user_id',
+        'publicar',
     ];
 
     protected $casts = [
@@ -96,6 +98,26 @@ class News extends Model
         return $this->published_at ?? $this->created_at;
     }
 
+    public function getUserIdAttribute()
+    {
+        return $this->created_by;
+    }
+
+    public function setUserIdAttribute($value)
+    {
+        $this->attributes['created_by'] = $value;
+    }
+
+    public function getPublicarAttribute()
+    {
+        return $this->published_at;
+    }
+
+    public function setPublicarAttribute($value)
+    {
+        $this->attributes['published_at'] = $value;
+    }
+
     // -------------------------------------------------------
     // Relations
     // -------------------------------------------------------
@@ -106,6 +128,14 @@ class News extends Model
     }
 
     public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Alias de creator() para compatibilidad con eager-loads legacy que usan 'user'.
+     */
+    public function user()
     {
         return $this->belongsTo(User::class, 'created_by');
     }

@@ -1,7 +1,7 @@
 # 00 — Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesión de trabajo.
-> Última actualización: 2026-04-10
+> Última actualización: 2026-04-14
 
 ---
 
@@ -32,15 +32,22 @@ docker exec -i lmfa-db-1 mysql -umfa -pmfa mfa < database/patch_missing_columns.
 docker exec -i lmfa-db-1 mysql -umfa -pmfa mfa < database/patch_news_columns.sql
 ```
 
+### Script de migración de datos legacy:
+```bash
+# Migra los 347 registros de 'noticias' → 'news' (idempotente, seguro de re-ejecutar)
+docker exec -i lmfa-db-1 mysql -umfa -pmfa mfa < database/migrate_noticias_to_news.sql
+```
+**⚠️ PENDIENTE DE EJECUTAR:** La tabla `noticias` tiene 347 registros reales. La tabla `news` está vacía. El usuario debe ejecutar el script arriba para migrar los datos.
+
 ### Tablas existentes
 | Tabla | Origen | Notas |
 |-------|--------|-------|
 | `users` | base | + campos publisher: phone, status, is_verified_publisher, publisher_type_default, last_login_at, points, rank |
 | `interpretes` | base | sin cambios |
-| `noticias` | base | **DEPRECATED** — datos legacy, sin usar por el portal activo |
+| `noticias` | base | **DEPRECATED** — 347 registros legacy, sin usar por el portal activo. Migrar con `migrate_noticias_to_news.sql` |
 | `shows` | base | **DEPRECATED** — datos legacy, sin usar por el portal activo |
 | `images` | base | **DEPRECATED** — reemplazada por media_assets |
-| `news` | pasarela | nueva tabla principal de noticias |
+| `news` | pasarela | nueva tabla principal de noticias — **actualmente vacía, pendiente migración** |
 | `events` | pasarela | nueva tabla principal de eventos |
 | `media_assets` | pasarela | sistema polimórfico webp + thumbnails |
 | `organizations` | pasarela | |
@@ -61,7 +68,7 @@ docker exec -i lmfa-db-1 mysql -umfa -pmfa mfa < database/patch_news_columns.sql
 | `categorias` | base | para noticias legacy |
 
 ### Estado de los datos
-⚠️ **La BD está vacía de datos reales** (recreada el 2026-04-10). El usuario necesita recargar sus datos.
+⚠️ **La tabla `news` está vacía.** Los datos reales están en `noticias` (347 registros). Ejecutar `migrate_noticias_to_news.sql` para migrarlos.
 
 ---
 
@@ -75,12 +82,16 @@ Reemplaza el modelo legacy `Noticia` (que ahora es un alias deprecated).
 - `$noticia->noticia` → `body`
 - `$noticia->foto` → `featured_image_path`
 - `$noticia->fecha_publicacion` → `published_at ?? created_at`
+- `$noticia->user_id` → `created_by` (mutator + accessor agregados en 2026-04-14)
+- `$noticia->publicar` → `published_at` (mutator + accessor agregados en 2026-04-14)
 
 **Relaciones:**
 - `categoria()` / `category()` → `Categoria` via `categoria_id`
 - `interprete()` → `Interprete` via `interprete_id` (principal)
 - `interpretes()` → belongsToMany `Interprete` via `interprete_noticia` (secundarios)
 - `images()` / `media()` → morphMany `MediaAsset` via HasMedia trait
+- `creator()` → `User` via `created_by`
+- `user()` → alias de `creator()` para compatibilidad con eager-loads legacy (agregado 2026-04-14)
 
 **Campos clave:** `title`, `body`, `slug`, `editorial_status`, `featured_image_path`, `interprete_id`, `categoria_id`, `visitas`, `estado`
 
@@ -116,6 +127,13 @@ Sistema de imágenes polimórfico con webp y thumbnails.
 
 `variants_json` contiene un mapa `{ "card": { "320": "/url/320.webp", ... }, "detail": {...} }`
 
+**Perfil `news_full`** (config/image_profiles.php):
+- `card`: 16:9, cover → 320px / 480px / 768px
+- `detail`: 16:9, cover → 768px / 1200px / 1600px
+- `sidebar`: 1:1, cover → 120px / 240px / 320px
+
+La API de noticias (`POST /api/v1/news`) acepta `foto` solo como **string URL** — no procesa imágenes. El procesamiento webp ocurre únicamente vía el backend web (formulario admin).
+
 ---
 
 ### Modelos deprecated (siguen funcionando como alias)
@@ -129,17 +147,59 @@ Sistema de imágenes polimórfico con webp y thumbnails.
 
 | Controlador | Modelo | Filtro activo |
 |-------------|--------|---------------|
-| `HomeController` | `Noticia` / `Show` (alias) | `estado=1` para noticias, `editorial_status=approved` + `start_at>=now` para shows |
-| `NoticiasController` | `News` | `editorial_status=approved` |
-| `ShowsController` | `Event` | `editorial_status=approved` + `start_at>=now` |
+| `HomeController` | `Noticia` / `Show` (alias) | `estado=1` para noticias, `editorial_status=published` + `start_at>=now` para shows |
+| `NoticiasController` | `News` | `editorial_status=published` |
+| `ShowsController` | `Event` | `editorial_status=published` + `start_at>=now` |
 | `InterpretesController` | `Interprete` | `estado=1` |
+
+> **Nota:** El filtro correcto para el portal público es `editorial_status='published'`. El estado `'approved'` es intermedio (moderación aprobada, pendiente de publicar via pasarela). Los controllers frontend fueron corregidos el 2026-04-14 para usar `published`.
+
+---
+
+## API REST
+
+**Base URL:** `/api/v1`
+**Autenticación:** Laravel Sanctum — Bearer token
+
+**Obtener token (una sola vez, guardar el valor):**
+```php
+// En artisan tinker dentro del contenedor lmfa-app-1:
+$user = \App\Models\User::find(1);
+$token = $user->createToken('automatizacion')->plainTextToken;
+echo $token;
+```
+
+**Endpoints de noticias:**
+```
+GET    /api/v1/news              → lista paginada (filtros: categoria_id, estado)
+POST   /api/v1/news              → crear noticia
+GET    /api/v1/news/{id}         → detalle
+PUT    /api/v1/news/{id}         → actualizar
+DELETE /api/v1/news/{id}         → eliminar
+```
+
+**JSON canónico para POST/PUT:**
+```json
+{
+  "title": "Título",
+  "body": "Contenido",
+  "categoria_id": 1,
+  "created_by": 1,
+  "interprete_id": null,
+  "featured_image_path": "https://...",
+  "published_at": "2026-04-14T00:00:00",
+  "editorial_status": "published",
+  "estado": "1"
+}
+```
+Los nombres legacy (`titulo`, `noticia`, `foto`, `user_id`, `publicar`) también son aceptados vía accessors/mutators del modelo.
 
 ---
 
 ## Tests
 
 - **Ubicación:** `tests/Feature/Pasarela/`
-- **Total:** 74 tests, todos pasando
+- **Total:** 84 tests, todos pasando (actualizado 2026-04-14)
 - **Trait obligatorio:** `DatabaseTransactions` (NUNCA `RefreshDatabase`)
 - **BD de test:** `mfa` (misma que producción local, via transacciones que se revierten)
 
@@ -155,6 +215,20 @@ Sistema de imágenes polimórfico con webp y thumbnails.
 | `DashboardAdminTest.php` | PC-11-HU-01 — 2 tests |
 | `NotificationTest.php` | PC-12-HU-01 — 7 tests |
 | `AuditLogTest.php` | PC-13-HU-01 — 4 tests |
+| `NoticiasBugFixTest.php` | Bugs noticias/news 2026-04-14 — 10 tests |
+
+---
+
+## Bugs corregidos — sesión 2026-04-14
+
+| # | Síntoma | Causa | Fix |
+|---|---------|-------|-----|
+| a | `admin/noticias` → `Call to undefined relationship [user]` | NoticiaController eager-load `'user'` pero News solo tenía `creator()` | Agregado alias `user()` en News model |
+| b | `interprete/noticias` → `Undefined variable $metaTitle` | NoticiasController@noticias() y @byArtista() no definían $metaTitle antes de compact() | Definidas las variables en ambos métodos |
+| c | `/noticias-del-folklore-argentino` no mostraba noticias | Controllers frontend filtraban `editorial_status='approved'` pero el portal usa `'published'` | Cambiado a `'published'` en NoticiasController (8 ocurrencias), ShowsController (2) y HomeController (1) |
+| — | `NoticiaRequest` slug unique apuntaba a tabla `noticias` | `Rule::unique('noticias', 'slug')` en tabla deprecated | Cambiado a `unique('news', 'slug')` |
+| — | `NoticiaController` usaba nombres de campo viejos | `user_id`, `publicar`, `orderBy('publicar')` en controlador backend | Corregidos a `created_by`, `published_at` |
+| — | API: `created_by` nunca se persistía | `user_id` no estaba en $fillable ni tenía mutator | Agregados mutators `user_id`/`publicar` al modelo y al $fillable |
 
 ---
 
@@ -165,7 +239,7 @@ Sistema de imágenes polimórfico con webp y thumbnails.
 | `PublicationService` | Orquesta publication_requests y genera targets |
 | `TemplateService` | Resuelve template por content_type + provider + variant |
 | `ImageUploadService` | Sube imágenes, genera variantes webp, guarda MediaAsset |
-| `NativePortalConnector` | Publica en el portal (marca editorial_status=published) |
+| `NativePortalConnector` | Publica en el portal → pone `editorial_status='published'` |
 | `FacebookConnector` | Graph API v19.0 |
 | `InstagramConnector` | 2-step: media upload + publish |
 | `TelegramConnector` | Bot API sendMessage HTML |

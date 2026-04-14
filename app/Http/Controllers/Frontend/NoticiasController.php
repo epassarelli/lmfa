@@ -32,7 +32,7 @@ class NoticiasController extends Controller
     // Obtener los últimos 5 intérpretes
     // $ultimas = $noticia->getNLast(Noticia::class, 30);
 
-    $ultimas = News::where('editorial_status', 'approved')
+    $ultimas = News::where('editorial_status', 'published')
       ->with(['categoria', 'images']) // Carga relaciones e imágenes
       ->latest()
       ->paginate(16);
@@ -42,7 +42,7 @@ class NoticiasController extends Controller
     // $administrados = Session::get('interpretes');
 
     // Últimas 10 noticias para el sidebar
-    $ultimasSidebar = News::where('editorial_status', 'approved')
+    $ultimasSidebar = News::where('editorial_status', 'published')
       ->with(['categoria', 'interprete', 'images'])
       ->latest()
       ->take(10)
@@ -64,7 +64,7 @@ class NoticiasController extends Controller
 
   public function noticias(Interprete $interprete)
   {
-    $noticias = News::where('editorial_status', 'approved')
+    $noticias = News::where('editorial_status', 'published')
       ->where(function ($query) use ($interprete) {
         $query->where('interprete_id', $interprete->id)
           ->orWhereHas('interpretes', function ($q) use ($interprete) {
@@ -78,6 +78,9 @@ class NoticiasController extends Controller
 
     $interpretes = Interprete::getInterpretesExcluding($interprete->id);
     $section = 'noticias';
+
+    $metaTitle = "Noticias de " . $interprete->interprete . " - Mi Folklore Argentino";
+    $metaDescription = "Todas las noticias de {$interprete->interprete}: presentaciones, novedades y más del folklore argentino.";
 
     $breadcrumbs = [
       ['label' => 'Noticias', 'url' => route('noticias.index')],
@@ -94,10 +97,13 @@ class NoticiasController extends Controller
   public function byArtista($slug)
   {
     $interprete = Interprete::where('slug', $slug)->first();
-    $noticias = $interprete->noticias()->with('images')->where('editorial_status', 'approved')->get();
+    $noticias = $interprete->noticias()->with('images')->where('editorial_status', 'published')->get();
     // dd($noticias);
     $interpretes = Interprete::getInterpretesExcluding($interprete->id);
     $section = 'noticias';
+
+    $metaTitle = "Noticias de " . $interprete->interprete . " - Mi Folklore Argentino";
+    $metaDescription = "Todas las noticias de {$interprete->interprete}: presentaciones, novedades y más del folklore argentino.";
 
     $breadcrumbs = [
       ['label' => 'Noticias', 'url' => route('noticias.index')],
@@ -117,12 +123,12 @@ class NoticiasController extends Controller
 
     // Traer las noticias de esa categoría con sus intérpretes
     $noticias = News::where('categoria_id', $categoria->id)
-      ->where('editorial_status', 'approved')
+      ->where('editorial_status', 'published')
       ->with(['interpretes', 'images'])
       ->latest()
       ->paginate(10); // Paginación para mejor rendimiento
 
-    $ultimas = News::where('editorial_status', 'approved')
+    $ultimas = News::where('editorial_status', 'published')
       ->with('images')
       ->orderByDesc('created_at')
       ->take(5)
@@ -193,7 +199,7 @@ class NoticiasController extends Controller
 
     // Obtener 3 noticias relacionadas
     // Prioridad: misma categoría, mismo intérprete principal, o intérpretes secundarios comunes
-    $relacionadas = News::where('editorial_status', 'approved')
+    $relacionadas = News::where('editorial_status', 'published')
       ->where('id', '<>', $noticia->id)
       ->where(function ($query) use ($noticia) {
         // Por categoría
@@ -230,7 +236,7 @@ class NoticiasController extends Controller
     ];
 
     // Últimas 10 noticias para el sidebar (excluyendo la noticia actual)
-    $ultimasSidebar = News::where('editorial_status', 'approved')
+    $ultimasSidebar = News::where('editorial_status', 'published')
       ->where('id', '<>', $noticia->id)
       ->with(['categoria', 'interprete', 'images'])
       ->latest()

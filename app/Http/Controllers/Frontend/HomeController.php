@@ -71,7 +71,7 @@ class HomeController extends Controller
         // ->toArray();
 
         // Obtener las últimas 4 shows
-        $shows = Show::where('editorial_status', 'approved')
+        $shows = Show::where('editorial_status', 'published')
             ->where('start_at', '>=', now())
             ->with(['interpretes', 'images'])
             ->orderBy('start_at', 'asc')

@@ -13,7 +13,7 @@ class ShowsController extends Controller
 
     public function index(Request $request)
     {
-        $query = Event::where('editorial_status', 'approved')
+        $query = Event::where('editorial_status', 'published')
             ->where('start_at', '>=', now());
 
         if ($request->filled('mes')) {
@@ -81,7 +81,7 @@ class ShowsController extends Controller
     {
         $show = Event::with(['interpretes', 'provincia', 'images'])->where('slug', $slug)->firstOrFail();
 
-        $ultimos_shows = Event::where('editorial_status', 'approved')
+        $ultimos_shows = Event::where('editorial_status', 'published')
             ->where('id', '<>', $show->id)
             ->orderByDesc('created_at')
             ->take(10)

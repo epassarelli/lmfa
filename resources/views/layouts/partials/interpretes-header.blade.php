@@ -14,11 +14,13 @@
     <nav class="flex flex-col border border-gray-300 rounded overflow-hidden shadow-md">
 
       @php
-        function activeItem($routeName)
-        {
-            return request()->routeIs($routeName)
-                ? 'bg-[#ff661f] text-white font-semibold'
-                : 'bg-white text-gray-800 hover:bg-[#fff4ee] hover:text-[#ff661f]';
+        if (!function_exists('activeItem')) {
+            function activeItem($routeName)
+            {
+                return request()->routeIs($routeName)
+                    ? 'bg-[#ff661f] text-white font-semibold'
+                    : 'bg-white text-gray-800 hover:bg-[#fff4ee] hover:text-[#ff661f]';
+            }
         }
       @endphp
 
