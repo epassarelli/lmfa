@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(docker exec:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(git merge:*)",
+      "Bash(docker start:*)",
+      "Bash(grep -l:*)",
+      "Bash(python3 -c:*)"
+    ]
+  }
+}

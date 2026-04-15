@@ -19,6 +19,8 @@
 
 ## Base de datos
 
+> Actualizacion 2026-04-14 (newsletter/admin): la tabla `newsletter_subscribers` faltaba en la base real aunque su migracion figuraba como ejecutada. Se agrego a los scripts SQL del proyecto, se aplico el patch en `lmfa-db-1` y se valido su esquema.
+
 ### Motor
 MariaDB 10.8 en Docker (`lmfa-db-1`). Volumen en filesystem Windows → **ALTER TABLE pesado puede crashear el contenedor.**
 
@@ -63,11 +65,14 @@ docker exec -i lmfa-db-1 mysql -umfa -pmfa mfa < database/migrate_noticias_to_ne
 | `notifications` | pasarela | |
 | `audit_logs` | pasarela | columnas: old_values, new_values, ip_address (no _json) |
 | `jobs` | pasarela | QUEUE_CONNECTION=database |
+| `newsletter_subscribers` | newsletter | suscriptores, token de baja y estado |
 | `moderation_reviews` | pasarela | |
 | `categories`, `classifieds`, `tags`, `classified_tag` | clasificados | |
 | `categorias` | base | para noticias legacy |
 
 ### Estado de los datos
+
+`newsletter_subscribers` fue verificada el 2026-04-14: la tabla existe y actualmente tiene **0 registros**.
 ⚠️ **La tabla `news` está vacía.** Los datos reales están en `noticias` (347 registros). Ejecutar `migrate_noticias_to_news.sql` para migrarlos.
 
 ---
@@ -316,3 +321,22 @@ El formulario `resources/views/backend/shows/form.blade.php` fue actualizado de 
 ```bash
 docker logs lmfa-db-1 --tail 50
 ```
+
+### Verificaciones ejecutadas en 2026-04-14 (newsletter/admin)
+
+- `docker exec lmfa-db-1 mysql -umfa -pmfa mfa -e "SHOW TABLES LIKE 'newsletter_subscribers';"` -> tabla existente
+- `docker exec lmfa-db-1 mysql -umfa -pmfa mfa -e "DESCRIBE newsletter_subscribers;"` -> esquema validado
+- `docker exec lmfa-db-1 mysql -umfa -pmfa mfa -e "SELECT COUNT(*) AS total FROM newsletter_subscribers;"` -> `0`
+- `docker exec lmfa-app-1 sh -c "cd /var/www/html && php artisan route:list --name=newsletter"` -> 4 rutas activas
+- `docker exec lmfa-app-1 sh -c "cd /var/www/html && php artisan optimize:clear"` ejecutado tras agregar el enlace al menu
+
+---
+
+## Bugs corregidos - sesion 2026-04-14 (newsletter/admin)
+
+| # | Sintoma | Causa | Fix |
+|---|---------|-------|-----|
+| 1 | `admin` no mostraba acceso al newsletter | El modulo tenia rutas/controlador/vista, pero no estaba enlazado en `config/adminlte.php` | Agregada entrada `Newsletter` al menu del backend |
+| 2 | El modulo fallaba por tabla faltante | `newsletter_subscribers` estaba marcada en `migrations`, pero no existia en la BD creada por SQL directo | Agregada la tabla en `setup_pasarela_tables.sql` y `patch_missing_columns.sql`; patch ejecutado en `lmfa-db-1` |
+| 3 | El cambio no se reflejaba inmediatamente en admin | Cache de config/rutas/vistas de Laravel desactualizada | Ejecutado `php artisan optimize:clear` en `lmfa-app-1` |
+

@@ -5,6 +5,27 @@
 -- ============================================================
 
 -- ----------------------------------------------------------------
+-- 0. newsletter_subscribers: tabla faltante en setup_pasarela_tables.sql
+-- ----------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id bigint unsigned NOT NULL AUTO_INCREMENT,
+  user_id bigint unsigned DEFAULT NULL,
+  email varchar(255) NOT NULL,
+  name varchar(255) DEFAULT NULL,
+  status enum('active','unsubscribed','bounced') NOT NULL DEFAULT 'active',
+  token varchar(64) NOT NULL,
+  source varchar(255) DEFAULT NULL,
+  unsubscribed_at timestamp NULL DEFAULT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY newsletter_subscribers_email_unique (email),
+  UNIQUE KEY newsletter_subscribers_token_unique (token),
+  KEY newsletter_subscribers_user_id_foreign (user_id),
+  CONSTRAINT newsletter_subscribers_user_id_foreign FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL
+);
+
+-- ----------------------------------------------------------------
 -- 1. users: campos de publicador (migración 2026_04_09_031600)
 -- ----------------------------------------------------------------
 ALTER TABLE users

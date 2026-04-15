@@ -402,6 +402,12 @@ return [
             'icon' => 'fas fa-fw fa-book',
             'can' => 'read mito',
         ],
+        [
+            'text' => 'Newsletter',
+            'url' => 'admin/newsletter-subscribers',
+            'icon' => 'fas fa-fw fa-envelope-open-text',
+            'active' => ['admin/newsletter-subscribers*'],
+        ],
 
         ['header' => 'Avisos Clasificados'],
 
