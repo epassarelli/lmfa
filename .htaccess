@@ -4,12 +4,14 @@
     RewriteBase /
 
     # 1. MODO MANTENIMIENTO (Intercepción temprana)
-    # Detecta el archivo .down en la raíz o en /public
+    # Definimos la página a mostrar para el mantenimiento
+    ErrorDocument 503 /public/maintenance.html
+
     RewriteCond %{DOCUMENT_ROOT}/.down -f [OR]
     RewriteCond %{DOCUMENT_ROOT}/public/.down -f
     RewriteCond %{REQUEST_URI} !^/public/maintenance\.html$ [NC]
     RewriteCond %{REQUEST_URI} !^/public/.* [NC]
-    RewriteRule ^ /public/maintenance.html [L,R=503]
+    RewriteRule ^ - [L,R=503]
 
     # 2. SEGURIDAD: Ocultar /public de la URL
     # Redirige dominio.com/public/algo a dominio.com/algo
