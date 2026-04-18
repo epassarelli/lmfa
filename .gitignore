@@ -22,4 +22,7 @@ ads.txt
 /public/ads.txt
 googlebe57bffdf3c26baa.html
 
+# Maintenance Mode Switch
+/public/.down
+
 database_local/
