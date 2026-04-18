@@ -33,66 +33,27 @@
     </div>
 
     {{-- Navegación alfabética --}}
+    <div class="mt-8 mb-8">
+      {{ $interpretes->links() }}
+    </div>
+
     <div class="mt-16">
       <h2 class="text-2xl font-bold mb-4">Buscar por Orden Alfabético</h2>
       <p class="text-lg text-gray-700 mb-4">Utilizá nuestro índice alfabético para encontrar a tu artista favorito.</p>
 
       <nav class="flex flex-wrap gap-2 justify-center">
-        @foreach (range('A', 'Z') as $letra)
-          <a href="{{ route('interprete.letra', $letra) }}"
-            class="px-3 py-1 border rounded text-sm hover:bg-gray-200 transition">{{ $letra }}</a>
+        @foreach (range('a', 'z') as $lt)
+          <a href="{{ route('interpretes.letra', strtolower($lt)) }}"
+            class="px-4 py-2 bg-gray-100 text-gray-800 rounded hover:bg-[#ff661f] hover:text-white transition uppercase font-semibold">{{ $lt }}</a>
         @endforeach
       </nav>
     </div>
 
-    {{-- Intérpretes más visitados --}}
-    <div class="mt-16">
-      <h2 class="text-2xl font-bold mb-4">Intérpretes Más Visitados</h2>
-      <p class="text-lg text-gray-700 mb-4">Estos artistas son los más populares del portal.</p>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @foreach ($visitados as $visitado)
-          <a href="{{ route('interprete.show', $visitado->slug) }}"
-            class="bg-gray-800 text-white rounded shadow overflow-hidden hover:scale-[1.01] transition-transform duration-200 flex flex-col">
-            @if ($visitado->images->isNotEmpty())
-              <x-optimized-image :image="$visitado->images->first()" variant="card" class="w-full h-48 object-cover" />
-            @else
-              <img src="{{ asset('storage/interpretes/' . $visitado->foto) }}" alt="{{ $visitado->interprete }}"
-                class="w-full h-48 object-cover">
-            @endif
-            <div class="p-4 flex-1 flex flex-col">
-              <h5 class="text-yellow-400 text-lg font-semibold mb-2">{{ $visitado->interprete }}</h5>
-              <p class="mt-auto text-sm">{{ number_format($visitado->visitas, 0, '', ',') }} visitas</p>
-            </div>
-          </a>
-        @endforeach
-      </div>
-    </div>
-
-    {{-- Últimos intérpretes agregados --}}
-    <div class="mt-16">
-      <h2 class="text-2xl font-bold mb-4">Últimos Intérpretes Agregados</h2>
-      <p class="text-lg text-gray-700 mb-4">Conocé las últimas incorporaciones a nuestro portal.</p>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @foreach ($ultimos as $ultimo)
-          <a href="{{ route('interprete.show', $ultimo->slug) }}"
-            class="bg-gray-800 text-white rounded shadow overflow-hidden hover:scale-[1.01] transition-transform duration-200 flex flex-col">
-            @if ($ultimo->images->isNotEmpty())
-               <x-optimized-image :image="$ultimo->images->first()" variant="card" class="w-full h-48 object-cover" />
-            @else
-               <img src="{{ asset('storage/interpretes/' . $ultimo->foto) }}" alt="{{ $ultimo->interprete }}"
-                 class="w-full h-48 object-cover">
-            @endif
-            <div class="p-4 flex-1 flex flex-col">
-              <h5 class="text-yellow-400 text-lg font-semibold mb-2">{{ $ultimo->interprete }}</h5>
-              <p class="mt-auto text-sm">{{ number_format($ultimo->visitas, 0, '', ',') }} visitas</p>
-            </div>
-          </a>
-        @endforeach
-      </div>
-    </div>
-
   </div>
 
+@endsection
+
+@section('sidebar')
+  <x-sidebar.newsletter-form />
+  <x-sidebar.social-links />
 @endsection

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+use App\Models\News;
 use App\Models\Noticia;
 use App\Models\Show;
 use App\Models\Album;
@@ -61,12 +62,22 @@ class Interprete extends Model
 
     public function noticias()
     {
-        return $this->belongsToMany(Noticia::class);
+        return $this->belongsToMany(News::class, 'interprete_noticia', 'interprete_id', 'noticia_id');
     }
 
+    /**
+     * @deprecated Usar events() — la tabla shows ya no se usa como fuente de datos.
+     */
     public function shows()
     {
-        return $this->hasMany(Show::class);
+        return $this->events();
+    }
+
+    public function events()
+    {
+        // event_interprete NO tiene columnas de timestamps — no usar withTimestamps()
+        return $this->belongsToMany(Event::class, 'event_interprete', 'interprete_id', 'event_id')
+                    ->withPivot('sort_order');
     }
 
     public function discos()

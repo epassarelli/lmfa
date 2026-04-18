@@ -30,7 +30,7 @@ class NoticiaController extends Controller
         $this->authorize('viewAny', Noticia::class);
 
         $noticias = Noticia::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre', 'images'])
-            ->orderBy('publicar', 'desc')
+            ->orderBy('published_at', 'desc')
             ->get();
 
         // dd($noticias);
@@ -89,11 +89,11 @@ class NoticiaController extends Controller
         $noticia = new Noticia();
         $noticia->fill($data);
         $noticia->interprete_id = $data['interprete_principal_id'] ?? null;
-        $noticia->user_id = auth()->id();
+        $noticia->created_by = auth()->id();
 
         // Guardar fecha de publicación si existe
         if (!empty($data['publicar'])) {
-            $noticia->publicar = $data['publicar'];
+            $noticia->published_at = $data['publicar'];
         }
 
         $noticia->save();
@@ -149,7 +149,7 @@ class NoticiaController extends Controller
 
         // Guardar fecha de publicación si existe
         if (!empty($data['publicar'])) {
-            $noticia->publicar = $data['publicar'];
+            $noticia->published_at = $data['publicar'];
         }
 
         $noticia->save();

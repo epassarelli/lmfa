@@ -82,10 +82,10 @@
 
       <!-- Sidebar -->
       <div class="w-full lg:w-1/3">
-        <h3 class="text-xl font-semibold mb-4">Últimas recetas</h3>
+        <h3 class="text-xl font-semibold mb-4">Recetas relacionadas</h3>
 
-        @foreach ($ultimas_recetas as $ultima_receta)
-          <x-receta-card :receta="$ultima_receta" />
+        @foreach ($relacionadas as $relacionada)
+          <x-receta-card :receta="$relacionada" />
         @endforeach
 
       </div>
@@ -98,7 +98,7 @@
 
 @section('sidebar')
 
-  {{-- <x-sidebar.newsletter-form /> --}}
+  <x-sidebar.newsletter-form />
   <x-sidebar.social-links />
   {{-- <x-sidebar.top-news :noticias="$noticiasMasLeidas" /> --}}
   {{-- <x-sidebar.upcoming-shows :eventos="$eventosSidebar" /> --}}

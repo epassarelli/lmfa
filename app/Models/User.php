@@ -30,6 +30,11 @@ class User extends Authenticatable
         'facebook_id',
         'points',
         'rank',
+        'phone',
+        'status',
+        'is_verified_publisher',
+        'publisher_type_default',
+        'last_login_at',
     ];
 
     /**
@@ -51,6 +56,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_verified_publisher' => 'boolean',
+        'last_login_at' => 'datetime',
     ];
 
     /**
@@ -65,5 +72,15 @@ class User extends Authenticatable
     public function contributions()
     {
         return $this->hasMany(Contribution::class);
+    }
+
+    public function socialAccounts()
+    {
+        return $this->morphMany(SocialAccount::class, 'owner');
+    }
+
+    public function publicationRequests()
+    {
+        return $this->hasMany(PublicationRequest::class, 'requested_by');
     }
 }

@@ -45,12 +45,14 @@
                   alt="{{ $evento->interprete->interprete ?? 'Artista' }}"
                   class="w-12 h-12 rounded-full object-cover border border-gray-300">
               @endif
-              <h5 class="text-lg font-semibold">{{ $evento->interprete->interprete }}</h5>
+              <h5 class="text-lg font-semibold">{{ $evento->interprete?->interprete ?? $interprete->interprete }}</h5>
             </div>
             <h6 class="text-gray-700 font-medium mb-2"><strong>Show:</strong> {{ $evento->show }}</h6>
             <p class="text-gray-700 mb-1"><strong>Detalles:</strong> {!! $evento->detalle !!}</p>
             <p class="text-gray-700 mb-1"><strong>Lugar:</strong> {{ $evento->lugar }}</p>
-            <p class="text-gray-600">{{ $evento->descripcion }}</p>
+            @if($evento->excerpt)
+              <p class="text-gray-600">{{ $evento->excerpt }}</p>
+            @endif
           </div>
         </div>
       @endforeach
@@ -67,7 +69,7 @@
 
   @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
 
-  {{-- <x-sidebar.newsletter-form /> --}}
+  <x-sidebar.newsletter-form />
   <x-sidebar.social-links />
   {{-- <x-sidebar.top-news :noticias="$noticiasMasLeidas" /> --}}
   {{-- <x-sidebar.upcoming-shows :eventos="$eventosSidebar" /> --}}

@@ -402,26 +402,30 @@ return [
             'icon' => 'fas fa-fw fa-book',
             'can' => 'read mito',
         ],
+        [
+            'text' => 'Newsletter',
+            'url' => 'admin/newsletter-subscribers',
+            'icon' => 'fas fa-fw fa-envelope-open-text',
+            'active' => ['admin/newsletter-subscribers*'],
+        ],
 
         ['header' => 'Avisos Clasificados'],
 
         [
             'text' => 'Avisos',
             'url' => 'admin/classifieds',
-            'icon' => 'fas fa-fw fa-map-marked-alt',
-            'can' => 'read festival',
+            'icon' => 'fas fa-fw fa-bullhorn',
+            'active' => ['admin/classifieds*'],
         ],
         [
             'text' => 'Categorias',
             'url' => 'admin/categories',
-            'icon' => 'fas fa-fw fa-utensils',
-            'can' => 'read comida',
+            'icon' => 'fas fa-fw fa-list',
         ],
         [
             'text' => 'Tags',
             'url' => 'admin/tags',
-            'icon' => 'fas fa-fw fa-book',
-            'can' => 'read mito',
+            'icon' => 'fas fa-fw fa-tags',
         ],
 
         // [

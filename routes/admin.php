@@ -30,7 +30,19 @@ Route::group(
     Route::resource('users', UserController::class)->names('users');
     Route::resource('permissions', PermissionController::class)->names('permissions');
     Route::resource('categories', CategoryController::class);
-    Route::resource('classifieds', ClassifiedController::class);
+    
+    Route::resource('classifieds', ClassifiedController::class)->names([
+        'index' => 'backend.classifieds.index',
+        'create' => 'backend.classifieds.create',
+        'store' => 'backend.classifieds.store',
+        'show' => 'backend.classifieds.show',
+        'edit' => 'backend.classifieds.edit',
+        'update' => 'backend.classifieds.update',
+        'destroy' => 'backend.classifieds.destroy',
+    ]);
+    Route::post('classifieds/{classified}/approve', [ClassifiedController::class, 'approve'])->name('backend.classifieds.approve');
+    Route::post('classifieds/{classified}/reject', [ClassifiedController::class, 'reject'])->name('backend.classifieds.reject');
+    
     Route::resource('tags', TagController::class);
 
     Route::resource('shows', ShowController::class)->names([
@@ -134,6 +146,14 @@ Route::group(
     ]);
     Route::post('contributions/{id}/approve', [\App\Http\Controllers\Backend\ContributionController::class, 'approve'])->name('backend.contributions.approve');
     Route::post('contributions/{id}/reject', [\App\Http\Controllers\Backend\ContributionController::class, 'reject'])->name('backend.contributions.reject');
+
+    Route::resource('newsletter-subscribers', \App\Http\Controllers\Backend\NewsletterSubscriberController::class)->only(['index'])->names([
+      'index' => 'backend.newsletter.index'
+    ]);
+    Route::post('newsletter-subscribers/{subscriber}/toggle', [\App\Http\Controllers\Backend\NewsletterSubscriberController::class, 'toggleStatus'])->name('backend.newsletter.toggle');
+
+    Route::get('moderation', [\App\Http\Controllers\Backend\ModerationController::class, 'index'])->name('backend.moderation.index');
+    Route::post('moderation/action', [\App\Http\Controllers\Backend\ModerationController::class, 'action'])->name('backend.moderation.action');
 
     Route::get('/', [Dashboard::class, 'index'])->name('dashboard');
   }

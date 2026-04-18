@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Interprete;
-use App\Models\Show;
+use App\Models\Event;
 use Illuminate\Http\Request;
 use Psy\Util\Str;
 
@@ -13,11 +13,11 @@ class ShowsController extends Controller
 
     public function index(Request $request)
     {
-        $query = Show::where('estado', 1)
-            ->where('fecha', '>=', now());
+        $query = Event::where('editorial_status', 'published')
+            ->where('start_at', '>=', now());
 
         if ($request->filled('mes')) {
-            $query->whereMonth('fecha', $request->mes);
+            $query->whereMonth('start_at', $request->mes);
         }
 
         if ($request->filled('provincia_id')) {
@@ -25,10 +25,12 @@ class ShowsController extends Controller
         }
 
         if ($request->filled('interprete_id')) {
-            $query->where('interprete_id', $request->interprete_id);
+            $query->whereHas('interpretes', function($q) use($request) {
+                $q->where('interpretes.id', $request->interprete_id);
+            });
         }
 
-        $shows = $query->with(['interprete', 'images'])->orderBy('fecha')->paginate(12);
+        $shows = $query->with(['interpretes', 'images'])->orderBy('start_at')->paginate(12);
 
         $interpretes = \App\Models\Interprete::orderBy('interprete')->get();
         $provincias = \App\Models\Provincia::orderBy('nombre')->get();
@@ -58,7 +60,7 @@ class ShowsController extends Controller
     {
         // dd($slug);
         $interprete = Interprete::where('slug', $slug)->first();
-        $shows = $interprete->shows()->with('images')->get();
+        $shows = $interprete->events()->with('images')->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
         $section = 'shows';
@@ -77,9 +79,9 @@ class ShowsController extends Controller
 
     public function show($slug)
     {
-        $show = Show::with(['interprete', 'provincia', 'images'])->where('slug', $slug)->firstOrFail();
+        $show = Event::with(['interpretes', 'provincia', 'images'])->where('slug', $slug)->firstOrFail();
 
-        $ultimos_shows = Show::where('estado', 1)
+        $ultimos_shows = Event::where('editorial_status', 'published')
             ->where('id', '<>', $show->id)
             ->orderByDesc('created_at')
             ->take(10)
@@ -109,10 +111,10 @@ class ShowsController extends Controller
 
     public function showGeneral($slug)
     {
-        $show = Show::where('slug', $slug)->with('interprete')->firstOrFail();
+        $show = Event::where('slug', $slug)->with('interpretes')->firstOrFail();
 
-        $canonical = $show->interprete
-            ? route('artista.show.detalle', [$show->interprete->slug, $show->slug])
+        $canonical = $show->interpretes->count() > 0
+            ? route('artista.show.detalle', [$show->interpretes->first()->slug, $show->slug])
             : route('cartelera.show', $show->slug);
 
         return view('frontend.shows.show', compact('show', 'canonical'));

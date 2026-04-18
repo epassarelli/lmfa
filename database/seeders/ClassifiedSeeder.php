@@ -51,11 +51,23 @@ class ClassifiedSeeder extends Seeder
         ];
 
         foreach ($categories as $categoryName => $classifieds) {
-            $categoryId = DB::table('categories')->where('name', $categoryName)->first()->id;
+            $cat = DB::table('categories')->where('name', $categoryName)->first();
+            if (!$cat) continue;
+            
+            $categoryId = $cat->id;
 
             foreach ($classifieds as $classified) {
-                DB::table('classifieds')->insert(array_merge($classified, ['category_id' => $categoryId]));
+                $slug = \Illuminate\Support\Str::slug($classified['title']) . '-' . \Illuminate\Support\Str::random(4);
+                DB::table('classifieds')->insert(array_merge($classified, [
+                    'category_id' => $categoryId,
+                    'slug' => $slug,
+                    'is_active' => true,
+                    'estado' => 'activo',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]));
             }
         }
+
     }
 }

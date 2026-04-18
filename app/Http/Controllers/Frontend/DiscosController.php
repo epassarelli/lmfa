@@ -11,12 +11,7 @@ class DiscosController extends Controller
 {
     public function index()
     {
-        // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
-        $disco = new Album();
-        // Obtener los últimos 5 intérpretes
-        $ultimos = $disco->getNLast(Album::class, 48);
-        $visitados = $disco->getNMostVisited(Album::class, 40);
-
+        $discos = Album::where('estado', 1)->orderBy('created_at', 'desc')->paginate(24);
 
         $metaTitle = "Discografías de Folklore Argentino: Álbumes y Obras Destacadas";
         $metaDescription = "Explora las discografías completas del folklore argentino. Encuentra álbumes y canciones clásicas de artistas destacados. ¡Descubre la música tradicional de Argentina aquí!";
@@ -25,7 +20,7 @@ class DiscosController extends Controller
             ['label' => 'Discos', 'url' => route('discografias.index')]
         ];
 
-        return view('frontend.discos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.discos.index', compact('discos', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function byArtista($slug)

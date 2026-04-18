@@ -39,11 +39,10 @@
 
       {{-- Barra lateral --}}
       <div class="w-full lg:w-1/3">
-        <h3 class="text-xl font-semibold mb-4">Últimos mitos</h3>
+        <h3 class="text-xl font-semibold mb-4">Mitos relacionados</h3>
 
-
-        @foreach ($ultimos_mitos as $ultimo_mito)
-          <x-mito-card :mito="$mito" />
+        @foreach ($relacionados as $relacionado)
+          <x-mito-card :mito="$relacionado" />
         @endforeach
 
       </div>
@@ -56,7 +55,7 @@
 
 @section('sidebar')
 
-  {{-- <x-sidebar.newsletter-form /> --}}
+  <x-sidebar.newsletter-form />
   <x-sidebar.social-links />
   {{-- <x-sidebar.top-news :noticias="$noticiasMasLeidas" /> --}}
   {{-- <x-sidebar.upcoming-shows :eventos="$eventosSidebar" /> --}}

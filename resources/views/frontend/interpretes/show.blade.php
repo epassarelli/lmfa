@@ -75,6 +75,7 @@
 @endsection
 
 @section('sidebar')
+  <x-sidebar.newsletter-form />
   @if ($interprete->images->isNotEmpty())
     <div class="mb-4">
       <x-optimized-image :image="$interprete->images->first()" variant="card" width="400" height="400"

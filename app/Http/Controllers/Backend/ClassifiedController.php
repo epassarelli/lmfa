@@ -20,10 +20,20 @@ class ClassifiedController extends Controller
         $this->middleware('auth');
         $this->imageService = $imageService;
     }
+
     public function index()
     {
-        $classifieds = Classified::with(['category', 'tags', 'images'])->get();
-        return view('backend.classifieds.index', compact('classifieds'));
+        $pendientes  = Classified::with(['category', 'user'])->where('estado', 'pendiente')->latest()->get();
+        $activos     = Classified::with(['category', 'user'])->where('estado', 'activo')->latest()->get();
+        $rechazados  = Classified::with(['category', 'user'])->where('estado', 'rechazado')->latest()->take(20)->get();
+
+        return view('backend.classifieds.index', compact('pendientes', 'activos', 'rechazados'));
+    }
+
+    public function show(Classified $classified)
+    {
+        $classified->load(['category', 'tags', 'images', 'user']);
+        return view('backend.classifieds.show', compact('classified'));
     }
 
     public function create()
@@ -35,7 +45,12 @@ class ClassifiedController extends Controller
 
     public function store(StoreClassifiedRequest $request)
     {
-        $classified = Classified::create($request->validated());
+        $data = $request->validated();
+        $data['slug']   = \Illuminate\Support\Str::slug($data['title']) . '-' . \Illuminate\Support\Str::random(4);
+        $data['estado'] = 'activo';
+        $data['is_active'] = true;
+
+        $classified = Classified::create($data);
 
         if ($request->has('tags')) {
             $classified->tags()->sync($request->tags);
@@ -43,17 +58,11 @@ class ClassifiedController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $this->imageService->process(
-                    $image,
-                    $classified,
-                    'news_full', // Use news_full for now
-                    'classifieds'
-                );
+                $this->imageService->process($image, $classified, 'news_full', 'classifieds', false, $classified->slug);
             }
         }
 
-        return redirect()->route('classifieds.index')
-            ->with('success', 'Classified created successfully.');
+        return redirect()->route('backend.classifieds.index')->with('success', 'Aviso creado y publicado.');
     }
 
     public function edit(Classified $classified)
@@ -72,26 +81,40 @@ class ClassifiedController extends Controller
         }
 
         if ($request->hasFile('images')) {
-            $classified->images()->delete(); // Remove old images
+            $classified->images()->delete();
             foreach ($request->file('images') as $image) {
-                $this->imageService->process(
-                    $image,
-                    $classified,
-                    'news_full',
-                    'classifieds'
-                );
+                $this->imageService->process($image, $classified, 'news_full', 'classifieds', false, $classified->slug);
             }
         }
 
-        return redirect()->route('classifieds.index')
-            ->with('success', 'Classified updated successfully.');
+        return redirect()->route('backend.classifieds.index')->with('success', 'Aviso actualizado.');
+    }
+
+    public function approve(Request $request, Classified $classified)
+    {
+        $classified->update([
+            'estado'    => 'activo',
+            'is_active' => true,
+            'expiration_date' => now()->addDays(30)->toDateString(),
+        ]);
+        return redirect()->route('backend.classifieds.index')->with('success', 'Aviso aprobado y publicado por 30 días.');
+    }
+
+    public function reject(Request $request, Classified $classified)
+    {
+        $request->validate(['motivo' => 'nullable|string|max:500']);
+        $classified->update([
+            'estado'             => 'rechazado',
+            'is_active'          => false,
+            'moderator_comment'  => $request->motivo,
+        ]);
+        return redirect()->route('backend.classifieds.index')->with('success', 'Aviso rechazado.');
     }
 
     public function destroy(Classified $classified)
     {
+        $classified->images()->delete();
         $classified->delete();
-
-        return redirect()->route('classifieds.index')
-            ->with('success', 'Classified deleted successfully.');
+        return redirect()->route('backend.classifieds.index')->with('success', 'Aviso eliminado.');
     }
 }

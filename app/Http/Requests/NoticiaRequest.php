@@ -21,7 +21,7 @@ class NoticiaRequest extends FormRequest
             'slug' => [
                 'required',
                 'string',
-                Rule::unique('noticias', 'slug')->ignore($noticia?->id),
+                Rule::unique('news', 'slug')->ignore($noticia?->id),
             ],
             'noticia' => 'required|string',
             'foto' => $noticia ? 'nullable|image' : 'required|image',

@@ -6,9 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Comida;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\LinkService;
 
 class RecetasController extends Controller
 {
+    protected $linkService;
+
+    public function __construct(LinkService $linkService)
+    {
+        $this->linkService = $linkService;
+    }
     public function index()
     {
         $comida = new Comida();
@@ -34,11 +41,21 @@ class RecetasController extends Controller
     public function show($slug)
     {
         $receta = Comida::where('slug', $slug)->with('images')->firstOrFail();
-        $ultimas_recetas = Comida::where('estado', 1)
+        
+        // Relacionadas por la misma letra inicial (o categoría si existiera, pero por ahora letra)
+        $relacionadas = Comida::where('estado', 1)
             ->where('id', '<>', $receta->id)
-            ->orderByDesc('created_at')
-            ->take(10)
+            ->where('titulo', 'LIKE', substr($receta->titulo, 0, 1) . '%')
+            ->take(6)
             ->get();
+
+        if ($relacionadas->isEmpty()) {
+            $relacionadas = Comida::where('estado', 1)
+                ->where('id', '<>', $receta->id)
+                ->latest()
+                ->take(6)
+                ->get();
+        }
 
         // Incrementar el contador de visitas
         $receta->increment('visitas');
@@ -46,12 +63,14 @@ class RecetasController extends Controller
         $metaTitle = "Receta de " . $receta->titulo . " | Comida Típica del Folklore";
         $metaDescription = Str::limit(strip_tags(html_entity_decode($receta->receta)), 150);
 
+        $receta->receta = $this->linkService->autoLinkArtists($receta->receta);
+
         $breadcrumbs = [
             ['label' => 'Comidas', 'url' => route('comidas.index')],
             ['label' => $receta->titulo]
         ];
 
-        return view('frontend.recetas.show', compact('receta', 'ultimas_recetas', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.recetas.show', compact('receta', 'relacionadas', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function letra($letra)

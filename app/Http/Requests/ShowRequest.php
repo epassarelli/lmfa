@@ -14,25 +14,19 @@ class ShowRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'show' => 'required|string|max:255',
-      'detalle' => 'required|string',
-      'fecha' => 'required|date',
-      'hora' => 'nullable|string|max:10',
-      'lugar' => 'nullable|string|max:255',
-      'direccion' => 'nullable|string|max:255',
-      'interprete_id' => 'nullable|exists:interpretes,id',
-
-      // Nuevos campos
-      //'precio_entrada' => 'nullable|string|max:100',
-      //'link_entradas' => 'nullable|url|max:255',
-      //'destacado' => 'nullable|boolean',
-      //'imagen_destacada' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-      'slug' => 'nullable|string|max:255|unique:shows,slug,' . (optional($this->route('show'))->id ?? ''),
-      'lat' => 'nullable|numeric|between:-90,90',
-      'lng' => 'nullable|numeric|between:-180,180',
-      //'provincia_id' => 'nullable|exists:provincias,id',
-      'estado' => 'nullable|integer|in:0,1',
-      'publicar' => 'nullable|date',
+      'title'        => 'required|string|max:255',
+      'body'         => 'required|string',
+      'start_at'     => 'required|date',
+      'published_at' => 'nullable|date',
+      'city'         => 'nullable|string|max:255',
+      'address'      => 'nullable|string|max:255',
+      'province_id'  => 'nullable|exists:provincias,id',
+      'interprete_id'=> 'nullable|exists:interpretes,id',
+      'ticket_url'   => 'nullable|url|max:255',
+      'price_text'   => 'nullable|string|max:100',
+      'is_free'      => 'nullable|boolean',
+      'slug'         => 'nullable|string|max:255|unique:events,slug,' . (optional($this->route('show'))->id ?? ''),
+      'estado'       => 'nullable|integer|in:0,1',
     ];
   }
 }

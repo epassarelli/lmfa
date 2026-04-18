@@ -3,85 +3,106 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User as SocialiteUser;
 
 class SocialiteController extends Controller
 {
-
-    /**
-     * Redirecciona al usuario a la página de Google para autenticarse.
-     */
-    public function redirectToGoogle()
+    public function redirectToGoogle(): RedirectResponse
     {
-        return Socialite::driver('google')->redirect();
+        return $this->redirectToProvider('google');
     }
 
-    /**
-     * Obtiene la información del usuario de Google.
-     */
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(): RedirectResponse
+    {
+        return $this->handleProviderCallback('google', 'google_id');
+    }
+
+    public function redirectToFacebook(): RedirectResponse
+    {
+        return $this->redirectToProvider('facebook', ['email']);
+    }
+
+    public function handleFacebookCallback(): RedirectResponse
+    {
+        return $this->handleProviderCallback('facebook', 'facebook_id');
+    }
+
+    private function redirectToProvider(string $provider, array $scopes = []): RedirectResponse
+    {
+        $driver = Socialite::driver($provider);
+
+        if (! empty($scopes)) {
+            $driver = $driver->scopes($scopes);
+        }
+
+        return $driver->redirect();
+    }
+
+    private function handleProviderCallback(string $provider, string $providerColumn): RedirectResponse
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
-            $user = User::where('email', $googleUser->getEmail())->first();
+            $socialUser = Socialite::driver($provider)->user();
+            $user = $this->resolveUser($socialUser, $providerColumn);
 
-            if ($user) {
-                Auth::login($user);
-            } else {
-                $user = User::create([
-                    'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'google_id' => $googleUser->getId(),
-                    // Puedes generar una contraseña aleatoria o dejarla vacía.
-                    'password' => encrypt('random_password'),
+            Auth::login($user, true);
+
+            return redirect()->intended(route('dashboard'));
+        } catch (\Throwable $exception) {
+            Log::error("Social login failed for {$provider}", [
+                'message' => $exception->getMessage(),
+            ]);
+
+            return redirect()
+                ->route('login')
+                ->withErrors([
+                    'email' => "No se pudo iniciar sesion con {$this->providerLabel($provider)}. Revisa la configuracion del proveedor e intenta nuevamente.",
                 ]);
-
-                Auth::login($user);
-            }
-
-            return redirect()->intended('admin');
-        } catch (\Exception $e) {
-            return redirect('/login')->withErrors(['login' => 'Algo salió mal al intentar iniciar sesión con Google.']);
         }
     }
 
-
-
-    /**
-     * Redirecciona al usuario a la página de Facebook para autenticarse.
-     */
-    public function redirectToFacebook()
+    private function resolveUser(SocialiteUser $socialUser, string $providerColumn): User
     {
-        return Socialite::driver('facebook')->redirect();
+        $providerId = $socialUser->getId();
+        $email = $socialUser->getEmail();
+        $name = $socialUser->getName() ?: $socialUser->getNickname() ?: 'Usuario MFA';
+
+        $user = User::query()
+            ->where($providerColumn, $providerId)
+            ->when($email, fn ($query) => $query->orWhere('email', $email))
+            ->first();
+
+        if (! $user && ! $email) {
+            throw new \RuntimeException('El proveedor no devolvio un email para asociar la cuenta.');
+        }
+
+        if (! $user) {
+            $user = new User();
+            $user->email = $email;
+            $user->password = Hash::make(Str::random(40));
+            $user->email_verified_at = now();
+        }
+
+        $user->name = $user->name ?: $name;
+        $user->{$providerColumn} = $providerId;
+        $user->last_login_at = now();
+        $user->save();
+
+        return $user;
     }
 
-    /**
-     * Obtiene la información del usuario de Facebook.
-     */
-    public function handleFacebookCallback()
+    private function providerLabel(string $provider): string
     {
-        try {
-            $facebookUser = Socialite::driver('facebook')->user();
-            $user = User::where('email', $facebookUser->getEmail())->first();
-
-            if ($user) {
-                Auth::login($user);
-            } else {
-                $user = User::create([
-                    'name' => $facebookUser->getName(),
-                    'email' => $facebookUser->getEmail(),
-                    'facebook_id' => $facebookUser->getId(),
-                    'password' => encrypt('random_password'),
-                ]);
-
-                Auth::login($user);
-            }
-
-            return redirect()->intended('admin');
-        } catch (\Exception $e) {
-            return redirect('/login')->withErrors(['login' => 'Algo salió mal al intentar iniciar sesión con Facebook.']);
-        }
+        return match ($provider) {
+            'google' => 'Google',
+            'facebook' => 'Facebook',
+            default => ucfirst($provider),
+        };
     }
 }

@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 use App\Models\Festival;
+use App\Services\LinkService;
 
 class FestivalesController extends Controller
 {
+    protected $linkService;
+
+    public function __construct(LinkService $linkService)
+    {
+        $this->linkService = $linkService;
+    }
     public function index()
     {
 
@@ -51,6 +58,8 @@ class FestivalesController extends Controller
             ['label' => 'Festivales', 'url' => route('festivales.index')],
             ['label' => $festival->titulo]
         ];
+
+        $festival->detalle = $this->linkService->autoLinkArtists($festival->detalle);
 
         return view('frontend.festivales.show', compact('festival', 'ultimos_festivales', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }

@@ -68,6 +68,7 @@
 
 
 @section('sidebar')
+  <x-sidebar.newsletter-form />
   {{-- tu sidebar específico --}}
   <x-sidebar.social-links />
 

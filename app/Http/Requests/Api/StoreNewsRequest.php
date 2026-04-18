@@ -22,15 +22,24 @@ class StoreNewsRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'titulo' => 'required|string|max:255',
-      'categoria_id' => 'required|exists:categorias,id',
-      'noticia' => 'required|string',
+      // Nombres canónicos (recomendados para integraciones nuevas)
+      'title'                => 'sometimes|string|max:255',
+      'body'                 => 'sometimes|string',
+      'featured_image_path'  => 'nullable|string',
+      'created_by'           => 'sometimes|exists:users,id',
+      'published_at'         => 'nullable|date',
+      'editorial_status'     => 'nullable|string',
+      // Nombres legacy (compatibilidad con integraciones existentes)
+      'titulo'       => 'sometimes|string|max:255',
+      'noticia'      => 'sometimes|string',
+      'foto'         => 'nullable|string',
+      'user_id'      => 'sometimes|exists:users,id',
+      'publicar'     => 'nullable',
+      // Campos comunes (ambos formatos)
+      'categoria_id'  => 'required|exists:categorias,id',
       'interprete_id' => 'nullable|exists:interpretes,id',
-      'foto' => 'nullable|string', // Assuming URL or path string for now
-      'visitas' => 'nullable|integer',
-      'publicar' => 'boolean',
-      'user_id' => 'required|exists:users,id',
-      'estado' => 'nullable|string',
+      'visitas'       => 'nullable|integer',
+      'estado'        => 'nullable|string',
     ];
   }
 }

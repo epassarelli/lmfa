@@ -71,11 +71,10 @@ class HomeController extends Controller
         // ->toArray();
 
         // Obtener las últimas 4 shows
-        $show = new Show();
-        // $shows = $show->getNLast(Show::class, 4);
-        $shows = Show::where('estado', 1)
-            ->where('fecha', '>=', now())
-            ->orderBy('fecha', 'asc')
+        $shows = Show::where('editorial_status', 'published')
+            ->where('start_at', '>=', now())
+            ->with(['interpretes', 'images'])
+            ->orderBy('start_at', 'asc')
             ->paginate(4);
 
         // Obtener los últimos 3 intérpretes

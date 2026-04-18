@@ -126,6 +126,8 @@
 
 @section('sidebar')
 
+  <x-sidebar.newsletter-form />
+
   @if (isset($ultimasSidebar) && $ultimasSidebar->count() > 0)
     <x-sidebar.card-noticias :noticias="$ultimasSidebar" />
   @endif
