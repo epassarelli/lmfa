@@ -27,28 +27,24 @@ INSERT INTO events (
     editorial_status,
     publication_mode,
     created_at,
-    updated_at,
-    `show`,
-    detalles
+    updated_at
 )
 SELECT
     s.id,
-    s.show,
-    s.slug,
+    s.`show`,
+    CONCAT(COALESCE(NULLIF(s.slug, ''), 'evento'), '-', s.id),
     s.detalle,
     s.foto,
     s.fecha,
     s.direccion,
-    s.lugar, -- Mapeamos 'lugar' a 'city' o similar si no hay venue_id
-    NULL,    -- province_id se puede mapear si se conoce
+    s.lugar,
+    NULL,
     s.user_id,
     CASE WHEN s.estado = 1 THEN 'active' ELSE 'inactive' END,
     CASE WHEN s.estado = 1 THEN 'published' ELSE 'draft' END,
     'portal_only',
     s.created_at,
-    s.updated_at,
-    1,       -- flag 'show'
-    s.detalle
+    s.updated_at
 FROM shows s
 WHERE NOT EXISTS (
     SELECT 1 FROM events ex WHERE ex.id = s.id
