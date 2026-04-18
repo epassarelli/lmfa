@@ -343,6 +343,8 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
 -- ALTER: campos publisher en users (tabla ya existente)
 -- ============================================================
 ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS google_id varchar(255) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS facebook_id varchar(255) DEFAULT NULL,
   ADD COLUMN IF NOT EXISTS points int NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS rank varchar(255) NOT NULL DEFAULT 'Colaborador Bronce',
   ADD COLUMN IF NOT EXISTS phone varchar(255) DEFAULT NULL,

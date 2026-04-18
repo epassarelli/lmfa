@@ -29,6 +29,8 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
 -- 1. users: campos de publicador (migración 2026_04_09_031600)
 -- ----------------------------------------------------------------
 ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS google_id varchar(255) DEFAULT NULL AFTER email,
+  ADD COLUMN IF NOT EXISTS facebook_id varchar(255) DEFAULT NULL AFTER google_id,
   ADD COLUMN IF NOT EXISTS phone varchar(255) DEFAULT NULL AFTER rank,
   ADD COLUMN IF NOT EXISTS status varchar(30) NOT NULL DEFAULT 'active' AFTER phone,
   ADD COLUMN IF NOT EXISTS is_verified_publisher tinyint(1) NOT NULL DEFAULT 0 AFTER status,
