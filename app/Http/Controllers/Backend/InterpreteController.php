@@ -21,6 +21,7 @@ class InterpreteController extends Controller
   {
     $this->middleware('auth');
     $this->imageService = $imageService;
+    $this->authorizeResource(Interprete::class, 'interprete');
   }
 
   public function index()
@@ -105,6 +106,11 @@ class InterpreteController extends Controller
 
 
 
+    // Seguridad: Si edita alguien que no es admin, vuelve a foja cero (inactivo)
+    if (!Auth::user()->isAdmin()) {
+        $interprete->estado = 0;
+    }
+
     $interprete->save();
 
     return redirect()->route('backend.interpretes.index')
@@ -114,6 +120,11 @@ class InterpreteController extends Controller
 
   public function destroy(Interprete $interprete)
   {
+    if (!Auth::user()->isAdmin()) {
+        return redirect()->route('backend.interpretes.index')
+          ->with('error', 'No tienes permiso para eliminar este contenido.');
+    }
+
     $interprete->delete();
 
     return redirect()->route('backend.interpretes.index')

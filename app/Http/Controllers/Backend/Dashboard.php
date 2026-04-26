@@ -8,8 +8,8 @@ use App\Models\Cancion;
 use App\Models\Comida;
 use App\Models\Festival;
 use App\Models\Interprete;
-use App\Models\Noticia;
-use App\Models\Show;
+use App\Models\News;
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,14 +28,14 @@ class Dashboard extends Controller
         $user = Auth::user();
         $roles = $user->getRoleNames();
         $permissions = $user->getAllPermissions()->pluck('name');
-        // Traer las cantidades de cada entidad
 
+        // Traer las cantidades de cada entidad con la nueva nomenclatura
         $contadores = [
-            'noticias' => Noticia::count(),
+            'news' => News::count(),
             'canciones' => Cancion::count(),
             'usuarios' => User::count(),
             'interpretes' => Interprete::count(),
-            'shows' => Show::count(),
+            'events' => Event::count(),
             'discos' => Album::count(),
             'comidas' => Comida::count(),
             'festivales' => Festival::count(),

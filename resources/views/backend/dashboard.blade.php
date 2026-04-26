@@ -16,13 +16,13 @@
             <div class="small-box bg-warning">
                 <div class="inner">
                     <h3>{{ $contadores['contributions'] }}</h3>
-                    <p>Contribuciones Pendientes</p>
+                    <p>Publicaciones Pendientes</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-tasks"></i>
                 </div>
                 <a href="{{ route('backend.contributions.index') }}" class="small-box-footer">
-                    Revisar colaboraciones <i class="fas fa-arrow-circle-right"></i>
+                    Revisar publicaciones <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
@@ -30,144 +30,92 @@
       <div class="row">
 
         <div class="col-lg-3 col-6">
-          <!-- small box -->
           <div class="small-box bg-info">
             <div class="inner">
-              <h3>{{ $contadores['noticias'] }}</h3>
-
-              <p>Noticias</p>
+              <h3>{{ $contadores['news'] ?? 0 }}</h3>
+              <p>Noticias / Actualidad</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <a href="{{ route('backend.noticias.index') }}" class="small-box-footer">Más info <i
-                class="fas fa-arrow-circle-right"></i></a>
+            <div class="icon"><i class="fas fa-newspaper"></i></div>
+            <a href="{{ route('backend.news.index') }}" class="small-box-footer">Ver todas <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
 
         <div class="col-lg-3 col-6">
-          <!-- small box -->
           <div class="small-box bg-success">
             <div class="inner">
               <h3>{{ $contadores['interpretes'] }}</h3>
-
-              <p>Interpretes</p>
+              <p>Intérpretes</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-stats-bars"></i>
-            </div>
-            <a href="{{ route('backend.interpretes.index') }}" class="small-box-footer">Más info <i
-                class="fas fa-arrow-circle-right"></i></a>
+            <div class="icon"><i class="fas fa-microphone"></i></div>
+            <a href="{{ route('backend.interpretes.index') }}" class="small-box-footer">Ver todos <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
 
         <div class="col-lg-3 col-6">
-          <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
               <h3>{{ $contadores['usuarios'] }}</h3>
-
               <p>Usuarios</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-person-add"></i>
-            </div>
-            <a href="{{ route('users.index') }}" class="small-box-footer">Más info <i
-                class="fas fa-arrow-circle-right"></i></a>
+            <div class="icon"><i class="fas fa-users-cog"></i></div>
+            <a href="{{ route('users.index') }}" class="small-box-footer">Administrar <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
 
         <div class="col-lg-3 col-6">
-          <!-- small box -->
           <div class="small-box bg-danger">
             <div class="inner">
               <h3>{{ $contadores['canciones'] }}</h3>
-
               <p>Canciones</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="{{ route('backend.canciones.index') }}" class="small-box-footer">Más info <i
-                class="fas fa-arrow-circle-right"></i></a>
+            <div class="icon"><i class="fas fa-music"></i></div>
+            <a href="{{ route('backend.canciones.index') }}" class="small-box-footer">Ver todas <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
-
       </div>
-      <!-- /.row -->
 
-
-      <!-- Small boxes (Stat box) -->
       <div class="row">
-
         <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-success">
+          <div class="small-box bg-teal">
             <div class="inner">
               <h3>{{ $contadores['discos'] }}</h3>
-
-              <p>Discos</p>
+              <p>Discos / Álbumes</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-stats-bars"></i>
-            </div>
-            <a href="{{ route('backend.discos.index') }}" class="small-box-footer">Más info <i
-                class="fas fa-arrow-circle-right"></i></a>
+            <div class="icon"><i class="fas fa-compact-disc"></i></div>
+            <a href="{{ route('backend.discos.index') }}" class="small-box-footer">Ver todos <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
 
         <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-warning">
+          <div class="small-box bg-orange">
             <div class="inner">
               <h3>{{ $contadores['festivales'] }}</h3>
-
               <p>Festivales</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-person-add"></i>
-            </div>
-            <a href="{{ route('backend.festivales.index') }}" class="small-box-footer">Más info <i
-                class="fas fa-arrow-circle-right"></i></a>
+            <div class="icon"><i class="fas fa-map-marked-alt text-white"></i></div>
+            <a href="{{ route('backend.festivales.index') }}" class="small-box-footer text-white">Ver todos <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
 
         <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-danger">
+          <div class="small-box bg-maroon">
             <div class="inner">
               <h3>{{ $contadores['comidas'] }}</h3>
-
-              <p>Comidas</p>
+              <p>Comidas Típicas</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="{{ route('backend.comidas.index') }}" class="small-box-footer">Más info <i
-                class="fas fa-arrow-circle-right"></i></a>
+            <div class="icon"><i class="fas fa-utensils"></i></div>
+            <a href="{{ route('backend.comidas.index') }}" class="small-box-footer">Ver todas <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
 
         <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-info">
+          <div class="small-box bg-primary">
             <div class="inner">
-              <h3>{{ $contadores['shows'] }}</h3>
-
-              <p>Shows</p>
+              <h3>{{ $contadores['events'] }}</h3>
+              <p>Eventos / Cartelera</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <a href="{{ route('backend.shows.index') }}" class="small-box-footer">Más info <i
-                class="fas fa-arrow-circle-right"></i></a>
+            <div class="icon"><i class="fas fa-calendar-check"></i></div>
+            <a href="{{ route('backend.events.index') }}" class="small-box-footer">Ver cartelera <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->

@@ -39,12 +39,12 @@
           @foreach ($festivales as $festival)
             <tr>
               <td>{{ $festival->titulo }}</td>
-              <td>
+              <td style="width:60px;padding:4px">
                 @if ($festival->images->isNotEmpty())
-                  <x-optimized-image :image="$festival->images->first()" variant="card" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
-                @else
+                  <x-optimized-image :image="$festival->images->first()" variant="card" :minimal="true" style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle" />
+                @elseif($festival->foto)
                   <img src="{{ asset('storage/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
-                    style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
+                    style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle">
                 @endif
               </td>
               <td>{{ strlen(strip_tags($festival->detalle)) }}</td>
