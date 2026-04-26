@@ -4,7 +4,7 @@
 > **URL:** [https://mifolkloreargentino.com.ar](https://mifolkloreargentino.com.ar)  
 > **Tipo:** Portal web de contenido cultural  
 > **Propietario:** Proyecto propio  
-> **Última actualización:** Abril 2026
+> **Última actualización:** 2026-04-26
 
 ---
 
@@ -61,7 +61,7 @@ Cada artista tiene su propio "miniportal" accesible mediante slug directo (`/{sl
 | Letras | `/{artista}/letras` | Canciones y letras del artista |
 | Discografía | `/{artista}/discografia` | Álbumes y discos |
 | Shows | `/{artista}/shows` | Próximos eventos y shows |
-| Entrevistas | `/{artista}/entrevistas` | Entrevistas realizadas |
+| Entrevistas | `/{artista}/entrevistas` | 🔮 Diferido — próxima versión. Rutas activas pero controller sin métodos ni vistas. |
 
 - **Índice general de artistas** (`/biografias-de-artistas-folkloricos`) con navegación alfabética por letra.
 - Datos del artista: nombre, biografía, foto, teléfono, correo, Instagram, Twitter, YouTube.
@@ -94,14 +94,10 @@ Cada artista tiene su propio "miniportal" accesible mediante slug directo (`/{sl
 - Filtrado por provincia y mes.
 
 #### 3.1.8 Radios
-- **Índice** (`/radios-de-folklore-argentino`).
-- **Detalle** (`/radios-de-folklore-argentino/{slug}`).
-- Información de radios dedicadas al folklore argentino.
+- 🔮 **Módulo diferido — próxima versión.** Las rutas de índice existen pero el detalle (`/radios-de-folklore-argentino/{slug}`) está sin implementar. Sin gestión backend.
 
 #### 3.1.9 Peñas Folklóricas
-- **Índice** (`/penias-folkloricas-de-argentina`).
-- **Detalle** (`/penias-folkloricas-de-argentina/{slug}`).
-- Información sobre peñas folklóricas a lo largo del país.
+- 🔮 **Módulo diferido — próxima versión.** Las rutas de índice existen pero el detalle (`/penias-folkloricas-de-argentina/{slug}`) está sin implementar. Sin gestión backend.
 
 #### 3.1.10 Mitos y Leyendas
 - **Índice** (`/mitos-y-leyendas-argentinas`) con navegación alfabética.
@@ -126,11 +122,12 @@ Cada artista tiene su propio "miniportal" accesible mediante slug directo (`/{sl
 - Relación con categorías y tags.
 
 #### 3.1.13 Colaboraciones (UGC)
-- **Índice** (`/colaborar`): Panel del usuario para ver sus colaboraciones.
-- **Crear** (`/colaborar/{type}/{id?}`): Formulario para proponer contenido nuevo o ediciones.
+- **Índice** (`/admin/contribuir`): Panel para ver contribuciones propias (requiere auth).
+- **Crear** (`/admin/contribuir/crear/{type}/{id?}`): Formulario para proponer contenido nuevo o ediciones.
 - Sistema polimórfico: las contribuciones pueden asociarse a cualquier tipo de entidad.
 - Flujo de moderación: `pending` → `approved` / `rejected`.
 - Almacena payload (datos propuestos) como JSON.
+- ⚠️ **Estado:** Flujo a mitad de camino. Fue migrado de `/colaborar` al backend pero no se verificó qué funciona. Requiere prueba completa antes de considerar operativo.
 
 #### 3.1.14 Contacto
 - **Formulario** (`/contacto`): Formulario público de contacto.
@@ -295,17 +292,15 @@ Visitante → Formulario sidebar → Suscripción (genera token único)
 
 ---
 
-## 8. Módulos Planificados (Roadmap)
+## 8. Módulos Planificados (Próxima versión)
 
-| Módulo | Estado | Descripción |
-|---|---|---|
-| **Entrevistas** | 🟡 En progreso | Sección dedicada a entrevistas con artistas (controlador y rutas creados, vistas pendientes) |
-| **Peñas** | 🟡 Básico | Información de peñas folklóricas (modelo y vistas básicas existentes) |
-| **Radios** | 🟡 Básico | Directorio de radios de folklore (modelo y vistas básicas existentes) |
-| **Escuelas de Danzas** | 🔴 Pendiente | Directorio de escuelas y academias de danzas folklóricas |
-| **Videos** | 🔴 Pendiente | Sección dedicada a videos (controlador creado pero vacío) |
-| **Agentes IA** | 🔴 Planificado | Automatización de búsqueda y carga de contenido mediante agentes de IA |
-| **Newsletter en producción** | 🟡 En prueba | Envío semanal automatizado del newsletter |
+| Módulo | Descripción |
+|---|---|
+| **Entrevistas** | Sección dedicada a entrevistas con artistas. Controller existe sin métodos ni vistas. Requiere spec completa. |
+| **Radios** | Directorio de radios de folklore. Índice frontend funciona, detalle sin implementar. Sin backend. |
+| **Peñas** | Directorio de peñas folklóricas. Mismo estado que Radios. |
+| **Escuelas de Danzas** | Directorio de escuelas y academias de danzas folklóricas. No iniciado. |
+| **Videos** | Sección de videos. No iniciado. |
 
 ---
 
