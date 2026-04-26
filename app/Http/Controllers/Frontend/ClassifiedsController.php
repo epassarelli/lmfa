@@ -106,11 +106,10 @@ class ClassifiedsController extends Controller
             'tags.*'           => 'exists:tags,id',
         ]);
 
-        $validated['user_id']         = Auth::id();
-        $validated['slug']            = Str::slug($validated['title']) . '-' . Str::random(5);
-        $validated['estado']          = 'pendiente';
-        $validated['is_active']       = false;
-        $validated['expiration_date'] = now()->addDays(30)->toDateString();
+        $validated['user_id']   = Auth::id();
+        $validated['slug']      = Str::slug($validated['title']) . '-' . Str::random(5);
+        $validated['estado']    = 'pendiente';
+        $validated['is_active'] = false;
 
         $classified = Classified::create($validated);
 
@@ -119,7 +118,8 @@ class ClassifiedsController extends Controller
         }
 
         if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $img) {
+            $max = 5;
+            foreach (array_slice($request->file('images'), 0, $max) as $img) {
                 $this->imageService->process($img, $classified, 'news_full', 'classifieds', false, $classified->slug);
             }
         }

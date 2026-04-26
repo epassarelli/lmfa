@@ -18,18 +18,18 @@
 
         <ul class="nav nav-tabs mb-4" id="classified-tabs">
             <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#pendientes">
-                    ⏳ Pendientes <span class="badge bg-warning text-dark">{{ $pendientes->count() }}</span>
+                <a class="nav-link active" data-toggle="tab" href="#pendientes">
+                    ⏳ Pendientes <span class="badge badge-warning">{{ $pendientes->count() }}</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#activos">
-                    ✅ Activos <span class="badge bg-success">{{ $activos->count() }}</span>
+                <a class="nav-link" data-toggle="tab" href="#activos">
+                    ✅ Activos <span class="badge badge-success">{{ $activos->count() }}</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#rechazados">
-                    ❌ Rechazados <span class="badge bg-danger">{{ $rechazados->count() }}</span>
+                <a class="nav-link" data-toggle="tab" href="#rechazados">
+                    ❌ Rechazados <span class="badge badge-danger">{{ $rechazados->count() }}</span>
                 </a>
             </li>
         </ul>
@@ -51,12 +51,12 @@
                                     </small>
                                     <p class="mt-2 mb-0 text-muted small">{{ Str::limit($aviso->description, 150) }}</p>
                                 </div>
-                                <div class="col-md-5 text-end mt-3 mt-md-0">
+                                <div class="col-md-5 text-right mt-3 mt-md-0">
                                     <form action="{{ route('backend.classifieds.approve', $aviso) }}" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-success me-1">✅ Aprobar</button>
+                                        <button type="submit" class="btn btn-sm btn-success mr-1">✅ Aprobar</button>
                                     </form>
-                                    <button class="btn btn-sm btn-danger" data-bs-toggle="collapse" data-bs-target="#reject-{{ $aviso->id }}">
+                                    <button class="btn btn-sm btn-danger" data-toggle="collapse" data-target="#reject-{{ $aviso->id }}">
                                         ❌ Rechazar
                                     </button>
                                     <div class="collapse mt-2" id="reject-{{ $aviso->id }}">

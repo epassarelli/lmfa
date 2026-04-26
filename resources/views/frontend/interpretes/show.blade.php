@@ -51,7 +51,7 @@
     {{-- Contenido principal --}}
     <h1 class="text-2xl font-semibold mb-2">Biografía de {{ $interprete->interprete }}</h1>
     <div class="mb-6">
-      <a href="{{ route('contributions.create', ['type' => 'interprete', 'id' => $interprete->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
+      <a href="{{ route('backend.contributions.create', ['type' => 'interprete', 'id' => $interprete->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
         ✏️ Sugerir edición de biografía
       </a>
     </div>

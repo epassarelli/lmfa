@@ -53,7 +53,7 @@
           
           <h1 class="text-3xl font-bold mb-2">{{ $show->titulo }}</h1>
           <div class="mb-4">
-            <a href="{{ route('contributions.create', ['type' => 'show', 'id' => $show->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
+            <a href="{{ route('backend.contributions.create', ['type' => 'show', 'id' => $show->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
               📅 Sugerir corrección de datos del evento
             </a>
           </div>

@@ -21,6 +21,7 @@ class ComidaController extends Controller
     {
         $this->middleware('auth');
         $this->imageService = $imageService;
+        $this->authorizeResource(Comida::class, 'comida');
     }
 
     public function index()

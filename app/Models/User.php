@@ -69,6 +69,11 @@ class User extends Authenticatable
         // 'profile_photo_url',
     ];
 
+    public function getRankAttribute($value): string
+    {
+        return $value ?? 'Colaborador';
+    }
+
     public function contributions()
     {
         return $this->hasMany(Contribution::class);
@@ -82,5 +87,26 @@ class User extends Authenticatable
     public function publicationRequests()
     {
         return $this->hasMany(PublicationRequest::class, 'requested_by');
+    }
+
+    /**
+     * Helpers de rol
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function canPublish(): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        try {
+            return $this->hasPermissionTo('publish contents');
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

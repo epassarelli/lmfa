@@ -20,7 +20,6 @@ class Classified extends Model
         'contact_info',
         'contact_whatsapp',
         'expiration_date',
-        'is_active',
         'is_featured',
         'estado',
         'moderator_comment',
@@ -28,9 +27,13 @@ class Classified extends Model
 
     protected $casts = [
         'expiration_date' => 'date',
-        'is_active'       => 'boolean',
         'is_featured'     => 'boolean',
     ];
+
+    public function getIsActiveAttribute(): bool
+    {
+        return $this->estado === 'activo';
+    }
 
     public function images()
     {

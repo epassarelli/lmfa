@@ -151,55 +151,51 @@ class NoticiasController extends Controller
       ['label' => $categoria->nombre]
     ];
 
-
-
     return view('frontend.noticias.byCategoria', compact('categoria', 'categorias', 'noticias', 'ultimas', 'section', 'metaTitle', 'metaDescription'));
   }
 
-  // public function show($slugIterprete, $slugNoticia)
-  // {
-  //   $interprete = Interprete::where('slug', $slugIterprete)->first();
-  //   $noticia = Noticia::where('slug', $slugNoticia)->firstOrFail();
-
-  //   $ultimas_noticias = Noticia::where('estado', 1)
-  //     ->with('interprete')
-  //     ->where('id', '<>', $noticia->id)
-  //     ->orderByDesc('created_at')
-  //     ->take(10)
-  //     ->get();
-  //   // Incrementar el contador de visitas
-  //   $noticia->increment('visitas');
-  //   $interpretes = Interprete::getInterpretesExcluding($interprete->id);
-
-  //   $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
-  //   $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
-
-  //   $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
-  //   // Elimina los saltos de línea
-  //   $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
-
-  //   return view('frontend.noticias.show', compact('noticia', 'interprete', 'interpretes', 'ultimas_noticias', 'metaTitle', 'metaDescription'));
-  // }
-
-
-  public function show($slugIterprete, $slugNoticia)
+  public function show($param1, $param2 = null)
   {
-    $noticia = News::where('slug', $slugNoticia)
-      ->with(['categoria', 'interprete', 'interpretes', 'images'])
-      ->firstOrFail();
+    // Ruta general: /noticias-del-folklore-argentino/{slug}
+    //   → $param1 = slug noticia, $param2 = null
+    // Ruta artista: /{interprete:slug}/noticias/{noticia:slug}
+    //   → $param1 = slug intérprete, $param2 = slug noticia (inyección posicional)
+    if ($param2 !== null) {
+        $slugNoticia   = $param2;
+        $slugIterprete = $param1;
+    } else {
+        $slugNoticia   = $param1;
+        $slugIterprete = null;
+    }
 
-    // $ultimas_noticias = Noticia::where('estado', 1)
-    //   ->where('id', '<>', $noticia->id)
-    //   ->orderByDesc('created_at')
-    //   ->take(5)
-    //   ->get();
+    $interpretes = collect();
 
-    // Incrementar el contador de visitas
+    if ($slugIterprete) {
+        $interprete = Interprete::where('slug', $slugIterprete)->first();
+
+        if ($interprete) {
+            $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+        }
+    } else {
+        $interprete = null;
+    }
+
+    $noticia = News::where('slug', $slugNoticia)->firstOrFail();
+
+    $ultimas_noticias = News::where('estado', 1)
+      ->with('interprete')
+      ->where('id', '<>', $noticia->id)
+      ->orderByDesc('created_at')
+      ->take(10)
+      ->get();
+    
+      // Incrementar el contador de visitas
     $noticia->increment('visitas');
 
-    // Obtener 3 noticias relacionadas
-    // Prioridad: misma categoría, mismo intérprete principal, o intérpretes secundarios comunes
-    $relacionadas = News::where('editorial_status', 'published')
+    $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
+    $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
+
+        $relacionadas = News::where('editorial_status', 'published')
       ->where('id', '<>', $noticia->id)
       ->where(function ($query) use ($noticia) {
         // Por categoría
@@ -224,60 +220,115 @@ class NoticiasController extends Controller
       ->take(3)
       ->get();
 
-    $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
-    $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
-
-    $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
-    $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
-
-    $breadcrumbs = [
-      ['label' => 'Noticias', 'url' => route('noticias.index')],
-      ['label' => $noticia->titulo]
-    ];
-
-    // Últimas 10 noticias para el sidebar (excluyendo la noticia actual)
-    $ultimasSidebar = News::where('editorial_status', 'published')
-      ->where('id', '<>', $noticia->id)
-      ->with(['categoria', 'interprete', 'images'])
-      ->latest()
-      ->take(10)
-      ->get();
-
-    //dd($ultimasSidebar);
-
-    $breadcrumbs = [
-      ['label' => 'Noticias', 'url' => route('noticias.index')],
-      ['label' => $noticia->titulo]
-    ];
-
-    $noticia->noticia = $this->linkService->autoLinkArtists($noticia->noticia);
-
-    return view('frontend.noticias.show', compact('noticia', 'relacionadas', 'ultimasSidebar', 'metaTitle', 'metaDescription', 'breadcrumbs'));
-  }
-
-
-  public function generalShow($slug)
-  {
-    $noticia = News::where('slug', $slug)->with('interprete', 'categoria', 'images')->firstOrFail();
-
-    // Incrementar el contador de visitas
-    $noticia->increment('visitas');
-
-    $canonical = $noticia->interprete
-      ? route('artista.noticia', [$noticia->interprete->slug, $noticia->slug])
-      : route('noticias.show', $noticia->slug);
-
-    $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
-    $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
-
     $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
     // Elimina los saltos de línea
     $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
 
-    $noticia->noticia = $this->linkService->autoLinkArtists($noticia->noticia);
+    $breadcrumbs = [
+      ['label' => 'Noticias', 'url' => route('noticias.index')],
+      ['label' => $noticia->titulo]
+    ];
 
-    return view('frontend.noticias.show', compact('noticia', 'canonical', 'metaTitle', 'metaDescription'));
+    return view('frontend.noticias.show', compact('noticia', 'interprete', 'interpretes', 'ultimas_noticias', 'metaTitle', 'metaDescription', 'relacionadas', 'breadcrumbs'));
   }
+
+
+  // public function show2($slugNoticia)
+  // {
+  //   $noticia = News::where('slug', $slugNoticia)
+  //     ->with(['categoria', 'interprete', 'interpretes', 'images'])
+  //     ->firstOrFail();
+
+  //   // $ultimas_noticias = Noticia::where('estado', 1)
+  //   //   ->where('id', '<>', $noticia->id)
+  //   //   ->orderByDesc('created_at')
+  //   //   ->take(5)
+  //   //   ->get();
+
+  //   // Incrementar el contador de visitas
+  //   $noticia->increment('visitas');
+
+  //   // Obtener 3 noticias relacionadas
+  //   // Prioridad: misma categoría, mismo intérprete principal, o intérpretes secundarios comunes
+  //   $relacionadas = News::where('editorial_status', 'published')
+  //     ->where('id', '<>', $noticia->id)
+  //     ->where(function ($query) use ($noticia) {
+  //       // Por categoría
+  //       if ($noticia->categoria_id) {
+  //         $query->where('categoria_id', $noticia->categoria_id);
+  //       }
+  //       // Por intérprete principal
+  //       if ($noticia->interprete_id) {
+  //         $query->orWhere('interprete_id', $noticia->interprete_id);
+  //       }
+  //       // Por intérpretes secundarios (si existen)
+  //       $interpreteIds = $noticia->interpretes->pluck('id')->toArray();
+  //       if (!empty($interpreteIds)) {
+  //         $query->orWhereHas('interpretes', function ($q) use ($interpreteIds) {
+  //           $q->whereIn('interprete_id', $interpreteIds);
+  //         });
+  //       }
+  //     })
+  //     ->with(['categoria', 'interprete', 'images'])
+  //     ->orderByDesc('created_at')
+  //     ->distinct()
+  //     ->take(3)
+  //     ->get();
+
+  //   $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
+  //   $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
+
+  //   $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
+  //   $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
+
+  //   $breadcrumbs = [
+  //     ['label' => 'Noticias', 'url' => route('noticias.index')],
+  //     ['label' => $noticia->titulo]
+  //   ];
+
+  //   // Últimas 10 noticias para el sidebar (excluyendo la noticia actual)
+  //   $ultimasSidebar = News::where('editorial_status', 'published')
+  //     ->where('id', '<>', $noticia->id)
+  //     ->with(['categoria', 'interprete', 'images'])
+  //     ->latest()
+  //     ->take(10)
+  //     ->get();
+
+  //   //dd($ultimasSidebar);
+
+  //   $breadcrumbs = [
+  //     ['label' => 'Noticias', 'url' => route('noticias.index')],
+  //     ['label' => $noticia->titulo]
+  //   ];
+
+  //   $noticia->noticia = $this->linkService->autoLinkArtists($noticia->noticia);
+  //   dd($relacionadas);
+  //   return view('frontend.noticias.show', compact('noticia', 'relacionadas', 'ultimasSidebar', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+  // }
+
+
+  // public function generalShow($slug)
+  // {
+  //   $noticia = News::where('slug', $slug)->with('interprete', 'categoria', 'images')->firstOrFail();
+
+  //   // Incrementar el contador de visitas
+  //   $noticia->increment('visitas');
+
+  //   $canonical = $noticia->interprete
+  //     ? route('artista.noticia', [$noticia->interprete->slug, $noticia->slug])
+  //     : route('noticias.show', $noticia->slug);
+
+  //   $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
+  //   $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
+
+  //   $metaDescription = Str::limit(strip_tags(html_entity_decode($noticia->noticia)), 150);
+  //   // Elimina los saltos de línea
+  //   $metaDescription = preg_replace('/\r?\n|\r/', ' ', $metaDescription);
+
+  //   $noticia->noticia = $this->linkService->autoLinkArtists($noticia->noticia);
+
+  //   #return view('frontend.noticias.show', compact('noticia', 'canonical', 'metaTitle', 'metaDescription'));
+  // }
 
 
   public function busqueda(Request $request)

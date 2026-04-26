@@ -125,6 +125,7 @@
                                     <th>Destino</th>
                                     <th>Estado</th>
                                     <th>Prioridad</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,6 +147,16 @@
                                         <td>{{ $target->destination_type ?? '-' }}</td>
                                         <td><span class="badge badge-{{ $tc }}">{{ $target->status }}</span></td>
                                         <td>{{ $target->priority }}</td>
+                                        <td>
+                                            @if ($target->status === 'failed')
+                                                <form action="{{ route('pasarela.publication-requests.targets.retry', [$publicationRequest, $target]) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-xs btn-warning">
+                                                        <i class="fas fa-redo"></i> Reintentar
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
