@@ -25,8 +25,9 @@ class ShowRequest extends FormRequest
       'ticket_url'   => 'nullable|url|max:255',
       'price_text'   => 'nullable|string|max:100',
       'is_free'      => 'nullable|boolean',
-      'slug'         => 'nullable|string|max:255|unique:events,slug,' . (optional($this->route('show'))->id ?? ''),
+      'slug'         => 'nullable|string|max:255|unique:events,slug,' . ($this->route('event')?->id ?? $this->route('show')?->id ?? ''),
       'estado'       => 'nullable|integer|in:0,1',
+      'foto'         => 'nullable|image|max:5120',
     ];
   }
 }

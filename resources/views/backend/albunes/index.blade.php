@@ -27,7 +27,7 @@
         <thead>
           <tr>
             <th>COD</th>
-            <th>Foto</th>
+            <th style="width:60px">Foto</th>
             <th>Año</th>
             <th>Álbum</th>
             <th>Visitas</th>
@@ -41,12 +41,15 @@
           @foreach ($albums as $album)
             <tr>
               <td>{{ $album->id }}</td>
-              <td>
+              <td style="width:60px;padding:4px">
                 @if ($album->images->isNotEmpty())
-                  <x-optimized-image :image="$album->images->first()" variant="card" style="max-height: 50px;" />
-                @else
+                  <x-optimized-image :image="$album->images->first()" variant="card" :minimal="true" style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle" />
+                @elseif($album->foto)
                   <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}"
-                    style="max-height: 50px;">
+                    style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle">
+                @else
+                  <img src="{{ asset('img/no-image.jpg') }}"
+                    style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle">
                 @endif
               </td>
               <td>{{ $album->anio }}</td>
@@ -54,7 +57,7 @@
               <td>{{ $album->visitas }}</td>
               <td>{{ $album->spotify ? 'Sí' : '-' }}</td>
               <td>{{ $album->canciones_count }}</td>
-              <td>{{ $album->interprete->interprete }}</td>
+              <td>{{ $album->interprete?->interprete ?? '—' }}</td>
               <td class="text-right" style="white-space: nowrap;">
                 <a href="{{ route('backend.discos.edit', $album) }}" class="btn btn-warning"><i
                     class="fas fa-edit"></i></a>

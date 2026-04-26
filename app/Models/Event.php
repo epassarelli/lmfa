@@ -173,16 +173,6 @@ class Event extends Model
         $this->attributes['published_at'] = $value;
     }
 
-    public function getEstadoAttribute()
-    {
-        return $this->editorial_status === 'published' ? 1 : 0;
-    }
-
-    public function setEstadoAttribute($value)
-    {
-        $this->attributes['editorial_status'] = $value ? 'published' : 'draft';
-    }
-
     /**
      * Primer intérprete asociado (para compatibilidad con show-card).
      * Requiere que la relación interpretes esté eager-loaded.

@@ -1,11 +1,22 @@
-{{-- resources/views/admin/categories/edit.blade.php --}}
-@extends('backend.categories.form')
+@extends('adminlte::page')
 
-@section('form_action')
-  <form action="{{ route('backend.categories.update', $category->id) }}" method="POST">
-    @method('PUT')
-  @endsection
+@section('title', 'Editar Categoría')
 
-  @section('form_values')
-    value="{{ old('name', $category->name) }}"
-  @endsection
+@section('content_header')
+    <h1>Editar Categoría: {{ $category->name }}</h1>
+@stop
+
+@section('content')
+<div class="card">
+    <div class="card-body">
+        <form action="{{ route('backend.categories.update', $category) }}" method="POST">
+            @csrf
+            @method('PUT')
+            @include('backend.categories.form')
+
+            <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+            <a href="{{ route('backend.categories.index') }}" class="btn btn-default mt-3">Cancelar</a>
+        </form>
+    </div>
+</div>
+@stop

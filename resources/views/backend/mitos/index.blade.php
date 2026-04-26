@@ -36,12 +36,12 @@
           @foreach ($mitos as $mito)
             <tr>
               <td>{{ $mito->titulo }}</td>
-              <td>
+              <td style="width:60px;padding:4px">
                 @if ($mito->images->isNotEmpty())
-                  <x-optimized-image :image="$mito->images->first()" variant="card" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
-                @else
+                  <x-optimized-image :image="$mito->images->first()" variant="card" :minimal="true" style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle" />
+                @elseif($mito->foto)
                   <img src="{{ asset('storage/' . $mito->foto) }}" alt="{{ $mito->titulo }}"
-                    style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
+                    style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle">
                 @endif
               </td>
               {{-- <td>{{ $mito->user->name }}</td> --}}

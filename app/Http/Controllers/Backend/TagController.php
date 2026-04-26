@@ -25,7 +25,7 @@ class TagController extends Controller
     {
         Tag::create($request->validated());
 
-        return redirect()->route('tags.index')
+        return redirect()->route('backend.tags.index')
             ->with('success', 'Tag created successfully.');
     }
 
@@ -38,7 +38,7 @@ class TagController extends Controller
     {
         $tag->update($request->validated());
 
-        return redirect()->route('tags.index')
+        return redirect()->route('backend.tags.index')
             ->with('success', 'Tag updated successfully.');
     }
 
@@ -46,7 +46,7 @@ class TagController extends Controller
     {
         $tag->delete();
 
-        return redirect()->route('tags.index')
+        return redirect()->route('backend.tags.index')
             ->with('success', 'Tag deleted successfully.');
     }
 }

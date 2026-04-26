@@ -5,11 +5,23 @@
     'alt' => null,
     'class' => '',
     'loading' => 'lazy',
-    'fetchpriority' => 'auto'
+    'fetchpriority' => 'auto',
+    'minimal' => false // Para usar solo el tamaño más pequeño
 ])
 
 @php
-    $variants = $image->variants_json[$variant] ?? [];
+    $allVariants = is_array($image->variants_json) ? $image->variants_json : (json_decode($image->variants_json, true) ?? []);
+
+    // Buscar la variante pedida; si no existe, usar la primera disponible
+    if (!empty($allVariants[$variant])) {
+        $variants = $allVariants[$variant];
+    } elseif (!empty($allVariants)) {
+        // Fallback: primera variante (ej. 'main' si no hay 'card')
+        $variants = reset($allVariants);
+    } else {
+        $variants = [];
+    }
+
     ksort($variants); // Asegurar que los tamaños estén ordenados de menor a mayor
 
     $srcset = [];
@@ -18,34 +30,43 @@
     }
     $srcsetImage = implode(', ', $srcset);
     
-    // El src por defecto será la variante más grande disponible para esa variante específica
-    $defaultSrc = end($variants);
+    // minimal = solo el tamaño más pequeño, sin srcset pesado
+    $defaultSrc = $minimal ? reset($variants) : end($variants);
     
-    // Obtener las dimensiones para evitar layout shift (opcionalmente podemos calcularlas)
-    $width = key($variants); // tomamos el primer width como referencia o el original
-    $height = null;
+    if ($minimal) {
+        $srcsetImage = '';
+    }
     
-    // Si tenemos el original_width y original_height en el modelo, podemos calcular el aspect ratio
+    // Dimensiones para evitar layout shift
     if ($image->original_width && $image->original_height) {
         $aspectRatio = $image->original_height / $image->original_width;
-        // Tomamos el width más grande de la variante para el tag img descriptivo
         $maxWidth = array_key_last($variants);
         $maxHeight = (int) round($maxWidth * $aspectRatio);
     }
 @endphp
 
 @if(!empty($variants))
-    <img 
-        src="{{ $defaultSrc }}" 
-        srcset="{{ $srcsetImage }}" 
-        sizes="{{ $sizes }}" 
-        alt="{{ $alt ?? $image->alt }}" 
-        class="{{ $class }}"
-        loading="{{ $loading }}"
-        fetchpriority="{{ $fetchpriority }}"
-        @if(isset($maxWidth)) width="{{ $maxWidth }}" height="{{ $maxHeight }}" @endif
-    >
+    @if($minimal)
+        {{-- Modo minimal: solo la URL más pequeña, sin srcset, sin width/height automático --}}
+        <img
+            src="{{ reset($variants) }}"
+            alt="{{ $alt ?? $image->alt }}"
+            class="{{ $class }}"
+            loading="{{ $loading }}"
+        >
+    @else
+        <img
+            src="{{ end($variants) }}"
+            srcset="{{ $srcsetImage }}"
+            sizes="{{ $sizes }}"
+            alt="{{ $alt ?? $image->alt }}"
+            class="{{ $class }}"
+            loading="{{ $loading }}"
+            fetchpriority="{{ $fetchpriority }}"
+            @if(isset($maxWidth)) width="{{ $maxWidth }}" height="{{ $maxHeight }}" @endif
+        >
+    @endif
 @else
-    <!-- Fallback si no hay variantes para este perfil/variante -->
+    {{-- Fallback si no hay variantes para este perfil/variante --}}
     <img src="{{ $image->original_path }}" alt="{{ $alt ?? $image->alt }}" class="{{ $class }}" loading="{{ $loading }}">
 @endif

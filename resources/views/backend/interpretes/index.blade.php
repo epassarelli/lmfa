@@ -41,12 +41,12 @@
           @foreach ($interpretes as $interprete)
             <tr>
               <td>{{ $interprete->id }}</td>
-              <td>
+              <td style="width:60px;padding:4px">
                 @if ($interprete->images->isNotEmpty())
-                  <x-optimized-image :image="$interprete->images->first()" variant="card" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" />
-                @else
+                  <x-optimized-image :image="$interprete->images->first()" variant="card" :minimal="true" style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle" />
+                @elseif($interprete->foto)
                   <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
-                    class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                    style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle">
                 @endif
               </td>
               <td>{{ $interprete->interprete }}</td>
@@ -66,22 +66,22 @@
                     <i class="fas fa-eye"></i>
                   </a> --}}
 
-                  {{-- @can('edit', $interprete) --}}
+                  @can('update', $interprete)
                   <a class="btn btn-warning" href="{{ route('backend.interpretes.edit', $interprete->id) }}">
                     <i class="fas fa-edit"></i>
                   </a>
-                  {{-- @endcan --}}
+                  @endcan
 
-                  {{-- @can('delete', $interprete) --}}
+                  @can('delete', $interprete)
                   <form action="{{ route('backend.interpretes.destroy', $interprete->id) }}" method="POST"
                     style="display:inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro?')">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                   </form>
-                  {{-- @endcan --}}
+                  @endcan
                 </div>
               </td>
             </tr>

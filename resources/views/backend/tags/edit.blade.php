@@ -1,11 +1,22 @@
-{{-- resources/views/admin/tags/edit.blade.php --}}
-@extends('backend.tags.form')
+@extends('adminlte::page')
 
-@section('form_action')
-  <form action="{{ route('backend.tags.update', $tag->id) }}" method="POST">
-    @method('PUT')
-  @endsection
+@section('title', 'Editar Etiqueta')
 
-  @section('form_values')
-    value="{{ old('name', $tag->name) }}"
-  @endsection
+@section('content_header')
+    <h1>Editar Etiqueta: {{ $tag->name }}</h1>
+@stop
+
+@section('content')
+<div class="card">
+    <div class="card-body">
+        <form action="{{ route('backend.tags.update', $tag) }}" method="POST">
+            @csrf
+            @method('PUT')
+            @include('backend.tags.form')
+
+            <button type="submit" class="btn btn-primary mt-3">Actualizar Cambios</button>
+            <a href="{{ route('backend.tags.index') }}" class="btn btn-default mt-3">Regresar</a>
+        </form>
+    </div>
+</div>
+@stop

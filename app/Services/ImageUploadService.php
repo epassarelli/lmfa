@@ -108,7 +108,7 @@ class ImageUploadService
             'original_width' => $originalWidth,
             'original_height' => $originalHeight,
             'mime' => $mime,
-            'alt' => $model->titulo ?? $model->interprete ?? $model->album ?? $model->show ?? $model->name ?? '',
+            'alt' => Str::limit($model->title ?? $model->titulo ?? $model->interprete ?? $model->album ?? $model->show ?? $model->name ?? '', 250),
         ]);
     }
 }
