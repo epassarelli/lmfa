@@ -5,13 +5,13 @@
 @section('content')
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <div class="mb-8">
-        <a href="{{ route('contributions.index') }}" class="text-orange-600 hover:text-orange-700 font-medium">← Volver al panel</a>
+        <a href="{{ route('backend.contributions.index') }}" class="text-orange-600 hover:text-orange-700 font-medium">← Volver al panel</a>
         <h1 class="text-3xl font-bold text-gray-800 mt-2">
             {{ $original ? 'Sugerir Edición' : 'Cargar Nuevo Contenido' }}: {{ ucfirst($type) }}
         </h1>
     </div>
 
-    <form action="{{ route('contributions.store') }}" method="POST" class="bg-white rounded-lg shadow-lg p-8 space-y-6">
+    <form action="{{ route('backend.contributions.store') }}" method="POST" class="bg-white rounded-lg shadow-lg p-8 space-y-6">
         @csrf
         <input type="hidden" name="type" value="{{ $type }}">
         @if($original)

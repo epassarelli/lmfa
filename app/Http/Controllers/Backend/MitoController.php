@@ -21,6 +21,7 @@ class MitoController extends Controller
   {
     $this->middleware('auth');
     $this->imageService = $imageService;
+    $this->authorizeResource(Mito::class, 'mito');
   }
 
   public function index()

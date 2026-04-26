@@ -112,22 +112,33 @@ Cada artista tiene su propio "miniportal" accesible mediante slug directo (`/{sl
 - Campos: título, receta (contenido), imágenes.
 
 #### 3.1.12 Clasificados
-- **Índice** (`/avisos-clasificados`): Listado público de clasificados activos.
-- **Detalle** (`/avisos-clasificados/{slug}`).
-- **Publicar** (`/avisos-clasificados/publicar`): Requiere autenticación.
-- **Mis avisos** (`/avisos-clasificados/mis-avisos`): Panel del usuario para ver sus clasificados.
-- **Renovar** (`/avisos-clasificados/renovar/{id}`): Renovación de avisos expirados.
-- Campos: título, descripción, precio, ubicación, información de contacto, WhatsApp, fecha de expiración.
-- Sistema de moderación: estados `pendiente`, `activo`, `rechazado`.
-- Relación con categorías y tags.
+- **Índice** (`/avisos-clasificados`): Listado público de clasificados activos y no expirados. Filtros por categoría, búsqueda de texto y provincia.
+- **Detalle** (`/avisos-clasificados/{slug}`): Vista individual con avisos relacionados por categoría.
+- **Publicar** (`/avisos-clasificados/publicar`): Formulario de alta (requiere auth). El aviso se crea en estado `pendiente`.
+- **Mis avisos** (`/avisos-clasificados/mis-avisos`): Panel del usuario con sus propios avisos paginados.
+- **Renovar** (`POST /avisos-clasificados/renovar/{classified}`): Reactiva un aviso propio vuelviéndolo a estado `pendiente` por 30 días nuevos desde la aprobación.
+
+**Campos:** `title`, `description`, `price` (libre), `location`, `contact_info`, `contact_whatsapp`, `expiration_date`, `is_featured`, `estado`, `is_active`, `moderator_comment`. Relación con categoría (1:1), tags (N:N) e imágenes (polimórfico).
+
+**Ciclo de vida:**
+```
+[Usuario] crea → pendiente → Admin aprueba → activo (30 días desde aprobación)
+                           → Admin rechaza → rechazado (con motivo)
+[activo] vence → expirado (implícito: expiration_date < hoy)
+[Usuario] renueva → pendiente → Admin aprueba → activo (30 días nuevos)
+[Admin] crea directamente → activo (sin moderación)
+```
+
+**Slug único:** se genera como `{slug-del-titulo}-{5 chars random}` para evitar colisiones.
 
 #### 3.1.13 Colaboraciones (UGC)
-- **Índice** (`/admin/contribuir`): Panel para ver contribuciones propias (requiere auth).
-- **Crear** (`/admin/contribuir/crear/{type}/{id?}`): Formulario para proponer contenido nuevo o ediciones.
-- Sistema polimórfico: las contribuciones pueden asociarse a cualquier tipo de entidad.
-- Flujo de moderación: `pending` → `approved` / `rejected`.
-- Almacena payload (datos propuestos) como JSON.
-- ⚠️ **Estado:** Flujo a mitad de camino. Fue migrado de `/colaborar` al backend pero no se verificó qué funciona. Requiere prueba completa antes de considerar operativo.
+- **Índice** (`/admin/contribuir`): Panel personal del colaborador — muestra sólo sus propias contribuciones (requiere auth).
+- **Crear** (`/admin/contribuir/crear/{type}/{id?}`): Formulario para proponer contenido nuevo o sugerir edición a uno existente. Tipos habilitados: `interprete`, `noticia`, `cancion`, `festival`, `show`.
+- Sistema polimórfico: las contribuciones se almacenan con `contributable_type / contributable_id` y un `payload` JSON con los datos propuestos.
+- Flujo de moderación: `pending` → `approved` / `rejected`. El moderador puede agregar un comentario al rechazar.
+- Al aprobarse: si es contenido nuevo se crea el modelo con `estado=1` y se genera slug automático; si es edición se aplica el payload sobre el registro existente.
+- Sistema de puntos: +50 pts por contenido nuevo aprobado, +20 pts por edición aprobada. Rangos: > 500 pts → "Folclorista de Plata", > 1000 pts → "Folclorista de Oro".
+- Ver sección 3.2.3 para las rutas de moderación (exclusivas de `administrador`).
 
 #### 3.1.14 Contacto
 - **Formulario** (`/contacto`): Formulario público de contacto.
@@ -179,8 +190,19 @@ Accesible en `/admin`, protegido por autenticación. Basado en **AdminLTE**.
 | **Tags** | Gestión de etiquetas |
 
 #### 3.2.3 Moderación
-- **Contribuciones (UGC)**: Revisar, aprobar o rechazar contribuciones de usuarios con comentario de moderador.
-- **Clasificados**: Aprobar o rechazar avisos con comentario de moderador.
+
+El sistema tiene **dos flujos de moderación distintos** que no se solapan:
+
+**Moderación editorial** (`/admin/moderation` — `ModerationController`): revisa contenido cargado directamente por staff que quedó en borrador o sin publicar. Aplica a:
+- News con `editorial_status='draft'` o `published_at=null`
+- Events con `editorial_status='draft'`
+- Intérpretes, álbumes y canciones con `estado=0`
+
+La acción de publicar se hace desde el formulario de edición de cada entidad (no desde este panel). El panel solo muestra el listado y un enlace a "Revisar".
+
+**Moderación UGC** (`/admin/contributions` — `ContributionController`, solo `administrador`): revisa propuestas de usuarios externos. Muestra comparativa original vs. propuesto. Acciones: aprobar (aplica el payload y otorga puntos) o rechazar (con comentario opcional).
+
+**Moderación de clasificados** (`/admin/classifieds` — `ClassifiedController`): revisa avisos enviados por usuarios. Acciones: aprobar (activa por 30 días) o rechazar (con motivo). El admin también puede crear clasificados directamente como `activo`.
 
 #### 3.2.4 Gestión de Usuarios y Permisos
 - **Usuarios**: CRUD completo de usuarios del sistema.
@@ -195,23 +217,131 @@ Accesible en `/admin`, protegido por autenticación. Basado en **AdminLTE**.
 
 ### 3.3 API REST
 
-API versionada (`/api/v1/`) protegida con **Laravel Sanctum**.
+API versionada (`/api/v1/`) protegida con **Laravel Sanctum** (token Bearer). Rate limit global: 60 req/min por IP o user_id.
 
-| Recurso | Endpoint | Operaciones |
-|---|---|---|
-| Noticias | `/api/v1/news` | CRUD completo |
-| Álbumes | `/api/v1/albums` | CRUD completo |
-| Canciones | `/api/v1/songs` | CRUD completo |
-| Comidas | `/api/v1/foods` | CRUD completo |
-| Festivales | `/api/v1/festivals` | CRUD completo |
-| Artistas | `/api/v1/artists` | CRUD completo |
-| Mitos | `/api/v1/myths` | CRUD completo |
+```
+Authorization: Bearer {sanctum_token}
+```
 
-> **Estado actual:** La API está disponible pero no tiene consumidores activos. Preparada para futura integración con aplicaciones móviles u otros servicios.
+Las respuestas de `index` son paginadas (15/página, formato estándar Laravel). Las de `show/store/update` devuelven el modelo directo sin Resource class. `destroy` responde `204 No Content`.
+
+#### Endpoints
+
+| Recurso | URL base | Notas |
+|---------|----------|-------|
+| Noticias | `/api/v1/news` | Filtros: `?categoria_id=N`, `?estado=N`. Store/update pasan por `NewsService` y soportan `multipart/form-data` para imagen. |
+| Álbumes | `/api/v1/albums` | CRUD estándar |
+| Canciones | `/api/v1/songs` | CRUD estándar |
+| Comidas | `/api/v1/foods` | CRUD estándar |
+| Festivales | `/api/v1/festivals` | CRUD estándar |
+| Artistas | `/api/v1/artists` | Auto-genera `slug` desde campo `interprete` en store y update |
+| Mitos | `/api/v1/myths` | CRUD estándar |
+
+#### Gaps y limitaciones actuales
+
+- **Sin control de roles en escritura**: cualquier token Sanctum válido puede crear, editar o eliminar cualquier recurso. No hay verificación de rol en store/update/destroy.
+- **Sin recurso `events`**: los Eventos/Shows no tienen endpoints API.
+- **Sin recurso `classifieds`**: los clasificados tampoco están expuestos.
+- **Sin versioning real**: el prefix `v1` existe pero no hay mecanismo de deprecación ni routing alternativo para una `v2`.
+
+> **Estado actual:** La API está disponible pero no tiene consumidores activos. Preparada para integración con aplicaciones móviles u otros servicios.
 
 ---
 
-### 3.4 Autenticación
+### 3.4 Pasarela de Contenidos
+
+Sistema de distribución multicanal que permite a publicadores solicitar la publicación de un **Evento** o **Noticia** en uno o más destinos: el portal nativo, sus propias redes sociales, o las cuentas institucionales del portal.
+
+Accesible en `/admin/pasarela/`. Requiere autenticación.
+
+#### 3.4.1 Actores
+
+| Actor | Descripción |
+|-------|-------------|
+| **Publicador** | Usuario con contenido (`Event` o `News`) asociado a una organización de la que es miembro activo, o que creó directamente. |
+| **Administrador** | Ve el dashboard global: pendientes de moderación, publicaciones del día, fallos por canal, tokens vencidos. |
+| **Sistema** | Job de cola que ejecuta cada canal asíncronamente. Scheduler diario para recordatorios de eventos. |
+
+#### 3.4.2 Entidades
+
+| Modelo | Tabla | Descripción |
+|--------|-------|-------------|
+| `PublicationRequest` | `publication_requests` | Intención de publicar un contenido. Campos clave: `content_type`, `content_id`, `mode`, `wants_portal_publish`, `wants_own_social`, `wants_portal_social`, `scheduled_at`, `status`. |
+| `PublicationTarget` | `publication_targets` | Un canal destino específico dentro de un request. Estados: `pending`, `processing`, `published`, `failed`. |
+| `PublicationAttempt` | `publication_attempts` | Registro de cada intento de ejecución sobre un target. Guarda payload de request y response, URL externa generada, error si falla. |
+| `SocialAccount` | `social_accounts` | Credenciales de redes sociales. Polimórfico (`owner_type / owner_id`). MVP: token ingresado manualmente. |
+| `PublicationTemplate` | `publication_templates` | Texto del post con tokens reemplazables. Un template se asocia a `provider` + `content_type` + `variant_name`. |
+| `UserNotification` | `user_notifications` | Notificaciones in-app por usuario, con flag `is_read`. |
+
+#### 3.4.3 Modos de publicación
+
+| Modo | Portal nativo | Redes propias | Redes del portal |
+|------|:---:|:---:|:---:|
+| `portal_only` | ✓ | — | — |
+| `social_only` | — | ✓ | — |
+| `full` | ✓ | ✓ | ✓ |
+
+Cada canal habilitado genera un `PublicationTarget` independiente.
+
+#### 3.4.4 Canales (Connectors)
+
+| Provider | Connector | Descripción |
+|----------|-----------|-------------|
+| `native_portal` | `NativePortalConnector` | No hace HTTP. Marca el contenido como `published`, asigna `published_at` y devuelve la URL pública. |
+| `facebook` | `FacebookConnector` | Publica en la página de Facebook del publicador usando el token de la `SocialAccount`. |
+| `instagram` | `InstagramConnector` | Publica en la cuenta profesional de Instagram. |
+| `telegram` | `TelegramConnector` | Publica en el canal o grupo de Telegram. |
+
+Todos los connectors extienden `BaseConnector`, que provee `isHealthy()` (verifica estado y expiración del token), `resolveContent()` y `recordAttempt()`.
+
+El job `PublishToProviderJob` tiene `tries=3` y `backoff=60s`. Si el conector reporta fallo con `is_retryable=false`, el target queda en `failed` sin reintentos adicionales.
+
+#### 3.4.5 Templates
+
+El `TemplateService` resuelve el texto del post en cascada:
+
+1. `content_type` + `provider` + `variant_name` (match exacto)
+2. `content_type` + `provider` (sin variant)
+3. `provider` + `content_type=null` (default del proveedor)
+4. Fallback hardcoded: `"{title}\n\n{excerpt}"`
+
+**Tokens disponibles en el texto del template:** `{title}`, `{subtitle}`, `{excerpt}`, `{url}`, `{date}`, `{city}`, `{venue}`
+
+Variantes estándar: `default`, `facebook_default`, `instagram_default`, `telegram_default`, `institutional`.
+
+#### 3.4.6 Recordatorio automático de eventos
+
+El job `EventReminderJob` corre diariamente vía Laravel Scheduler. Detecta eventos con `editorial_status='approved'` y `start_at` dentro de las próximas 48 horas que aún no tienen `published_at`. Por cada uno: crea un `PublicationRequest` tipo `portal_only` (si no existe previamente) y genera una `UserNotification` para el creador.
+
+#### 3.4.7 Rutas
+
+| URL | Nombre | Descripción |
+|-----|--------|-------------|
+| `GET /admin/pasarela/` | `pasarela.index` | Dashboard overview |
+| `GET /admin/pasarela/dashboard` | `pasarela.dashboard` | Dashboard del publicador (mis stats) |
+| `GET /admin/pasarela/admin/dashboard` | `pasarela.admin.dashboard` | Dashboard global (admin) |
+| `GET /admin/pasarela/publication-requests` | `pasarela.publication-requests.index` | Mis solicitudes paginadas |
+| `GET /admin/pasarela/publication-requests/create?content_type=&content_id=` | `pasarela.publication-requests.create` | Formulario de solicitud |
+| `POST /admin/pasarela/publication-requests` | `pasarela.publication-requests.store` | Registrar solicitud |
+| `GET /admin/pasarela/publication-requests/{id}` | `pasarela.publication-requests.show` | Detalle y estado de targets |
+| `GET/POST /admin/pasarela/social-accounts` | `pasarela.social-accounts.*` | Gestión de cuentas sociales |
+| `GET/POST/PUT/DELETE /admin/pasarela/templates` | `pasarela.templates.*` | ABM de templates |
+| `POST /admin/pasarela/templates/preview` | `pasarela.templates.preview` | Preview del template (JSON) |
+| `GET /admin/pasarela/notifications` | `pasarela.notifications.index` | Centro de notificaciones |
+| `POST /admin/pasarela/notifications/{id}/read` | `pasarela.notifications.mark-read` | Marcar leída |
+| `POST /admin/pasarela/notifications/read-all` | `pasarela.notifications.mark-all-read` | Marcar todas leídas |
+| `GET /admin/pasarela/notifications/count` | `pasarela.notifications.unread-count` | Conteo sin leer (JSON) |
+
+#### 3.4.8 Gaps y limitaciones actuales
+
+- **Token no cifrado:** `SocialAccount.token_encrypted` almacena el token en texto plano. El campo lleva el sufijo `_encrypted` por intención futura pero no usa el cast `encrypted` de Laravel.
+- **Fallback a user_id=1 en scheduler:** `PublicationService` usa `Auth::id() ?? 1`. Las solicitudes creadas por el job quedan asignadas al usuario con `id=1`.
+- **Portal social sin filtro de organización:** cuando `wants_portal_social=true`, la query busca cuentas de cualquier `Organization` activa — no sólo la del portal. Requiere definir cuál es la "organización institucional".
+- **Sin reintento manual desde UI:** no hay ruta para reintentar un target fallido. Solo reintentos automáticos del job (máx. 3).
+
+---
+
+### 3.5 Autenticación
 
 | Método | Descripción |
 |---|---|
@@ -222,15 +352,82 @@ API versionada (`/api/v1/`) protegida con **Laravel Sanctum**.
 
 ---
 
+### 3.6 Sistema de Imágenes
+
+Infraestructura transversal usada por el backend, la API y los clasificados. Implementada en `ImageUploadService` + `config/image_profiles.php`. Genera variantes WebP en múltiples tamaños y las registra en la tabla `media_assets` (modelo `Image` / `MediaAsset`) mediante relación polimórfica.
+
+#### Cómo funciona
+
+```
+UploadedFile → ImageUploadService::process($file, $model, $profile, $folder)
+    ├── Guarda el original en storage/public/{folder}/{Y/m}/{filename}_original.{ext}
+    └── Por cada variante del perfil:
+            ├── Redimensiona con ratio (cover) o solo ancho (scale)
+            └── Convierte a WebP (calidad 85)
+                → Guarda en storage/public/{folder}/{Y/m}/{filename}_{variant}_{size}.webp
+→ Crea registro MediaAsset con variants_json (mapa variante → tamaño → URL)
+```
+
+No escala hacia arriba: si el original es más pequeño que un tamaño definido, esa variante se omite.
+
+#### Perfiles disponibles
+
+| Perfil | Usado en | Variantes |
+|--------|----------|-----------|
+| `news_full` | Noticias, clasificados | `card` 16:9 (320/480/768px), `detail` 16:9 (768/1200/1600px), `sidebar` 1:1 (120/240/320px) |
+| `artist` | Intérpretes | `card` 1:1 (80/160px), `main` 3:4 (300/450/768px) |
+| `album` | Discos | `card` 1:1 (80/160px), `main` 1:1 (300/600/800px) |
+| `recipe` | Comidas | `card` 4:3 (80/160px), `main` 4:3 (400/800px) |
+| `hero` | Hero banners | `main` 16:9 (768/1280/1600/1920px) |
+
+#### Acceso a las variantes desde una vista
+
+```php
+$model->images->first()->variants_json['card'][480]  // URL del webp 480px de la variante card
+```
+
+El componente Blade `optimized-image` encapsula esto con lazy loading y srcset automático.
+
+#### Gaps
+
+- El perfil `news_full` se usa también para clasificados aunque no genera variante `detail` útil para esa entidad — fue reutilizado por conveniencia.
+- No existe perfil para `festival`, `mito` ni `show` — esos módulos no tienen upload de imagen vía `ImageUploadService`.
+
+---
+
 ## 4. Roles y Permisos
 
-El sistema utiliza **Spatie Laravel Permission** para gestión de roles y permisos.
+El sistema utiliza **Spatie Laravel Permission**. Hay 3 roles definidos en el seeder (más el estado "sin rol" para usuarios registrados comunes):
 
-| Rol | Descripción | Acceso |
-|---|---|---|
-| **Administrador** | Control total del sistema | Backend completo, moderación, gestión de usuarios |
-| **Usuario registrado** | Usuario autenticado | Publicar clasificados, enviar colaboraciones, gestionar sus avisos |
-| **Visitante** | Usuario no autenticado | Navegar todo el contenido público, suscribirse al newsletter, contacto |
+| Rol | Quién es | Acceso clave |
+|-----|----------|--------------|
+| `administrador` | Equipo del portal | Todo: CRUD completo, todas las moderaciones, gestión de usuarios y roles, dashboard admin Pasarela |
+| `prensa` | Periodistas / colaboradores de confianza | create+read+update en casi todo el contenido (sin delete, sin gestión de usuarios); Pasarela propia; sin `manage templates` |
+| `colaborador` | Aportantes externos | Solo create+read en todas las entidades (sin update ni delete); sin Pasarela |
+| *(sin rol)* | Usuario registrado común | Solo frontend: publicar clasificados, enviar contribuciones UGC, ver sus avisos |
+| *(anónimo)* | Visitante | Solo lectura pública, newsletter, contacto |
+
+#### Permisos granulares (Spatie)
+
+Por cada entidad (`user`, `interprete`, `noticia`, `show`, `cancion`, `album`, `festival`, `mito`, `comida`) existen 5 permisos:
+
+| Permiso | Descripción |
+|---------|-------------|
+| `access {entidad}` | Acceso al módulo en el backend |
+| `create {entidad}` | Crear registros |
+| `read {entidad}` | Ver registros |
+| `update {entidad}` | Editar registros |
+| `delete {entidad}` | Eliminar registros |
+
+Permisos específicos de la Pasarela:
+
+| Permiso | Quién lo tiene |
+|---------|----------------|
+| `publish contents` | `administrador`, `prensa` |
+| `manage social accounts` | `administrador`, `prensa` |
+| `manage templates` | solo `administrador` |
+
+> **Nota:** La verificación de permisos en el backend actualmente usa `role:administrador` en los middlewares, no los permisos granulares individuales. Los permisos granulares están definidos en el seeder pero no están siendo chequeados en los controllers. El sistema está preparado para un control más fino cuando se requiera.
 
 ---
 
@@ -250,11 +447,17 @@ Usuario registrado → /colaborar → Selecciona tipo y completa formulario
 
 ### 5.3 Flujo de Clasificados
 ```
-Usuario registrado → /avisos-clasificados/publicar → Completa formulario
-→ Clasificado creado (estado: pendiente)
-→ Administrador revisa → Aprueba / Rechaza
-→ Si aprobado: visible en listado público
-→ Si expira: usuario puede renovar
+[Usuario] → /avisos-clasificados/publicar → Completa formulario
+→ Clasificado creado (estado: pendiente, is_active: false, expiration_date: +30 días)
+→ Admin revisa en /admin/classifieds
+    ├── Aprueba → estado: activo, is_active: true, expiration_date: ahora+30 días
+    └── Rechaza → estado: rechazado (con motivo opcional)
+
+[activo] → pasa expiration_date → se oculta del índice público (sin cambio de estado)
+→ Usuario entra a /avisos-clasificados/mis-avisos → Renueva
+→ estado: pendiente nuevamente → vuelve al flujo de aprobación
+
+[Admin] → /admin/classifieds/create → crea directo como activo (sin moderación)
 ```
 
 ### 5.4 Flujo de Newsletter
@@ -262,6 +465,32 @@ Usuario registrado → /avisos-clasificados/publicar → Completa formulario
 Visitante → Formulario sidebar → Suscripción (genera token único)
 → Job semanal recopila contenido → Envía email a suscriptores activos
 → Enlace de desuscripción con token en cada email
+```
+
+### 5.5 Flujo de Publicación Multicanal (Pasarela)
+```
+Publicador → /admin/pasarela/publication-requests/create?content_type=&content_id=
+→ Selecciona modo y canales → POST store
+→ PublicationService.createRequest()
+    ├── Crea PublicationRequest (status: pending)
+    └── generateTargets() → crea 1 PublicationTarget por canal
+         └── dispatchJobs() → encola PublishToProviderJob por cada target
+
+→ [Queue worker] PublishToProviderJob.handle()
+    ├── ConnectorFactory::make($provider)
+    ├── isHealthy() → si falla: target=failed, fin
+    ├── publish() → BaseConnector.recordAttempt() → guarda PublicationAttempt
+    └── target.status = 'published' | 'failed'
+         └── si failed y is_retryable → reintento automático (máx. 3, delay 60s)
+```
+
+### 5.6 Flujo de Recordatorio Automático de Eventos
+```
+Scheduler diario → EventReminderJob
+→ Busca eventos: editorial_status=approved, start_at ∈ [now, now+48h], published_at=null
+→ Por cada evento:
+    ├── Si no existe PublicationRequest previo → crea uno (portal_only) → encola jobs
+    └── Crea UserNotification para el creador del evento
 ```
 
 ---
@@ -289,6 +518,9 @@ Visitante → Formulario sidebar → Suscripción (genera token único)
 | **Facebook OAuth** | Login social |
 | **YouTube** | Enlaces a videos de canciones y artistas |
 | **Spotify** | Enlaces a canciones y álbumes |
+| **Facebook Graph API** | Publicación en páginas de Facebook (Pasarela) |
+| **Instagram Graph API** | Publicación en cuentas profesionales (Pasarela) |
+| **Telegram Bot API** | Publicación en canales y grupos (Pasarela) |
 
 ---
 

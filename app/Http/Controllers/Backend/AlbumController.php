@@ -27,6 +27,7 @@ class AlbumController extends Controller
   {
     $this->middleware('auth');
     $this->imageService = $imageService;
+    $this->authorizeResource(Album::class, 'album');
   }
 
   public function index()
@@ -133,7 +134,11 @@ class AlbumController extends Controller
 
   public function destroy(Album $album)
   {
-    $this->authorize('delete', $album);
+    if (!Auth::user()->isAdmin()) {
+        return redirect()->route('backend.discos.index')
+          ->with('error', 'No tienes permiso para eliminar este disco.');
+    }
+    
     $album->delete();
 
     Alert::success('Album eliminado', 'El album se ha sido eliminado con éxito.');
@@ -142,15 +147,19 @@ class AlbumController extends Controller
 
   private function sendNotification(Album $album)
   {
-    $details = [
-      'title' => 'Se ha agregado un/a Album en el portal',
-      'album' => $album->album,
-      'foto' => $album->foto,
-      'anio' => $album->anio,
-      'interprete' => $album->interprete->nombre,
-      'user' => $album->user->name,
-    ];
+    try {
+        $details = [
+          'title' => 'Se ha agregado un/a Album en el portal',
+          'album' => $album->album,
+          'foto' => $album->foto,
+          'anio' => $album->anio,
+          'interprete' => $album->interprete?->nombre ?? '—',
+          'user' => $album->user?->name ?? 'Invitado',
+        ];
 
-    Mail::to('info@mifolkloreargentino.com')->send(new \App\Mail\AlbumCreated($details));
+        Mail::to('info@mifolkloreargentino.com')->send(new \App\Mail\AlbumCreated($details));
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error("Error enviando correo de Album: " . $e->getMessage());
+    }
   }
 }

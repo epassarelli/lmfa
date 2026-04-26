@@ -31,6 +31,10 @@ return [
 
     'artist' => [
         'variants' => [
+            'card' => [
+                'ratio' => [1, 1],
+                'sizes' => [80, 160],
+            ],
             'main' => [
                 'ratio' => [3, 4],
                 'sizes' => [300, 450, 768],
@@ -49,6 +53,10 @@ return [
 
     'album' => [
         'variants' => [
+            'card' => [
+                'ratio' => [1, 1],
+                'sizes' => [80, 160],
+            ],
             'main' => [
                 'ratio' => [1, 1],
                 'sizes' => [300, 600, 800],
@@ -58,9 +66,56 @@ return [
 
     'recipe' => [
         'variants' => [
+            'card' => [
+                'ratio' => [4, 3],
+                'sizes' => [80, 160],
+            ],
             'main' => [
                 'ratio' => [4, 3],
                 'sizes' => [400, 800],
+            ],
+        ],
+    ],
+
+    'festival' => [
+        'variants' => [
+            'card' => [
+                'ratio' => [16, 9],
+                'sizes' => [320, 480],
+            ],
+            'main' => [
+                'ratio' => [16, 9],
+                'sizes' => [768, 1200],
+            ],
+        ],
+    ],
+
+    'mito' => [
+        'variants' => [
+            'card' => [
+                'ratio' => [4, 3],
+                'sizes' => [160, 320],
+            ],
+            'main' => [
+                'ratio' => [4, 3],
+                'sizes' => [600, 900],
+            ],
+        ],
+    ],
+
+    'event' => [
+        'variants' => [
+            'card' => [
+                'ratio' => [16, 9],
+                'sizes' => [320, 480],
+            ],
+            'main' => [
+                'ratio' => [16, 9],
+                'sizes' => [768, 1200],
+            ],
+            'sidebar' => [
+                'ratio' => [1, 1],
+                'sizes' => [120, 240],
             ],
         ],
     ],

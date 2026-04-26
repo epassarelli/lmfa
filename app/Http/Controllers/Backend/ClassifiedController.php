@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateClassifiedRequest;
 use App\Models\Classified;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use App\Services\ImageUploadService;
 
@@ -93,10 +94,20 @@ class ClassifiedController extends Controller
     public function approve(Request $request, Classified $classified)
     {
         $classified->update([
-            'estado'    => 'activo',
-            'is_active' => true,
+            'estado'          => 'activo',
+            'is_active'       => true,
             'expiration_date' => now()->addDays(30)->toDateString(),
         ]);
+
+        if ($classified->user_id) {
+            UserNotification::notify(
+                $classified->user_id,
+                'classified.approved',
+                '✅ Tu aviso fue aprobado',
+                "Tu aviso \"{$classified->title}\" está publicado y visible por 30 días."
+            );
+        }
+
         return redirect()->route('backend.classifieds.index')->with('success', 'Aviso aprobado y publicado por 30 días.');
     }
 
@@ -104,10 +115,20 @@ class ClassifiedController extends Controller
     {
         $request->validate(['motivo' => 'nullable|string|max:500']);
         $classified->update([
-            'estado'             => 'rechazado',
-            'is_active'          => false,
-            'moderator_comment'  => $request->motivo,
+            'estado'            => 'rechazado',
+            'is_active'         => false,
+            'moderator_comment' => $request->motivo,
         ]);
+
+        if ($classified->user_id) {
+            UserNotification::notify(
+                $classified->user_id,
+                'classified.rejected',
+                '❌ Tu aviso fue rechazado',
+                $request->motivo ? "Motivo: {$request->motivo}" : "Tu aviso \"{$classified->title}\" no pudo ser publicado."
+            );
+        }
+
         return redirect()->route('backend.classifieds.index')->with('success', 'Aviso rechazado.');
     }
 

@@ -47,7 +47,7 @@ class EventReminderJob implements ShouldQueue
                 $service->createRequest(Event::class, $event->id, [
                     'mode'                => $event->publication_mode ?? 'portal_only',
                     'wants_portal_publish'=> true,
-                ]);
+                ], $event->created_by);
             }
 
             // Notify creator
