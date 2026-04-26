@@ -44,10 +44,6 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('admin')
                 ->group(base_path('routes/admin.php'));
 
-            Route::middleware('web', 'auth')
-                ->prefix('pasarela')
-                ->name('pasarela.')
-                ->group(base_path('routes/pasarela.php'));
         });
     }
 }

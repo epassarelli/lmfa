@@ -4,6 +4,14 @@ use Illuminate\Support\Facades\Route;
 
 // Controladores del front
 use App\Http\Controllers\Frontend\NoticiasController;
+
+// --- PUBLICAR / CONTRIBUCIONES ---
+// Panel del colaborador (usuario autenticado ve sus propias contribuciones)
+Route::middleware(['web', 'auth'])->prefix('admin/contribuir')->group(function() {
+    Route::get('/', [\App\Http\Controllers\Frontend\ContributionController::class, 'index'])->name('backend.contributions.index');
+    Route::get('crear/{type}/{id?}', [\App\Http\Controllers\Frontend\ContributionController::class, 'create'])->name('backend.contributions.create');
+    Route::post('store', [\App\Http\Controllers\Frontend\ContributionController::class, 'store'])->name('backend.contributions.store');
+});
 use App\Http\Controllers\Frontend\CancionesController;
 use App\Http\Controllers\Frontend\DiscosController;
 use App\Http\Controllers\Frontend\EntrevistasController;
@@ -32,10 +40,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Secciones generales (con slugs largos ya posicionados)
 Route::get('/noticias-del-folklore-argentino', [NoticiasController::class, 'index'])->name('noticias.index');
-Route::get('/noticias-del-folklore-argentino/{slug}', [NoticiasController::class, 'generalShow'])->name('noticias.show');
+Route::get('/noticias-del-folklore-argentino/{slug}', [NoticiasController::class, 'show'])->name('noticias.show');
 
 Route::get('/cartelera-de-eventos-folkloricos', [ShowsController::class, 'index'])->name('cartelera.index');
-Route::get('/cartelera-de-eventos-folkloricos/{slug}', [ShowsController::class, 'showGeneral'])->name('cartelera.show');
+Route::get('/cartelera-de-eventos-folkloricos/{slug}', [ShowsController::class, 'show'])->name('cartelera.show');
 
 Route::get('/biografias-de-artistas-folkloricos', [InterpretesController::class, 'index'])->name('interpretes.index');
 Route::get('/biografias-de-artistas-folkloricos/letra/{letra}', [InterpretesController::class, 'letra'])->name('interpretes.letra');
@@ -78,12 +86,6 @@ Route::prefix('avisos-clasificados')->name('classifieds.')->group(function () {
     Route::get('/{classified:slug}', [ClassifiedsController::class, 'show'])->name('show');
 });
 
-// Colaboraciones (UGC) - Mover ARRIBA para evitar colisión con slugs de artistas
-Route::middleware(['auth'])->prefix('colaborar')->group(function () {
-    Route::get('/', [ContributionController::class, 'index'])->name('contributions.index');
-    Route::get('/{type}/{id?}', [ContributionController::class, 'create'])->name('contributions.create');
-    Route::post('/store', [ContributionController::class, 'store'])->name('contributions.store');
-});
 
 // Miniportal del artista y secciones internas
 Route::get('/{interprete:slug}', [InterpretesController::class, 'show'])->name('artista.show');
@@ -101,7 +103,7 @@ Route::prefix('{interprete:slug}')->group(function () {
   Route::get('/discografia/{slug}', [DiscosController::class, 'show'])->name('artista.disco');
 
   Route::get('/shows', [ShowsController::class, 'byArtista'])->name('artista.shows');
-  Route::get('/shows/{slug}', [ShowsController::class, 'show'])->name('artista.showdetalle');
+  Route::get('/shows/{slug}', [ShowsController::class, 'show'])->name('artista.show.detalle');
 
   Route::get('/entrevistas', [EntrevistasController::class, 'byArtista'])->name('artista.entrevistas');
   Route::get('/entrevistas/{slug}', [EntrevistasController::class, 'show'])->name('artista.entrevista');
