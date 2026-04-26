@@ -4,6 +4,14 @@ use Illuminate\Support\Facades\Route;
 
 // Controladores del front
 use App\Http\Controllers\Frontend\NoticiasController;
+
+// --- PUBLICAR / CONTRIBUCIONES ---
+// Panel del colaborador (usuario autenticado ve sus propias contribuciones)
+Route::middleware(['web', 'auth'])->prefix('admin/contribuir')->group(function() {
+    Route::get('/', [\App\Http\Controllers\Frontend\ContributionController::class, 'index'])->name('backend.contributions.index');
+    Route::get('crear/{type}/{id?}', [\App\Http\Controllers\Frontend\ContributionController::class, 'create'])->name('backend.contributions.create');
+    Route::post('store', [\App\Http\Controllers\Frontend\ContributionController::class, 'store'])->name('backend.contributions.store');
+});
 use App\Http\Controllers\Frontend\CancionesController;
 use App\Http\Controllers\Frontend\DiscosController;
 use App\Http\Controllers\Frontend\EntrevistasController;
@@ -32,10 +40,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Secciones generales (con slugs largos ya posicionados)
 Route::get('/noticias-del-folklore-argentino', [NoticiasController::class, 'index'])->name('noticias.index');
-Route::get('/noticias-del-folklore-argentino/{slug}', [NoticiasController::class, 'generalShow'])->name('noticias.show');
+Route::get('/noticias-del-folklore-argentino/{slug}', [NoticiasController::class, 'show'])->name('noticias.show');
 
 Route::get('/cartelera-de-eventos-folkloricos', [ShowsController::class, 'index'])->name('cartelera.index');
-Route::get('/cartelera-de-eventos-folkloricos/{slug}', [ShowsController::class, 'showGeneral'])->name('cartelera.show');
+Route::get('/cartelera-de-eventos-folkloricos/{slug}', [ShowsController::class, 'show'])->name('cartelera.show');
 
 Route::get('/biografias-de-artistas-folkloricos', [InterpretesController::class, 'index'])->name('interpretes.index');
 Route::get('/biografias-de-artistas-folkloricos/letra/{letra}', [InterpretesController::class, 'letra'])->name('interpretes.letra');
@@ -78,12 +86,6 @@ Route::prefix('avisos-clasificados')->name('classifieds.')->group(function () {
     Route::get('/{classified:slug}', [ClassifiedsController::class, 'show'])->name('show');
 });
 
-// Colaboraciones (UGC) - Mover ARRIBA para evitar colisión con slugs de artistas
-Route::middleware(['auth'])->prefix('colaborar')->group(function () {
-    Route::get('/', [ContributionController::class, 'index'])->name('contributions.index');
-    Route::get('/{type}/{id?}', [ContributionController::class, 'create'])->name('contributions.create');
-    Route::post('/store', [ContributionController::class, 'store'])->name('contributions.store');
-});
 
 // Miniportal del artista y secciones internas
 Route::get('/{interprete:slug}', [InterpretesController::class, 'show'])->name('artista.show');
@@ -101,7 +103,7 @@ Route::prefix('{interprete:slug}')->group(function () {
   Route::get('/discografia/{slug}', [DiscosController::class, 'show'])->name('artista.disco');
 
   Route::get('/shows', [ShowsController::class, 'byArtista'])->name('artista.shows');
-  Route::get('/shows/{slug}', [ShowsController::class, 'show'])->name('artista.showdetalle');
+  Route::get('/shows/{slug}', [ShowsController::class, 'show'])->name('artista.show.detalle');
 
   Route::get('/entrevistas', [EntrevistasController::class, 'byArtista'])->name('artista.entrevistas');
   Route::get('/entrevistas/{slug}', [EntrevistasController::class, 'show'])->name('artista.entrevista');
@@ -119,67 +121,4 @@ Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\Ne
 
 Auth::routes();
 
-// =============================================================================
-// Pasarela de Contenidos — Panel del Publicador
-// PC-06-HU-01: Cuentas sociales
-// PC-07-HU-01: Publication requests
-// PC-10-HU-01: Dashboard publicador
-// =============================================================================
-Route::middleware(['auth'])->prefix('pasarela')->name('pasarela.')->group(function () {
 
-    // Dashboard publicador
-    Route::get('/', [\App\Http\Controllers\Backend\PublisherDashboardController::class, 'index'])
-        ->name('dashboard');
-
-    // Cuentas sociales: listar, conectar, desconectar
-    Route::get('cuentas-sociales', [\App\Http\Controllers\Pasarela\SocialAccountController::class, 'index'])
-        ->name('social-accounts.index');
-    Route::post('cuentas-sociales', [\App\Http\Controllers\Pasarela\SocialAccountController::class, 'store'])
-        ->name('social-accounts.store');
-    Route::delete('cuentas-sociales/{socialAccount}', [\App\Http\Controllers\Pasarela\SocialAccountController::class, 'destroy'])
-        ->name('social-accounts.destroy');
-
-    // PC-07-HU-01: Solicitudes de publicación multicanal
-    Route::get('publicaciones', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'index'])
-        ->name('publication-requests.index');
-    Route::get('publicaciones/nueva', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'create'])
-        ->name('publication-requests.create');
-    Route::post('publicaciones', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'store'])
-        ->name('publication-requests.store');
-    Route::get('publicaciones/{publicationRequest}', [\App\Http\Controllers\Pasarela\PublicationRequestController::class, 'show'])
-        ->name('publication-requests.show');
-
-    // PC-10-HU-01: Dashboard publicador
-    Route::get('dashboard', [\App\Http\Controllers\Pasarela\DashboardPublicadorController::class, 'index'])
-        ->name('dashboard');
-
-    // PC-11-HU-01: Dashboard admin
-    Route::get('admin/dashboard', [\App\Http\Controllers\Pasarela\DashboardAdminController::class, 'index'])
-        ->name('admin.dashboard');
-
-    // PC-12-HU-01: Notificaciones
-    Route::get('notificaciones', [\App\Http\Controllers\Pasarela\NotificationController::class, 'index'])
-        ->name('notifications.index');
-    Route::post('notificaciones/{notification}/leida', [\App\Http\Controllers\Pasarela\NotificationController::class, 'markRead'])
-        ->name('notifications.mark-read');
-    Route::post('notificaciones/leidas-todas', [\App\Http\Controllers\Pasarela\NotificationController::class, 'markAllRead'])
-        ->name('notifications.mark-all-read');
-    Route::get('notificaciones/count', [\App\Http\Controllers\Pasarela\NotificationController::class, 'unreadCount'])
-        ->name('notifications.unread-count');
-
-    // PC-08-HU-01: Templates por canal
-    Route::get('admin/templates', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'index'])
-        ->name('templates.index');
-    Route::get('admin/templates/nuevo', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'create'])
-        ->name('templates.create');
-    Route::post('admin/templates', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'store'])
-        ->name('templates.store');
-    Route::get('admin/templates/{template}', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'edit'])
-        ->name('templates.edit');
-    Route::put('admin/templates/{template}', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'update'])
-        ->name('templates.update');
-    Route::delete('admin/templates/{template}', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'destroy'])
-        ->name('templates.destroy');
-    Route::post('admin/templates/preview', [\App\Http\Controllers\Pasarela\PublicationTemplateController::class, 'preview'])
-        ->name('templates.preview');
-});

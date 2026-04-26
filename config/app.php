@@ -18,6 +18,8 @@ return [
 
     'name' => env('APP_NAME', 'Mi folklore argentino'),
 
+    'portal_organization_id' => env('PORTAL_ORGANIZATION_ID'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

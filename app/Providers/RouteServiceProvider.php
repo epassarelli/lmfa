@@ -29,7 +29,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         // 🛡️ Evita que slugs como /admin, /login, etc. sean interpretados como intérpretes
-        $reservedSlugs = ['admin', 'login', 'logout', 'register', 'password', 'auth', 'api'];
+        $reservedSlugs = ['admin', 'login', 'logout', 'register', 'password', 'auth', 'api', 'pasarela'];
         Route::pattern('interprete', '^(?!' . implode('|', $reservedSlugs) . ')[a-z0-9\-]+$');
 
         $this->routes(function () {
@@ -43,6 +43,7 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web', 'auth')
                 ->prefix('admin')
                 ->group(base_path('routes/admin.php'));
+
         });
     }
 }

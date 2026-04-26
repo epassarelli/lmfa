@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\News;
 use App\Models\PublicationRequest;
+use App\Models\PublicationTarget;
 use App\Models\SocialAccount;
+use App\Jobs\Publication\PublishToProviderJob;
 use App\Services\Publication\PublicationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,11 +37,13 @@ class PublicationRequestController extends Controller
         $contentType = $request->query('content_type');
         $contentId   = $request->query('content_id');
 
-        [$content, $modelClass] = $this->resolveContent($contentType, $contentId);
+        $content = null;
+        if ($contentType && $contentId) {
+            [$content] = $this->resolveContent($contentType, $contentId);
+        }
 
         $user = Auth::user();
 
-        // Cuentas sociales activas del publicador
         $socialAccounts = SocialAccount::where('owner_type', get_class($user))
             ->where('owner_id', $user->id)
             ->where('status', 'active')
@@ -123,6 +127,27 @@ class PublicationRequestController extends Controller
         ]);
     }
 
+    /**
+     * Reintentar un target fallido manualmente.
+     */
+    public function retryTarget(PublicationRequest $publicationRequest, PublicationTarget $target)
+    {
+        $this->authorizeRequest($publicationRequest);
+
+        if ($target->publication_request_id !== $publicationRequest->id) {
+            abort(404);
+        }
+
+        if ($target->status !== 'failed') {
+            return back()->with('error', 'Solo se pueden reintentar targets con estado fallido.');
+        }
+
+        $target->update(['status' => 'pending']);
+        PublishToProviderJob::dispatch($target->id);
+
+        return back()->with('success', 'Target re-encolado correctamente.');
+    }
+
     // -------------------------------------------------------------------------
     // Helpers privados
     // -------------------------------------------------------------------------
@@ -168,7 +193,7 @@ class PublicationRequestController extends Controller
      */
     private function authorizeRequest(PublicationRequest $publicationRequest): void
     {
-        if ($publicationRequest->requested_by !== Auth::id()) {
+        if ($publicationRequest->requested_by !== Auth::id() && !Auth::user()->hasRole('administrador')) {
             abort(403);
         }
     }

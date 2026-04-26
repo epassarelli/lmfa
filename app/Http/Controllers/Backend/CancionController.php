@@ -19,7 +19,7 @@ class CancionController extends Controller
   public function __construct()
   {
     $this->middleware('auth');
-    // $this->authorizeResource(Cancion::class, 'cancion');
+    $this->authorizeResource(Cancion::class, 'cancion');
   }
 
   public function index()
@@ -42,7 +42,10 @@ class CancionController extends Controller
 
     return DataTables::of($canciones)
       ->addColumn('interprete', function ($cancion) {
-        return $cancion->interprete->interprete;
+        return $cancion->interprete?->interprete ?? '—';
+      })
+      ->editColumn('estado', function ($cancion) {
+        return $cancion->estado == 1 ? '<span class="badge badge-success">Activo</span>' : '<span class="badge badge-warning">Pendiente</span>';
       })
       ->addColumn('acciones', function ($cancion) {
         $editUrl = route('backend.canciones.edit', $cancion);
@@ -72,7 +75,7 @@ class CancionController extends Controller
           });
         }
       })
-      ->rawColumns(['acciones'])
+      ->rawColumns(['acciones', 'estado'])
       ->make(true);
   }
 
@@ -126,7 +129,11 @@ class CancionController extends Controller
 
   public function destroy(Cancion $cancion)
   {
-    $this->authorize('delete', $cancion);
+    if (!Auth::user()->isAdmin()) {
+        return redirect()->route('backend.canciones.index')
+          ->with('error', 'No tienes permiso para eliminar esta canción.');
+    }
+    
     $cancion->delete();
 
     Alert::success('Canción eliminada', 'La canción ha sido eliminada con éxito.');
@@ -167,14 +174,18 @@ class CancionController extends Controller
 
   private function sendNotification(Cancion $cancion)
   {
-    $details = [
-      'title' => 'Se ha agregado un/a Canción en el portal',
-      'cancion' => $cancion->cancion,
-      'album' => $cancion->albunes->pluck('nombre')->join(', '),
-      'interprete' => $cancion->interprete->nombre,
-      'user' => $cancion->user->name,
-    ];
+    try {
+        $details = [
+          'title' => 'Se ha agregado un/a Canción en el portal',
+          'cancion' => $cancion->cancion,
+          'album' => $cancion->albunes->pluck('nombre')->join(', '),
+          'interprete' => $cancion->interprete?->nombre ?? '—',
+          'user' => $cancion->user?->name ?? 'Invitado',
+        ];
 
-    Mail::to('info@mifolkloreargentino.com')->send(new \App\Mail\CancionCreated($details));
+        Mail::to('info@mifolkloreargentino.com')->send(new \App\Mail\CancionCreated($details));
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error("Error enviando correo de Cancion: " . $e->getMessage());
+    }
   }
 }

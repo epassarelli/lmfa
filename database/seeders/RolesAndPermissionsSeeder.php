@@ -24,6 +24,11 @@ class RolesAndPermissionsSeeder extends Seeder
             }
         }
 
+        // Permisos de la Pasarela de Contenidos
+        Permission::create(['name' => 'publish contents']);
+        Permission::create(['name' => 'manage social accounts']);
+        Permission::create(['name' => 'manage templates']);
+
         // Crear roles
         $admin = Role::create(['name' => 'administrador']);
         $prensa = Role::create(['name' => 'prensa']);
@@ -49,6 +54,9 @@ class RolesAndPermissionsSeeder extends Seeder
                 $prensa->givePermissionTo("$action $entity");
             }
         }
+
+        // Permisos adicionales para Prensa (Redes y Publicar)
+        $prensa->givePermissionTo(['publish contents', 'manage social accounts', 'read user']);
 
         // Permisos para el rol Colaborador
         $colaboradorPermissions = [

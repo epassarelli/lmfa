@@ -41,7 +41,7 @@
           <li><a href="{{ route('discografias.index') }}" class="block py-2 hover:text-[#ff661f]">Discos</a></li>
           <li><a href="{{ route('canciones.index') }}" class="block py-2 hover:text-[#ff661f]">Canciones</a></li>
           <li><a href="{{ route('festivales.index') }}" class="block py-2 hover:text-[#ff661f]">Festivales</a></li>
-          <li><a href="{{ route('contributions.index') }}" class="block py-2 text-[#ff661f] font-semibold hover:underline">Colaborar</a></li>
+          <li><a href="{{ route('backend.contributions.index') }}" class="block py-2 text-[#ff661f] font-semibold hover:underline">Publicar</a></li>
         </ul>
 
         <!-- Buscador -->

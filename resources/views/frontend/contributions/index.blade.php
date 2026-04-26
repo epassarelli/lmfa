@@ -25,20 +25,17 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-xl font-semibold mb-4 border-b pb-2">Nueva Aportación</h2>
                 <div class="flex flex-col gap-2">
-                    <a href="{{ route('contributions.create', ['type' => 'interprete']) }}" class="flex items-center gap-2 p-2 hover:bg-orange-50 rounded transition-colors text-gray-700">
+                    <a href="{{ route('backend.contributions.create', ['type' => 'interprete']) }}" class="flex items-center gap-2 p-2 hover:bg-orange-50 rounded transition-colors text-gray-700">
                         <span class="bg-orange-500 text-white p-1 rounded">👤</span> Biografía de Artista
                     </a>
-                    <a href="{{ route('contributions.create', ['type' => 'noticia']) }}" class="flex items-center gap-2 p-2 hover:bg-orange-50 rounded transition-colors text-gray-700">
+                    <a href="{{ route('backend.contributions.create', ['type' => 'noticia']) }}" class="flex items-center gap-2 p-2 hover:bg-orange-50 rounded transition-colors text-gray-700">
                         <span class="bg-blue-500 text-white p-1 rounded">📰</span> Noticia / Evento
                     </a>
-                    <a href="{{ route('contributions.create', ['type' => 'cancion']) }}" class="flex items-center gap-2 p-2 hover:bg-orange-50 rounded transition-colors text-gray-700">
+                    <a href="{{ route('backend.contributions.create', ['type' => 'cancion']) }}" class="flex items-center gap-2 p-2 hover:bg-orange-50 rounded transition-colors text-gray-700">
                         <span class="bg-green-500 text-white p-1 rounded">🎵</span> Letra de Canción
                     </a>
-                    <a href="{{ route('contributions.create', ['type' => 'album']) }}" class="flex items-center gap-2 p-2 hover:bg-orange-50 rounded transition-colors text-gray-700">
-                        <span class="bg-purple-500 text-white p-1 rounded">💿</span> Discografía
-                    </a>
-                    <a href="#" class="flex items-center gap-2 p-2 opacity-50 cursor-not-allowed text-gray-400">
-                        <span>🏷️</span> Clasificados (Próximamente)
+                    <a href="{{ route('backend.contributions.create', ['type' => 'festival']) }}" class="flex items-center gap-2 p-2 hover:bg-orange-50 rounded transition-colors text-gray-700">
+                        <span class="bg-purple-500 text-white p-1 rounded">🎪</span> Festival / Fiesta
                     </a>
                 </div>
             </div>

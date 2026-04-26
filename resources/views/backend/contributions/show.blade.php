@@ -30,7 +30,7 @@
                             <div class="col-md-{{ $original ? '6' : '12' }}">
                                 <label class="text-success">Sugerido (Usuario):</label>
                                 <div class="p-3 border bg-white shadow-sm" style="min-height: 200px; max-height: 500px; overflow-y: auto; border-left: 4px solid #28a745;">
-                                    {!! $value !!}
+                                    {{ $value }}
                                 </div>
                             </div>
                         </div>

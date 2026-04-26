@@ -25,6 +25,12 @@
         </div>
     @endif
 
+    @if (!$content)
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle mr-1"></i>
+            Accedé a esta página desde el botón <strong>"Publicar"</strong> en el detalle de una noticia o evento.
+        </div>
+    @else
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">
@@ -136,6 +142,7 @@
             </div>
         </form>
     </div>
+    @endif
 
 </div>
 @stop

@@ -81,6 +81,18 @@ class Event extends Model
     // Compatibility accessors (old shows field names)
     // -------------------------------------------------------
 
+    public function getEstadoAttribute($value): int
+    {
+        if ($value !== null) return (int) $value;
+        return $this->editorial_status === 'published' ? 1 : 0;
+    }
+
+    public function setEstadoAttribute($value): void
+    {
+        $this->attributes['estado'] = $value;
+        $this->attributes['editorial_status'] = $value ? 'published' : 'draft';
+    }
+
     public function getTituloAttribute()
     {
         return $this->title;

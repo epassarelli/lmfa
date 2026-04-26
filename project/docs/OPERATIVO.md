@@ -3,7 +3,7 @@
 > **Proyecto:** Mi Folklore Argentino (MFA)  
 > **URL Producción:** [https://mifolkloreargentino.com.ar](https://mifolkloreargentino.com.ar)  
 > **Hosting:** Hostinger  
-> **Última actualización:** Abril 2026
+> **Última actualización:** 2026-04-26
 
 ---
 
@@ -117,7 +117,8 @@ lmfa/
 │   ├── Http/Controllers/
 │   │   ├── Api/           # Controladores de la API REST
 │   │   ├── Backend/       # Controladores del panel de administración
-│   │   └── Frontend/      # Controladores del portal público
+│   │   ├── Frontend/      # Controladores del portal público
+│   │   └── Pasarela/      # Controladores de la Pasarela de Contenidos
 │   ├── Models/            # Modelos Eloquent
 │   ├── Mail/              # Clases de correo (Mailable)
 │   ├── Jobs/              # Jobs de cola (SendNewsletterJob)
@@ -140,7 +141,7 @@ lmfa/
 │       └── mail/          # Plantillas de correo (Markdown)
 ├── routes/
 │   ├── web.php            # Rutas del frontend público
-│   ├── admin.php          # Rutas del panel de administración
+│   ├── admin.php          # Rutas del panel de administración y Pasarela
 │   ├── api.php            # Rutas de la API REST
 │   └── console.php        # Comandos Artisan personalizados
 ├── storage/               # Archivos subidos, logs, cache
@@ -234,10 +235,10 @@ FACEBOOK_REDIRECT_URL=https://mifolkloreargentino.com.ar/auth/facebook/callback
 ### 5.2 Flujo de Trabajo para Contenido Nuevo
 
 #### Crear una Noticia
-1. Ir a **Backend > Noticias > Crear**.
+1. Ir a **Backend > News > Crear**.
 2. Completar: título, categoría, contenido, imagen principal.
 3. Asociar intérprete(s) si corresponde.
-4. Establecer `estado = 1` (activo) para que sea visible en el frontend.
+4. Establecer `editorial_status = published` para que sea visible en el frontend.
 5. Guardar.
 
 #### Crear un Artista/Intérprete
@@ -260,12 +261,29 @@ FACEBOOK_REDIRECT_URL=https://mifolkloreargentino.com.ar/auth/facebook/callback
 
 ### 5.3 Estados de Contenido
 
-| Estado | Valor | Significado |
-|---|---|---|
-| **Activo** | `1` / `activo` | Visible en el frontend |
-| **Inactivo** | `0` | Oculto del frontend (borrador) |
-| **Pendiente** | `pendiente` | Requiere moderación (clasificados/UGC) |
-| **Rechazado** | `rechazado` | Rechazado por moderador |
+#### News y Events (campo `editorial_status`)
+| Valor | Significado |
+|---|---|
+| `draft` | Borrador, no visible en frontend |
+| `pending_review` | Enviado a moderación |
+| `approved` | Aprobado, pendiente de publicación |
+| `published` | Visible en el frontend |
+| `rejected` | Rechazado por moderador |
+| `archived` | Archivado |
+
+#### Clasificados (campo `estado`)
+| Valor | Significado |
+|---|---|
+| `pendiente` | Requiere moderación |
+| `activo` | Visible en el frontend |
+| `rechazado` | Rechazado por moderador |
+
+#### Contribuciones UGC (campo `status`)
+| Valor | Significado |
+|---|---|
+| `pending` | Pendiente de revisión |
+| `approved` | Aprobada |
+| `rejected` | Rechazada |
 
 ---
 

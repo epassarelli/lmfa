@@ -3,122 +3,63 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Event;
 use App\Models\News;
-use App\Models\ModerationReview;
-use App\Models\AuditLog;
-use App\Models\UserNotification;
-use App\Services\Publication\PublicationService;
+use App\Models\Event;
+use App\Models\Interprete;
+use App\Models\Album;
+use App\Models\Cancion;
+use Illuminate\Http\Request;
 
 class ModerationController extends Controller
 {
-    /**
-     * Display a listing of pending content.
-     */
-    public function index()
+    public function __construct()
     {
-        $events = Event::with(['organization', 'creator'])
-            ->where('editorial_status', 'pending_review')
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($item) {
-                $item->content_type = 'Event';
-                $item->edit_route = route('backend.shows.edit', $item->id);
-                return $item;
-            });
-
-        $news = News::with(['organization', 'creator'])
-            ->where('editorial_status', 'pending_review')
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($item) {
-                $item->content_type = 'News';
-                $item->edit_route = route('backend.noticias.edit', $item->id);
-                return $item;
-            });
-
-        $pendingContent = $events->concat($news)->sortByDesc('created_at');
-
-        return view('backend.moderation.index', compact('pendingContent'));
+        $this->middleware(['auth', 'role:administrador']);
     }
 
-    public function action(Request $request)
+    private const PUBLISHABLE = [
+        'news'       => News::class,
+        'event'      => Event::class,
+        'interprete' => Interprete::class,
+        'album'      => Album::class,
+        'cancion'    => Cancion::class,
+    ];
+
+    public function publish(string $type, int $id)
     {
-        $request->validate([
-            'content_id'   => 'required|integer',
-            'content_type' => 'required|string|in:Event,News',
-            'action'       => 'required|string|in:approve,reject',
-            'comments'     => 'nullable|string',
-        ]);
+        $modelClass = self::PUBLISHABLE[$type] ?? null;
 
-        $modelClass = $request->content_type === 'Event' ? Event::class : News::class;
-        $content    = $modelClass::findOrFail($request->content_id);
-        $oldStatus  = $content->editorial_status;
-        $newStatus  = $request->action === 'approve' ? 'approved' : 'rejected';
-
-        $content->editorial_status = $newStatus;
-
-        if ($newStatus === 'approved') {
-            $content->approved_by = auth()->id();
-            $content->approved_at = now();
-            if ($content->getTable() === 'news') {
-                $content->estado = 1;
-            }
+        if (!$modelClass) {
+            abort(404);
         }
 
-        $content->save();
+        $model = $modelClass::findOrFail($id);
 
-        // Moderation review log
-        ModerationReview::create([
-            'content_type'     => $modelClass,
-            'content_id'       => $content->id,
-            'reviewer_user_id' => auth()->id(),
-            'action'           => $request->action,
-            'comments'         => $request->comments,
-        ]);
-
-        // Audit log
-        AuditLog::log(
-            $modelClass,
-            $content->id,
-            $request->action,
-            ['editorial_status' => $oldStatus],
-            ['editorial_status' => $newStatus],
-        );
-
-        // Notify the content creator
-        if ($content->created_by) {
-            $notifTitle = $newStatus === 'approved'
-                ? '✅ Tu contenido fue aprobado'
-                : '❌ Tu contenido fue rechazado';
-
-            $notifBody = "El contenido \"" . ($content->title ?? 'sin título') . "\" fue {$newStatus}.";
-            if ($request->comments) {
-                $notifBody .= "\n\nComentarios: " . $request->comments;
-            }
-
-            UserNotification::notify($content->created_by, "moderation.{$newStatus}", $notifTitle, $notifBody);
+        if (in_array($type, ['news', 'event'])) {
+            $model->update(['editorial_status' => 'published']);
+        } else {
+            $model->update(['estado' => 1]);
         }
 
-        // If approved, trigger publication via PublicationService
-        if ($newStatus === 'approved') {
-            try {
-                $mode = $content->publication_mode ?? 'portal_only';
-                $service = app(PublicationService::class);
-                $service->createRequest($modelClass, $content->id, [
-                    'mode'                => $mode,
-                    'wants_portal_publish'=> true,
-                    'wants_portal_social' => str_contains($mode, 'portal_social'),
-                    'wants_own_social'    => str_contains($mode, 'own_social'),
-                ]);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error("PublicationService error on approval: " . $e->getMessage());
-            }
-        }
-
-        $label = $newStatus === 'approved' ? 'aprobado' : 'rechazado';
         return redirect()->route('backend.moderation.index')
-            ->with('success', "Contenido {$label} correctamente.");
+            ->with('success', 'Contenido publicado correctamente.');
+    }
+
+    public function index()
+    {
+        $news = News::where(function ($q) {
+                       $q->where('editorial_status', 'draft')
+                         ->orWhereNull('published_at');
+                   })
+                   ->with('user')->get();
+
+        $events = Event::where('editorial_status', 'draft')
+                      ->with('user')->get();
+
+        $interpretes = Interprete::where('estado', 0)->get();
+        $albunes = Album::where('estado', 0)->get();
+        $canciones = Cancion::where('estado', 0)->get();
+
+        return view('backend.moderation.index', compact('news', 'events', 'interpretes', 'albunes', 'canciones'));
     }
 }

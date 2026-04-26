@@ -22,6 +22,7 @@ class FestivalController extends Controller
   {
     $this->middleware('auth');
     $this->imageService = $imageService;
+    $this->authorizeResource(Festival::class, 'festival');
   }
 
   public function index()
@@ -113,12 +114,16 @@ class FestivalController extends Controller
 
   private function sendNotification(Festival $festival)
   {
-    $details = [
-      'title' => 'Se ha agregado un/a Festival en el portal',
-      'titulo' => $festival->titulo,
-      'user' => $festival->user->name,
-    ];
+    try {
+        $details = [
+          'title' => 'Se ha agregado un/a Festival en el portal',
+          'titulo' => $festival->titulo,
+          'user' => $festival->user?->name ?? 'Invitado',
+        ];
 
-    Mail::to('info@mifolkloreargentino.com')->send(new \App\Mail\FestivalCreated($details));
+        Mail::to('info@mifolkloreargentino.com')->send(new \App\Mail\FestivalCreated($details));
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error("Error enviando correo de Festival: " . $e->getMessage());
+    }
   }
 }

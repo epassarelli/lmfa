@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use App\Models\Noticia;
+use App\Models\News;
 use App\Models\Interprete;
-use App\Models\Show;
+use App\Models\Event;
 use App\Models\Album;
 use App\Models\Cancion;
 use App\Models\Festival;
@@ -38,14 +38,14 @@ class SitemapController extends Controller
 
     // Dynamic Content
     // Noticias
-    $noticias = Noticia::where('estado', 1)->latest()->get();
+    $noticias = News::where('editorial_status', 'published')->latest()->get();
     foreach ($noticias as $noticia) {
       $urls[] = [
         'url' => route('noticias.show', $noticia->slug),
         'priority' => '0.9',
         'changefreq' => 'weekly',
         'lastmod' => $noticia->updated_at->toAtomString(),
-        'image' => $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : ($noticia->foto ? asset('storage/noticias/' . $noticia->foto) : null),
+        'image' => $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : ($noticia->featured_image_path ? asset('storage/' . $noticia->featured_image_path) : null),
       ];
     }
 
@@ -61,8 +61,8 @@ class SitemapController extends Controller
       ];
     }
 
-    // Shows
-    $shows = Show::where('estado', 1)->where('fecha', '>=', now())->get();
+    // Eventos
+    $shows = Event::where('editorial_status', 'published')->where('start_at', '>=', now())->get();
     foreach ($shows as $show) {
       $urls[] = [
         'url' => route('cartelera.show', $show->slug),
@@ -162,7 +162,7 @@ class SitemapController extends Controller
   public function newsIndex()
   {
     // Google News Sitemap: articles from last 2 days (48 hours)
-    $noticias = Noticia::where('estado', 1)
+    $noticias = News::where('editorial_status', 'published')
       ->where('created_at', '>=', now()->subDays(2))
       ->latest()
       ->get();

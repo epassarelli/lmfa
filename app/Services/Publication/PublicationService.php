@@ -21,12 +21,12 @@ class PublicationService
      * @param  array   $options  (mode, wants_portal_publish, wants_portal_social, wants_own_social, scheduled_at)
      * @return PublicationRequest
      */
-    public function createRequest(string $contentType, int $contentId, array $options = []): PublicationRequest
+    public function createRequest(string $contentType, int $contentId, array $options = [], ?int $userId = null): PublicationRequest
     {
         $request = PublicationRequest::create([
             'content_type'        => $contentType,
             'content_id'          => $contentId,
-            'requested_by'        => Auth::id() ?? 1,
+            'requested_by'        => $userId ?? Auth::id(),
             'mode'                => $options['mode'] ?? 'portal_only',
             'wants_portal_publish' => $options['wants_portal_publish'] ?? true,
             'wants_portal_social' => $options['wants_portal_social'] ?? false,
@@ -84,8 +84,15 @@ class PublicationService
 
         // 3. Redes institucionales del portal
         if ($request->wants_portal_social) {
-            // Portal's own accounts (owner = a specific System org or user id)
+            $portalOrgId = config('app.portal_organization_id');
+
+            if (!$portalOrgId) {
+                \Illuminate\Support\Facades\Log::warning('PublicationService: wants_portal_social=true pero portal_organization_id no está configurado en app.php / .env');
+                return;
+            }
+
             $portalAccounts = SocialAccount::where('owner_type', \App\Models\Organization::class)
+                ->where('owner_id', $portalOrgId)
                 ->where('status', 'active')
                 ->get();
 

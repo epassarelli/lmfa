@@ -326,106 +326,147 @@ return [
         //     'can' => 'manage-blog',
         // ],
 
-        ['header' => 'Gestión de Contenidos'],
+        ['header' => 'CONTENIDO EDITORIAL'],
 
         [
-            'text' => 'Moderación UGC',
-            'url' => 'admin/contributions',
-            'icon' => 'fas fa-fw fa-tasks',
-            'label' => 'Revisar',
-            'label_color' => 'warning',
-        ],
-
-        [
-            'text' => 'Usuarios',
-            'url' => 'admin/users',
-            'icon' => 'fas fa-fw fa-users',
-            'can' => 'read user',
+            'text' => 'Eventos / Cartelera',
+            'url' => 'admin/events',
+            'icon' => 'fas fa-fw fa-calendar-alt',
+            'label_color' => 'success',
+            'active' => ['admin/events*'],
         ],
         [
-            'text' => 'Roles',
-            'url' => 'admin/roles',
-            'icon' => 'fas fa-fw fa-user-tag',
-            'can' => 'read role',
+            'text' => 'Noticias / Actualidad',
+            'url' => 'admin/news',
+            'icon' => 'fas fa-fw fa-newspaper',
+            'active' => ['admin/news*'],
         ],
         [
-            'text' => 'Permisos',
-            'url' => 'admin/permissions',
-            'icon' => 'fas fa-fw fa-user-shield',
-            'can' => 'read permission',
-        ],
-        [
-            'text' => 'Interpretes',
+            'text' => 'Intérpretes',
             'url' => 'admin/interpretes',
             'icon' => 'fas fa-fw fa-microphone',
             'can' => 'read interprete',
         ],
         [
-            'text' => 'Noticias',
-            'url' => 'admin/noticias',
-            'icon' => 'fas fa-fw fa-newspaper',
-            // 'can' => 'read noticia',
-        ],
-        [
-            'text' => 'Shows',
-            'url' => 'admin/shows',
-            'icon' => 'fas fa-fw fa-calendar-alt',
-            'can' => 'read show',
-        ],
-        [
-            'text' => 'Discos',
-            'url' => 'admin/discos',
+            'text' => 'Música y Cultura',
             'icon' => 'fas fa-fw fa-compact-disc',
-            'can' => 'read album',
+            'submenu' => [
+                [
+                    'text' => 'Discos',
+                    'url' => 'admin/discos',
+                    'icon' => 'fas fa-fw fa-record-vinyl',
+                ],
+                [
+                    'text' => 'Letras / Canciones',
+                    'url' => 'admin/canciones',
+                    'icon' => 'fas fa-fw fa-music',
+                ],
+                [
+                    'text' => 'Festivales',
+                    'url' => 'admin/festivales',
+                    'icon' => 'fas fa-fw fa-map-marked-alt',
+                ],
+                [
+                    'text' => 'Comidas Típicas',
+                    'url' => 'admin/comidas',
+                    'icon' => 'fas fa-fw fa-utensils',
+                ],
+                [
+                    'text' => 'Mitos y Leyendas',
+                    'url' => 'admin/mitos',
+                    'icon' => 'fas fa-fw fa-book',
+                ],
+            ],
+        ],
+
+        ['header' => 'PASARELA DE CONTENIDOS', 'can' => 'manage user'],
+        
+        [
+            'text' => 'Cuentas Sociales',
+            'url' => 'admin/pasarela/social-accounts',
+            'icon' => 'fab fa-fw fa-facebook-messenger',
+            'can' => 'manage social accounts',
         ],
         [
-            'text' => 'Canciones',
-            'url' => 'admin/canciones',
-            'icon' => 'fas fa-fw fa-music',
-            'can' => 'read cancion',
+            'text' => 'Nueva Publicación',
+            'url' => 'admin/pasarela/publication-requests/create',
+            'icon' => 'fas fa-fw fa-share-alt',
+            'can' => 'manage user',
         ],
         [
-            'text' => 'Festivales',
-            'url' => 'admin/festivales',
-            'icon' => 'fas fa-fw fa-map-marked-alt',
-            'can' => 'read festival',
+            'text' => 'Historial de Publicación',
+            'url' => 'admin/pasarela/publication-requests',
+            'icon' => 'fas fa-fw fa-history',
+            'can' => 'manage user',
         ],
         [
-            'text' => 'Comidas',
-            'url' => 'admin/comidas',
-            'icon' => 'fas fa-fw fa-utensils',
-            'can' => 'read comida',
+            'text' => 'Plantillas (Templates)',
+            'url' => 'admin/pasarela/templates',
+            'icon' => 'fas fa-fw fa-layer-group',
+            'can' => 'manage templates',
+        ],
+
+        ['header' => 'ASTRONOMÍA Y AUDIENCIA'],
+
+        [
+            'text' => 'Centro de Moderación',
+            'url' => 'admin/moderation',
+            'icon' => 'fas fa-fw fa-tasks',
+            'label' => 'Revisión',
+            'label_color' => 'warning',
+            'can' => 'manage user', // Proxy para admin
         ],
         [
-            'text' => 'Mitos',
-            'url' => 'admin/mitos',
-            'icon' => 'fas fa-fw fa-book',
-            'can' => 'read mito',
+            'text' => 'Avisos Clasificados',
+            'url' => 'admin/classifieds',
+            'icon' => 'fas fa-fw fa-bullhorn',
+            'active' => ['admin/classifieds*'],
+        ],
+
+        ['header' => 'SISTEMA Y AUDIENCIA'],
+
+        [
+            'text' => 'Usuarios y Roles',
+            'icon' => 'fas fa-fw fa-user-shield',
+            'can' => 'read user',
+            'submenu' => [
+                [
+                    'text' => 'Usuarios',
+                    'url' => 'admin/users',
+                    'icon' => 'fas fa-fw fa-users',
+                ],
+                [
+                    'text' => 'Roles',
+                    'url' => 'admin/roles',
+                    'icon' => 'fas fa-fw fa-user-tag',
+                ],
+                [
+                    'text' => 'Permisos',
+                    'url' => 'admin/permissions',
+                    'icon' => 'fas fa-fw fa-shield-alt',
+                ],
+            ],
         ],
         [
             'text' => 'Newsletter',
             'url' => 'admin/newsletter-subscribers',
             'icon' => 'fas fa-fw fa-envelope-open-text',
-            'active' => ['admin/newsletter-subscribers*'],
-        ],
-
-        ['header' => 'Avisos Clasificados'],
-
-        [
-            'text' => 'Avisos',
-            'url' => 'admin/classifieds',
-            'icon' => 'fas fa-fw fa-bullhorn',
-            'active' => ['admin/classifieds*'],
+            'can' => 'manage user',
         ],
         [
-            'text' => 'Categorias',
-            'url' => 'admin/categories',
-            'icon' => 'fas fa-fw fa-list',
-        ],
-        [
-            'text' => 'Tags',
-            'url' => 'admin/tags',
+            'text' => 'Categorías y Tags',
             'icon' => 'fas fa-fw fa-tags',
+            'can' => 'manage user',
+            'submenu' => [
+                [
+                    'text' => 'Categorías',
+                    'url' => 'admin/categories',
+                ],
+                [
+                    'text' => 'Tags',
+                    'url' => 'admin/tags',
+                ],
+            ],
         ],
 
         // [

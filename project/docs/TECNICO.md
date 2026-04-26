@@ -3,7 +3,7 @@
 > **Proyecto:** Mi Folklore Argentino (MFA)  
 > **Framework:** Laravel 10.x  
 > **PHP:** 8.2  
-> **Última actualización:** Abril 2026
+> **Última actualización:** 2026-04-26
 
 ---
 
@@ -75,8 +75,8 @@ La aplicación sigue el patrón **MVC (Model-View-Controller)** de Laravel, con 
 │                       ▼                               │
 │              CAPA DE MODELOS (Eloquent ORM)           │
 │  ┌──────────────────────────────────────────────┐    │
-│  │  Interprete │ Noticia │ Cancion │ Album │ ...│    │
-│  │  Show │ Festival │ Mito │ Comida │ User │ ...│    │
+│  │  Interprete │ News │ Event │ Cancion │ Album │ ...│   │
+│  │  Festival │ Mito │ Comida │ Organization │ ...│   │
 │  └──────────────────────────────────────────────┘    │
 │                       │                               │
 │                       ▼                               │
@@ -89,25 +89,28 @@ La aplicación sigue el patrón **MVC (Model-View-Controller)** de Laravel, con 
 
 ### 2.2 Separación por Dominio
 
-Los controladores están organizados en 3 namespaces:
+Los controladores están organizados en 4 namespaces:
 
 | Namespace | Prefijo de ruta | Middleware | Responsabilidad |
 |---|---|---|---|
 | `App\Http\Controllers\Frontend` | `/` | Web | Portal público |
 | `App\Http\Controllers\Backend` | `/admin` | Web + Auth | Panel de administración |
+| `App\Http\Controllers\Pasarela` | `/admin/pasarela` | Web + Auth | Pasarela de contenidos y redes sociales |
 | `App\Http\Controllers\Api` | `/api/v1` | Sanctum | API REST |
 
 ---
 
 ## 3. Modelo de Datos
 
+> La fuente de verdad de columnas y tipos es la BD real. Usar `DESCRIBE <tabla>` o leer las migraciones en `database/migrations/`. Este documento describe estructura lógica y relaciones.
+
 ### 3.1 Diagrama Entidad-Relación
 
 ```mermaid
 erDiagram
-    USERS ||--o{ NOTICIAS : "crea"
+    USERS ||--o{ NEWS : "crea"
     USERS ||--o{ INTERPRETES : "crea"
-    USERS ||--o{ SHOWS : "crea"
+    USERS ||--o{ EVENTS : "crea"
     USERS ||--o{ CANCIONES : "crea"
     USERS ||--o{ ALBUNES : "crea"
     USERS ||--o{ FESTIVALS : "crea"
@@ -116,242 +119,97 @@ erDiagram
     USERS ||--o{ CLASSIFIEDS : "publica"
     USERS ||--o{ CONTRIBUTIONS : "colabora"
     USERS ||--o{ NEWSLETTER_SUBSCRIBERS : "suscribe"
-    
-    INTERPRETES ||--o{ SHOWS : "tiene"
+    USERS ||--o{ ORGANIZATIONS : "crea"
+
+    ORGANIZATIONS ||--o{ ORGANIZATION_MEMBERS : "tiene"
+    ORGANIZATIONS ||--o{ NEWS : "publica"
+    ORGANIZATIONS ||--o{ EVENTS : "publica"
+    ORGANIZATIONS ||--o{ SOCIAL_ACCOUNTS : "conecta"
+
+    INTERPRETES ||--o{ EVENTS : "participa_en"
     INTERPRETES ||--o{ CANCIONES : "tiene"
     INTERPRETES ||--o{ ALBUNES : "tiene"
-    INTERPRETES }o--o{ NOTICIAS : "aparece_en"
-    
+    INTERPRETES }o--o{ NEWS : "aparece_en"
+
     ALBUNES }o--o{ CANCIONES : "contiene"
-    
-    NOTICIAS }o--|| CATEGORIAS : "pertenece_a"
-    
+
+    NEWS }o--|| CATEGORIAS : "pertenece_a"
+
     CLASSIFIEDS }o--|| CATEGORIES : "pertenece_a"
     CLASSIFIEDS }o--o{ TAGS : "etiquetado_con"
-    
-    SHOWS }o--|| PROVINCIAS : "ubicado_en"
+
+    EVENTS }o--|| PROVINCIAS : "ubicado_en"
     FESTIVALS }o--|| PROVINCIAS : "ubicado_en"
     FESTIVALS }o--|| MESES : "realizado_en"
-    
-    INTERPRETES ||--o{ IMAGES : "tiene_imagenes"
-    NOTICIAS ||--o{ IMAGES : "tiene_imagenes"
-    SHOWS ||--o{ IMAGES : "tiene_imagenes"
-    ALBUNES ||--o{ IMAGES : "tiene_imagenes"
-    FESTIVALS ||--o{ IMAGES : "tiene_imagenes"
-    MITOS ||--o{ IMAGES : "tiene_imagenes"
-    COMIDAS ||--o{ IMAGES : "tiene_imagenes"
-    CLASSIFIEDS ||--o{ IMAGES : "tiene_imagenes"
-    RADIOS ||--o{ IMAGES : "tiene_imagenes"
-    PENIAS ||--o{ IMAGES : "tiene_imagenes"
+
+    NEWS ||--o{ PUBLICATION_REQUESTS : "genera"
+    EVENTS ||--o{ PUBLICATION_REQUESTS : "genera"
+    PUBLICATION_REQUESTS ||--o{ PUBLICATION_TARGETS : "tiene"
+    PUBLICATION_TARGETS ||--o{ PUBLICATION_ATTEMPTS : "genera"
+    PUBLICATION_TARGETS }o--|| SOCIAL_ACCOUNTS : "usa"
 ```
 
-### 3.2 Tablas Principales
+### 3.2 Grupos de Tablas
 
-#### `users`
-| Campo | Tipo | Descripción |
+#### Contenido editorial (tablas activas)
+| Tabla | Modelo | Descripción |
 |---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `name` | varchar | Nombre del usuario |
-| `email` | varchar (unique) | Email |
-| `password` | varchar | Contraseña hasheada |
-| `google_id` | varchar (nullable) | ID de Google OAuth |
-| `facebook_id` | varchar (nullable) | ID de Facebook OAuth |
-| `points` | int | Puntos de gamificación |
-| `rank` | varchar | Rango del usuario |
-| `email_verified_at` | timestamp | Fecha de verificación |
-| `created_at/updated_at` | timestamps | Timestamps automáticos |
+| `news` | `News` | Noticias del portal. Campos canónicos: `title`, `body`, `slug`, `editorial_status`. Tiene compatibilidad legacy con `estado`. |
+| `events` | `Event` | Eventos y shows. Campos canónicos: `title`, `body`, `start_at`, `editorial_status`. |
+| `interpretes` | `Interprete` | Artistas y músicos folklóricos. Nombre artístico en campo `interprete`. |
+| `canciones` | `Cancion` | Letras de canciones. Campo principal `cancion` (título). |
+| `albunes` | `Album` | Discografía. Campo principal `album` (nombre). |
+| `festivales` | `Festival` | Festivales y fiestas tradicionales. |
+| `mitos` | `Mito` | Mitos y leyendas. |
+| `comidas` | `Comida` | Recetas de comidas típicas. Campo principal `receta`. |
 
-#### `interpretes`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `interprete` | varchar | Nombre artístico |
-| `slug` | varchar (unique) | Slug para URL |
-| `biografia` | text | Biografía completa |
-| `foto` | varchar | Ruta de la foto |
-| `telefono` | varchar | Teléfono de contacto |
-| `correo` | varchar | Email |
-| `instagram` | varchar | URL de Instagram |
-| `twitter` | varchar | URL de Twitter/X |
-| `youtube` | varchar | URL de YouTube |
-| `visitas` | int | Contador de visitas |
-| `estado` | tinyint | 1=activo, 0=inactivo |
-| `user_id` | bigint (FK) | Creador |
-
-#### `noticias`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `titulo` | varchar | Título de la noticia |
-| `slug` | varchar (unique) | Slug para URL |
-| `noticia` | text | Contenido completo |
-| `foto` | varchar | Imagen principal |
-| `categoria_id` | bigint (FK) | Categoría |
-| `interprete_id` | bigint (FK, nullable) | Intérprete principal (legacy) |
-| `visitas` | int | Contador de visitas |
-| `publicar` | tinyint | Flag de publicación |
-| `estado` | tinyint | 1=activo, 0=inactivo |
-| `user_id` | bigint (FK) | Creador |
-
-#### `canciones`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `cancion` | varchar | Título de la canción |
-| `slug` | varchar (unique) | Slug para URL |
-| `letra` | text | Letra completa |
-| `youtube` | varchar | Enlace a YouTube |
-| `spotify` | varchar | Enlace a Spotify |
-| `visitas` | int | Contador de visitas |
-| `publicar` | tinyint | Flag de publicación |
-| `estado` | tinyint | 1=activo, 0=inactivo |
-| `user_id` | bigint (FK) | Creador |
-| `interprete_id` | bigint (FK) | Intérprete |
-
-#### `albunes`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `album` | varchar | Nombre del álbum |
-| `slug` | varchar (unique) | Slug para URL |
-| `anio` | int | Año de lanzamiento |
-| `foto` | varchar | Portada |
-| `spotify` | varchar | Enlace a Spotify |
-| `visitas` | int | Contador de visitas |
-| `estado` | tinyint | 1=activo, 0=inactivo |
-| `user_id` | bigint (FK) | Creador |
-| `interprete_id` | bigint (FK) | Intérprete |
-
-#### `shows`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `show` | varchar | Nombre del evento |
-| `detalle` | text | Descripción corta |
-| `detalles` | text | Descripción extendida |
-| `fecha` | date | Fecha del evento |
-| `hora` | time | Hora del evento |
-| `lugar` | varchar | Nombre del lugar |
-| `direccion` | varchar | Dirección |
-| `precio_entrada` | varchar | Precio de entrada |
-| `link_entradas` | varchar | URL de venta |
-| `destacado` | tinyint | Flag destacado |
-| `imagen_destacada` | varchar | Imagen para destacado |
-| `slug` | varchar (unique) | Slug para URL |
-| `lat` | decimal | Latitud GPS |
-| `lng` | decimal | Longitud GPS |
-| `provincia_id` | bigint (FK) | Provincia |
-| `interprete_id` | bigint (FK) | Intérprete |
-| `estado` | tinyint | Estado |
-| `publicar` | tinyint | Flag de publicación |
-| `user_id` | bigint (FK) | Creador |
-
-#### `festivales`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `titulo` | varchar | Nombre del festival |
-| `slug` | varchar (unique) | Slug para URL |
-| `detalle` | text | Descripción |
-| `foto` | varchar | Imagen |
-| `provincia_id` | bigint (FK) | Provincia |
-| `mes_id` | bigint (FK) | Mes de realización |
-| `visitas` | int | Contador de visitas |
-| `publicar` | tinyint | Flag de publicación |
-| `estado` | tinyint | Estado |
-| `user_id` | bigint (FK) | Creador |
-
-#### `mitos`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `titulo` | varchar | Título |
-| `slug` | varchar | Slug para URL |
-| `mito` | text | Contenido del mito |
-| `foto` | varchar | Imagen |
-| `publicar` | tinyint | Flag de publicación |
-| `estado` | tinyint | Estado |
-
-#### `comidas`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `titulo` | varchar | Nombre de la receta |
-| `slug` | varchar | Slug para URL |
-| `receta` | text | Contenido de la receta |
-| `publicar` | tinyint | Flag de publicación |
-| `estado` | tinyint | Estado |
-
-#### `classifieds`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `user_id` | bigint (FK) | Usuario que publica |
-| `category_id` | bigint (FK) | Categoría |
-| `title` | varchar | Título del aviso |
-| `slug` | varchar (unique) | Slug para URL |
-| `description` | text | Descripción |
-| `price` | decimal | Precio |
-| `location` | varchar | Ubicación |
-| `contact_info` | varchar | Información de contacto |
-| `contact_whatsapp` | varchar | Número de WhatsApp |
-| `expiration_date` | date | Fecha de expiración |
-| `is_active` | boolean | Activo/inactivo |
-| `is_featured` | boolean | Destacado |
-| `estado` | varchar | `pendiente`, `activo`, `rechazado` |
-| `moderator_comment` | text | Comentario del moderador |
-
-#### `contributions`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `user_id` | bigint (FK) | Usuario colaborador |
-| `contributable_type` | varchar | Tipo de modelo (polimórfico) |
-| `contributable_id` | bigint | ID del modelo relacionado |
-| `payload` | json | Datos propuestos |
-| `status` | varchar | `pending`, `approved`, `rejected` |
-| `moderator_comment` | text | Comentario del moderador |
-
-#### `newsletter_subscribers`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `user_id` | bigint (FK, nullable) | Usuario vinculado (opcional) |
-| `email` | varchar | Email del suscriptor |
-| `name` | varchar | Nombre |
-| `status` | varchar | `active`, `unsubscribed` |
-| `token` | varchar | Token único para desuscripción |
-| `source` | varchar | Fuente de la suscripción |
-| `unsubscribed_at` | timestamp | Fecha de desuscripción |
-
-#### `images` (Polimórfica)
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id` | bigint (PK) | Identificador |
-| `imageable_type` | varchar | Tipo de modelo (polimórfico) |
-| `imageable_id` | bigint | ID del modelo |
-| `path` | varchar | Ruta de la imagen |
-| ... | ... | Campos adicionales |
-
-### 3.3 Tablas Pivote
-
-| Tabla | Relación |
+#### Tablas legacy (siguen existiendo, no se leen desde la app)
+| Tabla | Estado |
 |---|---|
-| `interprete_noticia` | Intérpretes ↔ Noticias (M:N) |
-| `albunes_canciones` | Álbumes ↔ Canciones (M:N, con campo `orden`) |
-| `classified_tag` | Clasificados ↔ Tags (M:N) |
+| `noticias` | 347 filas. Datos anteriores a la migración a `news`. No se escribe ni lee desde los controllers. |
+| `shows` | 0 filas. Vaciada al migrar a `events`. |
 
-### 3.4 Tablas de Referencia
+#### Usuarios y comunidad
+| Tabla | Modelo | Descripción |
+|---|---|---|
+| `users` | `User` | Usuarios del sistema. Incluye `google_id`, `facebook_id`, `points`, `rank`. |
+| `classifieds` | `Classified` | Avisos clasificados. Estado: `pendiente`, `activo`, `rechazado`. |
+| `contributions` | `Contribution` | UGC polimórfico. Payload JSON con datos propuestos. |
+| `newsletter_subscribers` | `NewsletterSubscriber` | Suscriptores con token de desuscripción. |
 
+#### Pasarela de contenidos
+| Tabla | Modelo | Descripción |
+|---|---|---|
+| `organizations` | `Organization` | Organizaciones (peñas, productoras, artistas independientes). |
+| `organization_members` | `OrganizationMember` | Membresías con roles. |
+| `social_accounts` | `SocialAccount` | Cuentas de redes sociales vinculadas (polimórfico: User u Organization). |
+| `publication_requests` | `PublicationRequest` | Solicitudes de publicación de un contenido (News o Event). |
+| `publication_targets` | `PublicationTarget` | Destino específico: portal, red social, etc. |
+| `publication_attempts` | `PublicationAttempt` | Cada intento de publicar un target, con payload y respuesta. |
+| `publication_templates` | `PublicationTemplate` | Templates de texto por provider y tipo de contenido. |
+| `moderation_reviews` | `ModerationReview` | Historial de revisiones de moderación (polimórfico). |
+| `audit_logs` | `AuditLog` | Log de acciones críticas. Método estático `AuditLog::log()`. |
+| `notifications` | `UserNotification` | Notificaciones internas para usuarios. |
+
+#### Referencia
 | Tabla | Contenido |
 |---|---|
-| `categorias` | Categorías de noticias |
+| `categorias` | Categorías de noticias (Actualidad, Festivales, etc.) |
 | `categories` | Categorías de clasificados |
 | `tags` | Etiquetas para clasificados |
 | `provincias` | Provincias argentinas |
 | `meses` | Meses del año |
 
-### 3.5 Tablas de Autorización (Spatie Permission)
+### 3.3 Tablas Pivote
+
+| Tabla | Relación |
+|---|---|
+| `interprete_noticia` | Intérpretes ↔ News (M:N) |
+| `event_interprete` | Events ↔ Intérpretes (M:N, con `sort_order`) |
+| `albunes_canciones` | Álbumes ↔ Canciones (M:N, con campo `orden`) |
+| `classified_tag` | Clasificados ↔ Tags (M:N) |
+
+### 3.4 Tablas de Autorización (Spatie Permission)
 
 | Tabla | Contenido |
 |---|---|
@@ -360,6 +218,10 @@ erDiagram
 | `model_has_roles` | Asignación de roles a usuarios |
 | `model_has_permissions` | Asignación directa de permisos |
 | `role_has_permissions` | Permisos asignados a roles |
+
+### 3.5 Nota sobre compatibilidad legacy
+
+Los modelos `News` y `Event` tienen accessors de compatibilidad que mapean nombres de campos viejos a los nuevos (ej: `$news->titulo` → `title`, `$event->fecha` → `start_at`). Estos accessors funcionan en instancias del modelo pero **no en queries WHERE** — siempre usar el nombre canónico en consultas.
 
 ---
 
@@ -403,10 +265,10 @@ GET  /avisos-clasificados/mis-avisos             → classifieds.mis-avisos [aut
 POST /avisos-clasificados/renovar/{id}           → classifieds.renovar [auth]
 GET  /avisos-clasificados/{slug}                 → classifieds.show
 
-# Colaboraciones [auth]
-GET  /colaborar                                  → contributions.index
-GET  /colaborar/{type}/{id?}                     → contributions.create
-POST /colaborar/store                            → contributions.store
+# Colaboraciones [auth] — migradas al backend
+GET  /admin/contribuir                           → backend.contributions.index
+GET  /admin/contribuir/crear/{type}/{id?}        → backend.contributions.create
+POST /admin/contribuir/store                     → backend.contributions.store
 
 # Miniportal del artista
 GET  /{artista}                                  → artista.show
@@ -418,9 +280,9 @@ GET  /{artista}/letras/{slug}                    → artista.cancion
 GET  /{artista}/discografia                      → artista.discografia
 GET  /{artista}/discografia/{slug}               → artista.disco
 GET  /{artista}/shows                            → artista.shows
-GET  /{artista}/shows/{slug}                     → artista.showdetalle
-GET  /{artista}/entrevistas                      → artista.entrevistas
-GET  /{artista}/entrevistas/{slug}               → artista.entrevista
+GET  /{artista}/shows/{slug}                     → artista.show.detalle
+GET  /{artista}/entrevistas                      → artista.entrevistas [🔮 diferido]
+GET  /{artista}/entrevistas/{slug}               → artista.entrevista  [🔮 diferido]
 
 # Social Auth
 GET  /auth/google                                → auth.google
@@ -446,17 +308,17 @@ Todas bajo prefijo `/admin` con middleware `auth`:
 GET  /admin                                      → dashboard
 
 # CRUD Resources
+Resource: /admin/events          → backend.events.*
+Resource: /admin/news            → backend.news.*
 Resource: /admin/interpretes     → backend.interpretes.*
-Resource: /admin/noticias        → backend.noticias.*
 Resource: /admin/canciones       → backend.canciones.*
 Resource: /admin/discos          → backend.discos.*
-Resource: /admin/shows           → backend.shows.*
 Resource: /admin/festivales      → backend.festivales.*
 Resource: /admin/mitos           → backend.mitos.*
 Resource: /admin/comidas         → backend.comidas.*
 Resource: /admin/classifieds     → backend.classifieds.*
-Resource: /admin/categories      → categories.*
-Resource: /admin/tags            → tags.*
+Resource: /admin/categories      → backend.categories.*
+Resource: /admin/tags            → backend.tags.*
 Resource: /admin/roles           → roles.*
 Resource: /admin/users           → users.*
 Resource: /admin/permissions     → permissions.*
@@ -467,15 +329,25 @@ GET  /admin/canciones/data                       → backend.canciones.get
 POST /admin/classifieds/{id}/approve             → backend.classifieds.approve
 POST /admin/classifieds/{id}/reject              → backend.classifieds.reject
 
-# Contribuciones
-GET  /admin/contributions                        → backend.contributions.index
-GET  /admin/contributions/{id}                   → backend.contributions.show
-POST /admin/contributions/{id}/approve           → backend.contributions.approve
-POST /admin/contributions/{id}/reject            → backend.contributions.reject
+# Contribuciones y moderación
+GET  /admin/contribuir                           → backend.contributions.index
+GET  /admin/moderation                           → backend.moderation.index
 
 # Newsletter
 GET  /admin/newsletter-subscribers               → backend.newsletter.index
 POST /admin/newsletter-subscribers/{id}/toggle   → backend.newsletter.toggle
+
+# Pasarela de contenidos
+GET  /admin/pasarela                             → pasarela.index
+GET  /admin/pasarela/dashboard                   → pasarela.dashboard
+GET  /admin/pasarela/admin/dashboard             → pasarela.admin.dashboard
+Resource: /admin/pasarela/social-accounts        → pasarela.social-accounts.*
+Resource: /admin/pasarela/publication-requests   → pasarela.publication-requests.*
+Resource: /admin/pasarela/templates              → pasarela.templates.*
+GET  /admin/pasarela/notifications               → pasarela.notifications.index
+POST /admin/pasarela/notifications/{id}/read     → pasarela.notifications.mark-read
+POST /admin/pasarela/notifications/read-all      → pasarela.notifications.mark-all-read
+GET  /admin/pasarela/notifications/count         → pasarela.notifications.unread-count
 ```
 
 ### 4.3 API REST (v1)
@@ -559,7 +431,7 @@ Trait compartido entre entidades de contenido que proporciona métodos comunes:
 | `search($model, $term, $columns)` | Búsqueda en múltiples columnas |
 | `getRelatedContent($interprete, $seccion, $actual)` | Contenido relacionado del artista |
 
-**Modelos que lo usan:** `Interprete`, `Noticia`, `Cancion`, `Album`, `Show`, `Festival`, `Mito`, `Comida`
+**Modelos que lo usan:** `Interprete`, `News`, `Cancion`, `Album`, `Event`, `Festival`, `Mito`, `Comida`
 
 ### 6.2 Relaciones Polimórficas
 
@@ -574,7 +446,7 @@ public function images()
 }
 ```
 
-**Modelos con imágenes:** Interprete, Noticia, Show, Album, Festival, Mito, Comida, Classified, Radio, Penia
+**Modelos con imágenes:** Interprete, News, Event, Album, Festival, Mito, Comida, Classified
 
 #### Contributions (Morphable)
 Las contribuciones de usuarios se asocian polimórficamente a cualquier entidad:
@@ -788,7 +660,7 @@ Las URLs del frontend están diseñadas con slugs largos orientados al posiciona
 
 ### 12.2 Estado Actual
 
-⚠️ **No se identificaron tests implementados.** La carpeta `tests/` existe pero no se encontraron tests personalizados activos.
+Tests corriendo sobre la BD `mfa` con `DatabaseTransactions`. Ubicados en `tests/Feature/`. **No usar `RefreshDatabase`** — crashea MariaDB en Docker/Windows.
 
 ### 12.3 Ejecución
 
@@ -839,15 +711,13 @@ php artisan test
 
 | Área | Observación | Prioridad |
 |---|---|---|
-| **Tests** | No hay tests implementados | 🟡 Media |
-| **Validación** | Verificar que todos los controladores usen Form Requests | 🟡 Media |
-| **Duplicación `estado`/`publicar`** | Algunos modelos tienen ambos campos con funciones similares | 🟡 Media |
-| **Nomenclatura mixta** | Algunos modelos usan español (Noticia, Cancion) y otros inglés (Classified, Contribution) | 🟢 Baja |
-| **Categorías duplicadas** | Existen `categorias` (noticias) y `categories` (clasificados) como tablas separadas | 🟢 Baja |
-| **Controlador Videos** | `VideosController.php` existe pero está vacío/sin implementar | 🟢 Baja |
-| **Entrevistas** | Controlador creado pero sin CRUD backend ni vistas completas | 🟡 Media |
-| **CommonMethodsTrait search** | Retorna string si no hay resultados en lugar de colección vacía | 🟢 Baja |
-| **N+1 Queries** | Verificar eager loading en todas las consultas de listados | 🟡 Media |
-| **Cache** | No se identificó uso de cache para consultas frecuentes | 🟡 Media |
-| **Rate Limiting** | No configurado para rutas sensibles | 🟠 Alta |
-| **Newsletter** | En fase de prueba, no validado en producción | 🟡 Media |
+| **Tablas legacy** | `noticias` (347 filas) y `shows` (0 filas) siguen en la BD sin usarse. Evaluar limpieza. | 🟡 Media |
+| **Modelos legacy** | `Show.php` y `Noticia.php` son aliases deprecados. Eliminar cuando BusquedaController y SitemapController no los referencien (ya resuelto). | 🟢 Baja |
+| **Pasarela sin probar** | La Pasarela de Contenidos está implementada pero nunca fue probada en producción. | 🟠 Alta |
+| **Colaboraciones UGC** | Flujo migrado de `/colaborar` a `/admin/contribuir` pero no verificado end-to-end. | 🟡 Media |
+| **Entrevistas / Radios / Peñas** | Módulos diferidos a próxima versión. Rutas activas pero sin implementación completa. | 🔮 Futuro |
+| **Nomenclatura mixta** | Modelos legacy en español (`Interprete`, `Cancion`, `Album`) conviven con nuevos en inglés (`News`, `Event`). Normalizar en próxima versión. | 🟢 Baja |
+| **N+1 Queries** | Verificar eager loading en consultas de listados del frontend. | 🟡 Media |
+| **Rate Limiting** | No configurado para rutas sensibles (login, API, newsletter). | 🟠 Alta |
+| **Newsletter** | En fase de prueba, no validado en producción. | 🟡 Media |
+| **`estado`/`publicar` legacy** | Campos duplicados en tablas viejas. `news` y `events` usan `editorial_status` como campo canónico. | 🟢 Baja |

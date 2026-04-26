@@ -24,7 +24,7 @@
   "name": "{{ $cancion->cancion }} - {{ $interprete->interprete }}",
   "description": "Video y letra de la canción {{ $cancion->cancion }} por {{ $interprete->interprete }}.",
   "thumbnailUrl": "{{ $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : asset('storage/interpretes/' . $interprete->foto) }}",
-  "uploadDate": "{{ $cancion->created_at->toIso8601String() }}",
+  "uploadDate": "{{ $cancion->created_at ? $cancion->created_at->toIso8601String() : '' }}",
   "contentUrl": "https://www.youtube.com/watch?v={{ $cancion->youtube }}",
   "embedUrl": "https://www.youtube.com/embed/{{ $cancion->youtube }}"
 }
@@ -42,7 +42,7 @@
   <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $cancion->cancion }}</h1>
     <div class="mb-4">
-      <a href="{{ route('contributions.create', ['type' => 'cancion', 'id' => $cancion->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
+      <a href="{{ route('backend.contributions.create', ['type' => 'cancion', 'id' => $cancion->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
         🎸 Sugerir corrección de letra
       </a>
     </div>
