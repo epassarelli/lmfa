@@ -6,8 +6,7 @@
       <x-optimized-image :image="$interprete->images->first()" variant="card" width="400" height="400"
         class="rounded shadow-md object-cover w-full" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}" />
     @else
-      <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" loading="lazy" width="400" height="400"
-        class="rounded shadow-md object-cover" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}">
+      <x-image-placeholder class="w-full rounded shadow-md min-h-[200px]" />
     @endif
 
     {{-- Menú de navegación por secciones --}}

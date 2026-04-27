@@ -93,7 +93,7 @@ class ImageUploadService
                 $encoded = $imgVariant->toWebp(85);
                 Storage::disk('public')->put($variantPath, $encoded);
 
-                $variantsData[$variantName][$size] = Storage::disk('public')->url($variantPath);
+                $variantsData[$variantName][$size] = $variantPath; // ruta relativa; la URL se resuelve en tiempo de render
             }
         }
 
@@ -103,7 +103,8 @@ class ImageUploadService
 
         return $model->images()->create([
             'profile' => $profile,
-            'original_path' => Storage::disk('public')->url($originalPath),
+            'disk' => 'public',
+            'original_path' => $originalPath, // ruta relativa; la URL se resuelve en tiempo de render
             'variants_json' => $variantsData,
             'original_width' => $originalWidth,
             'original_height' => $originalHeight,

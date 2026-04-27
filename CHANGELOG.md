@@ -11,6 +11,30 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 Cambios en curso hacia `v2.0.0` estable.
 
+### Corregido (2026-04-26 — post-deploy)
+
+- **Media URLs**: `ImageUploadService` almacenaba URLs absolutas con el `APP_URL` del momento del upload — `MediaAsset` ahora resuelve rutas dinámicamente con `resolveStorageUrl()`, compatible con registros viejos (extrae ruta relativa de la URL absoluta) y nuevos (ruta relativa pura). Sin cambios de DB. Imágenes subidas en localhost ya se ven en producción.
+- **InstagramConnector**: `resolveImageUrl()` envolvía la URL ya resuelta con `asset('storage/...')` — corregido para usar directamente las URLs del modelo.
+
+### Corregido (2026-04-26 — estándares de imagen)
+
+- **`ImageUploadService`**: ahora guarda rutas relativas en `original_path` y `variants_json`, no URLs absolutas. Incluye `disk='public'` explícito.
+- **FestivalController**: usaba perfil `news_full` para festivales — corregido a `festival` (las variantes `hero`/`main` nunca se generaban para este tipo).
+- **EventService**: ídem — corregido de `news_full` a `event`.
+
+### Agregado (2026-04-26 — estándares de imagen)
+
+- **`x-image-placeholder`**: nuevo componente Blade que muestra ícono SVG de cámara + texto "Sin imagen" sobre fondo gris. Acepta `:label="null"` para modo compacto (sidebars 64×64).
+- **Tamaños de variante actualizados** en `config/image_profiles.php`:
+  - `artist.card`: 80–160px → 300–800px (tarjetas `h-96` y portrait sidebar 400px)
+  - `album.card`: 80–160px → 200–600px (tarjetas `h-96`)
+  - `festival`: agregada variante `hero` (768–1600px); `card` ampliada a 4 breakpoints
+  - `event.card`: 320–480px → 480–1024px (tarjetas `h-96`, ratio 16:9 a ~682px mínimo); agregada variante `hero`
+- **Placeholder en tarjetas**: `noticia-card`, `biografia-card`, `disco-card`, `festival-card`, `show-card` — rama `@else` reemplazada por `<x-image-placeholder>`
+- **Placeholder en vistas de detalle**: `noticias/show`, `discos/show`, `festivales/show`, `shows/show`
+- **Placeholder en sidebars**: `card-discos`, `card-biografias`, `card-shows` ahora usan `x-optimized-image` si el modelo tiene imagen nueva, legacy `<img>` si hay foto en storage, o placeholder compacto como última opción
+- **`interpretes-header`**: fallback `<img>` legacy reemplazado por placeholder
+
 ### Corregido (Sprint 1 — 2026-04-26)
 
 - **GAP-01** · ModerationController: query `orWhereNull('published_at')` sin agrupar devolvía toda la tabla — envuelto en closure

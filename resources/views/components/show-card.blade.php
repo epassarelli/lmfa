@@ -11,8 +11,7 @@
       @elseif ($interprete && $interprete->images->isNotEmpty())
         <x-optimized-image :image="$interprete->images->first()" variant="card" class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105" :alt="$interprete->interprete ?? $show->titulo" />
       @else
-        <img src="{{ asset('storage/interpretes/' . ($interprete->foto ?? 'default.jpg')) }}" alt="{{ $interprete->interprete ?? $show->titulo }}"
-          class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105">
+        <x-image-placeholder class="w-full h-96" />
       @endif
     </div>
 

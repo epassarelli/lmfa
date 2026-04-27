@@ -112,12 +112,16 @@ class InstagramConnector extends BaseConnector
         if ($images->isEmpty()) return null;
 
         $first = $images->first();
-        // Check variants_json for webp, otherwise fall back to original_path
+        // variants_json y original_path ya devuelven URLs resueltas al dominio actual
         $variants = $first->variants_json ?? [];
-        $path = $variants['webp'] ?? $variants['thumbnail'] ?? $first->original_path ?? null;
-        if (!$path) return null;
+        if (!empty($variants)) {
+            $firstVariant = reset($variants);
+            if (is_array($firstVariant) && !empty($firstVariant)) {
+                return reset($firstVariant);
+            }
+        }
 
-        return asset('storage/' . $path);
+        return $first->original_path ?? null;
     }
 
     protected function errorResult(string $code, string $msg, bool $retryable = false): array

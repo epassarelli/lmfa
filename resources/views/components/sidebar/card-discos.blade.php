@@ -10,11 +10,15 @@
         <article
           class="flex gap-4 items-start bg-white border border-gray-100 p-1 rounded shadow-sm hover:shadow transition">
           <a href="{{ route('interprete.album.show', [$disco->interprete->slug, $disco->slug]) }}" class="shrink-0">
-            <img
-              src="{{ file_exists(public_path('storage/albunes/' . $disco->foto)) && $disco->foto
-                  ? asset('storage/albunes/' . $disco->foto)
-                  : asset('img/album.jpg') }}"
-              alt="{{ $disco->album }}" class="w-16 h-16 object-cover rounded-md">
+            @if ($disco->images->isNotEmpty())
+              <x-optimized-image :image="$disco->images->first()" variant="card" :minimal="true"
+                class="w-16 h-16 object-cover rounded-md" :alt="$disco->album" />
+            @elseif ($disco->foto && file_exists(public_path('storage/albunes/' . $disco->foto)))
+              <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->album }}"
+                class="w-16 h-16 object-cover rounded-md">
+            @else
+              <x-image-placeholder :label="null" class="w-16 h-16 rounded-md" />
+            @endif
           </a>
           <div class="flex-1">
             <h4 class="font-semibold leading-tight">

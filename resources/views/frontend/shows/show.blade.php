@@ -49,6 +49,8 @@
           @elseif ($show->imagen_destacada)
             <img src="{{ asset('storage/' . $show->imagen_destacada) }}" alt="{{ $show->titulo }}"
               class="mb-6 rounded shadow-lg w-full object-cover max-h-[500px]">
+          @else
+            <x-image-placeholder class="mb-6 w-full rounded shadow-lg min-h-[200px] max-h-[500px]" />
           @endif
           
           <h1 class="text-3xl font-bold mb-2">{{ $show->titulo }}</h1>

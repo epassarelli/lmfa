@@ -27,8 +27,7 @@
   @if ($festival->images->isNotEmpty())
     <x-optimized-image :image="$festival->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px]" />
   @else
-    <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
-      class="rounded shadow-lg w-full object-cover max-h-[500px]">
+    <x-image-placeholder class="w-full rounded shadow-lg min-h-[200px] max-h-[500px] mb-4" />
   @endif
   
     <div class="bg-white p-2">
