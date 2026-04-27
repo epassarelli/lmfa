@@ -49,8 +49,9 @@
               :alt="$noticia->titulo" fetchpriority="high" />
           </div>
         @else
-          <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-            class="w-full rounded-lg shadow-md mb-6 object-cover">
+          <div class="mb-4">
+            <x-image-placeholder class="w-full rounded-lg shadow-md min-h-[200px]" />
+          </div>
         @endif
 
     <h1 class="text-2xl font-semibold text-gray-800 mb-2">{{ $noticia->titulo }}</h1>

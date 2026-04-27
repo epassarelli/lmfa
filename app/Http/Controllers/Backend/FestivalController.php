@@ -63,7 +63,7 @@ class FestivalController extends Controller
       $this->imageService->process(
         $request->file('foto'),
         $festival,
-        'news_full', // Use news_full as it's a general content profile
+        'festival',
         'festivales'
       );
     }
@@ -93,7 +93,7 @@ class FestivalController extends Controller
       $this->imageService->process(
         $request->file('foto'),
         $festival,
-        'news_full',
+        'festival',
         'festivales',
         true
       );

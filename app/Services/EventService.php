@@ -53,9 +53,9 @@ class EventService
                 $this->imageService->process(
                     $image,
                     $event,
-                    'news_full', // Perfil de imagen
-                    'events',    // Carpeta
-                    false,       // No reemplazar (es nuevo)
+                    'event',  // Perfil de imagen
+                    'events', // Carpeta
+                    false,    // No reemplazar (es nuevo)
                     $event->slug
                 );
             }
@@ -97,9 +97,9 @@ class EventService
                 $this->imageService->process(
                     $image,
                     $event,
-                    'news_full',
-                    'events',
-                    true, // Reemplazar anterior
+                    'event',  // Perfil de imagen
+                    'events', // Carpeta
+                    true,     // Reemplazar anterior
                     $event->slug
                 );
             }

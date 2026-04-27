@@ -14,8 +14,7 @@
     @if ($noticia->images->isNotEmpty())
       <x-optimized-image :image="$noticia->images->first()" variant="card" class="w-full h-48 object-cover" :alt="$noticia->titulo" />
     @else
-      <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
-        class="w-full h-48 object-cover">
+      <x-image-placeholder class="w-full h-48" />
     @endif
   </a>
   <div class="p-4">

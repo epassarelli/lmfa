@@ -36,6 +36,8 @@
           <x-optimized-image :image="$disco->images->first()" variant="card" class="rounded mb-4 w-full" />
         @elseif ($disco->foto)
           <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}" class="rounded mb-4 w-full">
+        @else
+          <x-image-placeholder class="w-full rounded mb-4 aspect-square" />
         @endif
 
         <h1 class="text-2xl font-bold text-gray-800">{{ $disco->titulo }}</h1>

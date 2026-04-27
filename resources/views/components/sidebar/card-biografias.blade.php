@@ -10,11 +10,15 @@
         <article
           class="flex gap-4 items-start bg-white border border-gray-200 rounded shadow-md hover:shadow transition p-1">
           <a href="{{ route('interprete.show', $artista->slug) }}" class="shrink-0">
-            <img
-              src="{{ file_exists(public_path('storage/interpretes/' . $artista->foto)) && $artista->foto
-                  ? asset('storage/interpretes/' . $artista->foto)
-                  : asset('img/interprete.jpg') }}"
-              alt="{{ $artista->interprete }}" class="w-16 h-16 object-cover rounded">
+            @if ($artista->images->isNotEmpty())
+              <x-optimized-image :image="$artista->images->first()" variant="card" :minimal="true"
+                class="w-16 h-16 object-cover rounded" :alt="$artista->interprete" />
+            @elseif ($artista->foto && file_exists(public_path('storage/interpretes/' . $artista->foto)))
+              <img src="{{ asset('storage/interpretes/' . $artista->foto) }}" alt="{{ $artista->interprete }}"
+                class="w-16 h-16 object-cover rounded">
+            @else
+              <x-image-placeholder :label="null" class="w-16 h-16 rounded" />
+            @endif
           </a>
           <div class="flex-1 text-base md:text-sm text-gray-700">
             <h4 class="font-semibold leading-tight">

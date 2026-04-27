@@ -9,8 +9,7 @@
       @if ($interprete->images->isNotEmpty())
         <x-optimized-image :image="$interprete->images->first()" variant="card" class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105" />
       @else
-        <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="Foto de {{ $interprete->interprete }}"
-          class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105">
+        <x-image-placeholder class="w-full h-96" />
       @endif
     </div>
 
