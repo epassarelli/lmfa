@@ -16,8 +16,13 @@
 ## 2. Subir código
 
 ```bash
-git pull origin v2          # o el tag que corresponda
+git fetch origin
+git checkout main
+git pull --ff-only origin main
+git rev-parse --short HEAD  # debe ser 65e15af o posterior
 composer install --no-dev --optimize-autoloader
+npm ci
+npm run build
 ```
 
 ---
@@ -34,10 +39,14 @@ No hay migraciones pendientes para v2.0.0. La tabla `user_notifications` ya exis
 
 Solo correr si los roles/permisos no existen en producción (DB vacía o setup inicial).
 **No correr en una DB con datos reales de roles** — duplica registros.
+El seeder `RolesAndPermissionsSeeder` no es idempotente (`create()` directo).
+
+Antes de decidir, verificar roles y permisos críticos:
 
 ```bash
 # Verificar primero:
 php artisan tinker --execute="echo \Spatie\Permission\Models\Role::count();"
+php artisan tinker --execute="echo \Spatie\Permission\Models\Permission::where('name', 'publish contents')->exists() ? 'ok' : 'missing';"
 
 # Solo si devuelve 0:
 php artisan db:seed --class=RolesAndPermissionsSeeder --force
@@ -63,7 +72,10 @@ php artisan queue:restart             # Reiniciar workers para que tomen el cód
 
 - [ ] `/admin/moderation` carga sin errores
 - [ ] `/admin/classifieds` — solapas funcionan
-- [ ] `/admin/contribuciones` — lista de contribuciones visible solo para admin
+- [ ] `/admin/contributions` — moderación de contribuciones visible solo para admin
+- [ ] `/admin/contribuir` — panel personal del colaborador carga para usuario autenticado
+- [ ] `/admin/news` carga sin errores
+- [ ] `/admin/events` carga sin errores
 - [ ] API `POST /api/v1/news` con token de usuario no-admin devuelve 403
 - [ ] Detalle de noticia con URL `/{interprete}/noticias/{slug}` carga correctamente
 - [ ] Detalle de intérprete (`/abel-pintos/biografia`) carga sin errores de ruta
@@ -94,6 +106,18 @@ php artisan queue:restart             # Reiniciar workers para que tomen el cód
 |----------|-----------|-------------|
 | `APP_KEY` | ✅ Sí | Requerida para el cast `encrypted` de `SocialAccount` |
 | `PORTAL_ORGANIZATION_ID` | ⚠️ Opcional | ID de la organización institucional del portal. Si no se configura, la opción "publicar en redes del portal" no creará targets (loguea warning). Setear antes de usar la Pasarela en producción. |
+
+### Advertencia sobre tokens existentes
+
+Si producción ya tiene filas en `social_accounts` creadas antes del cast `encrypted`, los tokens pueden estar en texto plano y fallar al leerse con el cast nuevo.
+
+Verificar antes de usar la Pasarela:
+
+```sql
+SELECT COUNT(*) FROM social_accounts;
+```
+
+Si devuelve más de 0, reingresar/rotar tokens desde el panel o preparar conversión controlada.
 
 ---
 
