@@ -1,7 +1,7 @@
 # 00 — Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesión de trabajo.
-> Última actualización: 2026-04-26 (Auditoría completa + limpieza de archivos legacy)
+> Última actualización: 2026-04-26 (Fix URLs de imágenes en producción + estándares de imagen + placeholder)
 
 ---
 
@@ -123,6 +123,13 @@ API REST: news, albums, songs, foods, festivals, artists, myths (CRUD completo).
 
 ---
 
+## Sistema de imágenes (2026-04-26)
+
+- `MediaAsset.getOriginalPathAttribute()` y `getVariantsJsonAttribute()` resuelven URLs dinámicamente usando `resolveStorageUrl()`. Compatible con registros viejos (URL absoluta) y nuevos (ruta relativa).
+- `ImageUploadService` guarda rutas relativas en `original_path` y `variants_json` — ya no bake-in del `APP_URL` al momento del upload.
+- Perfiles en `config/image_profiles.php` ajustados al layout real: `artist.card` 300–800px, `album.card` 200–600px, `festival.hero` y `event.hero` nuevos.
+- Componente `x-image-placeholder`: fondo gris con ícono SVG de cámara. Modo normal (con "Sin imagen") y compacto (`:label="null"`, solo ícono).
+
 ## Pendientes identificados
 
 1. **Probar Pasarela de Contenidos** end-to-end en el browser.
@@ -130,3 +137,4 @@ API REST: news, albums, songs, foods, festivals, artists, myths (CRUD completo).
 3. **Evaluar limpieza de tablas legacy** (`noticias`, `shows`, `images`) — requiere confirmar que no hay datos únicos antes de eliminar.
 4. **Crear `openspec/project.md`** con contexto del proyecto para el workflow OpenSpec.
 5. **Completar AGENTS.md** con secciones operativas (pendiente del plan aprobado).
+6. **Imágenes nuevas de festival y evento**: las ya subidas usaban perfil `news_full`; el perfil correcto (`festival`/`event`) aplica solo a nuevas subidas. Resubir o regenerar si se quieren las variantes `hero`/`main` correctas.
