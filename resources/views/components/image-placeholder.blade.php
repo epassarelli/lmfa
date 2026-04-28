@@ -2,7 +2,7 @@
     'label' => 'Sin imagen', // null = modo compacto (solo ícono, sin texto)
 ])
 
-<div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center bg-gray-100 text-gray-300']) }}>
+<div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center bg-gray-300 text-gray-500']) }}>
     <svg xmlns="http://www.w3.org/2000/svg"
          class="{{ $label ? 'h-10 w-10 mb-1' : 'h-6 w-6' }}"
          fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">

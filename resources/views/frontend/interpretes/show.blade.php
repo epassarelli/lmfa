@@ -81,6 +81,11 @@
       <x-optimized-image :image="$interprete->images->first()" variant="card" width="400" height="400"
         class="rounded shadow-md object-cover w-full" :alt="$interprete->interprete" fetchpriority="high" />
     </div>
+  @elseif ($interprete->foto && file_exists(public_path('storage/interpretes/' . $interprete->foto)))
+    <div class="mb-4">
+      <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
+          class="rounded shadow-md object-cover w-full" loading="lazy">
+    </div>
   @endif
   @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
   <br>

@@ -48,6 +48,11 @@
             <x-optimized-image :image="$noticia->images->first()" variant="detail" class="rounded shadow-lg w-full"
               :alt="$noticia->titulo" fetchpriority="high" />
           </div>
+        @elseif ($noticia->foto && file_exists(public_path('storage/noticias/' . $noticia->foto)))
+          <div class="mb-4">
+            <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+                class="rounded shadow-lg w-full" loading="lazy">
+          </div>
         @else
           <div class="mb-4">
             <x-image-placeholder class="w-full rounded-lg shadow-md min-h-[200px]" />

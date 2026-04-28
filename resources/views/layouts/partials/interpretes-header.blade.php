@@ -5,6 +5,9 @@
     @if ($interprete->images->isNotEmpty())
       <x-optimized-image :image="$interprete->images->first()" variant="card" width="400" height="400"
         class="rounded shadow-md object-cover w-full" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}" />
+    @elseif ($interprete->foto && file_exists(public_path('storage/interpretes/' . $interprete->foto)))
+      <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
+          class="rounded shadow-md object-cover w-full" loading="lazy">
     @else
       <x-image-placeholder class="w-full rounded shadow-md min-h-[200px]" />
     @endif

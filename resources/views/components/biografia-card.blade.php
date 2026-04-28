@@ -8,6 +8,9 @@
     <div class="overflow-hidden">
       @if ($interprete->images->isNotEmpty())
         <x-optimized-image :image="$interprete->images->first()" variant="card" class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105" />
+      @elseif ($interprete->foto && file_exists(public_path('storage/interpretes/' . $interprete->foto)))
+        <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
+            class="w-full h-96 object-cover transition-transform duration-300 ease-in-out hover:scale-105" loading="lazy">
       @else
         <x-image-placeholder class="w-full h-96" />
       @endif

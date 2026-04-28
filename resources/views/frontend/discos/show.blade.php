@@ -34,7 +34,7 @@
       <div class="bg-white rounded shadow p-2 space-y-2">
         @if ($disco->images->isNotEmpty())
           <x-optimized-image :image="$disco->images->first()" variant="card" class="rounded mb-4 w-full" />
-        @elseif ($disco->foto)
+        @elseif ($disco->foto && file_exists(public_path('storage/albunes/' . $disco->foto)))
           <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}" class="rounded mb-4 w-full">
         @else
           <x-image-placeholder class="w-full rounded mb-4 aspect-square" />
