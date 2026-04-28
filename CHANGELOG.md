@@ -7,6 +7,16 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.0.2] — 2026-04-27
+
+### Corregido
+
+- **Imágenes legacy con fallback progresivo**: todos los componentes de tarjeta (`noticia-card`, `biografia-card`, `disco-card`, `festival-card`, `show-card`) y vistas de detalle (`noticias/show`, `discos/show`, `festivales/show`, `shows/show`, `interpretes/show`) ahora verifican con `file_exists()` si la imagen legacy existe en disco antes de renderizarla; si no existe, muestran `<x-image-placeholder>` en lugar de la etiqueta rota del navegador.
+- **`interpretes-header`** (sidebar): agrega fallback a foto legacy del intérprete antes de mostrar el placeholder.
+- **`shows/show`**: amplía la cadena de fallback añadiendo la foto legacy del intérprete (`storage/interpretes/{foto}`) entre `imagen_destacada` y el placeholder.
+
+---
+
 ## [Unreleased] — rama `v2`
 
 Cambios en curso hacia `v2.0.0` estable.
