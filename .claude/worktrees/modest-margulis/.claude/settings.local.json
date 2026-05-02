@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(powershell.exe -Command \"Get-ChildItem 'C:\\\\proyectos\\\\lmfa\\\\.claude\\\\worktrees\\\\modest-margulis' | Select-Object Name | head\")",
-      "Bash(powershell.exe -Command \"Get-ChildItem 'C:\\\\proyectos\\\\lmfa\\\\.claude\\\\worktrees\\\\modest-margulis' -Force | Select-Object Name\")"
-    ]
-  }
-}
