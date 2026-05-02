@@ -43,8 +43,12 @@ class NewsService
                 $data['editorial_status'] = 'draft';
             }
 
-            // 3. Crear la noticia
+            // 3. Crear la noticia (foto es el archivo subido, no va al modelo)
             $data['created_by'] = $data['created_by'] ?? auth()->id();
+            unset($data['foto']);
+            if (!isset($data['editorial_status'])) {
+                $data['editorial_status'] = ($data['estado'] ?? 1) ? 'published' : 'draft';
+            }
             $news = News::create($data);
 
             // 4. Sincronizar intérpretes secundarios
@@ -88,7 +92,11 @@ class NewsService
                 $data['editorial_status'] = 'draft';
             }
 
-            // 2. Actualizar
+            // 2. Actualizar (foto es el archivo subido, no va al modelo)
+            unset($data['foto']);
+            if (!isset($data['editorial_status']) && isset($data['estado'])) {
+                $data['editorial_status'] = $data['estado'] ? 'published' : 'draft';
+            }
             $news->update($data);
 
             // 3. Sincronizar intérpretes
