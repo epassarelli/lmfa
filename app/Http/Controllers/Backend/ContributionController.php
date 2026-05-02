@@ -10,11 +10,12 @@ use App\Models\User;
 use App\Models\UserNotification;
 use Illuminate\Support\Facades\DB;
 
-class ContributionController extends Controller
-{
-    public function __construct()
+    protected $newsService;
+
+    public function __construct(\App\Services\NewsService $newsService)
     {
         $this->middleware(['auth', 'role:administrador']);
+        $this->newsService = $newsService;
     }
 
     public function index()
@@ -43,35 +44,49 @@ class ContributionController extends Controller
         DB::transaction(function () use ($contribution) {
             $modelClass = $contribution->contributable_type;
             $isNew = $contribution->contributable_id === null;
+            $payload = $contribution->payload;
 
-            if (!$isNew) {
-                // Es una edición
-                $model = $modelClass::findOrFail($contribution->contributable_id);
-                $model->update($contribution->payload);
+            // Caso especial: Noticias (Usamos el servicio unificado)
+            if ($modelClass === \App\Models\News::class) {
+                $payload['created_by'] = $contribution->user_id;
+                $payload['approved_by'] = auth()->id();
+                $payload['editorial_status'] = 'published';
+
+                if ($isNew) {
+                    $model = $this->newsService->createNews($payload, $payload['foto'] ?? null);
+                    $contribution->contributable_id = $model->id;
+                } else {
+                    $model = \App\Models\News::findOrFail($contribution->contributable_id);
+                    $this->newsService->updateNews($model, $payload, $payload['foto'] ?? null);
+                }
             } else {
-                // Es contenido nuevo
-                $model = new $modelClass($contribution->payload);
-                $model->user_id = $contribution->user_id;
-                $model->estado = 1;
-                $baseSlug = null;
-                if (!empty($model->titulo)) {
-                    $baseSlug = \Illuminate\Support\Str::slug($model->titulo);
-                } elseif (!empty($model->interprete)) {
-                    $baseSlug = \Illuminate\Support\Str::slug($model->interprete);
-                } elseif (!empty($model->cancion)) {
-                    $baseSlug = \Illuminate\Support\Str::slug($model->cancion);
-                }
-                if ($baseSlug) {
-                    $slug = $baseSlug;
-                    $i = 2;
-                    while ($modelClass::where('slug', $slug)->exists()) {
-                        $slug = $baseSlug . '-' . $i++;
+                // Otros tipos de contenido (Lógica legacy a refactorizar a futuro)
+                if (!$isNew) {
+                    $model = $modelClass::findOrFail($contribution->contributable_id);
+                    $model->update($payload);
+                } else {
+                    $model = new $modelClass($payload);
+                    $model->user_id = $contribution->user_id;
+                    $model->estado = 1;
+                    $baseSlug = null;
+                    if (!empty($model->titulo)) {
+                        $baseSlug = \Illuminate\Support\Str::slug($model->titulo);
+                    } elseif (!empty($model->interprete)) {
+                        $baseSlug = \Illuminate\Support\Str::slug($model->interprete);
+                    } elseif (!empty($model->cancion)) {
+                        $baseSlug = \Illuminate\Support\Str::slug($model->cancion);
                     }
-                    $model->slug = $slug;
+                    if ($baseSlug) {
+                        $slug = $baseSlug;
+                        $i = 2;
+                        while ($modelClass::where('slug', $slug)->exists()) {
+                            $slug = $baseSlug . '-' . $i++;
+                        }
+                        $model->slug = $slug;
+                    }
+                    $model->save();
+                    $contribution->contributable_id = $model->id;
                 }
-                $model->save();
-
-                $contribution->contributable_id = $model->id;
             }
 
             $contribution->status = 'approved';

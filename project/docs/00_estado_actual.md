@@ -1,13 +1,13 @@
 # 00 — Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesión de trabajo.
-> Última actualización: 2026-04-26 (Auditoría completa + limpieza de archivos legacy)
+> Última actualización: 2026-05-02 (Unificación de flujos de Noticias y seguridad de imágenes)
 
 ---
 
 ## Rama activa
 
-`v2` — rama de versión mayor salida de `dev`. Contiene la unificación arquitectónica y la Pasarela de Contenidos.
+`v2` — rama de versión mayor salida de `dev`. Contiene la unificación arquitectónica, la Pasarela de Contenidos y el nuevo NewsService unificado.
 
 **Flujo de ramas:** `dev` → rama feature/versión → validar → merge a `dev` → deploy desde `main`.
 
@@ -79,15 +79,15 @@ Los modelos `News` y `Event` tienen accessors que mapean nombres de campos viejo
 ## Estado por módulo
 
 ### Completamente funcional ✅
-Backend CRUD: Events, News, Interpretes, Albumes, Canciones, Comidas, Festivales, Mitos, Categorias, Tags, Clasificados, Moderacion, Newsletter, Roles, Users, Permissions.
+Backend CRUD: Events, News (Unificado), Interpretes, Albumes, Canciones, Comidas, Festivales, Mitos, Categorias, Tags, Clasificados, Moderacion, Newsletter, Roles, Users, Permissions.
 
-Frontend: Home, Noticias, Cartelera, Miniportal artista, Canciones, Discografía, Festivales, Mitos, Recetas, Clasificados, Contacto, Buscador, Sitemap, Newsletter, Social Auth.
+Frontend: Home, Noticias (Unificado), Cartelera, Miniportal artista, Canciones, Discografía, Festivales, Mitos, Recetas, Clasificados, Contacto, Buscador, Sitemap, Newsletter, Social Auth.
 
-API REST: news, albums, songs, foods, festivals, artists, myths (CRUD completo).
+API REST: news (Unificado), albums, songs, foods, festivals, artists, myths (CRUD completo).
 
 ### Implementado, sin probar en producción ⚠️
 - **Pasarela de Contenidos** (`/admin/pasarela`): social accounts, publication requests, templates, notificaciones, dashboards. Código completo, nunca probado end-to-end.
-- **Colaboraciones UGC** (`/admin/contribuir`): migrado de `/colaborar`. Requiere verificación del flujo completo.
+- **Colaboraciones UGC** (`/admin/contribuir`): flujo unificado con NewsService para Noticias. Verificado end-to-end.
 
 ### Módulos diferidos — próxima versión 🔮
 - **Entrevistas**: rutas activas en `web.php`, controller sin métodos `byArtista`/`show`, sin vistas, modelo inexistente.
@@ -126,7 +126,7 @@ API REST: news, albums, songs, foods, festivals, artists, myths (CRUD completo).
 ## Pendientes identificados
 
 1. **Probar Pasarela de Contenidos** end-to-end en el browser.
-2. **Verificar flujo UGC** (`/admin/contribuir` create → store → moderación).
+2. **Extender ImageSourceResolver** a otros módulos (Artistas, Festivales) para unificar sus flujos de contribución.
 3. **Evaluar limpieza de tablas legacy** (`noticias`, `shows`, `images`) — requiere confirmar que no hay datos únicos antes de eliminar.
-4. **Crear `openspec/project.md`** con contexto del proyecto para el workflow OpenSpec.
+4. **Crear `openspec/project.md`** con contexto del proyecto para el workflow OpenSpec. (Completado)
 5. **Completar AGENTS.md** con secciones operativas (pendiente del plan aprobado).
