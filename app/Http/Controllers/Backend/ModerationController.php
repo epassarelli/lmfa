@@ -12,17 +12,20 @@ use Illuminate\Http\Request;
 
 class ModerationController extends Controller
 {
-    public function __construct()
+    protected $newsService;
+
+    public function __construct(\App\Services\NewsService $newsService)
     {
         $this->middleware(['auth', 'role:administrador']);
+        $this->newsService = $newsService;
     }
 
     private const PUBLISHABLE = [
         'news'       => News::class,
         'event'      => Event::class,
         'interprete' => Interprete::class,
-        'album'      => Album::class,
-        'cancion'    => Cancion::class,
+        'album'      => \App\Models\Album::class,
+        'cancion'    => \App\Models\Cancion::class,
     ];
 
     public function publish(string $type, int $id)
@@ -35,7 +38,12 @@ class ModerationController extends Controller
 
         $model = $modelClass::findOrFail($id);
 
-        if (in_array($type, ['news', 'event'])) {
+        if ($type === 'news') {
+            $this->newsService->updateNews($model, [
+                'editorial_status' => 'published',
+                'approved_by' => auth()->id(),
+            ]);
+        } elseif ($type === 'event') {
             $model->update(['editorial_status' => 'published']);
         } else {
             $model->update(['estado' => 1]);

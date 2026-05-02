@@ -26,3 +26,18 @@ googlebe57bffdf3c26baa.html
 /public/.down
 
 database_local/
+
+# Agentes e IA
+.claude/
+.codex/
+.gemini/
+antigravity/
+
+# Documentación de desarrollo
+/openspec/
+/project/
+AGENTS.md
+backlog.json
+
+# Temporales de tests
+.phpunit.result.cache
