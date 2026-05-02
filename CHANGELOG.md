@@ -5,6 +5,20 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
+## [2.1.0] — 2026-05-02
+
+### Agregado
+- **Servicio ImageSourceResolver**: Centraliza la resolución de imágenes desde archivos subidos, rutas locales y URLs externas.
+- **Seguridad SSRF**: Protección robusta que bloquea la descarga de imágenes desde IPs privadas o locales (127.0.0.1, 10.x, etc.).
+- **Jerarquía de Excepciones**: Nuevas excepciones específicas para el manejo de errores de medios (`ImageSecurityException`, `ImageDownloadException`, `ImageInvalidException`).
+- **Tests de Integración**: Suite `UnifiedNewsFlowTest` para validar los flujos de noticias y la seguridad de descargas.
+
+### Corregido
+- **Unificación de NewsService**: Punto único de entrada para todas las noticias, garantizando WebP y validación de slugs en todos los flujos (Admin, API, Contribuciones).
+- **Desacoplamiento de Autoría**: El servicio ahora soporta `created_by` (autor original) y `approved_by` (moderador) de forma explícita.
+- **Limpieza de Temporales**: Eliminación garantizada de archivos descargados tras el procesamiento de la noticia.
+- **Moderación y Contribuciones**: Los controladores ahora delegan la lógica de persistencia al servicio centralizado, eliminando código duplicado.
+
 ---
 
 ## [2.0.2] — 2026-04-27

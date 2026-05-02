@@ -14,7 +14,7 @@ class NoticiaRequest extends FormRequest
 
     public function rules(): array
     {
-        $noticia = $this->route('noticia'); // null en store, objeto en update
+        $noticia = $this->route('news'); // null en store, objeto en update
 
         return [
             'titulo' => 'required|string|max:255',

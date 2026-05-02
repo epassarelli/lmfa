@@ -34,13 +34,16 @@
 @stop
 
 @section('js')
+    @include('backend.partials.scripts._ckeditor')
+    @include('backend.partials.scripts._slug')
+    @include('backend.partials.scripts._select2')
     <script>
         $(document).ready(function () {
             $('.custom-file-input').on('change', function() {
                 let fileName = $(this).val().split('\\').pop();
                 $(this).next('.custom-file-label').addClass("selected").html(fileName);
             });
-            $('.select2').select2({ theme: 'bootstrap4' });
+            // $('.select2').select2({ theme: 'bootstrap4' }); // Ya manejado por el partial _select2
         });
     </script>
 @stop

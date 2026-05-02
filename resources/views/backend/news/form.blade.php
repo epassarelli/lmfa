@@ -2,7 +2,7 @@
   <div class="col-md-6">
     <div class="form-group">
       <label for="titulo">Título de la Noticia <span class="text-danger">*</span></label>
-      <input type="text" name="titulo" id="titulo" class="form-control" value="{{ old('titulo', $news->title ?? '') }}" required>
+      <input type="text" name="titulo" id="titulo" class="form-control" value="{{ old('titulo', $news->title ?? '') }}" onkeyup="autocompleteSlug(this, '#slug')" required>
       @error('titulo') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
@@ -44,7 +44,7 @@
   <div class="col-md-12">
     <div class="form-group">
       <label for="noticia">Cuerpo de la noticia <span class="text-danger">*</span></label>
-      <textarea name="noticia" id="noticia" class="form-control summernote" rows="10">{{ old('noticia', $news->body ?? '') }}</textarea>
+      <textarea name="noticia" id="editor" class="form-control" rows="10">{{ old('noticia', $news->body ?? '') }}</textarea>
       @error('noticia') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
