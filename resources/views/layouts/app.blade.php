@@ -62,6 +62,7 @@
 
     {{-- Sidebar dinámico o por defecto --}}
     <aside class="lg:col-span-3 px-4 mb-4">
+      @include('layouts.partials.sidebar.cup_promo')
       @hasSection('sidebar')
         @yield('sidebar')
       @else
