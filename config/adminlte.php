@@ -342,6 +342,15 @@ return [
             'active' => ['admin/news*'],
         ],
         [
+            'text' => 'Copa del Folklore 2026',
+            'url' => 'admin/folklore-tournaments',
+            'icon' => 'fas fa-fw fa-trophy',
+            'active' => [
+                'admin/folklore-tournaments*',
+                'admin/folklore-tournament-matches*',
+            ],
+        ],
+        [
             'text' => 'Intérpretes',
             'url' => 'admin/interpretes',
             'icon' => 'fas fa-fw fa-microphone',

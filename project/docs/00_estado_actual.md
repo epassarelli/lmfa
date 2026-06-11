@@ -130,3 +130,30 @@ API REST: news (Unificado), albums, songs, foods, festivals, artists, myths (CRU
 3. **Evaluar limpieza de tablas legacy** (`noticias`, `shows`, `images`) — requiere confirmar que no hay datos únicos antes de eliminar.
 4. **Crear `openspec/project.md`** con contexto del proyecto para el workflow OpenSpec. (Completado)
 5. **Completar AGENTS.md** con secciones operativas (pendiente del plan aprobado).
+
+---
+
+## Actualizacion 2026-06-10 â€” Copa del Folklore Argentino 2026
+
+- Se implemento el modulo **Copa del Folklore Argentino 2026** con backend base, panel admin y frontend publico.
+- Tablas nuevas activas:
+  - `folklore_tournaments`
+  - `folklore_tournament_groups`
+  - `folklore_tournament_participants`
+  - `folklore_tournament_matches`
+- Seeder disponible y ejecutado en entorno local:
+  - `php artisan db:seed --class=FolkloreTournamentSeeder`
+- Frontend publico activo:
+  - `/copa-del-folklore-argentino-2026`
+  - `/copa-del-folklore-argentino-2026/participantes`
+  - `/copa-del-folklore-argentino-2026/fixture`
+  - `/copa-del-folklore-argentino-2026/zonas`
+  - `/copa-del-folklore-argentino-2026/llaves`
+  - `/copa-del-folklore-argentino-2026/reglamento`
+- Admin activo:
+  - `/admin/folklore-tournaments`
+  - edicion de partidos en `/admin/folklore-tournament-matches/{match}/edit`
+- Navegacion agregada en sidebar del backend desde `config/adminlte.php`.
+- En entorno local fue necesario ejecutar `php artisan optimize:clear` para reflejar rutas y menu actualizados.
+- Pendiente tecnico ajeno al modulo:
+  - `app/Http/Controllers/Backend/ContributionController.php` tiene un error de sintaxis previo que rompe comandos globales como `php artisan route:list`.

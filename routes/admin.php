@@ -18,6 +18,8 @@ use App\Http\Controllers\Backend\TagController;
 use App\Http\Controllers\Backend\ContributionController;
 use App\Http\Controllers\Backend\NewsletterSubscriberController;
 use App\Http\Controllers\Backend\ModerationController;
+use App\Http\Controllers\Backend\FolkloreTournamentController;
+use App\Http\Controllers\Backend\FolkloreTournamentMatchController;
 
 // Nuevos controladores alineados con la nomenclatura Events/News
 use App\Http\Controllers\Backend\EventController;
@@ -41,6 +43,16 @@ Route::middleware(['auth'])->group(function () {
     // --- GESTIÓN DE CONTENIDOS (EVENTOS Y NOTICIAS) ---
     Route::resource('events', EventController::class)->names('backend.events')->parameters(['events' => 'event']);
     Route::resource('news', NewsController::class)->names('backend.news')->parameters(['news' => 'news']);
+    Route::resource('folklore-tournaments', FolkloreTournamentController::class)
+        ->only(['index', 'show', 'edit', 'update'])
+        ->names('backend.folklore-tournaments')
+        ->parameters(['folklore-tournaments' => 'tournament']);
+    Route::get('folklore-tournaments/{tournament}/matches', [FolkloreTournamentController::class, 'matches'])
+        ->name('backend.folklore-tournaments.matches');
+    Route::get('folklore-tournament-matches/{match}/edit', [FolkloreTournamentMatchController::class, 'edit'])
+        ->name('backend.folklore-tournament-matches.edit');
+    Route::put('folklore-tournament-matches/{match}', [FolkloreTournamentMatchController::class, 'update'])
+        ->name('backend.folklore-tournament-matches.update');
 
     // --- PASARELA DE CONTENIDOS (REDES SOCIALES Y PUBLICACIÓN) ---
     Route::prefix('pasarela')->name('pasarela.')->group(function () {

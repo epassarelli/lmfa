@@ -30,6 +30,7 @@ use App\Http\Controllers\Frontend\CompartirController;
 use App\Http\Controllers\Frontend\SitemapController;
 use App\Http\Controllers\Frontend\ContributionController;
 use App\Http\Controllers\Frontend\ClassifiedsController;
+use App\Http\Controllers\Frontend\FolkloreTournamentController;
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
@@ -67,6 +68,15 @@ Route::get('/mitos-y-leyendas-argentinas/{slug}', [MitosController::class, 'show
 Route::get('/recetas-de-comidas-tipicas-argentinas', [RecetasController::class, 'index'])->name('comidas.index');
 Route::get('/recetas-de-comidas-tipicas-argentinas/letra/{slug}', [RecetasController::class, 'letra'])->name('comidas.letra');
 Route::get('/recetas-de-comidas-tipicas-argentinas/{slug}', [RecetasController::class, 'show'])->name('comidas.show');
+
+Route::prefix('copa-del-folklore-argentino-2026')->name('folklore.cup.')->group(function () {
+    Route::get('/', [FolkloreTournamentController::class, 'index'])->name('index');
+    Route::get('participantes', [FolkloreTournamentController::class, 'participants'])->name('participants');
+    Route::get('fixture', [FolkloreTournamentController::class, 'fixture'])->name('fixture');
+    Route::get('zonas', [FolkloreTournamentController::class, 'groups'])->name('groups');
+    Route::get('llaves', [FolkloreTournamentController::class, 'bracket'])->name('bracket');
+    Route::get('reglamento', [FolkloreTournamentController::class, 'rules'])->name('rules');
+});
 
 // Contacto
 Route::get('/contacto', [ContactoController::class, 'index'])->name('contacto');
@@ -120,5 +130,3 @@ Route::post('/newsletter/subscribe', [\App\Http\Controllers\Frontend\NewsletterC
 Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
 Auth::routes();
-
-
