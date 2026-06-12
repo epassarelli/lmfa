@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Traits\HasMedia;
+use App\Support\NewsImagePathResolver;
 
 class News extends Model
 {
@@ -47,6 +48,11 @@ class News extends Model
         'published_at' => 'datetime',
         'approved_at' => 'datetime',
     ];
+
+    public function getMorphClass()
+    {
+        return self::class;
+    }
 
     protected static function boot()
     {
@@ -91,6 +97,16 @@ class News extends Model
     public function setFotoAttribute($value)
     {
         $this->featured_image_path = $value;
+    }
+
+    public function getLegacyFeaturedImageUrlAttribute(): ?string
+    {
+        return NewsImagePathResolver::toPublicUrl($this->featured_image_path);
+    }
+
+    public function getLegacyFeaturedImageStoragePathAttribute(): ?string
+    {
+        return NewsImagePathResolver::toLegacyStoredPath($this->featured_image_path);
     }
 
     public function getEstadoAttribute($value): int

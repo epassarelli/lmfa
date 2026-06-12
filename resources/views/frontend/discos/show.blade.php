@@ -103,7 +103,7 @@
       No hay discos relacionados disponibles para {{ $interprete->interprete }} aún.
     </div>
   @else
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
       @foreach ($related as $disco)
         <x-disco-card :disco="$disco" />
       @endforeach

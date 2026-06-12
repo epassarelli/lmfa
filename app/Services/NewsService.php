@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\News;
+use App\Support\NewsImagePathResolver;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -68,7 +69,7 @@ class NewsService
                 // 5. Procesar imagen
                 $resolvedImage = $this->imageResolver->resolve($image);
                 if ($resolvedImage) {
-                    $this->imageService->process(
+                    $media = $this->imageService->process(
                         $resolvedImage,
                         $news,
                         'news_full',
@@ -76,6 +77,10 @@ class NewsService
                         false,
                         $news->slug
                     );
+
+                    $news->forceFill([
+                        'featured_image_path' => NewsImagePathResolver::toLegacyStoredPath($media->path),
+                    ])->save();
                 }
 
                 return $news;
@@ -122,7 +127,7 @@ class NewsService
                 // 4. Procesar nueva imagen
                 $resolvedImage = $this->imageResolver->resolve($image);
                 if ($resolvedImage) {
-                    $this->imageService->process(
+                    $media = $this->imageService->process(
                         $resolvedImage,
                         $news,
                         'news_full',
@@ -130,6 +135,10 @@ class NewsService
                         true, // Reemplazar
                         $news->slug
                     );
+
+                    $news->forceFill([
+                        'featured_image_path' => NewsImagePathResolver::toLegacyStoredPath($media->path),
+                    ])->save();
                 }
 
                 return $news;
