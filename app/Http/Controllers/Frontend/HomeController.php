@@ -7,7 +7,7 @@ use App\Http\Livewire\Backend\Interpretes;
 use Illuminate\Http\Request;
 
 use App\Models\Interprete;
-use App\Models\Noticia;
+use App\Models\News;
 use App\Models\Show;
 use App\Models\Album;
 use App\Models\Cancion;
@@ -17,81 +17,81 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Obtener las últimas 4 noticias
-        // $noticia = new Noticia();
-        // $noticias = $noticia->getNLast(Noticia::class, 10)->toArray();
-
         $categorias = Categoria::get();
 
-        $ultimasNoticias = Noticia::where('estado', 1)
-            ->with(['categoria', 'images']) // Carga relaciones e imágenes
+        $ultimasNoticias = News::where('editorial_status', 'published')
+            ->with(['categoria', 'images'])
             ->latest()
             ->take(50)
             ->get();
 
-
-        $actualidad = Noticia::where('estado', 1)
-            ->where('categoria_id', 1) // Filtrar por categoría específica
+        $actualidad = News::where('editorial_status', 'published')
+            ->where('categoria_id', 1)
             ->with(['categoria', 'interpretes', 'images'])
             ->latest()
             ->take(6)
             ->get();
-        // ->toArray();
 
-        $festivales = Noticia::where('estado', 1)
-            ->where('categoria_id', 2) // Filtrar por categoría específica
+        $festivales = News::where('editorial_status', 'published')
+            ->where('categoria_id', 2)
             ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
-        // ->toArray();
 
-        $lanzamientos = Noticia::where('estado', 1)
-            ->where('categoria_id', 3) // Filtrar por categoría específica
+        $lanzamientos = News::where('editorial_status', 'published')
+            ->where('categoria_id', 3)
             ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
-        // ->toArray();
 
-        $entrevistas = Noticia::where('estado', 1)
-            ->where('categoria_id', 4) // Filtrar por categoría específica
+        $entrevistas = News::where('editorial_status', 'published')
+            ->where('categoria_id', 4)
             ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
-        // ->toArray();
 
-        $cartelera = Noticia::where('estado', 1)
-            ->where('categoria_id', 5) // Filtrar por categoría específica
+        $cartelera = News::where('editorial_status', 'published')
+            ->where('categoria_id', 5)
             ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
-        // ->toArray();
 
-        // Obtener las últimas 4 shows
         $shows = Show::where('editorial_status', 'published')
             ->where('start_at', '>=', now())
             ->with(['interpretes', 'images'])
             ->orderBy('start_at', 'asc')
             ->paginate(4);
 
-        // Obtener los últimos 3 intérpretes
         $interprete = new Interprete();
         $ultimosArtistas = $interprete->getNLast(Interprete::class, 5);
 
-        // Obtener los últimos 3 intérpretes
         $disco = new Album();
         $ultimosDiscos = $disco->getNLast(Album::class, 4);
 
-        // Obtener los últimos 3 intérpretes
         $cancion = new Cancion();
         $canciones = $cancion->getNLast(Cancion::class, 6);
 
         $metaTitle = "Mi Folklore Argentino | Nuestras Tradiciones y Costumbres";
-        $metaDescription = "Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre música, danzas y más. ¡Visítanos hoy!";
+        $metaDescription = "Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre musica, danzas y mas. Visitanos hoy!";
 
-        return view('frontend.home', compact('metaTitle', 'metaDescription', 'ultimasNoticias', 'ultimosArtistas', 'shows', 'ultimosDiscos', 'canciones', 'actualidad', 'festivales', 'lanzamientos', 'entrevistas', 'cartelera', 'categorias'));
+        return view('frontend.home', compact(
+            'metaTitle',
+            'metaDescription',
+            'ultimasNoticias',
+            'ultimosArtistas',
+            'shows',
+            'ultimosDiscos',
+            'canciones',
+            'actualidad',
+            'festivales',
+            'lanzamientos',
+            'entrevistas',
+            'cartelera',
+            'categorias'
+        ));
     }
 }
