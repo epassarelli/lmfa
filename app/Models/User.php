@@ -94,7 +94,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->hasRole('admin');
+        return $this->hasAnyRole(['admin', 'administrador']);
     }
 
     public function canPublish(): bool

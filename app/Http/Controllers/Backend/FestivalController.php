@@ -87,6 +87,7 @@ class FestivalController extends Controller
   {
     $festival->fill($request->validated());
     $festival->slug = Str::slug($festival->titulo);
+    $festival->estado = Auth::user()->isAdmin() || Auth::user()->hasRole('administrador') ? 1 : 0;
     $festival->save();
 
     if ($request->hasFile('foto')) {

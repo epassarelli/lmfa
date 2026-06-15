@@ -106,8 +106,9 @@ class InterpreteController extends Controller
 
 
 
-    // Seguridad: Si edita alguien que no es admin, vuelve a foja cero (inactivo)
-    if (!Auth::user()->isAdmin()) {
+    if (Auth::user()->isAdmin() || Auth::user()->hasRole('administrador')) {
+        $interprete->estado = 1;
+    } else {
         $interprete->estado = 0;
     }
 
