@@ -44,8 +44,9 @@ class NewsService
                     $data['interprete_id'] = $data['interprete_principal_id'];
                 }
 
-                // Seguridad: Forzar borrador si el usuario no puede publicar y no viene forzado
-                if (!isset($data['editorial_status']) && !auth()->user()->canPublish()) {
+                if ($this->currentUserIsAdmin()) {
+                    $data['editorial_status'] = 'published';
+                } elseif (!isset($data['editorial_status']) && !auth()->user()->canPublish()) {
                     $data['editorial_status'] = 'draft';
                 }
 
@@ -107,8 +108,9 @@ class NewsService
                     $data['interprete_id'] = $data['interprete_principal_id'];
                 }
 
-                // Seguridad: Forzar borrador si el usuario no puede publicar
-                if (!isset($data['editorial_status']) && !auth()->user()->canPublish()) {
+                if ($this->currentUserIsAdmin()) {
+                    $data['editorial_status'] = 'published';
+                } elseif (!isset($data['editorial_status']) && !auth()->user()->canPublish()) {
                     $data['editorial_status'] = 'draft';
                 }
 
@@ -116,6 +118,9 @@ class NewsService
                 unset($data['foto']);
                 if (!isset($data['editorial_status']) && isset($data['estado'])) {
                     $data['editorial_status'] = $data['estado'] ? 'published' : 'draft';
+                }
+                if (($data['editorial_status'] ?? null) === 'published' && empty($data['published_at']) && empty($news->published_at)) {
+                    $data['published_at'] = now();
                 }
                 $news->update($data);
 
@@ -159,5 +164,12 @@ class NewsService
                 @unlink($path);
             }
         }
+    }
+
+    protected function currentUserIsAdmin(): bool
+    {
+        $user = auth()->user();
+
+        return (bool) $user && ($user->isAdmin() || $user->hasRole('administrador'));
     }
 }
