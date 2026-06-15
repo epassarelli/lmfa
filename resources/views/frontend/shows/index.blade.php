@@ -128,9 +128,9 @@
       <article class="overflow-hidden bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow p-3">
         <a href="{{ route('cartelera.show', $show->slug) }}" class="block">
           @if($eventImage)
-            <x-optimized-image :image="$eventImage" variant="card" class="w-full h-56 object-cover rounded-2xl" :alt="$show->titulo" />
+            <x-optimized-image :image="$eventImage" variant="card" class="w-full h-64 object-cover" :alt="$show->titulo" />
           @else
-            <x-image-placeholder class="w-full h-56 rounded-2xl" />
+            <x-image-placeholder class="w-full h-64" />
           @endif
         </a>
 
