@@ -18,13 +18,16 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!-- Canonical -->
-  <link rel="canonical" href="{{ url()->current() }}" />
+  <link rel="canonical" href="@yield('canonical', url()->current())" />
 
   <!-- .ico -->
   <link rel="shortcut icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
 
   <title>@yield('metaTitle', 'Mi folklore Argentino')</title>
   <meta name="description" content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
+  @hasSection('metaRobots')
+    <meta name="robots" content="@yield('metaRobots')">
+  @endif
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="@yield('ogType', 'website')">

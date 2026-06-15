@@ -44,7 +44,9 @@ Route::get('/noticias-del-folklore-argentino', [NoticiasController::class, 'inde
 Route::get('/noticias-del-folklore-argentino/{slug}', [NoticiasController::class, 'show'])->name('noticias.show');
 
 Route::get('/cartelera-de-eventos-folkloricos', [ShowsController::class, 'index'])->name('cartelera.index');
-Route::get('/cartelera-de-eventos-folkloricos/{slug}', [ShowsController::class, 'show'])->name('cartelera.show');
+Route::get('/cartelera-de-eventos-folkloricos/{provinceOrSlug}/{period?}', [ShowsController::class, 'resolve'])
+    ->where('period', 'hoy|[a-z0-9\-]+')
+    ->name('cartelera.show');
 
 Route::get('/biografias-de-artistas-folkloricos', [InterpretesController::class, 'index'])->name('interpretes.index');
 Route::get('/biografias-de-artistas-folkloricos/letra/{letra}', [InterpretesController::class, 'letra'])->name('interpretes.letra');
