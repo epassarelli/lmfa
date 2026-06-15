@@ -4,53 +4,49 @@
 @section('metaDescription', $metaDescription)
 
 @section('content')
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
   <div class="max-w-7xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-4">Intérpretes de Folklore Argentino</h1>
-    <h2 class="text-xl font-semibold mb-4">{{ request()->segment(1) }}</h2>
+    <h1 class="text-3xl font-bold mb-4">Intérpretes de folklore argentino con la letra {{ strtoupper($letra) }}</h1>
+    <h2 class="text-xl font-semibold mb-4">Filtrar artistas por letra</h2>
 
     <div class="space-y-4 text-lg text-gray-700">
-      <p>Bienvenidos a nuestra sección dedicada a los intérpretes de folklore argentino. Aquí encontrarás información
-        detallada sobre los cantantes y artistas más destacados que han dado vida a la rica tradición de la música
-        folklórica de Argentina.</p>
-      <p>Nuestra colección incluye biografías completas, letras de canciones emblemáticas, discografías, próximos shows y
-        noticias relevantes sobre cada artista.</p>
-      <p>Ya seas un apasionado del folklore, un investigador o simplemente un amante de la buena música, esta es la
-        sección ideal para vos.</p>
+      <p>Encontrá artistas del folklore argentino ordenados alfabéticamente para navegar más rápido por la sección de intérpretes.</p>
+      <p>Esta vista reúne biografías publicadas cuyos nombres comienzan con la letra seleccionada.</p>
     </div>
 
-    {{-- Intérpretes por letra --}}
     <div class="mt-12">
-      <h2 class="text-2xl font-bold mb-4">Intérpretes con la letra {{ request()->segment(1) }}</h2>
-      <p class="text-lg text-gray-700 mb-4">Explora los perfiles de los intérpretes que han capturado la mayor atención.
-      </p>
+      <h2 class="text-2xl font-bold mb-4">Intérpretes con la letra {{ strtoupper($letra) }}</h2>
+      <p class="text-lg text-gray-700 mb-4">Explorá los perfiles disponibles para esta letra.</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         @foreach ($interpretes as $interprete)
           <x-biografia-card :interprete="$interprete" />
         @endforeach
       </div>
+
+      @if ($interpretes->isEmpty())
+        <div class="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900">
+          No encontramos intérpretes publicados que comiencen con la letra {{ strtoupper($letra) }}.
+        </div>
+      @endif
     </div>
 
-    {{-- Navegación alfabética --}}
     <div class="mt-8 mb-8">
       {{ $interpretes->links() }}
     </div>
 
-    <div class="mt-16">
-      <h2 class="text-2xl font-bold mb-4">Buscar por Orden Alfabético</h2>
-      <p class="text-lg text-gray-700 mb-4">Utilizá nuestro índice alfabético para encontrar a tu artista favorito.</p>
-
-      <nav class="flex flex-wrap gap-2 justify-center">
-        @foreach (range('a', 'z') as $lt)
-          <a href="{{ route('interpretes.letra', strtolower($lt)) }}"
-            class="px-4 py-2 bg-gray-100 text-gray-800 rounded hover:bg-[#ff661f] hover:text-white transition uppercase font-semibold">{{ $lt }}</a>
-        @endforeach
-      </nav>
-    </div>
-
+    <x-alpha-filter
+      class="mt-16"
+      title="Buscar por orden alfabético"
+      description="Usá el índice alfabético para cambiar de letra."
+      route-name="interpretes.letra"
+      :letters="$alphabet"
+      :active-letter="$letra"
+    />
   </div>
-
 @endsection
 
 @section('sidebar')
