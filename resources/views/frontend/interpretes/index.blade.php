@@ -19,6 +19,7 @@
   </div>
 
   <section class="bg-white p-2 rounded shadow-sm mt-4 mb-4">
+    <h1 class="text-xl font-semibold mb-4 border-b-2 border-[#ff661f]">Biografías de artistas folklóricos más visitadas</h1>
     <x-alpha-filter
       title="Buscar por Orden Alfabético"
       description="Encuentra fácilmente a tu intérprete favorito de folklore argentino utilizando nuestro índice alfabético."
@@ -26,6 +27,7 @@
       :letters="$alphabet"
     />
   </section>
+  
 @endsection
 
 @section('sidebar')
