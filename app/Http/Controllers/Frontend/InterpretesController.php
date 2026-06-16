@@ -25,8 +25,8 @@ class InterpretesController extends Controller
             ->paginate(24);
 
         $alphabet = range('a', 'z');
-        $metaTitle = 'Biografias de Artistas del Folklore Argentino: Historia y Trayectoria';
-        $metaDescription = 'Conoce la historia y trayectoria de los artistas e interpretes del folklore argentino. Descubre sus biografias completas y su contribucion a la musica tradicional.';
+        $metaTitle = 'Biografías de Artistas del Folklore Argentino: Historia y Trayectoria';
+        $metaDescription = 'Conoce la historia y trayectoria de los artistas e intérpretes del folklore argentino. Descubre sus biografías completas y su contribución a la música tradicional.';
 
         $breadcrumbs = [
             ['label' => 'Artistas', 'url' => route('interpretes.index')]
@@ -53,7 +53,7 @@ class InterpretesController extends Controller
             'Videos' => 3,
         ];
 
-        $metaTitle = 'Biografia de ' . $interprete->interprete . ' | Folklore Argentino';
+        $metaTitle = 'Biografía de ' . $interprete->interprete . ' | Folklore Argentino';
         $metaDescription = Str::limit(strip_tags(html_entity_decode($interprete->biografia)), 150);
 
         $interprete->biografia = $this->linkService->autoLinkArtists($interprete->biografia);
@@ -61,7 +61,7 @@ class InterpretesController extends Controller
         $breadcrumbs = [
             ['label' => 'Artistas', 'url' => route('interpretes.index')],
             ['label' => $interprete->interprete, 'url' => route('artista.show', $interprete->slug)],
-            ['label' => 'Biografia']
+            ['label' => 'Biografía']
         ];
 
         return view('frontend.interpretes.show', compact('interprete', 'biografias', 'interpretes', 'section', 'recursos', 'metaTitle', 'metaDescription', 'breadcrumbs'));
@@ -72,14 +72,19 @@ class InterpretesController extends Controller
         $interprete->load('images');
         $noticias = $interprete->noticias()->with('images')->latest()->take(3)->get();
         $canciones = $interprete->canciones()->latest()->take(3)->get();
-        $discos = $interprete->discos()->latest()->take(2)->get();
+        $discos = $interprete->discos()->orderByDesc('anio')->take(3)->get();
         $shows = $interprete->shows()->where('start_at', '>=', now())->orderBy('start_at')->with('images')->take(2)->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
-        $metaTitle = 'Biografia de ' . $interprete->interprete . ' | Folklore Argentino';
+        $metaTitle = 'Biografía de ' . $interprete->interprete . ' | Folklore Argentino';
         $metaDescription = Str::limit(strip_tags(html_entity_decode($interprete->biografia)), 150);
 
         $interprete->biografia = $this->linkService->autoLinkArtists($interprete->biografia);
+
+        $breadcrumbs = [
+            ['label' => 'Artistas', 'url' => route('interpretes.index')],
+            ['label' => $interprete->interprete]
+        ];
 
         return view('frontend.interpretes.home-artista', compact(
             'interprete',
@@ -89,7 +94,8 @@ class InterpretesController extends Controller
             'shows',
             'interpretes',
             'metaTitle',
-            'metaDescription'
+            'metaDescription',
+            'breadcrumbs'
         ));
     }
 
@@ -124,8 +130,8 @@ class InterpretesController extends Controller
             ->paginate(24);
 
         $alphabet = range('a', 'z');
-        $metaTitle = "Biografias de interpretes folkloricos de Argentina que comienzan con {$letra}";
-        $metaDescription = "Biografias de interpretes folkloricos de Argentina que comienzan con la letra {$letra}.";
+        $metaTitle = "Biografías de intérpretes folklóricos de Argentina que comienzan con {$letra}";
+        $metaDescription = "Biografías de intérpretes folklóricos de Argentina que comienzan con la letra {$letra}.";
 
         $breadcrumbs = [
             ['label' => 'Artistas', 'url' => route('interpretes.index')],
