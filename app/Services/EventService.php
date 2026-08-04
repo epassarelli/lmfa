@@ -25,7 +25,7 @@ class EventService
             $data['created_by'] = $data['created_by'] ?? auth()->id();
 
             if (empty($data['slug'])) {
-                $data['slug'] = Str::slug($data['title'] . '-' . now()->timestamp);
+                $data['slug'] = Str::slug($data['title'].'-'.now()->timestamp);
             }
 
             if (isset($data['estado'])) {
@@ -33,10 +33,14 @@ class EventService
                 unset($data['estado']);
             }
 
-            if ($this->currentUserIsAdmin()) {
-                $data['editorial_status'] = 'published';
-            } elseif (!auth()->user()->canPublish()) {
+            if (! isset($data['editorial_status']) && ! auth()->user()->canPublish()) {
                 $data['editorial_status'] = 'draft';
+            }
+
+            if (! isset($data['editorial_status'])) {
+                $data['editorial_status'] = array_key_exists('estado', $data)
+                    ? ($data['estado'] == 1 ? 'published' : 'draft')
+                    : 'draft';
             }
 
             if (($data['editorial_status'] ?? null) === 'published' && empty($data['published_at'])) {
@@ -73,10 +77,12 @@ class EventService
                 unset($data['estado']);
             }
 
-            if ($this->currentUserIsAdmin()) {
-                $data['editorial_status'] = 'published';
-            } elseif (!auth()->user()->canPublish()) {
+            if (! isset($data['editorial_status']) && ! auth()->user()->canPublish()) {
                 $data['editorial_status'] = 'draft';
+            }
+
+            if (! isset($data['editorial_status']) && isset($data['estado'])) {
+                $data['editorial_status'] = $data['estado'] == 1 ? 'published' : 'draft';
             }
 
             if (isset($data['slug']) && empty($data['slug'])) {
@@ -110,23 +116,16 @@ class EventService
     {
         $interpreteIds = [];
 
-        if (!empty($data['interprete_id'])) {
+        if (! empty($data['interprete_id'])) {
             $interpreteIds[] = $data['interprete_id'];
         }
 
-        if (!empty($data['interprete_secundarios']) && is_array($data['interprete_secundarios'])) {
+        if (! empty($data['interprete_secundarios']) && is_array($data['interprete_secundarios'])) {
             $interpreteIds = array_merge($interpreteIds, $data['interprete_secundarios']);
         }
 
-        if (!empty($interpreteIds)) {
+        if (! empty($interpreteIds)) {
             $event->interpretes()->sync(array_unique($interpreteIds));
         }
-    }
-
-    protected function currentUserIsAdmin(): bool
-    {
-        $user = auth()->user();
-
-        return (bool) $user && ($user->isAdmin() || $user->hasRole('administrador'));
     }
 }

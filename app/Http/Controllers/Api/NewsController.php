@@ -11,75 +11,75 @@ use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
-  protected $newsService;
-
-  public function __construct(NewsService $newsService)
-  {
-    $this->newsService = $newsService;
-  }
-  /**
-   * Display a listing of the resource.
-   */
-  public function index(Request $request)
-  {
-    $query = News::query();
-
-    // Optional filtering can be added here
-    if ($request->has('categoria_id')) {
-      $query->where('categoria_id', $request->query('categoria_id'));
+    public function __construct(protected NewsService $newsService)
+    {
     }
 
-    if ($request->has('estado')) {
-      $query->where('estado', $request->query('estado'));
+    public function index(Request $request)
+    {
+        $this->authorize('viewAny', News::class);
+
+        $query = News::query()->with(['creator', 'categoria', 'interprete']);
+
+        if ($request->filled('categoria_id')) {
+            $query->where('categoria_id', $request->integer('categoria_id'));
+        }
+
+        if ($request->filled('editorial_status')) {
+            $query->where('editorial_status', $request->string('editorial_status'));
+        }
+
+        if ($request->filled('published_from')) {
+            $query->whereDate('published_at', '>=', $request->date('published_from'));
+        }
+
+        if ($request->filled('published_to')) {
+            $query->whereDate('published_at', '<=', $request->date('published_to'));
+        }
+
+        $news = $query->latest('published_at')->latest('created_at')->paginate(15);
+
+        return response()->json($news);
     }
 
-    $news = $query->latest()->paginate(15);
+    public function store(StoreNewsRequest $request)
+    {
+        $this->authorize('create', News::class);
 
-    return response()->json($news);
-  }
+        $news = $this->newsService->createNews(
+            $request->validated(),
+            $request->file('foto')
+        );
 
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(StoreNewsRequest $request)
-  {
-    $news = $this->newsService->createNews(
-      $request->validated(),
-      $request->file('foto') // Soporta subida de archivos si se envía
-    );
+        return response()->json($news, 201);
+    }
 
-    return response()->json($news, 201);
-  }
+    public function show(News $news)
+    {
+        $this->authorize('view', $news);
 
-  /**
-   * Display the specified resource.
-   */
-  public function show(News $news)
-  {
-    return response()->json($news);
-  }
+        return response()->json($news);
+    }
 
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(UpdateNewsRequest $request, News $news)
-  {
-    $news = $this->newsService->updateNews(
-      $news,
-      $request->validated(),
-      $request->file('foto')
-    );
+    public function update(UpdateNewsRequest $request, News $news)
+    {
+        $this->authorize('update', $news);
 
-    return response()->json($news);
-  }
+        $news = $this->newsService->updateNews(
+            $news,
+            $request->validated(),
+            $request->file('foto')
+        );
 
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(News $news)
-  {
-    $news->delete();
+        return response()->json($news);
+    }
 
-    return response()->json(null, 204);
-  }
+    public function destroy(News $news)
+    {
+        $this->authorize('delete', $news);
+
+        $news->delete();
+
+        return response()->json(null, 204);
+    }
 }

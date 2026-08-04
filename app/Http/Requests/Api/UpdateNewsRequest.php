@@ -3,43 +3,46 @@
 namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateNewsRequest extends FormRequest
 {
-  /**
-   * Determine if the user is authorized to make this request.
-   */
-  public function authorize(): bool
-  {
-    return true;
-  }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
-  /**
-   * Get the validation rules that apply to the request.
-   *
-   * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-   */
-  public function rules(): array
-  {
-    return [
-      // Nombres canónicos (recomendados para integraciones nuevas)
-      'title'                => 'sometimes|string|max:255',
-      'body'                 => 'sometimes|string',
-      'featured_image_path'  => 'nullable|string',
-      'created_by'           => 'sometimes|exists:users,id',
-      'published_at'         => 'nullable|date',
-      'editorial_status'     => 'nullable|string',
-      // Nombres legacy (compatibilidad con integraciones existentes)
-      'titulo'       => 'sometimes|string|max:255',
-      'noticia'      => 'sometimes|string',
-      'foto'         => 'nullable|string',
-      'user_id'      => 'sometimes|exists:users,id',
-      'publicar'     => 'nullable',
-      // Campos comunes (ambos formatos)
-      'categoria_id'  => 'sometimes|exists:categorias,id',
-      'interprete_id' => 'nullable|exists:interpretes,id',
-      'visitas'       => 'nullable|integer',
-      'estado'        => 'nullable|string',
-    ];
-  }
+    public function rules(): array
+    {
+        return [
+            'title' => 'sometimes|string|max:255',
+            'body' => 'sometimes|string',
+            'slug' => 'sometimes|nullable|string|max:255',
+            'subtitle' => 'sometimes|nullable|string|max:255',
+            'excerpt' => 'sometimes|nullable|string|max:1000',
+            'featured_image_path' => 'sometimes|nullable|string|max:255',
+            'created_by' => 'sometimes|nullable|exists:users,id',
+            'approved_by' => 'sometimes|nullable|exists:users,id',
+            'published_at' => 'sometimes|nullable|date',
+            'editorial_status' => ['sometimes', 'nullable', Rule::in(['draft', 'published', 'archived'])],
+            'seo_title' => 'sometimes|nullable|string|max:255',
+            'meta_description' => 'sometimes|nullable|string|max:320',
+            'news_type' => 'sometimes|nullable|string|max:50',
+            'publication_mode' => 'sometimes|nullable|string|max:40',
+
+            'titulo' => 'sometimes|string|max:255',
+            'noticia' => 'sometimes|string',
+            'foto' => 'nullable',
+            'user_id' => 'sometimes|nullable|exists:users,id',
+            'publicar' => 'sometimes|nullable|date',
+
+            'categoria_id' => 'sometimes|exists:categorias,id',
+            'interprete_id' => 'sometimes|nullable|exists:interpretes,id',
+            'interprete_principal_id' => 'sometimes|nullable|exists:interpretes,id',
+            'interprete_secundarios' => 'sometimes|nullable|array',
+            'interprete_secundarios.*' => 'exists:interpretes,id',
+            'visitas' => 'sometimes|nullable|integer|min:0',
+            'estado' => ['sometimes', 'nullable', Rule::in(['0', '1', 0, 1])],
+        ];
+    }
 }
