@@ -34,9 +34,10 @@
       <div :class="{ 'block': open, 'hidden': !open }"
         class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0">
         <ul class="lg:flex lg:space-x-6 text-white text-sm font-medium">
-          <li><a href="{{ route('interpretes.index') }}" class="block py-2 hover:text-[#ff661f]">Aristas</a></li>
+          <li><a href="{{ route('interpretes.index') }}" class="block py-2 hover:text-[#ff661f]">Artistas</a></li>
           <li><a href="{{ route('noticias.index') }}" class="block py-2 hover:text-[#ff661f]">Noticias</a></li>
           <li><a href="{{ route('cartelera.index') }}" class="block py-2 hover:text-[#ff661f]">Cartelera</a></li>
+          <li><a href="{{ route('enciclopedia.index') }}" class="block py-2 hover:text-[#ff661f]">Enciclopedia</a></li>
           <li><a href="{{ route('classifieds.index') }}" class="block py-2 hover:text-[#ff661f]">Clasificados</a></li>
           <li><a href="{{ route('discografias.index') }}" class="block py-2 hover:text-[#ff661f]">Discos</a></li>
           <li><a href="{{ route('canciones.index') }}" class="block py-2 hover:text-[#ff661f]">Canciones</a></li>

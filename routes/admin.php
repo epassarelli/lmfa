@@ -1,39 +1,36 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Backend\RoleController;
-use App\Http\Controllers\Backend\UserController;
-use App\Http\Controllers\Backend\PermissionController;
-use App\Http\Controllers\Backend\Dashboard;
-use App\Http\Controllers\Backend\InterpreteController;
 use App\Http\Controllers\Backend\AlbumController;
 use App\Http\Controllers\Backend\CancionController;
-use App\Http\Controllers\Backend\ComidaController;
-use App\Http\Controllers\Backend\FestivalController;
-use App\Http\Controllers\Backend\MitoController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ClassifiedController;
-use App\Http\Controllers\Backend\TagController;
+use App\Http\Controllers\Backend\ComidaController;
 use App\Http\Controllers\Backend\ContributionController;
-use App\Http\Controllers\Backend\NewsletterSubscriberController;
-use App\Http\Controllers\Backend\ModerationController;
+use App\Http\Controllers\Backend\Dashboard;
+use App\Http\Controllers\Backend\EventController;
+use App\Http\Controllers\Backend\FestivalController;
 use App\Http\Controllers\Backend\FolkloreTournamentController;
 use App\Http\Controllers\Backend\FolkloreTournamentMatchController;
-
-// Nuevos controladores alineados con la nomenclatura Events/News
-use App\Http\Controllers\Backend\EventController;
+use App\Http\Controllers\Backend\InterpreteController;
+use App\Http\Controllers\Backend\KnowledgeArticleController;
+use App\Http\Controllers\Backend\MitoController;
+use App\Http\Controllers\Backend\ModerationController;
 use App\Http\Controllers\Backend\NewsController;
-
-// Controladores de la Pasarela
+use App\Http\Controllers\Backend\NewsletterSubscriberController;
+use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\PublisherDashboardController;
-use App\Http\Controllers\Pasarela\SocialAccountController;
-use App\Http\Controllers\Pasarela\PublicationRequestController;
-use App\Http\Controllers\Pasarela\DashboardPublicadorController;
+use App\Http\Controllers\Backend\RoleController;
+// Nuevos controladores alineados con la nomenclatura Events/News
+use App\Http\Controllers\Backend\TagController;
+use App\Http\Controllers\Backend\UserController;
+// Controladores de la Pasarela
 use App\Http\Controllers\Pasarela\DashboardAdminController;
+use App\Http\Controllers\Pasarela\DashboardPublicadorController;
 use App\Http\Controllers\Pasarela\NotificationController;
+use App\Http\Controllers\Pasarela\PublicationRequestController;
 use App\Http\Controllers\Pasarela\PublicationTemplateController;
-
+use App\Http\Controllers\Pasarela\SocialAccountController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
 
@@ -43,6 +40,15 @@ Route::middleware(['auth'])->group(function () {
     // --- GESTIÓN DE CONTENIDOS (EVENTOS Y NOTICIAS) ---
     Route::resource('events', EventController::class)->names('backend.events')->parameters(['events' => 'event']);
     Route::resource('news', NewsController::class)->names('backend.news')->parameters(['news' => 'news']);
+    Route::resource('knowledge-articles', KnowledgeArticleController::class)
+        ->names('backend.knowledge-articles')
+        ->parameters(['knowledge-articles' => 'knowledge_article']);
+    Route::get('knowledge-articles/{knowledge_article}/preview', [KnowledgeArticleController::class, 'preview'])
+        ->name('backend.knowledge-articles.preview');
+    Route::post('knowledge-articles/{knowledge_article}/publish', [KnowledgeArticleController::class, 'publish'])
+        ->name('backend.knowledge-articles.publish');
+    Route::post('knowledge-articles/{knowledge_article}/unpublish', [KnowledgeArticleController::class, 'unpublish'])
+        ->name('backend.knowledge-articles.unpublish');
     Route::resource('folklore-tournaments', FolkloreTournamentController::class)
         ->only(['index', 'show', 'edit', 'update'])
         ->names('backend.folklore-tournaments')
@@ -63,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('social-accounts', SocialAccountController::class)->only(['index', 'store', 'destroy'])->names('social-accounts');
         Route::resource('publication-requests', PublicationRequestController::class)->only(['index', 'create', 'store', 'show'])->names('publication-requests');
         Route::post('publication-requests/{publicationRequest}/targets/{target}/retry', [PublicationRequestController::class, 'retryTarget'])->name('publication-requests.targets.retry');
-        
+
         Route::prefix('notifications')->name('notifications.')->group(function () {
             Route::get('/', [NotificationController::class, 'index'])->name('index');
             Route::post('{notification}/read', [NotificationController::class, 'markRead'])->name('mark-read');
@@ -74,7 +80,6 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('templates', PublicationTemplateController::class)->names('templates');
         Route::post('templates/preview', [PublicationTemplateController::class, 'preview'])->name('templates.preview');
     });
-
 
     // --- SEGURIDAD Y ORGANIZACIÓN ---
     Route::resource('roles', RoleController::class)->names('roles');

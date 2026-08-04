@@ -1,36 +1,35 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-// Controladores del front
 use App\Http\Controllers\Frontend\NoticiasController;
+// Controladores del front
+use Illuminate\Support\Facades\Route;
 
 // --- PUBLICAR / CONTRIBUCIONES ---
 // Panel del colaborador (usuario autenticado ve sus propias contribuciones)
-Route::middleware(['web', 'auth'])->prefix('admin/contribuir')->group(function() {
+Route::middleware(['web', 'auth'])->prefix('admin/contribuir')->group(function () {
     Route::get('/', [\App\Http\Controllers\Frontend\ContributionController::class, 'index'])->name('backend.contributions.index');
     Route::get('crear/{type}/{id?}', [\App\Http\Controllers\Frontend\ContributionController::class, 'create'])->name('backend.contributions.create');
     Route::post('store', [\App\Http\Controllers\Frontend\ContributionController::class, 'store'])->name('backend.contributions.store');
 });
+use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\Frontend\BusquedaController;
 use App\Http\Controllers\Frontend\CancionesController;
+use App\Http\Controllers\Frontend\ClassifiedsController;
+use App\Http\Controllers\Frontend\CompartirController;
+use App\Http\Controllers\Frontend\ContactoController;
 use App\Http\Controllers\Frontend\DiscosController;
 use App\Http\Controllers\Frontend\EntrevistasController;
 use App\Http\Controllers\Frontend\FestivalesController;
+use App\Http\Controllers\Frontend\FolkloreTournamentController;
+use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\InterpretesController;
+use App\Http\Controllers\Frontend\KnowledgeController;
 use App\Http\Controllers\Frontend\MitosController;
 use App\Http\Controllers\Frontend\PeniasController;
 use App\Http\Controllers\Frontend\RadiosController;
 use App\Http\Controllers\Frontend\RecetasController;
 use App\Http\Controllers\Frontend\ShowsController;
-use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\Frontend\ContactoController;
-use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\Frontend\BusquedaController;
-use App\Http\Controllers\Frontend\CompartirController;
 use App\Http\Controllers\Frontend\SitemapController;
-use App\Http\Controllers\Frontend\ContributionController;
-use App\Http\Controllers\Frontend\ClassifiedsController;
-use App\Http\Controllers\Frontend\FolkloreTournamentController;
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
@@ -80,6 +79,12 @@ Route::prefix('copa-del-folklore-argentino-2026')->name('folklore.cup.')->group(
     Route::get('reglamento', [FolkloreTournamentController::class, 'rules'])->name('rules');
 });
 
+Route::prefix('enciclopedia')->name('enciclopedia.')->group(function () {
+    Route::get('/', [KnowledgeController::class, 'index'])->name('index');
+    Route::get('{categorySlug}', [KnowledgeController::class, 'category'])->name('category');
+    Route::get('{categorySlug}/{articleSlug}', [KnowledgeController::class, 'show'])->name('show');
+});
+
 // Contacto
 Route::get('/contacto', [ContactoController::class, 'index'])->name('contacto');
 Route::post('/contacto', [ContactoController::class, 'store'])->name('contacto.store');
@@ -98,27 +103,26 @@ Route::prefix('avisos-clasificados')->name('classifieds.')->group(function () {
     Route::get('/{classified:slug}', [ClassifiedsController::class, 'show'])->name('show');
 });
 
-
 // Miniportal del artista y secciones internas
 Route::get('/{interprete:slug}', [InterpretesController::class, 'show'])->name('artista.show');
 
 Route::prefix('{interprete:slug}')->group(function () {
-  Route::get('/biografia', [InterpretesController::class, 'biografia'])->name('artista.biografia');
+    Route::get('/biografia', [InterpretesController::class, 'biografia'])->name('artista.biografia');
 
-  Route::get('/noticias', [NoticiasController::class, 'byArtista'])->name('artista.noticias');
-  Route::get('/noticias/{noticia:slug}', [NoticiasController::class, 'show'])->name('artista.noticia');
+    Route::get('/noticias', [NoticiasController::class, 'byArtista'])->name('artista.noticias');
+    Route::get('/noticias/{noticia:slug}', [NoticiasController::class, 'show'])->name('artista.noticia');
 
-  Route::get('/letras', [CancionesController::class, 'byArtista'])->name('artista.canciones');
-  Route::get('/letras/{cancion:slug}', [CancionesController::class, 'show'])->name('artista.cancion');
+    Route::get('/letras', [CancionesController::class, 'byArtista'])->name('artista.canciones');
+    Route::get('/letras/{cancion:slug}', [CancionesController::class, 'show'])->name('artista.cancion');
 
-  Route::get('/discografia', [DiscosController::class, 'byArtista'])->name('artista.discografia');
-  Route::get('/discografia/{slug}', [DiscosController::class, 'show'])->name('artista.disco');
+    Route::get('/discografia', [DiscosController::class, 'byArtista'])->name('artista.discografia');
+    Route::get('/discografia/{slug}', [DiscosController::class, 'show'])->name('artista.disco');
 
-  Route::get('/shows', [ShowsController::class, 'byArtista'])->name('artista.shows');
-  Route::get('/shows/{slug}', [ShowsController::class, 'show'])->name('artista.show.detalle');
+    Route::get('/shows', [ShowsController::class, 'byArtista'])->name('artista.shows');
+    Route::get('/shows/{slug}', [ShowsController::class, 'show'])->name('artista.show.detalle');
 
-  Route::get('/entrevistas', [EntrevistasController::class, 'byArtista'])->name('artista.entrevistas');
-  Route::get('/entrevistas/{slug}', [EntrevistasController::class, 'show'])->name('artista.entrevista');
+    Route::get('/entrevistas', [EntrevistasController::class, 'byArtista'])->name('artista.entrevistas');
+    Route::get('/entrevistas/{slug}', [EntrevistasController::class, 'show'])->name('artista.entrevista');
 });
 
 // Social Auth

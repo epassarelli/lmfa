@@ -63,7 +63,7 @@ class AdminAutoPublishBackendTest extends TestCase
     }
 
     /** @test */
-    public function admin_created_news_is_published_automatically(): void
+    public function admin_created_news_can_remain_draft_for_editorial_review(): void
     {
         $admin = $this->makeAdminUser();
         $this->actingAs($admin);
@@ -76,12 +76,12 @@ class AdminAutoPublishBackendTest extends TestCase
             'estado' => 0,
         ]);
 
-        $this->assertSame('published', $news->fresh()->editorial_status);
-        $this->assertNotNull($news->fresh()->published_at);
+        $this->assertSame('draft', $news->fresh()->editorial_status);
+        $this->assertNull($news->fresh()->published_at);
     }
 
     /** @test */
-    public function admin_updated_news_is_published_automatically(): void
+    public function admin_updated_news_can_remain_draft_for_editorial_review(): void
     {
         $admin = $this->makeAdminUser();
         $this->actingAs($admin);
@@ -104,12 +104,12 @@ class AdminAutoPublishBackendTest extends TestCase
             'estado' => 0,
         ]);
 
-        $this->assertSame('published', $news->fresh()->editorial_status);
-        $this->assertNotNull($news->fresh()->published_at);
+        $this->assertSame('draft', $news->fresh()->editorial_status);
+        $this->assertNull($news->fresh()->published_at);
     }
 
     /** @test */
-    public function admin_created_event_is_published_automatically(): void
+    public function admin_created_event_can_remain_draft_for_editorial_review(): void
     {
         $admin = $this->makeAdminUser();
         $this->actingAs($admin);
@@ -121,12 +121,12 @@ class AdminAutoPublishBackendTest extends TestCase
             'estado' => 0,
         ]);
 
-        $this->assertSame('published', $event->fresh()->editorial_status);
-        $this->assertNotNull($event->fresh()->published_at);
+        $this->assertSame('draft', $event->fresh()->editorial_status);
+        $this->assertNull($event->fresh()->published_at);
     }
 
     /** @test */
-    public function admin_updated_event_is_published_automatically(): void
+    public function admin_updated_event_can_remain_draft_for_editorial_review(): void
     {
         $admin = $this->makeAdminUser();
         $this->actingAs($admin);
@@ -148,8 +148,8 @@ class AdminAutoPublishBackendTest extends TestCase
             'estado' => 0,
         ]);
 
-        $this->assertSame('published', $event->fresh()->editorial_status);
-        $this->assertNotNull($event->fresh()->published_at);
+        $this->assertSame('draft', $event->fresh()->editorial_status);
+        $this->assertNull($event->fresh()->published_at);
     }
 
     /** @test */

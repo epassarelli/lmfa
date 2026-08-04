@@ -4,13 +4,13 @@ namespace App\Services;
 
 use App\Models\News;
 use App\Support\NewsImagePathResolver;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class NewsService
 {
     protected $imageService;
+
     protected $imageResolver;
 
     public function __construct(ImageUploadService $imageService, ImageSourceResolver $imageResolver)
@@ -32,7 +32,7 @@ class NewsService
                 $data['approved_by'] = $data['approved_by'] ?? null;
 
                 if (empty($data['slug'])) {
-                    $data['slug'] = Str::slug($data['title'] ?? ($data['titulo'] ?? 'news-' . now()->timestamp));
+                    $data['slug'] = Str::slug($data['title'] ?? ($data['titulo'] ?? 'news-'.now()->timestamp));
                 }
 
                 // 2. Mapeo de campos legacy
@@ -44,18 +44,18 @@ class NewsService
                     $data['interprete_id'] = $data['interprete_principal_id'];
                 }
 
-                if ($this->currentUserIsAdmin()) {
-                    $data['editorial_status'] = 'published';
-                } elseif (!isset($data['editorial_status']) && !auth()->user()->canPublish()) {
+                if (! isset($data['editorial_status']) && ! auth()->user()->canPublish()) {
                     $data['editorial_status'] = 'draft';
                 }
 
                 // 3. Crear la noticia
                 unset($data['foto']);
-                if (!isset($data['editorial_status'])) {
-                    $data['editorial_status'] = ($data['estado'] ?? 1) ? 'published' : 'draft';
+                if (! isset($data['editorial_status'])) {
+                    $data['editorial_status'] = array_key_exists('estado', $data)
+                        ? ($data['estado'] ? 'published' : 'draft')
+                        : 'draft';
                 }
-                
+
                 if ($data['editorial_status'] === 'published' && empty($data['published_at'])) {
                     $data['published_at'] = now();
                 }
@@ -63,7 +63,7 @@ class NewsService
                 $news = News::create($data);
 
                 // 4. Sincronizar intérpretes secundarios
-                if (!empty($data['interprete_secundarios'])) {
+                if (! empty($data['interprete_secundarios'])) {
                     $news->interpretes()->sync($data['interprete_secundarios']);
                 }
 
@@ -108,15 +108,13 @@ class NewsService
                     $data['interprete_id'] = $data['interprete_principal_id'];
                 }
 
-                if ($this->currentUserIsAdmin()) {
-                    $data['editorial_status'] = 'published';
-                } elseif (!isset($data['editorial_status']) && !auth()->user()->canPublish()) {
+                if (! isset($data['editorial_status']) && ! auth()->user()->canPublish()) {
                     $data['editorial_status'] = 'draft';
                 }
 
                 // 2. Actualizar
                 unset($data['foto']);
-                if (!isset($data['editorial_status']) && isset($data['estado'])) {
+                if (! isset($data['editorial_status']) && isset($data['estado'])) {
                     $data['editorial_status'] = $data['estado'] ? 'published' : 'draft';
                 }
                 if (($data['editorial_status'] ?? null) === 'published' && empty($data['published_at']) && empty($news->published_at)) {
@@ -164,12 +162,5 @@ class NewsService
                 @unlink($path);
             }
         }
-    }
-
-    protected function currentUserIsAdmin(): bool
-    {
-        $user = auth()->user();
-
-        return (bool) $user && ($user->isAdmin() || $user->hasRole('administrador'));
     }
 }

@@ -342,6 +342,12 @@ return [
             'active' => ['admin/news*'],
         ],
         [
+            'text' => 'Enciclopedia',
+            'url' => 'admin/knowledge-articles',
+            'icon' => 'fas fa-fw fa-book-open',
+            'active' => ['admin/knowledge-articles*'],
+        ],
+        [
             'text' => 'Copa del Folklore 2026',
             'url' => 'admin/folklore-tournaments',
             'icon' => 'fas fa-fw fa-trophy',

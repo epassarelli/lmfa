@@ -3,130 +3,210 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Contribution;
+use App\Models\News;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Services\NewsService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Throwable;
 
-    protected $newsService;
+class ContributionController extends Controller
+{
+    /**
+     * Tipos de contenido que el moderador puede aprobar desde este flujo.
+     * Se restringe explícitamente para evitar instanciación arbitraria
+     * desde `contributable_type`.
+     */
+    private const APPROVABLE_MODELS = [
+        \App\Models\Interprete::class,
+        \App\Models\News::class,
+        \App\Models\Cancion::class,
+        \App\Models\Festival::class,
+        \App\Models\Event::class,
+    ];
 
-    public function __construct(\App\Services\NewsService $newsService)
+    public function __construct(protected NewsService $newsService)
     {
         $this->middleware(['auth', 'role:administrador']);
-        $this->newsService = $newsService;
     }
 
-    public function index()
+    public function index(): View
     {
         $contributions = Contribution::with('user')->latest()->get();
+
         return view('backend.contributions.index', compact('contributions'));
     }
 
-    public function show($id)
+    public function show(int $id): View
     {
         $contribution = Contribution::with('user')->findOrFail($id);
-        $modelClass = $contribution->contributable_type;
+        $modelClass = $this->resolveContributionModel($contribution);
         $original = $contribution->contributable_id ? $modelClass::find($contribution->contributable_id) : null;
 
         return view('backend.contributions.show', compact('contribution', 'original'));
     }
 
-    public function approve($id)
+    public function approve(int $id): RedirectResponse
     {
         $contribution = Contribution::findOrFail($id);
-        
+
         if ($contribution->status !== 'pending') {
             return back()->with('error', 'Esta contribución ya fue procesada.');
         }
 
-        DB::transaction(function () use ($contribution) {
-            $modelClass = $contribution->contributable_type;
-            $isNew = $contribution->contributable_id === null;
-            $payload = $contribution->payload;
+        try {
+            DB::transaction(function () use ($contribution) {
+                $modelClass = $this->resolveContributionModel($contribution);
+                $isNew = $contribution->contributable_id === null;
+                $payload = $contribution->payload ?? [];
 
-            // Caso especial: Noticias (Usamos el servicio unificado)
-            if ($modelClass === \App\Models\News::class) {
-                $payload['created_by'] = $contribution->user_id;
-                $payload['approved_by'] = auth()->id();
-                $payload['editorial_status'] = 'published';
-
-                if ($isNew) {
-                    $model = $this->newsService->createNews($payload, $payload['foto'] ?? null);
-                    $contribution->contributable_id = $model->id;
+                if ($modelClass === News::class) {
+                    $this->approveNewsContribution($contribution, $payload, $isNew);
                 } else {
-                    $model = \App\Models\News::findOrFail($contribution->contributable_id);
-                    $this->newsService->updateNews($model, $payload, $payload['foto'] ?? null);
+                    $this->approveLegacyContribution($contribution, $modelClass, $payload, $isNew);
                 }
-            } else {
-                // Otros tipos de contenido (Lógica legacy a refactorizar a futuro)
-                if (!$isNew) {
-                    $model = $modelClass::findOrFail($contribution->contributable_id);
-                    $model->update($payload);
-                } else {
-                    $model = new $modelClass($payload);
-                    $model->user_id = $contribution->user_id;
-                    $model->estado = 1;
-                    $baseSlug = null;
-                    if (!empty($model->titulo)) {
-                        $baseSlug = \Illuminate\Support\Str::slug($model->titulo);
-                    } elseif (!empty($model->interprete)) {
-                        $baseSlug = \Illuminate\Support\Str::slug($model->interprete);
-                    } elseif (!empty($model->cancion)) {
-                        $baseSlug = \Illuminate\Support\Str::slug($model->cancion);
-                    }
-                    if ($baseSlug) {
-                        $slug = $baseSlug;
-                        $i = 2;
-                        while ($modelClass::where('slug', $slug)->exists()) {
-                            $slug = $baseSlug . '-' . $i++;
-                        }
-                        $model->slug = $slug;
-                    }
-                    $model->save();
-                    $contribution->contributable_id = $model->id;
-                }
-            }
 
-            $contribution->status = 'approved';
-            $contribution->save();
+                $this->markContributionApproved($contribution, $isNew);
+            });
+        } catch (Throwable $e) {
+            report($e);
 
-            // Premiar puntos: 50 por contenido nuevo, 20 por edición
-            $user = User::find($contribution->user_id);
-            $pointsAwarded = $isNew ? 50 : 20;
-            $user->increment('points', $pointsAwarded);
-            
-            // Lógica de rangos (ejemplo simple)
-            if ($user->points > 500) $user->update(['rank' => 'Folclorista de Plata']);
-            if ($user->points > 1000) $user->update(['rank' => 'Folclorista de Oro']);
+            return back()->with('error', 'No se pudo aprobar la contribución. Revisá el payload y volvé a intentar.');
+        }
 
-            UserNotification::notify(
-                $contribution->user_id,
-                'contribution.approved',
-                '✅ Tu contribución fue aprobada',
-                'Tu aporte fue revisado y publicado. ¡Gracias por colaborar!'
-            );
-        });
-
-        return redirect()->route('backend.contributions.admin.index')->with('success', 'Contribución aprobada y publicada.');
+        return redirect()
+            ->route('backend.contributions.admin.index')
+            ->with('success', 'Contribución aprobada y publicada.');
     }
 
-    public function reject(Request $request, $id)
+    public function reject(Request $request, int $id): RedirectResponse
     {
         $contribution = Contribution::findOrFail($id);
+
+        if ($contribution->status !== 'pending') {
+            return back()->with('error', 'Esta contribución ya fue procesada.');
+        }
+
+        $comment = $request->input('comment');
+
         $contribution->update([
             'status' => 'rejected',
-            'moderator_comment' => $request->comment
+            'moderator_comment' => $comment,
         ]);
 
         UserNotification::notify(
             $contribution->user_id,
             'contribution.rejected',
-            '❌ Tu contribución fue rechazada',
-            $request->comment ? "Motivo: {$request->comment}" : 'Tu aporte no pudo ser publicado en esta oportunidad.'
+            'Tu contribución fue rechazada',
+            $comment ? "Motivo: {$comment}" : 'Tu aporte no pudo ser publicado en esta oportunidad.'
         );
 
-        return redirect()->route('backend.contributions.admin.index')->with('success', 'Contribución rechazada.');
+        return redirect()
+            ->route('backend.contributions.admin.index')
+            ->with('success', 'Contribución rechazada.');
+    }
+
+    private function resolveContributionModel(Contribution $contribution): string
+    {
+        $modelClass = $contribution->contributable_type;
+
+        if (! is_string($modelClass) || ! in_array($modelClass, self::APPROVABLE_MODELS, true) || ! class_exists($modelClass)) {
+            abort(422, 'El tipo de contribución no está soportado por el moderador.');
+        }
+
+        return $modelClass;
+    }
+
+    private function approveNewsContribution(Contribution $contribution, array $payload, bool $isNew): void
+    {
+        $payload['created_by'] = $contribution->user_id;
+        $payload['approved_by'] = auth()->id();
+        $payload['editorial_status'] = 'published';
+
+        if ($isNew) {
+            $model = $this->newsService->createNews($payload, $payload['foto'] ?? null);
+            $contribution->contributable_id = $model->id;
+
+            return;
+        }
+
+        $model = News::findOrFail($contribution->contributable_id);
+        $this->newsService->updateNews($model, $payload, $payload['foto'] ?? null);
+    }
+
+    private function approveLegacyContribution(Contribution $contribution, string $modelClass, array $payload, bool $isNew): void
+    {
+        if (! $isNew) {
+            $model = $modelClass::findOrFail($contribution->contributable_id);
+            $model->update($payload);
+
+            return;
+        }
+
+        $model = new $modelClass($payload);
+        $model->user_id = $contribution->user_id;
+
+        if (isset($model->estado)) {
+            $model->estado = 1;
+        }
+
+        if (empty($model->slug)) {
+            $model->slug = $this->generateUniqueSlug($modelClass, $payload);
+        }
+
+        $model->save();
+        $contribution->contributable_id = $model->id;
+    }
+
+    private function markContributionApproved(Contribution $contribution, bool $isNew): void
+    {
+        $contribution->status = 'approved';
+        $contribution->save();
+
+        $user = User::findOrFail($contribution->user_id);
+        $pointsAwarded = $isNew ? 50 : 20;
+        $user->increment('points', $pointsAwarded);
+
+        if ($user->points > 1000) {
+            $user->update(['rank' => 'Folclorista de Oro']);
+        } elseif ($user->points > 500) {
+            $user->update(['rank' => 'Folclorista de Plata']);
+        }
+
+        UserNotification::notify(
+            $contribution->user_id,
+            'contribution.approved',
+            'Tu contribución fue aprobada',
+            'Tu aporte fue revisado y publicado. Gracias por colaborar.'
+        );
+    }
+
+    private function generateUniqueSlug(string $modelClass, array $payload): ?string
+    {
+        $baseValue = $payload['titulo']
+            ?? $payload['interprete']
+            ?? $payload['cancion']
+            ?? $payload['title']
+            ?? null;
+
+        if (! $baseValue) {
+            return null;
+        }
+
+        $baseSlug = Str::slug($baseValue);
+        $slug = $baseSlug;
+        $counter = 2;
+
+        while ($modelClass::where('slug', $slug)->exists()) {
+            $slug = $baseSlug.'-'.$counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 }
