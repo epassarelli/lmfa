@@ -4,9 +4,11 @@
     RewriteBase /
 
     # 0. DOMINIO Y PROTOCOLO CANONICOS
+    # Canonicaliza en una sola capa, contemplando requests HTTPS terminadas en CDN/proxy.
     RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)$ [NC]
-    RewriteCond %{HTTPS} !=on [OR]
-    RewriteCond %{HTTP_HOST} !^mifolkloreargentino\.com$ [NC]
+    RewriteCond %{HTTP_HOST} !^mifolkloreargentino\.com$ [NC,OR]
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
     RewriteRule ^ https://mifolkloreargentino.com%{REQUEST_URI} [L,R=301,NE]
 
     # 1. MODO MANTENIMIENTO (Intercepción temprana)
