@@ -33,7 +33,8 @@ database_local/
 .gemini/
 antigravity/
 
-# Documentación de desarrollo
+# Documentacion de desarrollo
+/docs/
 /openspec/
 /project/
 AGENTS.md
