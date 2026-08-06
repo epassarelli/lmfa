@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+  @php($canonicalUrl = trim($__env->yieldContent('canonical')) !== '' ? \App\Support\CanonicalUrl::normalize(trim($__env->yieldContent('canonical'))) : \App\Support\CanonicalUrl::current())
   @if (!app()->environment('local'))
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q4QNW9JPGG"></script>
@@ -18,7 +19,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!-- Canonical -->
-  <link rel="canonical" href="@yield('canonical', url()->current())" />
+  <link rel="canonical" href="{{ $canonicalUrl }}" />
 
   <!-- .ico -->
   <link rel="shortcut icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
@@ -31,7 +32,7 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="@yield('ogType', 'website')">
-  <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:url" content="{{ $canonicalUrl }}">
   <meta property="og:title" content="@yield('metaTitle', 'Mi folklore Argentino')">
   <meta property="og:description"
     content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
@@ -40,7 +41,7 @@
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="{{ url()->current() }}">
+  <meta property="twitter:url" content="{{ $canonicalUrl }}">
   <meta property="twitter:title" content="@yield('metaTitle', 'Mi folklore Argentino')">
   <meta property="twitter:description"
     content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
@@ -65,7 +66,6 @@
 
     {{-- Sidebar dinámico o por defecto --}}
     <aside class="lg:col-span-3 px-4 mb-4">
-      @include('layouts.partials.sidebar.cup_promo')
       @hasSection('sidebar')
         @yield('sidebar')
       @else

@@ -3,7 +3,7 @@
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     @foreach ($noticias as $noticia)
         <url>
-            <loc>{{ route('noticias.show', $noticia->slug) }}</loc>
+            <loc>{{ \App\Support\CanonicalUrl::normalize(route('noticias.show', $noticia->slug)) }}</loc>
             <news:news>
                 <news:publication>
                     <news:name>Mi Folklore Argentino</news:name>

@@ -15,9 +15,6 @@
       <p class="text-lg text-slate-700 mb-4">
         Un espacio de consulta permanente para entender ritmos, danzas, instrumentos, regiones, canciones, historia y tradiciones del folklore argentino desde una mirada editorial y navegable.
       </p>
-      <p class="text-base text-slate-600">
-        La ruta pública canónica de este silo es <strong>/enciclopedia</strong>. No existen redirecciones desde <code>/folklore-argentino</code> porque esa variante nunca se publicó.
-      </p>
     </div>
   </section>
 
