@@ -37,9 +37,36 @@ class SeoInfrastructureTest extends TestCase
     }
 
     /** @test */
-    public function it_redirects_non_canonical_hosts_to_the_https_dot_com_domain_without_losing_query_string(): void
+    public function it_redirects_http_non_www_to_the_https_canonical_domain_without_losing_query_string(): void
     {
-        $response = $this->get('https://www.mifolkloreargentino.com.ar/contacto?foo=bar&utm_source=ads');
+        $response = $this->call('GET', 'http://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+
+        $response->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $this->assertSame(301, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function it_redirects_http_www_to_the_https_canonical_domain_without_losing_query_string(): void
+    {
+        $response = $this->call('GET', 'http://www.mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+
+        $response->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $this->assertSame(301, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function it_redirects_https_www_to_the_https_canonical_domain_without_losing_query_string(): void
+    {
+        $response = $this->call('GET', 'https://www.mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+
+        $response->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $this->assertSame(301, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function it_redirects_https_com_ar_www_to_the_https_canonical_domain_without_losing_query_string(): void
+    {
+        $response = $this->call('GET', 'https://www.mifolkloreargentino.com.ar/contacto?foo=bar&utm_source=ads');
 
         $response->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
         $this->assertSame(301, $response->getStatusCode());
@@ -54,6 +81,21 @@ class SeoInfrastructureTest extends TestCase
         ]);
 
         $response->assertOk();
+    }
+
+    /** @test */
+    public function it_does_not_redirect_when_proxy_headers_already_indicate_the_canonical_https_request(): void
+    {
+        $response = $this->call('GET', '/contacto?foo=bar', [], [], [], [
+            'HTTP_HOST' => 'internal-origin',
+            'HTTPS' => 'off',
+            'HTTP_X_FORWARDED_HOST' => 'mifolkloreargentino.com',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'HTTP_X_FORWARDED_PORT' => '443',
+        ]);
+
+        $response->assertOk();
+        $response->assertSee('href="https://mifolkloreargentino.com/contacto?foo=bar"', false);
     }
 
     /** @test */
