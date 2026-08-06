@@ -22,7 +22,7 @@
   "@context": "https://schema.org",
   "@type": "VideoObject",
   "name": "{{ $cancion->cancion }} - {{ $interprete->interprete }}",
-  "description": "Video y letra de la canción {{ $cancion->cancion }} por {{ $interprete->interprete }}.",
+  "description": "Video y letra de la cancion {{ $cancion->cancion }} por {{ $interprete->interprete }}.",
   "thumbnailUrl": "{{ $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : asset('storage/interpretes/' . $interprete->foto) }}",
   "uploadDate": "{{ $cancion->created_at ? $cancion->created_at->toIso8601String() : '' }}",
   "contentUrl": "https://www.youtube.com/watch?v={{ $cancion->youtube }}",
@@ -37,13 +37,11 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
-  {{-- Contenido principal --}}
-
   <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $cancion->cancion }}</h1>
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $h1 }}</h1>
     <div class="mb-4">
-      <a href="{{ route('backend.contributions.create', ['type' => 'cancion', 'id' => $cancion->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
-        🎸 Sugerir corrección de letra
+      <a href="{{ route('backend.contributions.create', ['type' => 'cancion', 'id' => $cancion->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1" data-nosnippet>
+        Sugerir correccion de letra
       </a>
     </div>
     <p class="text-lg text-gray-700 mb-4">{{ $interprete->interprete }}</p>
@@ -55,7 +53,6 @@
     <p class="text-base text-gray-600 mt-4">{{ $cancion->visitas }} veces vista</p>
   </div>
 
-  {{-- Video YouTube --}}
   @if (!empty($cancion->youtube))
     <div class="relative mb-8 cursor-pointer aspect-video overflow-hidden rounded-lg shadow-md"
       onclick="loadYouTubeIframe(this)" data-video-id="{{ $cancion->youtube }}">
@@ -69,18 +66,15 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="w-16 h-16 bg-red-600 text-white text-3xl rounded-full shadow-lg flex items-center justify-center">
           ▶
-
         </div>
       </div>
     </div>
   @endif
 
-  {{-- Muestro ls redes p compartir --}}
   <div class="redes">
     <x-compartir-redes :titulo="$cancion->cancion" :url="Request::url()" />
   </div>
 
-  {{-- Otras canciones --}}
   <div class="mt-10">
     <h2 class="text-xl font-semibold text-gray-800 mb-4">Otras canciones de {{ $interprete->interprete }}</h2>
 
@@ -93,21 +87,10 @@
       @endforeach
     </div>
   </div>
-
-
-  {{-- Sidebar --}}
-  {{-- <div class="w-full lg:w-1/4">
-        @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-      </div> --}}
-
-
 @endsection
 
 @section('sidebar')
-
   @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-
-
 @endsection
 
 @section('scripts')

@@ -24,18 +24,18 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "¿Quién es {{ $interprete->interprete }}?",
+      "name": "Quien es {{ $interprete->interprete }}?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ Str::limit(strip_tags($interprete->biografia), 200) }}"
+        "text": "{{ \Illuminate\Support\Str::limit(\App\Support\SeoMetadata::clean($interprete->biografia), 200) }}"
       }
     },
     {
       "@type": "Question",
-      "name": "¿Cuál es la trayectoria de {{ $interprete->interprete }} en el folklore?",
+      "name": "Cual es la trayectoria de {{ $interprete->interprete }} en el folklore?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Conoce la biografía completa, discos y canciones de {{ $interprete->interprete }} en Mi Folklore Argentino."
+        "text": "Conoce la biografia completa, discos y canciones de {{ $interprete->interprete }} en Mi Folklore Argentino."
       }
     }
   ]
@@ -48,30 +48,21 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
   <section class="bg-white p-2 rounded shadow-sm mb-4">
-    {{-- Contenido principal --}}
-    <h1 class="text-2xl font-semibold mb-2">Biografía de {{ $interprete->interprete }}</h1>
+    <h1 class="text-2xl font-semibold mb-2">{{ $h1 }}</h1>
     <div class="mb-6">
-      <a href="{{ route('backend.contributions.create', ['type' => 'interprete', 'id' => $interprete->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
-        ✏️ Sugerir edición de biografía
+      <a href="{{ route('backend.contributions.create', ['type' => 'interprete', 'id' => $interprete->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1" data-nosnippet>
+        Sugerir edicion de biografia
       </a>
     </div>
 
     <div class="prose max-w-none prose-lg prose-slate">
       {!! $interprete->biografia !!}
     </div>
-
-
   </section>
 
-  {{-- Muestro las redes p/ compartir --}}
   <div class="redes">
     <x-compartir-redes :titulo="$interprete->interprete" :url="Request::url()" />
   </div>
-  {{-- Selector de intérprete --}}
-  {{-- @include('layouts.partials.select-interprete') --}}
-
-
-
 @endsection
 
 @section('sidebar')
@@ -90,5 +81,4 @@
   @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
   <br>
   <x-sidebar.social-links />
-
 @endsection

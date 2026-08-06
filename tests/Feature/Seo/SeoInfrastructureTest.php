@@ -84,6 +84,64 @@ class SeoInfrastructureTest extends TestCase
     }
 
     /** @test */
+    public function apex_https_root_responds_200_without_redirecting_to_itself(): void
+    {
+        $response = $this->call('GET', '/', [], [], [], [
+            'HTTP_HOST' => 'mifolkloreargentino.com',
+            'HTTPS' => 'on',
+        ]);
+
+        $response->assertOk();
+    }
+
+    /** @test */
+    public function apex_https_root_with_query_responds_200_without_redirecting(): void
+    {
+        $response = $this->call('GET', '/?foo=bar', [], [], [], [
+            'HTTP_HOST' => 'mifolkloreargentino.com',
+            'HTTPS' => 'on',
+        ]);
+
+        $response->assertOk();
+        $response->assertSee('href="https://mifolkloreargentino.com/?foo=bar"', false);
+    }
+
+    /** @test */
+    public function https_www_root_redirects_once_to_apex_root(): void
+    {
+        $response = $this->call('GET', 'https://www.mifolkloreargentino.com/');
+
+        $response->assertRedirect('https://mifolkloreargentino.com/');
+        $this->assertSame(301, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function https_www_root_with_query_redirects_once_to_apex_root_preserving_query(): void
+    {
+        $response = $this->call('GET', 'https://www.mifolkloreargentino.com/?foo=bar');
+
+        $response->assertRedirect('https://mifolkloreargentino.com/?foo=bar');
+        $this->assertSame(301, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function equivalent_internal_routes_keep_200_on_apex_and_301_on_www(): void
+    {
+        $apex = $this->call('GET', '/contacto?foo=bar', [], [], [], [
+            'HTTP_HOST' => 'mifolkloreargentino.com',
+            'HTTPS' => 'on',
+        ]);
+
+        $apex->assertOk();
+        $apex->assertSee('href="https://mifolkloreargentino.com/contacto?foo=bar"', false);
+
+        $www = $this->call('GET', 'https://www.mifolkloreargentino.com/contacto?foo=bar');
+
+        $www->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar');
+        $this->assertSame(301, $www->getStatusCode());
+    }
+
+    /** @test */
     public function it_does_not_redirect_when_proxy_headers_already_indicate_the_canonical_https_request(): void
     {
         $response = $this->call('GET', '/contacto?foo=bar', [], [], [], [

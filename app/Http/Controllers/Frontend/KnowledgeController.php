@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeCategory;
 use App\Support\CanonicalUrl;
+use App\Support\SeoMetadata;
 use Illuminate\Support\Str;
 
 class KnowledgeController extends Controller
@@ -80,7 +81,7 @@ class KnowledgeController extends Controller
             ->get();
 
         $metaTitle = 'Enciclopedia del folklore argentino';
-        $metaDescription = 'Guías, historia, ritmos, instrumentos, provincias y tradiciones del folklore argentino en una enciclopedia editorial pensada para consulta permanente.';
+        $metaDescription = 'Guias, historia, ritmos, instrumentos, provincias y tradiciones del folklore argentino en una enciclopedia editorial pensada para consulta permanente.';
         $breadcrumbs = [
             ['label' => 'Enciclopedia', 'url' => route('enciclopedia.index')],
         ];
@@ -150,8 +151,10 @@ class KnowledgeController extends Controller
 
         $article->increment('visits');
 
-        $metaTitle = $article->seo_title ?: $article->title.' | Enciclopedia del folklore argentino';
-        $metaDescription = $article->meta_description ?: Str::limit(strip_tags($article->excerpt ?: $article->body), 160);
+        $seo = SeoMetadata::evergreen($article);
+        $metaTitle = $seo['title'];
+        $metaDescription = $seo['description'];
+        $h1 = $seo['h1'];
         $canonical = CanonicalUrl::normalize(route('enciclopedia.show', [
             'categorySlug' => $article->category->slug,
             'articleSlug' => $article->slug,
@@ -166,6 +169,7 @@ class KnowledgeController extends Controller
             'article',
             'metaTitle',
             'metaDescription',
+            'h1',
             'canonical',
             'breadcrumbs'
         ));

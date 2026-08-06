@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Livewire\Backend\Interpretes;
-use Illuminate\Http\Request;
-
-use App\Models\Interprete;
-use App\Models\News;
-use App\Models\Show;
 use App\Models\Album;
 use App\Models\Cancion;
 use App\Models\Categoria;
+use App\Models\Interprete;
+use App\Models\News;
+use App\Models\Show;
+use App\Support\SeoMetadata;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -75,12 +75,15 @@ class HomeController extends Controller
         $cancion = new Cancion();
         $canciones = $cancion->getNLast(Cancion::class, 6);
 
-        $metaTitle = "Mi Folklore Argentino | Nuestras Tradiciones y Costumbres";
-        $metaDescription = "Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre musica, danzas y mas. Visitanos hoy!";
+        $seo = SeoMetadata::home();
+        $metaTitle = $seo['title'];
+        $metaDescription = $seo['description'];
+        $h1 = $seo['h1'];
 
         return view('frontend.home', compact(
             'metaTitle',
             'metaDescription',
+            'h1',
             'ultimasNoticias',
             'ultimosArtistas',
             'shows',

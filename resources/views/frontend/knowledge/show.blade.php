@@ -29,7 +29,7 @@
   "dateReviewed": @json(optional($article->last_verified_at)->toIso8601String()),
   "author": {
     "@type": "Person",
-    "name": @json($article->author?->name ?? 'Redacción')
+    "name": @json($article->author?->name ?? 'Redaccion')
   }
 }
 </script>
@@ -42,14 +42,14 @@
 
   <article class="bg-white rounded-xl shadow-sm p-6 mb-8">
     <p class="text-sm font-semibold tracking-[0.18em] text-orange-600 uppercase mb-3">{{ $article->category?->name }}</p>
-    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{{ $article->title }}</h1>
+    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{{ $h1 }}</h1>
 
     <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500 mb-5">
       @if ($article->published_at)
         <span>Publicado: {{ $article->published_at->format('d/m/Y') }}</span>
       @endif
       @if ($article->last_verified_at)
-        <span>Última revisión: {{ $article->last_verified_at->format('d/m/Y') }}</span>
+        <span>Ultima revision: {{ $article->last_verified_at->format('d/m/Y') }}</span>
       @endif
       @if ($article->author)
         <span>Autor: {{ $article->author->name }}</span>
@@ -72,7 +72,7 @@
   </article>
 
   @foreach ([
-    'Intérpretes relacionados' => $article->interpretes,
+    'Interpretes relacionados' => $article->interpretes,
     'Canciones relacionadas' => $article->canciones,
     'Discos relacionados' => $article->albums,
     'Festivales relacionados' => $article->festivales,
@@ -105,7 +105,7 @@
 
   @if ($article->relatedArticles->isNotEmpty())
     <section class="bg-white rounded-xl shadow-sm p-6 mb-6">
-      <h2 class="text-xl font-semibold text-slate-900 mb-4">Otros artículos de la enciclopedia</h2>
+      <h2 class="text-xl font-semibold text-slate-900 mb-4">Otros articulos de la enciclopedia</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @foreach ($article->relatedArticles as $related)
           <article class="border border-slate-200 rounded-xl p-4">

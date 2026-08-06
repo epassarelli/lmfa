@@ -22,8 +22,8 @@
     @endforeach
 
     <section class="mb-4 rounded bg-white p-2 shadow-sm">
-      <h1 class="mb-4 border-b-2 border-[#ff661f] text-xl font-semibold text-gray-900">Mi Folklore Argentino | Todo sobre Nuestras Tradiciones y Costumbres</h1>
-      <p class="text-lg text-gray-700">Bienvenido a Mi Folklore Argentino, tu portal sobre la cultura y tradiciones de Argentina. Descubre musica, danzas y mas. Visitanos hoy.</p>
+      <h1 class="mb-4 border-b-2 border-[#ff661f] text-xl font-semibold text-gray-900">{{ $h1 }}</h1>
+      <p class="text-lg text-gray-700">{{ $metaDescription }}</p>
     </section>
   </section>
 @endsection

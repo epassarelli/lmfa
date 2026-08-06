@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-
 use App\Models\Festival;
 use App\Services\LinkService;
+use App\Support\SeoMetadata;
+use Illuminate\Http\Request;
 
 class FestivalesController extends Controller
 {
@@ -17,20 +16,18 @@ class FestivalesController extends Controller
     {
         $this->linkService = $linkService;
     }
+
     public function index()
     {
-
-        // Obtener las noticias en estado = 1 y ordenadas por el campo "publicar" desc
         $festival = new Festival();
-        // Obtener los últimos 5 intérpretes
         $ultimos = $festival->getNLast(Festival::class, 12);
         $visitados = $festival->getNMostVisited(Festival::class, 30);
 
-        $metaTitle = "Festivales y Fiestas del Folklore Argentino: Tradición y Cultura";
-        $metaDescription = "Descubre los festivales y fiestas tradicionales del folklore argentino. Mantente informado sobre los eventos culturales más importantes de Argentina. ¡Explora nuestras guías de festivales ahora!";
+        $metaTitle = 'Festivales y Fiestas del Folklore Argentino: Tradicion y Cultura';
+        $metaDescription = 'Descubre los festivales y fiestas tradicionales del folklore argentino. Mantente informado sobre los eventos culturales mas importantes de Argentina.';
 
         $breadcrumbs = [
-            ['label' => 'Festivales', 'url' => route('festivales.index')]
+            ['label' => 'Festivales', 'url' => route('festivales.index')],
         ];
 
         return view('frontend.festivales.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription', 'breadcrumbs'));
@@ -40,27 +37,26 @@ class FestivalesController extends Controller
     {
         $festival = Festival::where('slug', $slug)->with('images')->firstOrFail();
 
-        // Relciondos x prov
-        // $relted = Festival::get;
-
         $ultimos_festivales = Festival::where('estado', 1)
             ->where('id', '<>', $festival->id)
             ->orderByDesc('created_at')
             ->take(10)
             ->get();
-        // Incrementar el contador de visitas
+
         $festival->increment('visitas');
 
-        $metaTitle = $festival->titulo . " - Folklore Argentino";
-        $metaDescription = Str::limit(strip_tags(html_entity_decode($festival->detalle)), 150);
+        $seo = SeoMetadata::festival($festival);
+        $metaTitle = $seo['title'];
+        $metaDescription = $seo['description'];
+        $h1 = $seo['h1'];
 
         $breadcrumbs = [
             ['label' => 'Festivales', 'url' => route('festivales.index')],
-            ['label' => $festival->titulo]
+            ['label' => $festival->titulo],
         ];
 
         $festival->detalle = $this->linkService->autoLinkArtists($festival->detalle);
 
-        return view('frontend.festivales.show', compact('festival', 'ultimos_festivales', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.festivales.show', compact('festival', 'ultimos_festivales', 'metaTitle', 'metaDescription', 'h1', 'breadcrumbs'));
     }
 }
