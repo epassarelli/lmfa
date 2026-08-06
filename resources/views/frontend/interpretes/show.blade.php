@@ -8,11 +8,11 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@id": "{{ url()->current() }}",
+  "@id": "{{ \App\Support\CanonicalUrl::current() }}",
   "@type": "MusicGroup",
   "name": "{{ $interprete->interprete }}",
   "description": "{{ $metaDescription }}",
-  "url": "{{ url()->current() }}",
+  "url": "{{ \App\Support\CanonicalUrl::current() }}",
   "image": "{{ $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : asset('storage/interpretes/' . $interprete->foto) }}",
   "genre": "Folklore Argentino"
 }

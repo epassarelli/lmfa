@@ -50,7 +50,7 @@
       "@type": "ListItem",
       "position": {{ $index + 2 }},
       "name": "{{ $item['label'] }}",
-      "item": "{{ $item['url'] ?? url()->current() }}"
+      "item": "{{ isset($item['url']) ? \App\Support\CanonicalUrl::normalize($item['url']) : \App\Support\CanonicalUrl::current() }}"
     }
     @endforeach
   ]

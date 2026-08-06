@@ -13,6 +13,7 @@ use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeCategory;
 use App\Models\Provincia;
 use App\Services\KnowledgeArticleService;
+use App\Support\CanonicalUrl;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -129,10 +130,10 @@ class KnowledgeArticleController extends Controller
 
         $metaTitle = $article->seo_title ?: $article->title.' | Enciclopedia del folklore argentino';
         $metaDescription = $article->meta_description ?: \Illuminate\Support\Str::limit(strip_tags($article->excerpt ?: $article->body), 160);
-        $canonical = route('enciclopedia.show', [
+        $canonical = CanonicalUrl::normalize(route('enciclopedia.show', [
             'categorySlug' => $article->category->slug,
             'articleSlug' => $article->slug,
-        ]);
+        ]));
         $breadcrumbs = [
             ['label' => 'Enciclopedia', 'url' => route('enciclopedia.index')],
             ['label' => $article->category->name],

@@ -33,6 +33,7 @@ use App\Http\Controllers\Frontend\SitemapController;
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+Route::get('/sitemap-main.xml', [SitemapController::class, 'main']);
 Route::get('/sitemap-news.xml', [SitemapController::class, 'newsIndex']);
 
 // Home

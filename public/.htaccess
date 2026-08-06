@@ -5,6 +5,12 @@
 
     RewriteEngine On
 
+    # Canonicalizar dominio y HTTPS cuando el docroot apunta directo a /public
+    RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)$ [NC]
+    RewriteCond %{HTTPS} !=on [OR]
+    RewriteCond %{HTTP_HOST} !^mifolkloreargentino\.com$ [NC]
+    RewriteRule ^ https://mifolkloreargentino.com%{REQUEST_URI} [L,R=301,NE]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

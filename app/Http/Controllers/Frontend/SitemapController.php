@@ -15,192 +15,230 @@ use App\Models\Mito;
 use App\Models\News;
 use App\Models\Penia;
 use App\Models\Radio;
-use Illuminate\Support\Facades\Response;
+use App\Support\CanonicalUrl;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class SitemapController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
-        $urls = [];
-
-        // Static Pages
-        $urls[] = ['url' => route('home'), 'priority' => '1.0', 'changefreq' => 'daily'];
-        $urls[] = ['url' => route('contacto'), 'priority' => '0.5', 'changefreq' => 'monthly'];
-        $urls[] = ['url' => route('noticias.index'), 'priority' => '0.8', 'changefreq' => 'daily'];
-        $urls[] = ['url' => route('cartelera.index'), 'priority' => '0.8', 'changefreq' => 'daily'];
-        $urls[] = ['url' => route('interpretes.index'), 'priority' => '0.8', 'changefreq' => 'weekly'];
-        $urls[] = ['url' => route('canciones.index'), 'priority' => '0.8', 'changefreq' => 'weekly'];
-        $urls[] = ['url' => route('discografias.index'), 'priority' => '0.8', 'changefreq' => 'weekly'];
-        $urls[] = ['url' => route('festivales.index'), 'priority' => '0.8', 'changefreq' => 'weekly'];
-        $urls[] = ['url' => route('enciclopedia.index'), 'priority' => '0.8', 'changefreq' => 'weekly'];
-        $urls[] = ['url' => route('radios.index'), 'priority' => '0.8', 'changefreq' => 'monthly'];
-        $urls[] = ['url' => route('penias.index'), 'priority' => '0.8', 'changefreq' => 'monthly'];
-        $urls[] = ['url' => route('mitos.index'), 'priority' => '0.8', 'changefreq' => 'monthly'];
-        $urls[] = ['url' => route('comidas.index'), 'priority' => '0.8', 'changefreq' => 'monthly'];
-
-        // Dynamic Content
-        // Noticias
-        $noticias = News::where('editorial_status', 'published')->latest()->get();
-        foreach ($noticias as $noticia) {
-            $urls[] = [
-                'url' => route('noticias.show', $noticia->slug),
-                'priority' => '0.9',
-                'changefreq' => 'weekly',
-                'lastmod' => $noticia->updated_at->toAtomString(),
-                'image' => $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : ($noticia->featured_image_path ? asset('storage/'.$noticia->featured_image_path) : null),
-            ];
-        }
-
-        // Interpretes
-        $interpretes = Interprete::where('estado', 1)->get();
-        foreach ($interpretes as $interprete) {
-            $urls[] = [
-                'url' => route('artista.show', $interprete->slug),
-                'priority' => '0.8',
-                'changefreq' => 'monthly',
-                'lastmod' => $interprete->updated_at->toAtomString(),
-                'image' => $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : ($interprete->foto ? asset('storage/interpretes/'.$interprete->foto) : null),
-            ];
-        }
-
-        // Eventos
-        $shows = Event::where('editorial_status', 'published')->where('start_at', '>=', now())->get();
-        foreach ($shows as $show) {
-            $urls[] = [
-                'url' => route('cartelera.show', $show->slug),
-                'priority' => '0.8',
-                'changefreq' => 'weekly',
-                'lastmod' => $show->updated_at->toAtomString(),
-            ];
-        }
-
-        // Discos
-        $discos = Album::where('estado', 1)->get();
-        foreach ($discos as $disco) {
-            $urls[] = [
-                'url' => route('artista.disco', ['interprete' => $disco->interprete->slug ?? 'varios', 'slug' => $disco->slug]),
-                'priority' => '0.7',
-                'changefreq' => 'monthly',
-                'lastmod' => $disco->updated_at->toAtomString(),
-                'image' => $disco->images->isNotEmpty() ? $disco->images->first()->original_path : ($disco->foto ? asset('storage/albunes/'.$disco->foto) : null),
-            ];
-        }
-
-        // Canciones
-        $canciones = Cancion::where('estado', 1)->get();
-        foreach ($canciones as $cancion) {
-            // Assuming route is artista.cancion which needs interprete slug
-            $interpreteSlug = $cancion->interprete->slug ?? 'varios';
-            $urls[] = [
-                'url' => route('artista.cancion', ['interprete' => $interpreteSlug, 'cancion' => $cancion->slug]),
-                'priority' => '0.7',
-                'changefreq' => 'monthly',
-                'lastmod' => $cancion->updated_at->toAtomString(),
-            ];
-        }
-
-        // Festivales
-        $festivales = Festival::where('estado', 1)->get();
-        foreach ($festivales as $festival) {
-            $urls[] = [
-                'url' => route('festivales.show', $festival->slug),
-                'priority' => '0.8',
-                'changefreq' => 'monthly',
-                'lastmod' => $festival->updated_at->toAtomString(),
-                'image' => $festival->images->isNotEmpty() ? $festival->images->first()->original_path : ($festival->foto ? asset('storage/festivales/'.$festival->foto) : null),
-            ];
-        }
-
-        // Enciclopedia por familia
-        $knowledgeCategories = KnowledgeCategory::active()->get();
-        foreach ($knowledgeCategories as $category) {
-            $urls[] = [
-                'url' => route('enciclopedia.category', $category->slug),
-                'priority' => '0.7',
-                'changefreq' => 'weekly',
-                'lastmod' => $category->updated_at->toAtomString(),
-            ];
-        }
-
-        // Artículos evergreen
-        $knowledgeArticles = KnowledgeArticle::visible()->with('category')->get();
-        foreach ($knowledgeArticles as $article) {
-            if (! $article->category) {
-                continue;
-            }
-
-            $urls[] = [
-                'url' => route('enciclopedia.show', [
-                    'categorySlug' => $article->category->slug,
-                    'articleSlug' => $article->slug,
-                ]),
-                'priority' => '0.8',
-                'changefreq' => 'monthly',
-                'lastmod' => $article->updated_at->toAtomString(),
-                'image' => $article->images->isNotEmpty() ? $article->images->first()->original_path : ($article->featured_image_path ? asset('storage/'.$article->featured_image_path) : null),
-            ];
-        }
-
-        // Radios
-        $radios = Radio::where('estado', 1)->get();
-        foreach ($radios as $radio) {
-            $urls[] = [
-                'url' => route('radios.show', $radio->slug),
-                'priority' => '0.6',
-                'changefreq' => 'monthly',
-                'lastmod' => $radio->updated_at->toAtomString(),
-            ];
-        }
-
-        // Penias
-        $penias = Penia::where('estado', 1)->get();
-        foreach ($penias as $penia) {
-            $urls[] = [
-                'url' => route('penias.show', $penia->slug),
-                'priority' => '0.6',
-                'changefreq' => 'monthly',
-                'lastmod' => $penia->updated_at->toAtomString(),
-            ];
-        }
-
-        // Mitos
-        $mitos = Mito::where('estado', 1)->get();
-        foreach ($mitos as $mito) {
-            $urls[] = [
-                'url' => route('mitos.show', $mito->slug),
-                'priority' => '0.7',
-                'changefreq' => 'monthly',
-                'lastmod' => $mito->updated_at->toAtomString(),
-            ];
-        }
-
-        // Recetas
-        $recetas = Comida::where('estado', 1)->get();
-        foreach ($recetas as $receta) {
-            $urls[] = [
-                'url' => route('comidas.show', $receta->slug),
-                'priority' => '0.7',
-                'changefreq' => 'monthly',
-                'lastmod' => $receta->updated_at->toAtomString(),
-                'image' => $receta->images->isNotEmpty() ? $receta->images->first()->original_path : ($receta->foto ? asset('storage/comidas/'.$receta->foto) : null),
-            ];
-        }
-
-        $content = view('sitemap', compact('urls'))->render();
-
-        return Response::make($content, 200, ['Content-Type' => 'text/xml']);
+        return $this->xmlResponse('sitemap-index');
     }
 
-    public function newsIndex()
+    public function main(): Response
     {
-        // Google News Sitemap: articles from last 2 days (48 hours)
-        $noticias = News::where('editorial_status', 'published')
-            ->where('created_at', '>=', now()->subDays(2))
-            ->latest()
+        return $this->xmlResponse('sitemap', [
+            'urls' => $this->mainEntries(),
+        ]);
+    }
+
+    public function newsIndex(): Response
+    {
+        $noticias = News::query()
+            ->where('editorial_status', 'published')
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->where('published_at', '>=', now()->subDays(2))
+            ->orderByDesc('published_at')
             ->get();
 
-        $content = view('sitemap-news', compact('noticias'))->render();
+        return $this->xmlResponse('sitemap-news', compact('noticias'));
+    }
 
-        return Response::make($content, 200, ['Content-Type' => 'text/xml']);
+    protected function mainEntries(): Collection
+    {
+        $urls = collect([
+            $this->entry(route('home'), '1.0', 'daily'),
+            $this->entry(route('contacto'), '0.5', 'monthly'),
+            $this->entry(route('noticias.index'), '0.8', 'daily'),
+            $this->entry(route('cartelera.index'), '0.8', 'daily'),
+            $this->entry(route('interpretes.index'), '0.8', 'weekly'),
+            $this->entry(route('canciones.index'), '0.8', 'weekly'),
+            $this->entry(route('discografias.index'), '0.8', 'weekly'),
+            $this->entry(route('festivales.index'), '0.8', 'weekly'),
+            $this->entry(route('enciclopedia.index'), '0.8', 'weekly'),
+            $this->entry(route('radios.index'), '0.8', 'monthly'),
+            $this->entry(route('penias.index'), '0.8', 'monthly'),
+            $this->entry(route('mitos.index'), '0.8', 'monthly'),
+            $this->entry(route('comidas.index'), '0.8', 'monthly'),
+            $this->entry(route('folklore.cup.index'), '0.6', 'weekly'),
+        ]);
+
+        $news = News::query()
+            ->with('images')
+            ->where('editorial_status', 'published')
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->orderByDesc('published_at')
+            ->get()
+            ->map(fn (News $news) => $this->entry(
+                route('noticias.show', $news->slug),
+                '0.9',
+                'weekly',
+                $news->updated_at?->toAtomString(),
+                $this->imageUrl($news->images->first()?->original_path, $news->featured_image_path ? 'storage/'.$news->featured_image_path : null)
+            ));
+
+        $interpretes = Interprete::query()
+            ->where('estado', 1)
+            ->get()
+            ->flatMap(function (Interprete $interprete) {
+                return [
+                    $this->entry(route('artista.show', $interprete->slug), '0.8', 'monthly', $interprete->updated_at?->toAtomString()),
+                    $this->entry(route('artista.biografia', $interprete->slug), '0.7', 'monthly', $interprete->updated_at?->toAtomString()),
+                ];
+            });
+
+        $shows = Event::query()
+            ->where('editorial_status', 'published')
+            ->where('start_at', '>=', now()->startOfDay())
+            ->orderBy('start_at')
+            ->get()
+            ->map(fn (Event $show) => $this->entry(
+                route('cartelera.show', $show->slug),
+                '0.8',
+                'weekly',
+                $show->updated_at?->toAtomString()
+            ));
+
+        $discos = Album::query()
+            ->with(['interprete', 'images'])
+            ->where('estado', 1)
+            ->get()
+            ->filter(fn (Album $album) => filled($album->slug) && filled($album->interprete?->slug))
+            ->map(fn (Album $album) => $this->entry(
+                route('artista.disco', ['interprete' => $album->interprete->slug, 'slug' => $album->slug]),
+                '0.7',
+                'monthly',
+                $album->updated_at?->toAtomString(),
+                $this->imageUrl($album->images->first()?->original_path, $album->foto ? 'storage/albunes/'.$album->foto : null)
+            ));
+
+        $canciones = Cancion::query()
+            ->with('interprete')
+            ->where('estado', 1)
+            ->get()
+            ->filter(fn (Cancion $cancion) => filled($cancion->slug) && filled($cancion->interprete?->slug))
+            ->map(fn (Cancion $cancion) => $this->entry(
+                route('artista.cancion', ['interprete' => $cancion->interprete->slug, 'cancion' => $cancion->slug]),
+                '0.7',
+                'monthly',
+                $cancion->updated_at?->toAtomString()
+            ));
+
+        $festivales = Festival::query()
+            ->with('images')
+            ->where('estado', 1)
+            ->get()
+            ->map(fn (Festival $festival) => $this->entry(
+                route('festivales.show', $festival->slug),
+                '0.8',
+                'monthly',
+                $festival->updated_at?->toAtomString(),
+                $this->imageUrl($festival->images->first()?->original_path, $festival->foto ? 'storage/festivales/'.$festival->foto : null)
+            ));
+
+        $knowledgeCategories = KnowledgeCategory::active()
+            ->get()
+            ->map(fn (KnowledgeCategory $category) => $this->entry(
+                route('enciclopedia.category', $category->slug),
+                '0.7',
+                'weekly',
+                $category->updated_at?->toAtomString()
+            ));
+
+        $knowledgeArticles = KnowledgeArticle::query()
+            ->visible()
+            ->with(['category', 'images'])
+            ->get()
+            ->filter(fn (KnowledgeArticle $article) => filled($article->category?->slug))
+            ->map(fn (KnowledgeArticle $article) => $this->entry(
+                route('enciclopedia.show', ['categorySlug' => $article->category->slug, 'articleSlug' => $article->slug]),
+                '0.8',
+                'monthly',
+                $article->updated_at?->toAtomString(),
+                $this->imageUrl($article->images->first()?->original_path, $article->featured_image_path ? 'storage/'.$article->featured_image_path : null)
+            ));
+
+        $radios = Radio::query()
+            ->where('estado', 1)
+            ->get()
+            ->map(fn (Radio $radio) => $this->entry(route('radios.show', $radio->slug), '0.6', 'monthly', $radio->updated_at?->toAtomString()));
+
+        $penias = Penia::query()
+            ->where('estado', 1)
+            ->get()
+            ->map(fn (Penia $penia) => $this->entry(route('penias.show', $penia->slug), '0.6', 'monthly', $penia->updated_at?->toAtomString()));
+
+        $mitos = Mito::query()
+            ->where('estado', 1)
+            ->get()
+            ->map(fn (Mito $mito) => $this->entry(route('mitos.show', $mito->slug), '0.7', 'monthly', $mito->updated_at?->toAtomString()));
+
+        $recetas = Comida::query()
+            ->with('images')
+            ->where('estado', 1)
+            ->get()
+            ->map(fn (Comida $comida) => $this->entry(
+                route('comidas.show', $comida->slug),
+                '0.7',
+                'monthly',
+                $comida->updated_at?->toAtomString(),
+                $this->imageUrl($comida->images->first()?->original_path, $comida->foto ? 'storage/comidas/'.$comida->foto : null)
+            ));
+
+        return $urls
+            ->merge($news)
+            ->merge($interpretes)
+            ->merge($shows)
+            ->merge($discos)
+            ->merge($canciones)
+            ->merge($festivales)
+            ->merge($knowledgeCategories)
+            ->merge($knowledgeArticles)
+            ->merge($radios)
+            ->merge($penias)
+            ->merge($mitos)
+            ->merge($recetas)
+            ->values();
+    }
+
+    protected function entry(string $url, string $priority, string $changefreq, ?string $lastmod = null, ?string $image = null): array
+    {
+        return array_filter([
+            'url' => CanonicalUrl::normalize($url),
+            'priority' => $priority,
+            'changefreq' => $changefreq,
+            'lastmod' => $lastmod ?? now()->toAtomString(),
+            'image' => $image,
+        ]);
+    }
+
+    protected function imageUrl(?string $primaryPath = null, ?string $fallbackPath = null): ?string
+    {
+        $path = $primaryPath ?: $fallbackPath;
+
+        if (blank($path)) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return CanonicalUrl::normalize($path);
+        }
+
+        $publicPath = str_starts_with($path, 'storage/')
+            ? '/'.$path
+            : Storage::disk('public')->url($path);
+
+        return CanonicalUrl::asset($publicPath);
+    }
+
+    protected function xmlResponse(string $view, array $data = []): Response
+    {
+        return response()
+            ->view($view, $data, 200)
+            ->header('Content-Type', 'application/xml; charset=UTF-8');
     }
 }

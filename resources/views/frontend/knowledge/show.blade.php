@@ -23,7 +23,7 @@
   "@type": "Article",
   "headline": @json($article->title),
   "description": @json($metaDescription),
-  "url": @json($canonical),
+  "url": @json(\App\Support\CanonicalUrl::normalize($canonical)),
   "datePublished": @json(optional($article->published_at)->toIso8601String()),
   "dateModified": @json(optional($article->updated_at)->toIso8601String()),
   "dateReviewed": @json(optional($article->last_verified_at)->toIso8601String()),

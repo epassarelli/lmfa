@@ -3,6 +3,12 @@
     RewriteEngine On
     RewriteBase /
 
+    # 0. DOMINIO Y PROTOCOLO CANONICOS
+    RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)$ [NC]
+    RewriteCond %{HTTPS} !=on [OR]
+    RewriteCond %{HTTP_HOST} !^mifolkloreargentino\.com$ [NC]
+    RewriteRule ^ https://mifolkloreargentino.com%{REQUEST_URI} [L,R=301,NE]
+
     # 1. MODO MANTENIMIENTO (Intercepción temprana)
     # Definimos la página a mostrar para el mantenimiento
     ErrorDocument 503 /public/maintenance.html

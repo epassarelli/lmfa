@@ -2,12 +2,13 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+  @php($canonicalUrl = trim($__env->yieldContent('canonical')) !== '' ? \App\Support\CanonicalUrl::normalize(trim($__env->yieldContent('canonical'))) : \App\Support\CanonicalUrl::current())
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Canonical -->
-  <link rel="canonical" href="{{ url()->current() }}" />
+  <link rel="canonical" href="{{ $canonicalUrl }}" />
 
   <meta name="description" content="@yield('metaDescription', $metaDescription ?? 'Portal del folklore argentino')">
   <meta name="author" content="Placasur SA">
@@ -20,7 +21,7 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:url" content="{{ $canonicalUrl }}">
   <meta property="og:title" content="@yield('metaTitle', $metaTitle ?? config('app.name', 'Mi Folklore Argentino'))">
   <meta property="og:description"
     content="@yield('metaDescription', $metaDescription ?? 'Portal del folklore argentino')">
@@ -28,7 +29,7 @@
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="{{ url()->current() }}">
+  <meta property="twitter:url" content="{{ $canonicalUrl }}">
   <meta property="twitter:title"
     content="@yield('metaTitle', $metaTitle ?? config('app.name', 'Mi Folklore Argentino'))">
   <meta property="twitter:description"

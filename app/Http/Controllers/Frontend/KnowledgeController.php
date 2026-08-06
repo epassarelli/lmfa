@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeCategory;
+use App\Support\CanonicalUrl;
 use Illuminate\Support\Str;
 
 class KnowledgeController extends Controller
@@ -151,10 +152,10 @@ class KnowledgeController extends Controller
 
         $metaTitle = $article->seo_title ?: $article->title.' | Enciclopedia del folklore argentino';
         $metaDescription = $article->meta_description ?: Str::limit(strip_tags($article->excerpt ?: $article->body), 160);
-        $canonical = route('enciclopedia.show', [
+        $canonical = CanonicalUrl::normalize(route('enciclopedia.show', [
             'categorySlug' => $article->category->slug,
             'articleSlug' => $article->slug,
-        ]);
+        ]));
         $breadcrumbs = [
             ['label' => 'Enciclopedia', 'url' => route('enciclopedia.index')],
             ['label' => $article->category->name, 'url' => route('enciclopedia.category', $article->category->slug)],
