@@ -26,33 +26,29 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
-
   <div class="grid grid-cols-12 gap-6">
-
-    {{-- Izquierda: Datos del disco --}}
     <div class="col-span-12 md:col-span-4">
       <div class="bg-white rounded shadow p-2 space-y-2">
         @if ($disco->images->isNotEmpty())
           <x-optimized-image :image="$disco->images->first()" variant="card" class="rounded mb-4 w-full" />
         @elseif ($disco->foto && file_exists(public_path('storage/albunes/' . $disco->foto)))
-          <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->titulo }}" class="rounded mb-4 w-full">
+          <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $h1 }}" class="rounded mb-4 w-full">
         @else
           <x-image-placeholder class="w-full rounded mb-4 aspect-square" />
         @endif
 
-        <h1 class="text-2xl font-bold text-gray-800">{{ $disco->titulo }}</h1>
+        <h1 class="text-2xl font-bold text-gray-800">{{ $h1 }}</h1>
 
         @if ($disco->anio)
-          <p class="text-sm text-gray-500"><strong>Año:</strong> {{ $disco->anio }}</p>
+          <p class="text-sm text-gray-500"><strong>Anio:</strong> {{ $disco->anio }}</p>
         @endif
 
         @if ($disco->interprete)
-          <p class="text-sm text-gray-500"><strong>Intérprete:</strong> {{ $disco->interprete->interprete }}</p>
+          <p class="text-sm text-gray-500"><strong>Interprete:</strong> {{ $disco->interprete->interprete }}</p>
         @endif
       </div>
     </div>
 
-    {{-- Derecha: Listado de canciones (si hay), sino Spotify --}}
     @if ($disco->canciones && $disco->canciones->count())
       <div class="col-span-12 md:col-span-8">
         <h2 class="text-xl font-semibold mb-3">Listado de Canciones</h2>
@@ -76,31 +72,23 @@
         {!! $disco->spotify !!}
       </div>
     @endif
-
   </div>
 
-
-  {{-- Spotify Embed en sección separada si hay canciones --}}
   @if ($disco->canciones && $disco->canciones->count() && $disco->spotify !== '')
     <div class="mt-8">
       {!! $disco->spotify !!}
     </div>
   @endif
 
-
-  {{-- Muestro ls redes p compartir --}}
   <div class="redes">
     <x-compartir-redes :titulo="$disco->album" :url="Request::url()" />
   </div>
 
-
-  {{-- Otros discos del intérprete --}}
-  <h3 class="text-xl font-semibold mb-6 border-b-2 border-[#ff661f]">Otros discos de {{ $interprete->interprete }}</h3>
+  <h2 class="text-xl font-semibold mb-6 border-b-2 border-[#ff661f]">Otros discos de {{ $interprete->interprete }}</h2>
 
   @if ($related->isEmpty())
-
     <div class="bg-yellow-100 text-yellow-800 p-4 rounded shadow mb-6">
-      No hay discos relacionados disponibles para {{ $interprete->interprete }} aún.
+      No hay discos relacionados disponibles para {{ $interprete->interprete }} aun.
     </div>
   @else
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -108,14 +96,9 @@
         <x-disco-card :disco="$disco" />
       @endforeach
     </div>
-
   @endif
-
-
 @endsection
 
 @section('sidebar')
-
   @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
-
 @endsection

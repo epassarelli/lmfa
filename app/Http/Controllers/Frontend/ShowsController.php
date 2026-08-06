@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Interprete;
 use App\Models\Provincia;
+use App\Support\SeoMetadata;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -139,13 +140,13 @@ class ShowsController extends Controller
 
         $section = 'shows';
 
-        $metaTitle = 'Shows de ' . $interprete->interprete;
-        $metaDescription = 'Cartelera de shows de ' . $interprete->interprete . ', interprete del folklore argentino';
+        $metaTitle = 'Shows de '.$interprete->interprete;
+        $metaDescription = 'Cartelera de shows de '.$interprete->interprete.', interprete del folklore argentino';
 
         $breadcrumbs = [
             ['label' => 'Artistas', 'url' => route('interpretes.index')],
             ['label' => $interprete->interprete, 'url' => route('artista.show', $interprete->slug)],
-            ['label' => 'Shows']
+            ['label' => 'Shows'],
         ];
 
         return view('frontend.shows.byArtista', compact('shows', 'interprete', 'interpretes', 'section', 'metaTitle', 'metaDescription', 'breadcrumbs'));
@@ -163,12 +164,14 @@ class ShowsController extends Controller
 
         $noticiasRelacionadas = $show->noticias ?? collect();
 
-        $metaTitle = $show->titulo . ' - Show de folklore argentino';
-        $metaDescription = Str::limit(strip_tags($show->detalles), 150);
+        $seo = SeoMetadata::event($show);
+        $metaTitle = $seo['title'];
+        $metaDescription = $seo['description'];
+        $h1 = $seo['h1'];
 
         $breadcrumbs = [
             ['label' => 'Cartelera', 'url' => route('cartelera.index')],
-            ['label' => $show->titulo]
+            ['label' => $show->titulo],
         ];
 
         return view('frontend.shows.show', compact(
@@ -176,6 +179,7 @@ class ShowsController extends Controller
             'ultimos_shows',
             'metaTitle',
             'metaDescription',
+            'h1',
             'noticiasRelacionadas',
             'breadcrumbs'
         ));
@@ -191,7 +195,7 @@ class ShowsController extends Controller
             $provincia = $this->findProvinciaBySlug($provinceSlug);
         }
 
-        if (!$provincia && $provinceId) {
+        if (! $provincia && $provinceId) {
             $provincia = Provincia::find($provinceId);
         }
 
@@ -224,7 +228,7 @@ class ShowsController extends Controller
 
     private function parseMonthFilter(?string $value): array
     {
-        if (!$value || $value === 'hoy') {
+        if (! $value || $value === 'hoy') {
             return ['label' => null, 'slug' => null, 'start' => null, 'end' => null];
         }
 
@@ -257,31 +261,34 @@ class ShowsController extends Controller
         if ($provinceName && $today) {
             $heading = "Eventos de folklore hoy en {$provinceName}";
             $metaTitle = "Eventos de folklore en {$provinceName} hoy";
-            $metaDescription = "Consultá la cartelera de folklore de hoy en {$provinceName}. Descubrí peñas, festivales y shows con artistas en agenda y datos clave para asistir.";
-            $introText = "La cartelera de hoy en {$provinceName} reúne shows, peñas y encuentros folklóricos para quienes buscan propuestas vigentes y cercanas. En esta agenda vas a encontrar presentaciones con fecha confirmada, información de lugar, artistas vinculados y acceso rápido al detalle de cada evento. Es una puerta de entrada útil para búsquedas diarias, salidas de último momento y seguimiento de la actividad folklórica local.";
+            $metaDescription = "Consulta la cartelera de folklore de hoy en {$provinceName}. Descubri peñas, festivales y shows con artistas en agenda y datos clave para asistir.";
+            $introText = "La cartelera de hoy en {$provinceName} reune shows, peñas y encuentros folkloricos para quienes buscan propuestas vigentes y cercanas. En esta agenda vas a encontrar presentaciones con fecha confirmada, informacion de lugar, artistas vinculados y acceso rapido al detalle de cada evento.";
+
             return [$heading, $metaTitle, $metaDescription, $introText];
         }
 
         if ($provinceName && $monthLabel) {
-            $heading = "Agenda folklórica en {$provinceName} - {$monthLabel}";
+            $heading = "Agenda folklorica en {$provinceName} - {$monthLabel}";
             $metaTitle = "Agenda folklore {$provinceName} {$monthLabel}";
-            $metaDescription = "Explorá la agenda folklórica de {$provinceName} para {$monthLabel}. Encontrá festivales, peñas y recitales con fechas, lugares e intérpretes destacados.";
-            $introText = "Esta agenda folklórica de {$provinceName} para {$monthLabel} está pensada para captar búsquedas locales y planificar salidas con anticipación. Reúne eventos próximos con sus artistas, ciudades y datos de contexto para que el usuario compare opciones y descubra actividad cultural en la provincia. También funciona como una página editorial fuerte para búsquedas mensuales relacionadas con folklore argentino.";
+            $metaDescription = "Explora la agenda folklorica de {$provinceName} para {$monthLabel}. Encontra festivales, peñas y recitales con fechas, lugares e interpretes destacados.";
+            $introText = "Esta agenda folklorica de {$provinceName} para {$monthLabel} esta pensada para captar busquedas locales y planificar salidas con anticipacion. Reune eventos proximos con sus artistas, ciudades y datos de contexto para que el usuario compare opciones y descubra actividad cultural en la provincia.";
+
             return [$heading, $metaTitle, $metaDescription, $introText];
         }
 
         if ($provinceName) {
             $heading = "Eventos de folklore en {$provinceName}";
             $metaTitle = "Eventos de folklore en {$provinceName}";
-            $metaDescription = "Descubrí eventos de folklore en {$provinceName}: peñas, festivales y shows con fechas actualizadas, artistas participantes y acceso al detalle completo.";
-            $introText = "La cartelera de eventos de folklore en {$provinceName} concentra propuestas culturales para quienes buscan música en vivo, festivales populares y peñas durante todo el año. Desde esta página se accede a eventos activos con información clara sobre fecha, lugar, provincia e intérpretes relacionados. Es un punto de entrada pensado para búsquedas regionales y para usuarios que quieren seguir la agenda folklórica de su zona.";
+            $metaDescription = "Descubri eventos de folklore en {$provinceName}: peñas, festivales y shows con fechas actualizadas, artistas participantes y acceso al detalle completo.";
+            $introText = "La cartelera de eventos de folklore en {$provinceName} concentra propuestas culturales para quienes buscan musica en vivo, festivales populares y peñas durante todo el año. Desde esta pagina se accede a eventos activos con informacion clara sobre fecha, lugar, provincia e interpretes relacionados.";
+
             return [$heading, $metaTitle, $metaDescription, $introText];
         }
 
-        $heading = 'Cartelera de eventos folklóricos';
+        $heading = 'Cartelera de eventos folkloricos';
         $metaTitle = 'Agenda folklore argentina: eventos, peñas y festivales';
-        $metaDescription = 'Consultá la agenda del folklore argentino con eventos por provincia, por mes y por artista. Encontrá peñas, festivales y shows actualizados.';
-        $introText = 'La cartelera de Mi Folklore Argentino reúne eventos, peñas y festivales de distintas provincias en una sola página. Podés navegar por ubicación, mes, artista o fecha específica para encontrar propuestas relevantes y descubrir nuevas actividades del circuito folklórico. La idea es transformar esta sección en una agenda viva, útil para búsquedas cotidianas y para quienes siguen la actividad cultural del país.';
+        $metaDescription = 'Consulta la agenda del folklore argentino con eventos por provincia, por mes y por artista. Encontra peñas, festivales y shows actualizados.';
+        $introText = 'La cartelera de Mi Folklore Argentino reune eventos, peñas y festivales de distintas provincias en una sola pagina. Podes navegar por ubicacion, mes, artista o fecha especifica para encontrar propuestas relevantes y descubrir nuevas actividades del circuito folklorico.';
 
         return [$heading, $metaTitle, $metaDescription, $introText];
     }
@@ -291,20 +298,20 @@ class ShowsController extends Controller
         $canonicalUrl = route('cartelera.index');
         $isIndexable = false;
 
-        if ($filters['provincia'] && $filters['is_today'] && !$filters['interprete'] && !$filters['specific_date'] && !$filters['search']) {
-            $canonicalUrl = url('/cartelera-de-eventos-folkloricos/' . $filters['province_slug'] . '/hoy');
+        if ($filters['provincia'] && $filters['is_today'] && ! $filters['interprete'] && ! $filters['specific_date'] && ! $filters['search']) {
+            $canonicalUrl = url('/cartelera-de-eventos-folkloricos/'.$filters['province_slug'].'/hoy');
             $isIndexable = true;
-        } elseif ($filters['provincia'] && $filters['month_slug'] && !$filters['interprete'] && !$filters['specific_date'] && !$filters['search']) {
-            $canonicalUrl = url('/cartelera-de-eventos-folkloricos/' . $filters['province_slug'] . '/' . $filters['month_slug']);
+        } elseif ($filters['provincia'] && $filters['month_slug'] && ! $filters['interprete'] && ! $filters['specific_date'] && ! $filters['search']) {
+            $canonicalUrl = url('/cartelera-de-eventos-folkloricos/'.$filters['province_slug'].'/'.$filters['month_slug']);
             $isIndexable = true;
-        } elseif ($filters['provincia'] && !$filters['interprete'] && !$filters['specific_date'] && !$filters['search'] && !$filters['month_slug']) {
-            $canonicalUrl = url('/cartelera-de-eventos-folkloricos/' . $filters['province_slug']);
+        } elseif ($filters['provincia'] && ! $filters['interprete'] && ! $filters['specific_date'] && ! $filters['search'] && ! $filters['month_slug']) {
+            $canonicalUrl = url('/cartelera-de-eventos-folkloricos/'.$filters['province_slug']);
             $isIndexable = true;
-        } elseif (!$filters['provincia'] && !$filters['interprete'] && !$filters['specific_date'] && !$filters['search'] && !$filters['month_slug'] && !$filters['is_today']) {
+        } elseif (! $filters['provincia'] && ! $filters['interprete'] && ! $filters['specific_date'] && ! $filters['search'] && ! $filters['month_slug'] && ! $filters['is_today']) {
             $canonicalUrl = route('cartelera.index');
             $isIndexable = true;
         } elseif ($filters['provincia']) {
-            $canonicalUrl = url('/cartelera-de-eventos-folkloricos/' . $filters['province_slug']);
+            $canonicalUrl = url('/cartelera-de-eventos-folkloricos/'.$filters['province_slug']);
         }
 
         return [$canonicalUrl, $isIndexable ? 'index,follow' : 'noindex,follow'];
@@ -319,7 +326,7 @@ class ShowsController extends Controller
         if ($filters['provincia']) {
             $breadcrumbs[] = [
                 'label' => $filters['provincia']->nombre,
-                'url' => url('/cartelera-de-eventos-folkloricos/' . $filters['province_slug']),
+                'url' => url('/cartelera-de-eventos-folkloricos/'.$filters['province_slug']),
             ];
         }
 
@@ -346,12 +353,12 @@ class ShowsController extends Controller
 
     private function formatMonthSlug(Carbon $date): string
     {
-        return self::MONTHS[(int) $date->month] . '-' . $date->year;
+        return self::MONTHS[(int) $date->month].'-'.$date->year;
     }
 
     private function formatMonthLabel(Carbon $date): string
     {
-        return ucfirst(self::MONTHS[(int) $date->month]) . ' ' . $date->year;
+        return ucfirst(self::MONTHS[(int) $date->month]).' '.$date->year;
     }
 
     private function findProvinciaBySlug(string $slug): ?Provincia
