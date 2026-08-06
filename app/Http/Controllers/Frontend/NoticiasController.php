@@ -14,6 +14,7 @@ use App\Models\Categoria;
 use App\Models\Foto;
 use App\Models\Video;
 use App\Services\LinkService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Session;
 
 class NoticiasController extends Controller
@@ -180,10 +181,23 @@ class NoticiasController extends Controller
         $interprete = null;
     }
 
-    $noticia = News::where('slug', $slugNoticia)->firstOrFail();
+    $noticia = News::query()
+      ->with(['categoria', 'interprete', 'interpretes', 'images'])
+      ->where('slug', $slugNoticia)
+      ->where('editorial_status', 'published')
+      ->where(function (Builder $query) {
+        $query->whereNull('published_at')
+          ->orWhere('published_at', '<=', now());
+      })
+      ->firstOrFail();
 
-    $ultimas_noticias = News::where('estado', 1)
-      ->with('interprete')
+    $ultimas_noticias = News::query()
+      ->with(['interprete', 'categoria', 'images'])
+      ->where('editorial_status', 'published')
+      ->where(function (Builder $query) {
+        $query->whereNull('published_at')
+          ->orWhere('published_at', '<=', now());
+      })
       ->where('id', '<>', $noticia->id)
       ->orderByDesc('created_at')
       ->take(10)
@@ -195,7 +209,12 @@ class NoticiasController extends Controller
     $metaTitle = strip_tags(html_entity_decode($noticia->titulo));
     $metaTitle = preg_replace('/\r?\n|\r/', ' ', $metaTitle);
 
-        $relacionadas = News::where('editorial_status', 'published')
+        $relacionadas = News::query()
+      ->where('editorial_status', 'published')
+      ->where(function (Builder $query) {
+        $query->whereNull('published_at')
+          ->orWhere('published_at', '<=', now());
+      })
       ->where('id', '<>', $noticia->id)
       ->where(function ($query) use ($noticia) {
         // Por categoría

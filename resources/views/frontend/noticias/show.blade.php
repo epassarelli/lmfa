@@ -1,15 +1,27 @@
 @extends('layouts.app')
 
+@php
+  $publishedIso = optional($noticia->published_at ?? $noticia->created_at ?? $noticia->updated_at)->toIso8601String();
+  $modifiedIso = optional($noticia->updated_at ?? $noticia->published_at ?? $noticia->created_at)->toIso8601String();
+  $metaImage = $noticia->images->isNotEmpty()
+    ? $noticia->images->first()->original_path
+    : ($noticia->legacy_featured_image_url ?? asset('img/album.jpg'));
+@endphp
+
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-@section('metaImage', $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : asset('storage/noticias/' . $noticia->foto))
+@section('metaImage', $metaImage)
 @section('ogType', 'article')
 
 @section('ogArticleTags')
-  <meta property="article:published_time" content="{{ $noticia->created_at->toIso8601String() }}">
-  <meta property="article:modified_time" content="{{ $noticia->updated_at->toIso8601String() }}">
+  @if ($publishedIso)
+    <meta property="article:published_time" content="{{ $publishedIso }}">
+  @endif
+  @if ($modifiedIso)
+    <meta property="article:modified_time" content="{{ $modifiedIso }}">
+  @endif
   <meta property="article:author" content="{{ $noticia->interprete ? route('artista.show', $noticia->interprete->slug) : url('/') }}">
-  <meta property="article:section" content="{{ $noticia->categoria->nombre ?? 'Folklóre' }}">
+  <meta property="article:section" content="{{ $noticia->categoria->nombre ?? 'Folklore' }}">
 @endsection
 
 @push('json-ld')
@@ -19,13 +31,13 @@
   "@type": "NewsArticle",
   "headline": "{{ $noticia->titulo }}",
   "image": [
-    "{{ $noticia->images->isNotEmpty() ? $noticia->images->first()->original_path : asset('storage/noticias/' . $noticia->foto) }}"
+    "{{ $metaImage }}"
   ],
-  "datePublished": "{{ $noticia->created_at->toIso8601String() }}",
-  "dateModified": "{{ $noticia->updated_at->toIso8601String() }}",
+  "datePublished": @json($publishedIso),
+  "dateModified": @json($modifiedIso),
   "author": [{
       "@type": "Person",
-      "name": "{{ $noticia->interprete->interprete ?? 'Redacción' }}",
+      "name": "{{ $noticia->interprete->interprete ?? 'Redaccion' }}",
       "url": "{{ $noticia->interprete ? route('artista.show', $noticia->interprete->slug) : url('/') }}"
     }]
 }
@@ -33,7 +45,7 @@
 @endpush
 
 @section('styles')
-  {{-- Tailwind ya se encarga del diseño --}}
+  {{-- Tailwind ya se encarga del diseno --}}
 @endsection
 
 @section('content')
@@ -48,9 +60,9 @@
             <x-optimized-image :image="$noticia->images->first()" variant="detail" class="rounded shadow-lg w-full"
               :alt="$noticia->titulo" fetchpriority="high" />
           </div>
-        @elseif ($noticia->foto && file_exists(public_path('storage/noticias/' . $noticia->foto)))
+        @elseif ($noticia->legacy_featured_image_storage_path && file_exists(public_path($noticia->legacy_featured_image_storage_path)))
           <div class="mb-4">
-            <img src="{{ asset('storage/noticias/' . $noticia->foto) }}" alt="{{ $noticia->titulo }}"
+            <img src="{{ $noticia->legacy_featured_image_url }}" alt="{{ $noticia->titulo }}"
                 class="rounded shadow-lg w-full" loading="lazy">
           </div>
         @else
@@ -60,10 +72,10 @@
         @endif
 
     <h1 class="text-2xl font-semibold text-gray-800 mb-2">{{ $noticia->titulo }}</h1>
-    {{-- 
+    {{--
     <div class="mb-4">
       <a href="{{ route('backend.contributions.create', ['type' => 'noticia', 'id' => $noticia->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1">
-        ✏️ Sugerir corrección o actualización
+        Sugerir correccion o actualizacion
       </a>
     </div>
      --}}
@@ -74,8 +86,6 @@
 
     <p class="text-sm text-gray-500">Visitas: {{ $noticia->visitas }}</p>
 
-
-
     {{-- Muestro los buttons con interpretes paar ver noticis de ellos --}}
     <div class="more">
 
@@ -85,7 +95,7 @@
     <div class="related">
       @if ($noticia->interpretes->count() > 1)
         <div class="mt-6 border-t pt-4 text-sm text-gray-700">
-          <p class="font-semibold text-gray-800 mb-2">También participan:</p>
+          <p class="font-semibold text-gray-800 mb-2">Tambien participan:</p>
           <ul class="flex flex-wrap gap-2">
             @foreach ($noticia->interpretes as $interprete)
               @if ($interprete->id !== $noticia->interprete_id)
@@ -154,7 +164,7 @@
   {{-- <x-sidebar.card-biografias :interpretes="$ultimosArtistas" /> --}}
 
   {{-- <section class="mb-6">
-    <h3 class="text-xl font-semibold mb-4 border-b pb-2">Últimas noticias</h3>
+    <h3 class="text-xl font-semibold mb-4 border-b pb-2">Ultimas noticias</h3>
 
     @foreach ($ultimas_noticias as $n)
 
