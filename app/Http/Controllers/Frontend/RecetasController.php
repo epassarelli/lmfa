@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Comida;
 use App\Services\LinkService;
+use App\Support\RecipeContent;
 use Illuminate\Support\Str;
 
 class RecetasController extends Controller
@@ -35,17 +36,22 @@ class RecetasController extends Controller
 
     public function show($slug)
     {
-        $receta = Comida::where('slug', $slug)->with('images')->firstOrFail();
+        $receta = Comida::where('slug', $slug)
+            ->where('estado', 1)
+            ->with('images')
+            ->firstOrFail();
 
         $relacionadas = Comida::where('estado', 1)
             ->where('id', '<>', $receta->id)
             ->where('titulo', 'LIKE', substr($receta->titulo, 0, 1) . '%')
+            ->with('images')
             ->take(6)
             ->get();
 
         if ($relacionadas->isEmpty()) {
             $relacionadas = Comida::where('estado', 1)
                 ->where('id', '<>', $receta->id)
+                ->with('images')
                 ->latest()
                 ->take(6)
                 ->get();
@@ -54,7 +60,10 @@ class RecetasController extends Controller
         $receta->increment('visitas');
 
         $metaTitle = 'Receta de ' . $receta->titulo . ' | Comida Tipica del Folklore';
-        $metaDescription = Str::limit(strip_tags(html_entity_decode($receta->receta)), 150);
+        $metaDescription = RecipeContent::excerpt(RecipeContent::visibleText($receta->receta), 155);
+        if (blank($metaDescription)) {
+            $metaDescription = 'Receta de ' . $receta->titulo . ' dentro de la cocina tradicional argentina.';
+        }
         $receta->receta = $this->linkService->autoLinkArtists($receta->receta);
 
         $breadcrumbs = [
@@ -71,7 +80,11 @@ class RecetasController extends Controller
         $comida = new Comida();
         $ultimas = $comida->getNLast(Comida::class, 12);
         $visitadas = $comida->getNMostVisited(Comida::class, 12);
-        $comidas = Comida::where('titulo', 'LIKE', $letra . '%')->get();
+        $comidas = Comida::where('estado', 1)
+            ->where('titulo', 'LIKE', $letra . '%')
+            ->with('images')
+            ->orderBy('titulo')
+            ->get();
         $alphabet = range('a', 'z');
 
         $metaTitle = "Recetas de comidas tipicas de Argentina que comienzan con {$letra}";

@@ -84,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
     // --- SEGURIDAD Y ORGANIZACIÓN ---
     Route::resource('roles', RoleController::class)->names('roles');
     Route::resource('users', UserController::class)->names('users');
+    Route::post('users/{user}/api-tokens', [UserController::class, 'issueApiToken'])->name('users.api-tokens.store');
+    Route::delete('users/{user}/api-tokens/{token}', [UserController::class, 'revokeApiToken'])->name('users.api-tokens.destroy');
     Route::resource('permissions', PermissionController::class)->names('permissions');
     Route::resource('interpretes', InterpreteController::class)->names('backend.interpretes');
     Route::resource('categories', CategoryController::class)->names('backend.categories');
