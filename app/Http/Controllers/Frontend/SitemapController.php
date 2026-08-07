@@ -17,6 +17,7 @@ use App\Support\CanonicalUrl;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class SitemapController extends Controller
 {
@@ -143,7 +144,7 @@ class SitemapController extends Controller
             $this->entry(route('folklore.cup.groups')),
             $this->entry(route('folklore.cup.bracket')),
             $this->entry(route('folklore.cup.rules')),
-        ]));
+        ])->merge($this->recipeLetterEntries()));
     }
 
     protected function artistHubEntries(): Collection
@@ -317,6 +318,26 @@ class SitemapController extends Controller
             ->merge($myths)
             ->merge($foods)
             ->values());
+    }
+
+    protected function recipeLetterEntries(): Collection
+    {
+        return Comida::query()
+            ->where('estado', 1)
+            ->whereNotNull('titulo')
+            ->orderBy('titulo')
+            ->get()
+            ->map(function (Comida $comida) {
+                $letter = Str::lower(Str::substr(ltrim((string) $comida->titulo), 0, 1));
+
+                if (! preg_match('/^[a-z]$/', $letter)) {
+                    return null;
+                }
+
+                return $this->entry(route('comidas.letra', $letter));
+            })
+            ->filter()
+            ->values();
     }
 
     protected function sitemapIndexEntry(string $url, Collection $entries): array

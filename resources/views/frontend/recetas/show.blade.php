@@ -2,29 +2,12 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-@section('metaImage', $receta->images->isNotEmpty() ? $receta->images->first()->original_path : asset('storage/comidas/' . $receta->foto))
+@section('metaImage', $receta->images->isNotEmpty() ? $receta->images->first()->original_path : ($receta->foto ? asset('storage/comidas/' . $receta->foto) : asset('img/logo-share.jpg')))
 @section('ogType', 'article')
 
 @section('ogArticleTags')
   <meta property="article:section" content="Cocina Regional Argentina">
 @endsection
-
-@push('json-ld')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Recipe",
-  "name": "{{ $receta->titulo }}",
-  "image": "{{ $receta->images->isNotEmpty() ? $receta->images->first()->original_path : asset('storage/comidas/' . $receta->foto) }}",
-  "description": "{{ $metaDescription }}",
-  "recipeCategory": "Cocina Regional Argentina",
-  "author": {
-    "@type": "Organization",
-    "name": "Mi Folklore Argentino"
-  }
-}
-</script>
-@endpush
 
 @section('content')
 
@@ -42,14 +25,14 @@
 
         @if ($receta->images->isNotEmpty())
           <div class="mb-4">
-            <x-optimized-image :image="$receta->images->first()" variant="card" class="rounded-lg shadow w-full" :alt="$receta->titulo" fetchpriority="high" />
+            <x-optimized-image :image="$receta->images->first()" variant="card" class="rounded-lg shadow w-full" :alt="'Receta de ' . $receta->titulo" fetchpriority="high" />
           </div>
         @elseif ($receta->foto)
-          <img src="{{ asset('storage/recetas/' . $receta->foto) }}" alt="{{ $receta->titulo }}"
+          <img src="{{ asset('storage/comidas/' . $receta->foto) }}" alt="Receta de {{ $receta->titulo }}"
             class="mb-4 rounded-lg shadow w-full">
         @endif
 
-        <div class="prose max-w-none mb-4">
+        <div class="prose receta-contenido max-w-none mb-4">
           {!! $receta->receta !!}
         </div>
 

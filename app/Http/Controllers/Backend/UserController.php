@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
+use App\Models\User;
+use Laravel\Sanctum\PersonalAccessToken;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:administrador');
+    }
 
     public function index()
     {
@@ -85,8 +89,9 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $roles = Role::all();
         $userRoles = $user->roles->pluck('name')->toArray();
+        $apiTokens = $user->tokens()->latest()->get();
 
-        return view('backend.users.edit', compact('user', 'roles', 'userRoles'));
+        return view('backend.users.edit', compact('user', 'roles', 'userRoles', 'apiTokens'));
     }
 
     public function update(Request $request, $id)
@@ -117,5 +122,33 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
+    }
+
+    public function issueApiToken(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'token_name' => 'required|string|max:255',
+        ]);
+
+        $token = $user->createToken($validated['token_name']);
+
+        return redirect()
+            ->route('users.edit', $user->id)
+            ->with('success', 'Bearer token generado correctamente.')
+            ->with('plain_text_token', $token->plainTextToken);
+    }
+
+    public function revokeApiToken($id, $tokenId)
+    {
+        $user = User::findOrFail($id);
+
+        $token = $user->tokens()->whereKey($tokenId)->firstOrFail();
+        $token->delete();
+
+        return redirect()
+            ->route('users.edit', $user->id)
+            ->with('success', 'Bearer token revocado correctamente.');
     }
 }
