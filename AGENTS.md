@@ -31,6 +31,8 @@ Estas reglas aplican a Claude, Codex, Gemini, Antigravity u otros agentes.
 - Antes de implementar, listar archivos afectados.
 - Después de implementar, validar y documentar.
 
+ - En formularios de backend con relaciones N:M o listados extensos, usar Select2 o equivalente ya presente en el proyecto en lugar de selects mÃºltiples nativos.
+
 ## Stack
 
 - Laravel 10

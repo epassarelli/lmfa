@@ -4,7 +4,6 @@ namespace Tests\Feature\Pasarela;
 
 use App\Models\Event;
 use App\Models\Interprete;
-use App\Models\Show;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -172,7 +171,7 @@ class ShowsBugFixTest extends TestCase
         $user = User::factory()->create();
 
         // Esta es la consulta corregida del ShowController@index
-        $shows = Show::query()
+        $shows = Event::query()
             ->where('start_at', '>=', now())
             ->with(['user', 'interpretes', 'images'])
             ->get();
@@ -189,7 +188,7 @@ class ShowsBugFixTest extends TestCase
             'start_at'   => now()->addDays(5),
         ]);
 
-        $shows = Show::query()
+        $shows = Event::query()
             ->where('created_by', $user->id)
             ->where('start_at', '>=', now())
             ->get();

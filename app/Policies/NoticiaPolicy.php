@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Models\News;
 use App\Models\User;
-use App\Models\Noticia;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class NoticiaPolicy
@@ -15,7 +15,7 @@ class NoticiaPolicy
         return $user->can('read noticia');
     }
 
-    public function view(User $user, Noticia $noticia)
+    public function view(User $user, News $noticia)
     {
         return $user->can('read noticia');
     }
@@ -25,12 +25,12 @@ class NoticiaPolicy
         return $user->can('create noticia');
     }
 
-    public function update(User $user, Noticia $noticia)
+    public function update(User $user, News $noticia)
     {
         return $user->can('update noticia');
     }
 
-    public function delete(User $user, Noticia $noticia)
+    public function delete(User $user, News $noticia)
     {
         return $user->can('delete noticia');
     }

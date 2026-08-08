@@ -152,7 +152,12 @@
             'related_article_ids' => 'relatedArticles',
           }}->pluck('id')->toArray() : []);
         @endphp
-        <select name="{{ $field }}[]" id="{{ $field }}" class="form-control select2" multiple>
+        <select
+          name="{{ $field }}[]"
+          id="{{ $field }}"
+          class="form-control select2"
+          data-placeholder="Seleccionar {{ strtolower($config['label']) }}"
+          multiple>
           @foreach ($config['collection'] as $item)
             <option value="{{ $item->{$config['value']} }}" @selected(in_array($item->{$config['value']}, $selected))>
               {{ $item->{$config['text']} }}

@@ -9,7 +9,6 @@ use App\Models\Disco;
 use App\Models\Foto;
 use App\Models\Interprete;
 use App\Models\News;
-use App\Models\Show;
 use App\Models\Video;
 use App\Services\LinkService;
 use App\Support\SeoMetadata;
@@ -28,12 +27,12 @@ class NoticiasController extends Controller
 
     public function index()
     {
-        $ultimas = News::where('editorial_status', 'published')
+        $ultimas = News::publishedVisible()
             ->with(['categoria', 'images'])
             ->latest()
             ->paginate(16);
 
-        $ultimasSidebar = News::where('editorial_status', 'published')
+        $ultimasSidebar = News::publishedVisible()
             ->with(['categoria', 'interprete', 'images'])
             ->latest()
             ->take(10)
@@ -53,16 +52,9 @@ class NoticiasController extends Controller
 
     public function noticias(Interprete $interprete)
     {
-        $noticias = News::where('editorial_status', 'published')
-            ->where(function ($query) use ($interprete) {
-                $query->where('interprete_id', $interprete->id)
-                    ->orWhereHas('interpretes', function ($q) use ($interprete) {
-                        $q->where('interprete_id', $interprete->id);
-                    });
-            })
-            ->with(['images', 'categoria'])
-            ->orderBy('created_at', 'desc')
-            ->distinct()
+        $noticias = $interprete->noticiasRelacionadas()
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
             ->paginate(10);
 
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
@@ -81,8 +73,11 @@ class NoticiasController extends Controller
 
     public function byArtista($slug)
     {
-        $interprete = Interprete::where('slug', $slug)->first();
-        $noticias = $interprete->noticias()->with('images')->where('editorial_status', 'published')->get();
+        $interprete = Interprete::where('slug', $slug)->firstOrFail();
+        $noticias = $interprete->noticiasRelacionadas()
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
         $section = 'noticias';
 
@@ -102,12 +97,12 @@ class NoticiasController extends Controller
         $categoria = Categoria::where('slug', $slug)->firstOrFail();
 
         $noticias = News::where('categoria_id', $categoria->id)
-            ->where('editorial_status', 'published')
+            ->publishedVisible()
             ->with(['interpretes', 'images'])
             ->latest()
             ->paginate(10);
 
-        $ultimas = News::where('editorial_status', 'published')
+        $ultimas = News::publishedVisible()
             ->with('images')
             ->orderByDesc('created_at')
             ->take(5)
@@ -147,20 +142,12 @@ class NoticiasController extends Controller
         $noticia = News::query()
             ->with(['categoria', 'interprete', 'interpretes', 'images'])
             ->where('slug', $slugNoticia)
-            ->where('editorial_status', 'published')
-            ->where(function (Builder $query) {
-                $query->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-            })
+            ->publishedVisible()
             ->firstOrFail();
 
         $ultimas_noticias = News::query()
             ->with(['interprete', 'categoria', 'images'])
-            ->where('editorial_status', 'published')
-            ->where(function (Builder $query) {
-                $query->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-            })
+            ->publishedVisible()
             ->where('id', '<>', $noticia->id)
             ->orderByDesc('created_at')
             ->take(10)
@@ -169,11 +156,7 @@ class NoticiasController extends Controller
         $noticia->increment('visitas');
 
         $relacionadas = News::query()
-            ->where('editorial_status', 'published')
-            ->where(function (Builder $query) {
-                $query->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-            })
+            ->publishedVisible()
             ->where('id', '<>', $noticia->id)
             ->where(function ($query) use ($noticia) {
                 if ($noticia->categoria_id) {
@@ -193,7 +176,7 @@ class NoticiasController extends Controller
             })
             ->with(['categoria', 'interprete', 'images'])
             ->orderByDesc('created_at')
-            ->distinct()
+            ->distinct('news.id')
             ->take(3)
             ->get();
 

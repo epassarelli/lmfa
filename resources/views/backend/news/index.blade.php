@@ -3,7 +3,7 @@
 @section('title', 'Noticias')
 
 @section('content_header')
-  <h1><i class="fas fa-newspaper mr-2"></i>Gestión de Noticias</h1>
+  <h1><i class="fas fa-newspaper mr-2"></i>Gestion de Noticias</h1>
 @stop
 
 @section('content')
@@ -24,9 +24,9 @@
       <table id="news-table" class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
-            <th>Publicación</th>
-            <th style="width:60px">Título</th>
-            <th>Intérprete Principal</th>
+            <th>Publicacion</th>
+            <th>Titulo</th>
+            <th>Interprete Principal</th>
             <th>Visitas</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -37,20 +37,12 @@
           @foreach ($news as $item)
             <tr>
               <td data-order="{{ $item->published_at }}">
-                {{ $item->published_at ? $item->published_at->format('d-m-Y') : '—' }}
+                {{ $item->published_at ? $item->published_at->format('d-m-Y') : '-' }}
               </td>
-              <td style="width:60px;padding:4px">
-                <div class="d-flex align-items-center">
-                    @if ($item->images->isNotEmpty())
-                        <x-optimized-image :image="$item->images->first()" variant="card" :minimal="true" style="width:40px;height:40px;object-fit:cover;flex-shrink:0" class="rounded-circle mr-2 shadow-sm" />
-                    @elseif($item->foto)
-                        <img src="{{ asset('storage/noticias/' . $item->foto) }}" alt="{{ $item->title }}"
-                          style="width:40px;height:40px;object-fit:cover;flex-shrink:0" class="rounded-circle mr-2 shadow-sm">
-                    @endif
-                    <strong>{{ $item->title }}</strong>
-                </div>
+              <td>
+                <strong>{{ $item->title }}</strong>
               </td>
-              <td>{{ $item->interprete->interprete ?? '—' }}</td>
+              <td>{{ $item->interprete->interprete ?? '-' }}</td>
               <td><span class="badge badge-light border">{{ number_format($item->visitas) }}</span></td>
               <td>
                 @if($item->estado)
@@ -70,7 +62,7 @@
                   <form action="{{ route('backend.news.destroy', $item) }}" method="POST" class="d-inline-block">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar noticia?')">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Eliminar noticia?')">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                   </form>

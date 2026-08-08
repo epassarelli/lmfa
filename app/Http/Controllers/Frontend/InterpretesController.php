@@ -73,10 +73,20 @@ class InterpretesController extends Controller
     public function show(Interprete $interprete)
     {
         $interprete->load('images');
-        $noticias = $interprete->noticias()->with('images')->latest()->take(3)->get();
+        $noticias = $interprete->noticiasRelacionadas()
+            ->latest('published_at')
+            ->latest('created_at')
+            ->take(3)
+            ->get();
         $canciones = $interprete->canciones()->latest()->take(3)->get();
         $discos = $interprete->discos()->orderByDesc('anio')->take(3)->get();
-        $shows = $interprete->shows()->where('start_at', '>=', now())->orderBy('start_at')->with('images')->take(2)->get();
+        $shows = $interprete->events()
+            ->publishedVisible()
+            ->where('start_at', '>=', now())
+            ->orderBy('start_at')
+            ->with('images')
+            ->take(2)
+            ->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
         $seo = SeoMetadata::artist($interprete);

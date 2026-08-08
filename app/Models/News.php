@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasMedia;
+use App\Models\Concerns\HasPublicationState;
 use App\Support\NewsImagePathResolver;
 
 class News extends Model
 {
-    use HasFactory, HasMedia;
+    use HasFactory, HasMedia, HasPublicationState;
 
     protected $table = 'news';
 
@@ -198,5 +200,19 @@ class News extends Model
     public function interpretes()
     {
         return $this->belongsToMany(Interprete::class, 'interprete_noticia', 'noticia_id', 'interprete_id');
+    }
+
+    public function scopeForInterprete(Builder $query, Interprete|int $interprete): Builder
+    {
+        $interpreteId = $interprete instanceof Interprete ? $interprete->getKey() : $interprete;
+
+        return $query
+            ->where(function (Builder $builder) use ($interpreteId) {
+                $builder->where('interprete_id', $interpreteId)
+                    ->orWhereHas('interpretes', function (Builder $relationQuery) use ($interpreteId) {
+                        $relationQuery->where('interprete_id', $interpreteId);
+                    });
+            })
+            ->distinct('news.id');
     }
 }

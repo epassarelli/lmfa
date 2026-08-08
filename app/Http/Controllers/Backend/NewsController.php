@@ -27,7 +27,7 @@ class NewsController extends Controller
     {
         $this->authorize('viewAny', News::class);
 
-        $query = News::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre', 'images'])
+        $query = News::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre'])
             ->orderBy('published_at', 'desc');
 
         // Si no es admin, solo ve lo suyo

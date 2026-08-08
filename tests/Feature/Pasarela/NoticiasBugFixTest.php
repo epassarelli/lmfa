@@ -87,7 +87,7 @@ class NoticiasBugFixTest extends TestCase
         ]);
 
         // La consulta que usa el NoticiaController@index no debe tirar excepción
-        $noticias = \App\Models\Noticia::with(['interpretes', 'user', 'categoria', 'images'])
+        $noticias = News::with(['interpretes', 'user', 'categoria', 'images'])
             ->orderBy('published_at', 'desc')
             ->get();
 
@@ -109,7 +109,7 @@ class NoticiasBugFixTest extends TestCase
         ]);
 
         // Esta es exactamente la consulta de NoticiaController@index — no debe tirar excepción
-        $noticias = \App\Models\Noticia::with([
+        $noticias = News::with([
             'interpretes:id,interprete',
             'user:id,name',
             'categoria:id,nombre',

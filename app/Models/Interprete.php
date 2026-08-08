@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use App\Models\News;
-use App\Models\Noticia;
-use App\Models\Show;
 use App\Models\Album;
 use App\Models\Cancion;
 use App\Models\User;
@@ -55,14 +54,17 @@ class Interprete extends Model
             ->select('id', 'interprete', 'slug');
     }
 
-    // public function noticias()
-    // {
-    //     return $this->hasMany(Noticia::class);
-    // }
-
     public function noticias()
     {
         return $this->belongsToMany(News::class, 'interprete_noticia', 'interprete_id', 'noticia_id');
+    }
+
+    public function noticiasRelacionadas(): Builder
+    {
+        return News::query()
+            ->forInterprete($this)
+            ->publishedVisible()
+            ->with(['categoria', 'interprete', 'interpretes', 'images']);
     }
 
     /**
