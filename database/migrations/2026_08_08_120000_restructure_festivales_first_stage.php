@@ -12,11 +12,12 @@ return new class extends Migration
         if (! Schema::hasTable('localities')) {
             Schema::create('localities', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('province_id')->constrained('provincias')->cascadeOnDelete();
+                $table->integer('province_id');
                 $table->string('name');
                 $table->string('slug')->nullable();
                 $table->timestamps();
                 $table->unique(['province_id', 'slug']);
+                $table->foreign('province_id')->references('id')->on('provincias')->cascadeOnDelete();
             });
         }
 
