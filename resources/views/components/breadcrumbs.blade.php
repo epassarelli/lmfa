@@ -2,6 +2,12 @@
     'items' => [] // Array de ['label' => '...', 'url' => '...']
 ])
 
+@php
+    $items = collect($items)
+        ->filter(fn ($item) => filled($item['label'] ?? null))
+        ->values();
+@endphp
+
 <nav aria-label="Breadcrumb" class="flex mb-4 overflow-x-auto whitespace-nowrap text-sm text-gray-600 bg-white p-3 rounded-lg shadow-sm">
     <ol class="flex list-none p-0">
         <li class="flex items-center">
@@ -18,9 +24,15 @@
         @foreach($items as $item)
             <li class="flex items-center">
                 @if(!$loop->last)
-                    <a href="{{ $item['url'] }}" class="hover:text-amber-800 transition-colors">
-                        {{ $item['label'] }}
-                    </a>
+                    @if (filled($item['url'] ?? null))
+                        <a href="{{ $item['url'] }}" class="hover:text-amber-800 transition-colors">
+                            {{ $item['label'] }}
+                        </a>
+                    @else
+                        <span class="text-gray-700">
+                            {{ $item['label'] }}
+                        </span>
+                    @endif
                     <span class="mx-2 text-gray-400">/</span>
                 @else
                     <span class="text-gray-900 font-medium truncate max-w-[200px] md:max-w-xs" aria-current="page">

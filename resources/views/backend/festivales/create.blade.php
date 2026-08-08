@@ -15,28 +15,14 @@
       </div>
       <div class="card-footer">
         <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ route('backend.festivales.index') }}" class="btn btn-default">Cancelar</a>
       </div>
     </div>
   </form>
 @stop
 
 @section('js')
-  <script src="https://cdn.ckeditor.com/ckeditor5/29.0.0/classic/ckeditor.js"></script>
-  <script>
-    $(function() {
-      @if ($errors->any())
-        Swal.fire({
-          icon: 'error',
-          title: 'Errores de validación',
-          html: '<ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>'
-        });
-      @endif
-
-      ClassicEditor
-        .create(document.querySelector('#detalle'))
-        .catch(error => {
-          console.error(error);
-        });
-    });
-  </script>
+  @include('backend.partials.scripts._ckeditor')
+  @include('backend.partials.scripts._slug')
+  @include('backend.partials.scripts._select2')
 @stop

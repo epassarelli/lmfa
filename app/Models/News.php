@@ -202,6 +202,11 @@ class News extends Model
         return $this->belongsToMany(Interprete::class, 'interprete_noticia', 'noticia_id', 'interprete_id');
     }
 
+    public function festivales()
+    {
+        return $this->belongsToMany(Festival::class, 'festival_news');
+    }
+
     public function scopeForInterprete(Builder $query, Interprete|int $interprete): Builder
     {
         $interpreteId = $interprete instanceof Interprete ? $interprete->getKey() : $interprete;

@@ -85,19 +85,19 @@ class SeoMetadata
 
     public static function festival(Festival $festival): array
     {
-        $name = static::preferredText($festival->titulo, 'Festival del folklore argentino');
+        $name = static::preferredText($festival->seo_title, $festival->title, 'Festival del folklore argentino');
         $description = static::preferredDescription(
-            null,
-            null,
-            $festival->detalle,
+            $festival->meta_description,
+            $festival->excerpt,
+            $festival->body,
             160,
             "Festival del folklore argentino con informacion general, historia y contexto del evento."
         );
 
         return [
-            'title' => "{$name} | Folklore Argentino",
+            'title' => str_contains($name, 'Folklore Argentino') ? $name : "{$name} | Folklore Argentino",
             'description' => $description,
-            'h1' => $name,
+            'h1' => static::preferredText($festival->title, 'Festival del folklore argentino'),
         ];
     }
 

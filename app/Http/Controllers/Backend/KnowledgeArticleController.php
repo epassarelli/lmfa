@@ -179,7 +179,7 @@ class KnowledgeArticleController extends Controller
             'interpretes' => Interprete::active()->get(),
             'canciones' => Cancion::orderBy('cancion')->limit(200)->get(['id', 'cancion', 'slug']),
             'albums' => Album::orderBy('album')->limit(200)->get(['id', 'album', 'slug']),
-            'festivales' => Festival::orderBy('titulo')->limit(200)->get(['id', 'titulo', 'slug']),
+            'festivales' => Festival::orderBy('title')->limit(200)->get(['id', 'title', 'slug']),
             'events' => Event::orderByDesc('start_at')->limit(200)->get(['id', 'title', 'slug']),
             'provincias' => Provincia::orderBy('nombre')->get(),
             'relatedArticles' => KnowledgeArticle::query()

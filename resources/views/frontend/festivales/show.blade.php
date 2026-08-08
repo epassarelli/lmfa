@@ -2,16 +2,19 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-@section('metaImage', $festival->images->isNotEmpty() ? $festival->images->first()->original_path : asset('storage/festivales/' . $festival->foto))
+@section('canonical', $canonical)
+@section('metaRobots', $metaRobots)
+@section('metaImage', $festival->images->isNotEmpty() ? $festival->images->first()->original_path : ($festival->featured_image_path ? asset('storage/' . $festival->featured_image_path) : asset('img/logo-share.jpg')))
+@section('ogType', 'article')
 
 @push('json-ld')
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Event",
-  "name": "{{ $festival->titulo }}",
-  "image": "{{ $festival->images->isNotEmpty() ? $festival->images->first()->original_path : asset('storage/festivales/' . $festival->foto) }}",
-  "description": "{{ $metaDescription }}"
+  "@type": "Article",
+  "headline": @json($festival->title),
+  "description": @json($metaDescription),
+  "url": @json(\App\Support\CanonicalUrl::normalize($canonical))
 }
 </script>
 @endpush
@@ -21,33 +24,109 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
-  @if ($festival->images->isNotEmpty())
-    <x-optimized-image :image="$festival->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px]" />
-  @elseif ($festival->foto && file_exists(public_path('storage/festivales/' . $festival->foto)))
-    <img src="{{ asset('storage/festivales/' . $festival->foto) }}" alt="{{ $festival->titulo }}"
-        class="rounded shadow-lg w-full object-cover max-h-[500px] mb-4" loading="lazy">
-  @else
-    <x-image-placeholder class="w-full rounded shadow-lg min-h-[200px] max-h-[500px] mb-4" />
-  @endif
+  @include('frontend.festivales._filters')
 
-  <div class="bg-white p-2">
+  <article class="bg-white rounded-xl shadow-sm p-6 mb-8">
+    @if ($festival->images->isNotEmpty())
+      <x-optimized-image :image="$festival->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px] mb-5" />
+    @elseif ($festival->featured_image_path && file_exists(public_path('storage/' . $festival->featured_image_path)))
+      <img src="{{ asset('storage/' . $festival->featured_image_path) }}" alt="{{ $festival->title }}"
+          class="rounded shadow-lg w-full object-cover max-h-[500px] mb-5" loading="lazy">
+    @endif
+
     <h1 class="text-3xl font-bold mb-2">{{ $h1 }}</h1>
+
+    @if ($festival->excerpt)
+      <p class="text-lg text-slate-700 mb-5">{{ $festival->excerpt }}</p>
+    @endif
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-sm">
+      <div class="rounded-lg bg-slate-50 p-4">
+        <span class="font-semibold text-slate-900">Provincia:</span> {{ $festival->provincia?->nombre ?? '-' }}
+      </div>
+      <div class="rounded-lg bg-slate-50 p-4">
+        <span class="font-semibold text-slate-900">Localidad:</span> {{ $festival->locality?->name ?? '-' }}
+      </div>
+      <div class="rounded-lg bg-slate-50 p-4">
+        <span class="font-semibold text-slate-900">Mes:</span> {{ $festival->mes?->nombre ?? '-' }}
+      </div>
+    </div>
+
+    <div class="prose max-w-none mb-6">
+      {!! $festival->body !!}
+    </div>
+
     <div class="mb-4">
       <a href="{{ route('backend.contributions.create', ['type' => 'festival', 'id' => $festival->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1" data-nosnippet>
         Sugerir correccion o actualizacion
       </a>
     </div>
 
-    <div class="prose max-w-none mb-6">
-      {!! $festival->detalle !!}
+    <div class="flex flex-wrap gap-3">
+      <a href="{{ route('festivales.index') }}" class="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Ver todos los festivales</a>
+      @if ($festival->provincia)
+        <a href="{{ route('festivales.province', $festival->provincia->slug) }}" class="inline-flex items-center rounded-lg bg-orange-100 px-4 py-2 text-sm font-semibold text-orange-800 hover:bg-orange-200">Festivales de {{ $festival->provincia->nombre }}</a>
+      @endif
+      @if ($festival->mes)
+        <a href="{{ route('festivales.month', str($festival->mes->nombre)->slug()) }}" class="inline-flex items-center rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">Festivales de {{ $festival->mes->nombre }}</a>
+      @endif
     </div>
+  </article>
 
-    <p class="text-sm text-gray-500">Visitas: {{ number_format($festival->visitas, 0, '', '.') }}</p>
-  </div>
+  @foreach ([
+    'Noticias relacionadas' => $festival->noticias->take(6),
+    'Proximos eventos relacionados' => $festival->events->take(6),
+    'Artistas relacionados' => $festival->interpretes->take(6),
+    'Entradas de Enciclopedia relacionadas' => $festival->knowledgeArticles->take(6),
+  ] as $label => $items)
+    @if ($items->isNotEmpty())
+      <section class="bg-white rounded-xl shadow-sm p-6 mb-6">
+        <h2 class="text-xl font-semibold text-slate-900 mb-4">{{ $label }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          @foreach ($items as $item)
+            <article class="border border-slate-200 rounded-xl p-4">
+              @php
+                $name = $item->title ?? $item->titulo ?? $item->interprete ?? 'Relacionado';
+                $url = method_exists($item, 'getUrl') ? $item->getUrl() : (isset($item->slug) ? (
+                  $label === 'Noticias relacionadas' ? route('noticias.show', $item->slug) :
+                  ($label === 'Proximos eventos relacionados' ? route('cartelera.show', $item->slug) :
+                  ($label === 'Artistas relacionados' ? route('artista.show', $item->slug) :
+                  route('enciclopedia.show', ['categorySlug' => $item->category?->slug, 'articleSlug' => $item->slug])))
+                ) : null);
+              @endphp
+              @if ($url)
+                <a href="{{ $url }}" class="text-lg font-semibold hover:text-orange-700">{{ $name }}</a>
+              @else
+                <p class="text-lg font-semibold">{{ $name }}</p>
+              @endif
+            </article>
+          @endforeach
+        </div>
+      </section>
+    @endif
+  @endforeach
 
-  <div class="redes">
-    <x-compartir-redes :titulo="$festival->titulo" :url="Request::url()" />
-  </div>
+  @if ($sameProvince->isNotEmpty())
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold text-slate-900 mb-4">Festivales de la misma provincia</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        @foreach ($sameProvince as $item)
+          <x-festival-card :festival="$item" />
+        @endforeach
+      </div>
+    </section>
+  @endif
+
+  @if ($sameMonth->isNotEmpty())
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold text-slate-900 mb-4">Festivales del mismo mes</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        @foreach ($sameMonth as $item)
+          <x-festival-card :festival="$item" />
+        @endforeach
+      </div>
+    </section>
+  @endif
 @endsection
 
 @section('sidebar')

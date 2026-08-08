@@ -35,7 +35,7 @@ class BusquedaController extends Controller
                 ->orWhere('letra', 'like', "%$query%")
                 ->orderBy('id', 'desc')->take(5)->get(),
 
-            'festivales' => Festival::where('titulo', 'like', "%$query%")
+            'festivales' => Festival::where('title', 'like', "%$query%")
                 ->orderBy('id', 'desc')->take(5)->get(),
 
             'shows' => Event::where('title', 'like', "%$query%")

@@ -118,14 +118,15 @@ class PublicTemplateSeoTest extends TestCase
 
         DB::table('festivales')->insert([
             'id' => 4101,
-            'provincia_id' => $provinciaId,
+            'province_id' => $provinciaId,
             'mes_id' => 1,
-            'titulo' => 'Fiesta de la Chaya',
+            'title' => 'Fiesta de la Chaya',
             'slug' => 'fiesta-de-la-chaya',
-            'detalle' => '<p>Celebracion popular con musica, comparsas y tradicion riojana.</p>',
+            'body' => '<p>Celebracion popular con musica, comparsas y tradicion riojana.</p>',
             'visitas' => 0,
             'user_id' => 1,
-            'estado' => 1,
+            'status' => 'published',
+            'published_at' => now()->subDay(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

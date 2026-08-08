@@ -65,6 +65,9 @@ Route::get('/letras-de-canciones-folkloricas/letra/{letra}', [CancionesControlle
 Route::get('/discografias-del-folklore-argentino', [DiscosController::class, 'index'])->name('discografias.index');
 
 Route::get('/festivales-y-fiestas-tradicionales', [FestivalesController::class, 'index'])->name('festivales.index');
+Route::get('/festivales-y-fiestas-tradicionales/provincia/{provinceSlug}/mes/{monthSlug}', [FestivalesController::class, 'provinceMonth'])->name('festivales.province-month');
+Route::get('/festivales-y-fiestas-tradicionales/provincia/{provinceSlug}', [FestivalesController::class, 'province'])->name('festivales.province');
+Route::get('/festivales-y-fiestas-tradicionales/mes/{monthSlug}', [FestivalesController::class, 'month'])->name('festivales.month');
 Route::get('/festivales-y-fiestas-tradicionales/{slug}', [FestivalesController::class, 'show'])->name('festivales.show');
 
 Route::get('/radios-de-folklore-argentino', [RadiosController::class, 'index'])->name('radios.index');

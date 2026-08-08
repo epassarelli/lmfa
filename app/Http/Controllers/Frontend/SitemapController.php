@@ -227,15 +227,59 @@ class SitemapController extends Controller
 
     protected function festivalEntries(): Collection
     {
-        return $this->uniqueEntries(Festival::query()
-            ->where('estado', 1)
+        $festivalDetails = Festival::query()
+            ->publishedVisible()
             ->whereNotNull('slug')
             ->orderBy('id')
             ->get()
             ->map(fn (Festival $festival) => $this->entry(
                 route('festivales.show', $festival->slug),
-                $this->bestDate($festival->updated_at, $festival->created_at)
-            )));
+                $this->bestDate($festival->updated_at, $festival->published_at, $festival->created_at)
+            ));
+
+        $provinceEntries = Festival::query()
+            ->publishedVisible()
+            ->with('provincia')
+            ->get()
+            ->pluck('provincia')
+            ->filter()
+            ->unique('id')
+            ->map(fn ($province) => $this->entry(route('festivales.province', $province->slug)));
+
+        $monthEntries = Festival::query()
+            ->publishedVisible()
+            ->with('mes')
+            ->get()
+            ->pluck('mes')
+            ->filter()
+            ->unique('id')
+            ->map(fn ($month) => $this->entry(route('festivales.month', \Illuminate\Support\Str::slug($month->nombre))));
+
+        $minimum = (int) config('festivals.province_month_indexable_minimum', 3);
+        $provinceMonthEntries = Festival::query()
+            ->publishedVisible()
+            ->selectRaw('province_id, mes_id, COUNT(*) as total')
+            ->groupBy('province_id', 'mes_id')
+            ->havingRaw('COUNT(*) >= ?', [$minimum])
+            ->get()
+            ->map(function ($row) {
+                $province = \App\Models\Provincia::find($row->province_id);
+                $month = \App\Models\Mes::find($row->mes_id);
+
+                if (! $province || ! $month) {
+                    return null;
+                }
+
+                return $this->entry(route('festivales.province-month', [$province->slug, \Illuminate\Support\Str::slug($month->nombre)]));
+            })
+            ->filter();
+
+        return $this->uniqueEntries(
+            $festivalDetails
+                ->merge($provinceEntries)
+                ->merge($monthEntries)
+                ->merge($provinceMonthEntries)
+        );
     }
 
     protected function discographyEntries(): Collection

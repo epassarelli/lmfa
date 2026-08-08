@@ -133,7 +133,7 @@
     'interprete_ids' => ['label' => 'Intérpretes', 'collection' => $interpretes, 'value' => 'id', 'text' => 'interprete'],
     'cancion_ids' => ['label' => 'Canciones', 'collection' => $canciones, 'value' => 'id', 'text' => 'cancion'],
     'album_ids' => ['label' => 'Discos', 'collection' => $albums, 'value' => 'id', 'text' => 'album'],
-    'festival_ids' => ['label' => 'Festivales', 'collection' => $festivales, 'value' => 'id', 'text' => 'titulo'],
+    'festival_ids' => ['label' => 'Festivales', 'collection' => $festivales, 'value' => 'id', 'text' => 'title'],
     'event_ids' => ['label' => 'Eventos', 'collection' => $events, 'value' => 'id', 'text' => 'title'],
     'provincia_ids' => ['label' => 'Provincias', 'collection' => $provincias, 'value' => 'id', 'text' => 'nombre'],
     'related_article_ids' => ['label' => 'Otros artículos evergreen', 'collection' => $relatedArticles, 'value' => 'id', 'text' => 'title'],

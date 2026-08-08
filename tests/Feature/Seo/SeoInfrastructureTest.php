@@ -400,14 +400,15 @@ class SeoInfrastructureTest extends TestCase
         ]);
 
         DB::table('festivales')->insert([
-            'provincia_id' => $provinciaId,
+            'province_id' => $provinciaId,
             'mes_id' => 1,
-            'titulo' => 'Festival unico',
+            'title' => 'Festival unico',
             'slug' => 'festival-unico',
-            'detalle' => 'Detalle festival',
+            'body' => 'Detalle festival',
             'visitas' => 0,
             'user_id' => 1,
-            'estado' => 1,
+            'status' => 'published',
+            'published_at' => Carbon::now()->subMonth(),
             'created_at' => Carbon::now()->subMonth(),
             'updated_at' => Carbon::now()->subDay(),
         ]);

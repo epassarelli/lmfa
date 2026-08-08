@@ -217,4 +217,9 @@ class Event extends Model
     {
         return $this->belongsTo(Provincia::class, 'province_id');
     }
+
+    public function festivales()
+    {
+        return $this->belongsToMany(Festival::class, 'event_festival');
+    }
 }

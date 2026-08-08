@@ -159,26 +159,27 @@ class AdminAutoPublishBackendTest extends TestCase
         $this->actingAs($admin);
 
         $festival = Festival::create([
-            'titulo' => 'Festival pendiente',
+            'title' => 'Festival pendiente',
             'slug' => 'festival-pendiente',
-            'detalle' => 'Detalle',
-            'provincia_id' => $this->province()->id,
+            'body' => 'Detalle',
+            'province_id' => $this->province()->id,
             'mes_id' => $this->month()->id,
             'user_id' => $admin->id,
-            'publicar' => now(),
-            'estado' => 0,
+            'published_at' => now(),
+            'status' => 'draft',
         ]);
 
         $response = $this->put(route('backend.festivales.update', $festival), [
-            'titulo' => 'Festival actualizado',
-            'detalle' => 'Detalle actualizado',
-            'provincia_id' => $this->province()->id,
+            'title' => 'Festival actualizado',
+            'body' => 'Detalle actualizado',
+            'province_id' => $this->province()->id,
             'mes_id' => $this->month()->id,
-            'publicar' => now()->toDateString(),
+            'published_at' => now()->toDateString(),
+            'status' => 'published',
         ]);
 
         $response->assertRedirect(route('backend.festivales.index'));
-        $this->assertSame(1, $festival->fresh()->estado);
+        $this->assertSame('published', $festival->fresh()->status);
     }
 
     /** @test */

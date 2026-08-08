@@ -92,6 +92,11 @@ class Interprete extends Model
         return $this->hasMany(Cancion::class);
     }
 
+    public function festivales()
+    {
+        return $this->belongsToMany(Festival::class, 'festival_interprete');
+    }
+
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
