@@ -22,15 +22,9 @@
 @stop
 
 @section('js')
-  <script src="{{ asset('vendor/ckeditor5/build/ckeditor.js') }}"></script>
+  @include('backend.partials.scripts._ckeditor')
   <script>
     $(function() {
-      ClassicEditor
-        .create(document.querySelector('#receta'))
-        .catch(error => {
-          console.error(error);
-        });
-
       @if ($errors->any())
         Swal.fire({
           icon: 'error',

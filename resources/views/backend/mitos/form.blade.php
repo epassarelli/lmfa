@@ -9,7 +9,7 @@
 
 <div class="form-group">
   <label for="mito">Mito</label>
-  <textarea name="mito" id="mito" class="form-control" rows="4" required>{{ old('mito', $mito->mito ?? '') }}</textarea>
+  <textarea name="mito" id="editor" class="form-control" rows="8" required>{{ old('mito', $mito->mito ?? '') }}</textarea>
   @error('mito')
     <div class="text-danger">{{ $message }}</div>
   @enderror

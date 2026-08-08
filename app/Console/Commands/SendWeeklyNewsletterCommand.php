@@ -4,10 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\NewsletterSubscriber;
-use App\Models\Noticia;
 use App\Models\Album;
 use App\Models\Cancion;
 use App\Models\Interprete;
+use App\Models\News;
 use App\Jobs\SendNewsletterJob;
 use Carbon\Carbon;
 
@@ -22,7 +22,11 @@ class SendWeeklyNewsletterCommand extends Command
         $endOfWeek = Carbon::now()->subWeek()->endOfWeek();
 
         // 1. Recolectar Contenido
-        $noticias = Noticia::where('estado', 1)->whereBetween('created_at', [$startOfWeek, $endOfWeek])->latest()->take(3)->get();
+        $noticias = News::publishedVisible()
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->latest('published_at')
+            ->take(3)
+            ->get();
         $discos = Album::with('interprete')->where('estado', 1)->whereBetween('created_at', [$startOfWeek, $endOfWeek])->latest()->take(2)->get();
         $canciones = Cancion::with('interprete')->where('estado', 1)->whereBetween('created_at', [$startOfWeek, $endOfWeek])->latest()->take(3)->get();
         $interpretes = Interprete::where('estado', 1)->whereBetween('created_at', [$startOfWeek, $endOfWeek])->latest()->take(2)->get();

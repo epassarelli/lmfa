@@ -67,7 +67,7 @@ class NewsImageFallbackTest extends TestCase
     }
 
     /** @test */
-    public function noticia_alias_can_resolve_news_media_relation(): void
+    public function news_model_can_resolve_media_relation(): void
     {
         $category = $this->category();
 
@@ -92,9 +92,9 @@ class NewsImageFallbackTest extends TestCase
             'variants_json' => ['card' => [320 => 'news/2026/06/alias-media-relation_card_320.webp']],
         ]);
 
-        $legacyQuery = \App\Models\Noticia::with('images')->findOrFail($news->id);
+        $loadedNews = News::with('images')->findOrFail($news->id);
 
-        $this->assertCount(1, $legacyQuery->images);
+        $this->assertCount(1, $loadedNews->images);
     }
 
     /** @test */

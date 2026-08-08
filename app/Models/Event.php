@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Models\Concerns\HasPublicationState;
 use App\Traits\HasMedia;
 
 class Event extends Model
 {
-    use HasFactory, HasMedia;
+    use HasFactory, HasMedia, HasPublicationState;
 
     protected $fillable = [
         'organization_id',

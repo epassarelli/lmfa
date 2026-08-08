@@ -64,7 +64,12 @@ class NewsService
 
                 // 4. Sincronizar intérpretes secundarios
                 if (! empty($data['interprete_secundarios'])) {
-                    $news->interpretes()->sync($data['interprete_secundarios']);
+                    $news->interpretes()->sync(
+                        $this->sanitizeSecondaryInterpretes(
+                            $data['interprete_secundarios'],
+                            $news->interprete_id
+                        )
+                    );
                 }
 
                 // 5. Procesar imagen
@@ -124,7 +129,12 @@ class NewsService
 
                 // 3. Sincronizar intérpretes
                 if (isset($data['interprete_secundarios'])) {
-                    $news->interpretes()->sync($data['interprete_secundarios']);
+                    $news->interpretes()->sync(
+                        $this->sanitizeSecondaryInterpretes(
+                            $data['interprete_secundarios'],
+                            $news->interprete_id
+                        )
+                    );
                 }
 
                 // 4. Procesar nueva imagen
@@ -162,5 +172,16 @@ class NewsService
                 @unlink($path);
             }
         }
+    }
+
+    protected function sanitizeSecondaryInterpretes(array $interpreteIds, ?int $primaryInterpreteId): array
+    {
+        return collect($interpreteIds)
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->reject(fn (int $id) => $primaryInterpreteId !== null && $id === (int) $primaryInterpreteId)
+            ->unique()
+            ->values()
+            ->all();
     }
 }

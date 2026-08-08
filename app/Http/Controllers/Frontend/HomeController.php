@@ -7,9 +7,9 @@ use App\Http\Livewire\Backend\Interpretes;
 use App\Models\Album;
 use App\Models\Cancion;
 use App\Models\Categoria;
+use App\Models\Event;
 use App\Models\Interprete;
 use App\Models\News;
-use App\Models\Show;
 use App\Support\SeoMetadata;
 use Illuminate\Http\Request;
 
@@ -19,48 +19,48 @@ class HomeController extends Controller
     {
         $categorias = Categoria::get();
 
-        $ultimasNoticias = News::where('editorial_status', 'published')
+        $ultimasNoticias = News::publishedVisible()
             ->with(['categoria', 'images'])
             ->latest()
             ->take(50)
             ->get();
 
-        $actualidad = News::where('editorial_status', 'published')
+        $actualidad = News::publishedVisible()
             ->where('categoria_id', 1)
             ->with(['categoria', 'interpretes', 'images'])
             ->latest()
             ->take(6)
             ->get();
 
-        $festivales = News::where('editorial_status', 'published')
+        $festivales = News::publishedVisible()
             ->where('categoria_id', 2)
             ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
 
-        $lanzamientos = News::where('editorial_status', 'published')
+        $lanzamientos = News::publishedVisible()
             ->where('categoria_id', 3)
             ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
 
-        $entrevistas = News::where('editorial_status', 'published')
+        $entrevistas = News::publishedVisible()
             ->where('categoria_id', 4)
             ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
 
-        $cartelera = News::where('editorial_status', 'published')
+        $cartelera = News::publishedVisible()
             ->where('categoria_id', 5)
             ->with(['categoria', 'images'])
             ->latest()
             ->take(6)
             ->get();
 
-        $shows = Show::where('editorial_status', 'published')
+        $shows = Event::publishedVisible()
             ->where('start_at', '>=', now())
             ->with(['interpretes', 'images'])
             ->orderBy('start_at', 'asc')

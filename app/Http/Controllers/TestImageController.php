@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Noticia;
 use App\Services\ImageUploadService;
+use App\Models\News;
 use Illuminate\Http\Request;
 
 class TestImageController extends Controller
@@ -18,7 +18,7 @@ class TestImageController extends Controller
     /**
      * Ejemplo de cómo subir una imagen para una noticia.
      */
-    public function store(Request $request, Noticia $noticia)
+    public function store(Request $request, News $noticia)
     {
         $request->validate([
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',

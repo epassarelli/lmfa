@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Show;
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -15,7 +15,7 @@ class ShowPolicy
         return true;
     }
 
-    public function view(User $user, Show $show)
+    public function view(User $user, Event $show)
     {
         return $user->hasRole('administrador') || $show->user_id == $user->id;
     }
@@ -25,12 +25,12 @@ class ShowPolicy
         return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
     }
 
-    public function update(User $user, Show $show)
+    public function update(User $user, Event $show)
     {
         return $user->hasRole('administrador') || $show->user_id == $user->id;
     }
 
-    public function delete(User $user, Show $show)
+    public function delete(User $user, Event $show)
     {
         return $user->hasRole('administrador');
     }

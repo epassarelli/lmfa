@@ -3,8 +3,6 @@
 namespace App\Traits;
 
 use App\Models\Interprete;
-// use App\Models\Noticia;
-// use App\Models\Show;
 
 
 trait CommonMethodsTrait

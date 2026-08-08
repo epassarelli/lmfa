@@ -3,7 +3,7 @@
 @section('title', 'Eventos')
 
 @section('content_header')
-  <h1><i class="fas fa-calendar-alt mr-2"></i>Gestión de Eventos</h1>
+  <h1><i class="fas fa-calendar-alt mr-2"></i>Gestion de Eventos</h1>
 @stop
 
 @section('content')
@@ -12,7 +12,7 @@
     <script>
       Swal.fire({
         icon: 'success',
-        title: 'Éxito',
+        title: 'Exito',
         text: '{{ session('success') }}'
       });
     </script>
@@ -32,9 +32,8 @@
         <thead>
           <tr>
             <th>Fecha</th>
-            <th style="width:60px">Foto</th>
-            <th>Título</th>
-            <th>Intérprete</th>
+            <th>Titulo</th>
+            <th>Interprete</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -43,26 +42,15 @@
           @foreach ($events as $event)
             <tr>
               <td data-order="{{ $event->start_at }}">
-                {{ $event->start_at ? $event->start_at->format('d-m-Y') : '—' }}
-              </td>
-              <td style="width:60px;padding:4px">
-                @if ($event->images->isNotEmpty())
-                  <x-optimized-image :image="$event->images->first()" variant="card" :minimal="true" style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle shadow-sm" />
-                @elseif($event->foto)
-                  <img src="{{ asset('storage/shows/' . $event->foto) }}" alt="{{ $event->title }}"
-                    style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle shadow-sm">
-                @else
-                  <img src="{{ asset('img/no-image.jpg') }}"
-                    style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle shadow-sm">
-                @endif
+                {{ $event->start_at ? $event->start_at->format('d-m-Y') : '-' }}
               </td>
               <td><strong>{{ $event->title }}</strong></td>
-              <td>{{ $event->interpretes->first()->interprete ?? '—' }}</td>
+              <td>{{ $event->interpretes->first()->interprete ?? '-' }}</td>
               <td>
                 @switch($event->editorial_status)
                     @case('published') <span class="badge badge-success">Publicado</span> @break
                     @case('draft') <span class="badge badge-secondary">Borrador</span> @break
-                    @case('pending_review') <span class="badge badge-warning">En revisión</span> @break
+                    @case('pending_review') <span class="badge badge-warning">En revision</span> @break
                     @default <span class="badge badge-light">{{ $event->editorial_status }}</span>
                 @endswitch
               </td>
@@ -75,7 +63,7 @@
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-danger"
-                      onclick="return confirm('¿Estás seguro de eliminar este evento?')">
+                      onclick="return confirm('Estas seguro de eliminar este evento?')">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                   </form>
