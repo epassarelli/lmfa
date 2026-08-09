@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', $classified->title . ' | Clasificados del Folklore')
 @section('meta_description', Str::limit($classified->description, 160))
+@section('alpine', '1')
 
 @section('content')
 <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">

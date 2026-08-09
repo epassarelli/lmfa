@@ -31,7 +31,7 @@
   </section>
 
   @if ($featured->isNotEmpty())
-    <section class="mb-8">
+    <section class="mb-8 cv-auto">
       <h2 class="text-2xl font-semibold text-slate-900 mb-4">Festivales destacados</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         @foreach ($featured as $festival)
@@ -42,7 +42,7 @@
   @endif
 
   @if ($currentMonthFestivals->isNotEmpty())
-    <section class="mb-8">
+    <section class="mb-8 cv-auto">
       <h2 class="text-2xl font-semibold text-slate-900 mb-4">Festivales del mes actual</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         @foreach ($currentMonthFestivals as $festival)
@@ -53,7 +53,7 @@
   @endif
 
   @if ($provinceLinks->isNotEmpty())
-    <section class="bg-white rounded-xl shadow-sm p-6 mb-8">
+    <section class="bg-white rounded-xl shadow-sm p-6 mb-8 cv-auto">
       <h2 class="text-2xl font-semibold text-slate-900 mb-4">Explorar por provincia</h2>
       <div class="flex flex-wrap gap-2">
         @foreach ($provinceLinks as $province)
@@ -72,7 +72,7 @@
   @endif
 
   @if ($monthLinks->isNotEmpty())
-    <section class="bg-white rounded-xl shadow-sm p-6 mb-8">
+    <section class="bg-white rounded-xl shadow-sm p-6 mb-8 cv-auto">
       <h2 class="text-2xl font-semibold text-slate-900 mb-4">Explorar por mes</h2>
       <div class="flex flex-wrap gap-2">
         @foreach ($monthLinks as $month)
@@ -91,7 +91,7 @@
   @endif
 
   @if ($relatedNews->isNotEmpty())
-    <section class="bg-white rounded-xl shadow-sm p-6 mb-8">
+    <section class="bg-white rounded-xl shadow-sm p-6 mb-8 cv-auto">
       <h2 class="text-2xl font-semibold text-slate-900 mb-4">Ultimas noticias relacionadas</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @foreach ($relatedNews as $item)
@@ -107,7 +107,7 @@
   @endif
 
   @if ($relatedEvents->isNotEmpty())
-    <section class="bg-white rounded-xl shadow-sm p-6 mb-8">
+    <section class="bg-white rounded-xl shadow-sm p-6 mb-8 cv-auto">
       <h2 class="text-2xl font-semibold text-slate-900 mb-4">Proximos eventos relacionados</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @foreach ($relatedEvents as $event)
@@ -124,7 +124,7 @@
     </section>
   @endif
 
-  <section class="bg-white rounded-xl shadow-sm p-6">
+  <section class="bg-white rounded-xl shadow-sm p-6 cv-auto">
     <h2 class="text-2xl font-semibold text-slate-900 mb-4">Sobre esta seccion</h2>
     <p class="text-slate-700">
       Festivales funciona como un silo evergreen para navegar fiestas y celebraciones folkloricas por provincia, mes y relaciones editoriales, sin confundir cada ficha permanente con una edicion puntual, una noticia o un evento de cartelera.

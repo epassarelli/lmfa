@@ -3,14 +3,6 @@
 
 <head>
   @php($canonicalUrl = trim($__env->yieldContent('canonical')) !== '' ? \App\Support\CanonicalUrl::normalize(trim($__env->yieldContent('canonical'))) : \App\Support\CanonicalUrl::current())
-  @if (!app()->environment('local'))
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q4QNW9JPGG"></script>
-
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7042088525718719"
-      crossorigin="anonymous"></script>
-  @endif
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,7 +39,10 @@
     content="@yield('metaDescription', 'Descubre el rico folklore argentino en nuestro portal')">
   <meta property="twitter:image" content="@yield('metaImage', asset('img/logo-share.jpg'))">
 
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  @vite(['resources/css/app-public.css', 'resources/js/app-public.js'])
+  @hasSection('alpine')
+    @vite(['resources/js/app.js'])
+  @endif
 
   @yield('styles')
   @stack('json-ld')
@@ -65,7 +60,7 @@
     </div>
 
     {{-- Sidebar dinámico o por defecto --}}
-    <aside class="lg:col-span-3 px-4 mb-4">
+    <aside class="lg:col-span-3 px-4 mb-4 cv-auto">
       @hasSection('sidebar')
         @yield('sidebar')
       @else
@@ -79,19 +74,7 @@
 
   @yield('scripts')
 
-  @if (!app()->environment('local'))
-    <!-- Google tag (gtag.js) -->
-    <script>
-      window.dataLayer = window.dataLayer || [];
-
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
-
-      gtag('config', 'G-Q4QNW9JPGG');
-    </script>
-  @endif
+  @include('layouts.partials.third-party-scripts')
 
 </body>
 

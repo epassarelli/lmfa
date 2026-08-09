@@ -34,7 +34,7 @@
     @endforeach
   </section>
 
-  <section class="bg-white rounded-xl shadow-sm p-6">
+  <section class="bg-white rounded-xl shadow-sm p-6 cv-auto">
     <div class="flex items-center justify-between gap-4 mb-5">
       <h2 class="text-2xl font-semibold text-slate-900">Artículos publicados</h2>
       <span class="text-sm text-slate-500">{{ $featuredArticles->count() }} resultados recientes</span>

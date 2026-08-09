@@ -20,7 +20,7 @@
     </div>
   </section>
 
-  <section class="bg-white p-2 rounded shadow-sm mb-4">
+  <section class="bg-white p-2 rounded shadow-sm mb-4 cv-auto">
     <h1 class="text-2xl font-semibold  mb-4 border-b-2 border-[#ff661f]">Noticias del Folklore Argentino</h1>
     <p class="text-base mb-2">
       Mantente al día con las últimas noticias del folklore argentino en nuestra sección dedicada a mantenerte informado

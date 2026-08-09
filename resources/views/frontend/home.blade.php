@@ -15,13 +15,18 @@
       <div class="mb-8">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           @foreach ($noticias as $noticia)
-            <x-noticia-card :noticia="$noticia" />
+            <x-noticia-card
+              :noticia="$noticia"
+              :image-loading="$loop->first ? 'eager' : 'lazy'"
+              :image-fetchpriority="$loop->first ? 'high' : 'auto'"
+              :image-sizes="$loop->first ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 100vw, 50vw'"
+            />
           @endforeach
         </div>
       </div>
     @endforeach
 
-    <section class="mb-4 rounded bg-white p-2 shadow-sm">
+    <section class="mb-4 rounded bg-white p-2 shadow-sm cv-auto">
       <h1 class="mb-4 border-b-2 border-[#ff661f] text-xl font-semibold text-gray-900">{{ $h1 }}</h1>
       <p class="text-lg text-gray-700">{{ $metaDescription }}</p>
     </section>

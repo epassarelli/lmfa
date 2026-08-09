@@ -1,6 +1,6 @@
 <div>
   <!-- Life is available only in the present moment. - Thich Nhat Hanh -->
-  <nav x-data="{ open: false }" class="bg-gray-900 text-white shadow sticky top-0 z-50">
+  <nav class="bg-gray-900 text-white shadow sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between flex-wrap">
 
       <!-- Redes sociales y Login (solo en desktop) -->
@@ -22,7 +22,7 @@
       </a>
 
       <!-- Botón hamburguesa -->
-      <button @click="open = !open" class="lg:hidden text-[#ff661f] focus:outline-none ml-2">
+      <button type="button" data-mobile-menu-toggle aria-expanded="false" aria-controls="site-mobile-menu" class="lg:hidden text-[#ff661f] focus:outline-none ml-2">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 6h16M4 12h16M4 18h16" />
@@ -31,7 +31,7 @@
 
 
       <!-- Menú -->
-      <div :class="{ 'block': open, 'hidden': !open }"
+      <div id="site-mobile-menu" data-mobile-menu
         class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0">
         <ul class="lg:flex lg:space-x-6 text-white text-sm font-medium">
           <li><a href="{{ route('interpretes.index') }}" class="block py-2 hover:text-[#ff661f]">Artistas</a></li>
