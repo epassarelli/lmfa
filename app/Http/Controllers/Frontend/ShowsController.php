@@ -10,6 +10,7 @@ use App\Support\SeoMetadata;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class ShowsController extends Controller
@@ -105,14 +106,14 @@ class ShowsController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        $interpretes = Interprete::active()->get();
-        $provincias = Provincia::orderBy('nombre')->get();
+        $interpretes = Cache::remember('shows:index:interpretes', now()->addHours(1), fn () => Interprete::active()->get());
+        $provincias = Cache::remember('shows:index:provincias', now()->addHours(1), fn () => Provincia::orderBy('nombre')->get());
         $sinResultados = $shows->count() === 0;
 
         [$heading, $metaTitle, $metaDescription, $introText] = $this->buildSeoContent($filters);
         [$canonicalUrl, $metaRobots] = $this->buildCanonicalAndRobots($filters);
         $breadcrumbs = $this->buildBreadcrumbs($filters);
-        $relatedProvinceLinks = Provincia::orderBy('nombre')->take(8)->get();
+        $relatedProvinceLinks = Cache::remember('shows:index:related-provinces', now()->addHours(1), fn () => Provincia::orderBy('nombre')->take(8)->get());
 
         return view('frontend.shows.index', [
             'shows' => $shows,

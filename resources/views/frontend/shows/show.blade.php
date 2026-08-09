@@ -44,10 +44,10 @@
             <div class="mb-6">
               <x-optimized-image :image="$show->interprete->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px]" />
             </div>
-          @elseif ($show->imagen_destacada && file_exists(public_path('storage/' . $show->imagen_destacada)))
+          @elseif ($show->imagen_destacada)
             <img src="{{ asset('storage/' . $show->imagen_destacada) }}" alt="{{ $show->titulo }}"
               class="mb-6 rounded shadow-lg w-full object-cover max-h-[500px]">
-          @elseif ($show->interprete && $show->interprete->foto && file_exists(public_path('storage/interpretes/' . $show->interprete->foto)))
+          @elseif ($show->interprete && $show->interprete->foto)
             <img src="{{ asset('storage/interpretes/' . $show->interprete->foto) }}" alt="{{ $show->interprete->interprete }}"
               class="mb-6 rounded shadow-lg w-full object-cover max-h-[500px]">
           @else

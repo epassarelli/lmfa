@@ -28,14 +28,15 @@ class NewsController extends Controller
         $this->authorize('viewAny', News::class);
 
         $query = News::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre'])
-            ->orderBy('published_at', 'desc');
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at');
 
         // Si no es admin, solo ve lo suyo
         if (!auth()->user()->isAdmin()) {
             $query->where('created_by', auth()->id());
         }
 
-        $news = $query->get();
+        $news = $query->paginate(25)->withQueryString();
 
         return view('backend.news.index', compact('news'));
     }

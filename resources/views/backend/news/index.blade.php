@@ -21,7 +21,7 @@
     </div>
 
     <div class="card-body">
-      <table id="news-table" class="table table-striped table-bordered table-hover">
+      <table class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
             <th>Publicacion</th>
@@ -36,7 +36,7 @@
         <tbody>
           @foreach ($news as $item)
             <tr>
-              <td data-order="{{ $item->published_at }}">
+              <td>
                 {{ $item->published_at ? $item->published_at->format('d-m-Y') : '-' }}
               </td>
               <td>
@@ -72,19 +72,10 @@
           @endforeach
         </tbody>
       </table>
+
+      <div class="mt-3">
+        {{ $news->links() }}
+      </div>
     </div>
   </div>
-@stop
-
-@section('js')
-  <script>
-    $(document).ready(function() {
-      $('#news-table').DataTable({
-        "order": [[0, "desc"]],
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
-        }
-      });
-    });
-  </script>
 @stop

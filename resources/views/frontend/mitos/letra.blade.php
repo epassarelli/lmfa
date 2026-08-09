@@ -25,6 +25,10 @@
           <x-mito-card :mito="$mito" />
         @endforeach
       </div>
+
+      <div class="mt-8">
+        {{ $mitos->links() }}
+      </div>
     </section>
 
     <x-alpha-filter

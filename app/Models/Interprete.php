@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -39,11 +40,12 @@ class Interprete extends Model
     // Retorna una coleccion con interpretes menos el actual
     public static function getInterpretesExcluding($currentInterpreteId)
     {
-        // return self::where('id', '!=', $currentInterpreteId)->get();
-        return self::where('id', '!=', $currentInterpreteId)
-            ->where('estado', 1)
-            ->orderBy('interprete', 'asc')
-            ->get();
+        return Cache::remember('interpretes:active:list', 3600, function () {
+            return self::query()
+                ->where('estado', 1)
+                ->orderBy('interprete', 'asc')
+                ->get(['id', 'interprete', 'slug']);
+        })->reject(fn ($interprete) => (int) $interprete->id === (int) $currentInterpreteId)->values();
     }
 
     // Definir un scope para filtrar intérpretes activos y ordenarlos por el campo 'interprete'

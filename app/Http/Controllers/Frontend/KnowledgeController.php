@@ -8,6 +8,7 @@ use App\Models\KnowledgeCategory;
 use App\Support\CanonicalUrl;
 use App\Support\SeoMetadata;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class KnowledgeController extends Controller
 {
@@ -70,15 +71,19 @@ class KnowledgeController extends Controller
 
     public function index()
     {
-        $categories = KnowledgeCategory::active()->withCount([
-            'articles as published_articles_count' => fn ($query) => $query->visible(),
-        ])->get();
+        $categories = Cache::remember('knowledge:index:categories', now()->addHours(1), function () {
+            return KnowledgeCategory::active()->withCount([
+                'articles as published_articles_count' => fn ($query) => $query->visible(),
+            ])->get();
+        });
 
-        $featuredArticles = KnowledgeArticle::visible()
-            ->with(['category', 'images'])
-            ->latest('published_at')
-            ->take(12)
-            ->get();
+        $featuredArticles = Cache::remember('knowledge:index:featured', now()->addMinutes(15), function () {
+            return KnowledgeArticle::visible()
+                ->with(['category', 'images'])
+                ->latest('published_at')
+                ->take(12)
+                ->get();
+        });
 
         $metaTitle = 'Enciclopedia del folklore argentino';
         $metaDescription = 'Guias, historia, ritmos, instrumentos, provincias y tradiciones del folklore argentino en una enciclopedia editorial pensada para consulta permanente.';

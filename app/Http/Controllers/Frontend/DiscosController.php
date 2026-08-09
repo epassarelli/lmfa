@@ -7,12 +7,20 @@ use App\Models\Album;
 use App\Models\Interprete;
 use App\Support\SeoMetadata;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class DiscosController extends Controller
 {
     public function index()
     {
-        $discos = Album::where('estado', 1)->orderBy('created_at', 'desc')->paginate(24);
+        $discos = Album::query()
+            ->where('estado', 1)
+            ->with([
+                'interprete:id,interprete,slug',
+                'images',
+            ])
+            ->orderByDesc('created_at')
+            ->simplePaginate(24);
 
         $metaTitle = 'Discografias de Folklore Argentino: Albumes y Obras Destacadas';
         $metaDescription = 'Explora las discografias completas del folklore argentino. Encuentra albumes y canciones clasicas de artistas destacados.';

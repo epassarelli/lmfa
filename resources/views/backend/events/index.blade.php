@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="card-body">
-      <table id="events-table" class="table table-striped table-bordered table-hover">
+      <table class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
             <th>Fecha</th>
@@ -41,7 +41,7 @@
         <tbody>
           @foreach ($events as $event)
             <tr>
-              <td data-order="{{ $event->start_at }}">
+              <td>
                 {{ $event->start_at ? $event->start_at->format('d-m-Y') : '-' }}
               </td>
               <td><strong>{{ $event->title }}</strong></td>
@@ -73,19 +73,10 @@
           @endforeach
         </tbody>
       </table>
+
+      <div class="mt-3">
+        {{ $events->links() }}
+      </div>
     </div>
   </div>
-@stop
-
-@section('js')
-  <script>
-    $(function() {
-      $('#events-table').DataTable({
-        "order": [[ 0, "desc" ]],
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
-        }
-      });
-    });
-  </script>
 @stop

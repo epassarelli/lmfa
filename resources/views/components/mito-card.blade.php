@@ -7,7 +7,7 @@
     <div class="flex items-center space-x-4">
       <div class="flex-shrink-0 text-[#ff661f] text-3xl">
         @if ($mito->images->isNotEmpty())
-           <x-optimized-image :image="$mito->images->first()" variant="card" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+           <x-optimized-image :image="$mito->images->first()" variant="card" :minimal="true" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
         @else
            🧙‍♀️
         @endif

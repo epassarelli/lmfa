@@ -57,7 +57,7 @@
         <x-optimized-image :image="$noticia->images->first()" variant="detail" class="rounded shadow-lg w-full"
           :alt="$noticia->titulo" fetchpriority="high" />
       </div>
-    @elseif ($noticia->legacy_featured_image_storage_path && file_exists(public_path($noticia->legacy_featured_image_storage_path)))
+    @elseif ($noticia->legacy_featured_image_url)
       <div class="mb-4">
         <img src="{{ $noticia->legacy_featured_image_url }}" alt="{{ $noticia->titulo }}"
             class="rounded shadow-lg w-full" loading="lazy">

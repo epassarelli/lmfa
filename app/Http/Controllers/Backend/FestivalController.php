@@ -35,11 +35,17 @@ class FestivalController extends Controller
             ->when($user->hasRole(['colaborador', 'prensa']), function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
-            ->with(['user', 'images', 'provincia', 'mes', 'locality'])
+            ->with([
+                'user:id,name',
+                'provincia:id,nombre',
+                'mes:id,nombre',
+                'locality:id,province_id,name',
+            ])
             ->withCount(['noticias', 'events', 'interpretes', 'knowledgeArticles'])
             ->orderByDesc('published_at')
             ->orderBy('title')
-            ->get();
+            ->paginate(25)
+            ->withQueryString();
 
         return view('backend.festivales.index', compact('festivales'));
     }

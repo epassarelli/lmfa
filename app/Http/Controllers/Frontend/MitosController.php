@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Mito;
 use App\Services\LinkService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class MitosController extends Controller
@@ -18,9 +19,22 @@ class MitosController extends Controller
 
     public function index()
     {
-        $mito = new Mito();
-        $ultimos = $mito->getNLast(Mito::class, 12);
-        $visitados = $mito->getNMostVisited(Mito::class, 12);
+        $ultimos = Cache::remember("mitos:letter:{$letra}:ultimos", 600, function () {
+            return Mito::query()
+                ->where('estado', 1)
+                ->with('images')
+                ->orderByDesc('id')
+                ->take(6)
+                ->get();
+        });
+        $visitados = Cache::remember("mitos:letter:{$letra}:visitados", 600, function () {
+            return Mito::query()
+                ->where('estado', 1)
+                ->with('images')
+                ->orderByDesc('visitas')
+                ->take(6)
+                ->get();
+        });
         $alphabet = range('a', 'z');
 
         $metaTitle = 'Mitos y Leyendas del Folklore Argentino: Historias y Tradiciones';
@@ -67,10 +81,28 @@ class MitosController extends Controller
     public function letra($letra)
     {
         $letra = Str::lower($letra);
-        $mito = new Mito();
-        $ultimos = $mito->getNLast(Mito::class, 12);
-        $visitados = $mito->getNMostVisited(Mito::class, 12);
-        $mitos = Mito::where('titulo', 'LIKE', $letra . '%')->get();
+        $ultimos = Cache::remember('mitos:index:ultimos', 600, function () {
+            return Mito::query()
+                ->where('estado', 1)
+                ->with('images')
+                ->orderByDesc('id')
+                ->take(12)
+                ->get();
+        });
+        $visitados = Cache::remember('mitos:index:visitados', 600, function () {
+            return Mito::query()
+                ->where('estado', 1)
+                ->with('images')
+                ->orderByDesc('visitas')
+                ->take(12)
+                ->get();
+        });
+        $mitos = Mito::query()
+            ->where('estado', 1)
+            ->where('titulo', 'LIKE', $letra . '%')
+            ->with('images')
+            ->orderBy('titulo')
+            ->simplePaginate(12);
         $alphabet = range('a', 'z');
 
         $metaTitle = "Mitos y leyendas urbanas argentinas que comienzan con {$letra}";

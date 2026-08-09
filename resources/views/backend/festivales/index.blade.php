@@ -12,7 +12,7 @@
       <a href="{{ route('backend.festivales.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Crear Festival</a>
     </div>
     <div class="card-body">
-      <table id="festivales-table" class="table table-striped table-bordered table-hover">
+      <table class="table table-striped table-bordered table-hover">
         <thead>
           <tr>
             <th>Titulo</th>
@@ -58,14 +58,10 @@
           @endforeach
         </tbody>
       </table>
+
+      <div class="mt-3">
+        {{ $festivales->links() }}
+      </div>
     </div>
   </div>
-@stop
-
-@section('js')
-  <script>
-    $(function() {
-      $('#festivales-table').DataTable();
-    });
-  </script>
 @stop

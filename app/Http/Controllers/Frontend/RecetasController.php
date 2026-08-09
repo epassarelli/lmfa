@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Comida;
 use App\Services\LinkService;
 use App\Support\RecipeContent;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class RecetasController extends Controller
@@ -19,9 +20,22 @@ class RecetasController extends Controller
 
     public function index()
     {
-        $comida = new Comida();
-        $ultimas = $comida->getNLast(Comida::class, 12);
-        $visitadas = $comida->getNMostVisited(Comida::class, 12);
+        $ultimas = Cache::remember("comidas:letter:{$letra}:ultimas", 600, function () {
+            return Comida::query()
+                ->where('estado', 1)
+                ->with('images')
+                ->orderByDesc('id')
+                ->take(6)
+                ->get();
+        });
+        $visitadas = Cache::remember("comidas:letter:{$letra}:visitadas", 600, function () {
+            return Comida::query()
+                ->where('estado', 1)
+                ->with('images')
+                ->orderByDesc('visitas')
+                ->take(6)
+                ->get();
+        });
         $alphabet = range('a', 'z');
 
         $metaTitle = 'Recetas de Comidas Tipicas del Folklore Argentino: Sabores Tradicionales';
@@ -77,14 +91,28 @@ class RecetasController extends Controller
     public function letra($letra)
     {
         $letra = Str::lower($letra);
-        $comida = new Comida();
-        $ultimas = $comida->getNLast(Comida::class, 12);
-        $visitadas = $comida->getNMostVisited(Comida::class, 12);
-        $comidas = Comida::where('estado', 1)
+        $ultimas = Cache::remember('comidas:index:ultimas', 600, function () {
+            return Comida::query()
+                ->where('estado', 1)
+                ->with('images')
+                ->orderByDesc('id')
+                ->take(12)
+                ->get();
+        });
+        $visitadas = Cache::remember('comidas:index:visitadas', 600, function () {
+            return Comida::query()
+                ->where('estado', 1)
+                ->with('images')
+                ->orderByDesc('visitas')
+                ->take(12)
+                ->get();
+        });
+        $comidas = Comida::query()
+            ->where('estado', 1)
             ->where('titulo', 'LIKE', $letra . '%')
             ->with('images')
             ->orderBy('titulo')
-            ->get();
+            ->simplePaginate(12);
         $alphabet = range('a', 'z');
 
         $metaTitle = "Recetas de comidas tipicas de Argentina que comienzan con {$letra}";

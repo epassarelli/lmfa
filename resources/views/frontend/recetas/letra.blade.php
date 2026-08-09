@@ -25,6 +25,10 @@
           <x-receta-card :receta="$receta" />
         @endforeach
       </div>
+
+      <div class="mt-8">
+        {{ $comidas->links() }}
+      </div>
     </section>
 
     <section class="mt-16">

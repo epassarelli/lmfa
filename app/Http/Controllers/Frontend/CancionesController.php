@@ -8,6 +8,7 @@ use App\Models\Interprete;
 use App\Services\LinkService;
 use App\Support\SeoMetadata;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class CancionesController extends Controller
 {
@@ -20,7 +21,15 @@ class CancionesController extends Controller
 
     public function index()
     {
-        $canciones = Cancion::where('estado', 1)->orderBy('cancion', 'asc')->paginate(48);
+        $canciones = Cancion::query()
+            ->where('estado', 1)
+            ->with([
+                'interprete:id,interprete,slug,foto',
+                'albunes:id,album,slug,interprete_id',
+                'albunes.interprete:id,interprete,slug',
+            ])
+            ->orderBy('cancion', 'asc')
+            ->simplePaginate(36);
 
         $metaTitle = 'Letras de Canciones del Folklore Argentino | Cancionero Popular';
         $metaDescription = 'Encuentra letras de canciones del folklore argentino y explora un cancionero popular pensado para consulta y descubrimiento.';
@@ -34,10 +43,16 @@ class CancionesController extends Controller
 
     public function letra($letra)
     {
-        $canciones = Cancion::where('estado', 1)
+        $canciones = Cancion::query()
+            ->where('estado', 1)
+            ->with([
+                'interprete:id,interprete,slug,foto',
+                'albunes:id,album,slug,interprete_id',
+                'albunes.interprete:id,interprete,slug',
+            ])
             ->where('cancion', 'LIKE', $letra.'%')
             ->orderBy('cancion', 'asc')
-            ->paginate(48);
+            ->simplePaginate(36);
 
         $metaTitle = "Letras de Canciones folkloricas de Argentina que comienzan con {$letra}";
         $metaDescription = "Letras de Canciones folkloricas de Argentina que comienzan con {$letra}";

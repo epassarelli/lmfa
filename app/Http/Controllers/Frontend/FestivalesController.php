@@ -14,6 +14,7 @@ use App\Support\SeoMetadata;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class FestivalesController extends Controller
 {
@@ -31,59 +32,86 @@ class FestivalesController extends Controller
             ->withQueryString();
 
         $currentMonthId = (int) now()->format('n');
-        $featured = $this->publishedFestivalQuery()
-            ->with($this->festivalCardRelations())
-            ->orderByDesc('visitas')
-            ->take(6)
-            ->get();
+        $hasFilters = (bool) array_filter([
+            $filters['search'],
+            $filters['province_id'],
+            $filters['locality_id'],
+            $filters['month_id'],
+        ]);
 
-        $currentMonthFestivals = $this->publishedFestivalQuery()
-            ->with($this->festivalCardRelations())
-            ->where('mes_id', $currentMonthId)
-            ->orderBy('title')
-            ->take(8)
-            ->get();
+        $featured = $hasFilters
+            ? collect()
+            : Cache::remember('festivales:index:featured', 600, function () {
+                return $this->publishedFestivalQuery()
+                    ->with($this->festivalCardRelations())
+                    ->orderByDesc('visitas')
+                    ->take(6)
+                    ->get();
+            });
 
-        $availableProvinces = Provincia::orderBy('nombre')->get();
-        $availableMonths = Mes::orderBy('id')->get();
+        $currentMonthFestivals = $hasFilters
+            ? collect()
+            : Cache::remember('festivales:index:current-month:'.$currentMonthId, 600, function () use ($currentMonthId) {
+                return $this->publishedFestivalQuery()
+                    ->with($this->festivalCardRelations())
+                    ->where('mes_id', $currentMonthId)
+                    ->orderBy('title')
+                    ->take(8)
+                    ->get();
+            });
+
+        $availableProvinces = Cache::remember('festivales:index:provincias', 3600, fn () => Provincia::orderBy('nombre')->get());
+        $availableMonths = Cache::remember('festivales:index:meses', 3600, fn () => Mes::orderBy('id')->get());
         $availableLocalities = Locality::query()
             ->when($filters['province_id'], fn ($query) => $query->where('province_id', $filters['province_id']))
             ->orderBy('name')
             ->get();
 
-        $provinceLinks = $this->publishedFestivalQuery()
-            ->select('province_id')
-            ->distinct()
-            ->get()
-            ->pluck('province_id')
-            ->filter()
-            ->unique()
-            ->values();
+        $provinceLinks = Cache::remember('festivales:index:province-link-ids', 600, function () {
+            return $this->publishedFestivalQuery()
+                ->select('province_id')
+                ->distinct()
+                ->get()
+                ->pluck('province_id')
+                ->filter()
+                ->unique()
+                ->values();
+        });
 
-        $monthLinks = $this->publishedFestivalQuery()
-            ->select('mes_id')
-            ->distinct()
-            ->get()
-            ->pluck('mes_id')
-            ->filter()
-            ->unique()
-            ->values();
+        $monthLinks = Cache::remember('festivales:index:month-link-ids', 600, function () {
+            return $this->publishedFestivalQuery()
+                ->select('mes_id')
+                ->distinct()
+                ->get()
+                ->pluck('mes_id')
+                ->filter()
+                ->unique()
+                ->values();
+        });
 
-        $relatedNews = News::query()
-            ->publishedVisible()
-            ->whereHas('festivales')
-            ->with(['categoria', 'images'])
-            ->latest('published_at')
-            ->take(6)
-            ->get();
+        $relatedNews = $hasFilters
+            ? collect()
+            : Cache::remember('festivales:index:related-news', 600, function () {
+                return News::query()
+                    ->publishedVisible()
+                    ->whereHas('festivales')
+                    ->with(['categoria:id,nombre', 'images'])
+                    ->latest('published_at')
+                    ->take(6)
+                    ->get();
+            });
 
-        $relatedEvents = Event::query()
-            ->publishedVisible()
-            ->whereHas('festivales')
-            ->with(['interpretes', 'images', 'provincia'])
-            ->orderBy('start_at')
-            ->take(6)
-            ->get();
+        $relatedEvents = $hasFilters
+            ? collect()
+            : Cache::remember('festivales:index:related-events', 600, function () {
+                return Event::query()
+                    ->publishedVisible()
+                    ->whereHas('festivales')
+                    ->with(['interpretes:id,interprete,slug', 'images', 'provincia:id,nombre'])
+                    ->orderBy('start_at')
+                    ->take(6)
+                    ->get();
+            });
 
         [$canonical, $robots, $headline, $intro] = $this->indexSeoContext($filters);
 

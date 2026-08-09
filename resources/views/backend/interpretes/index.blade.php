@@ -3,7 +3,7 @@
 @section('metaTitle', 'Listado de Noticias')
 
 @section('content_header')
-  <h1>Gestión de Interpretes</h1>
+  <h1>Gestion de Interpretes</h1>
 @stop
 
 @section('content')
@@ -23,7 +23,7 @@
         </div>
       @endif
 
-      <table id="interpretes" class="table table-striped table-bordered table-hover">
+      <table class="table table-striped table-bordered table-hover">
         <thead>
           <th>ID</th>
           <th>Foto</th>
@@ -57,15 +57,8 @@
               <td>{{ $interprete->shows_count }}</td>
               <td>{{ $interprete->discos_count }}</td>
               <td>{{ $interprete->canciones_count }}</td>
-              {{-- <td class="text-center"><livewire:toggle-button :model="$interprete" field="estado"
-                  key="{{ $interprete->id }}" />
-              </td> --}}
               <td class="text-right" style="white-space: nowrap;">
                 <div class="action-icons">
-                  {{-- <a class="btn btn-primary" href="{{ route('backend.interpretes.show', $interprete->id) }}">
-                    <i class="fas fa-eye"></i>
-                  </a> --}}
-
                   @can('update', $interprete)
                   <a class="btn btn-warning" href="{{ route('backend.interpretes.edit', $interprete->id) }}">
                     <i class="fas fa-edit"></i>
@@ -77,7 +70,7 @@
                     style="display:inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro?')">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Estas seguro?')">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                   </form>
@@ -89,14 +82,10 @@
         </tbody>
       </table>
 
+      <div class="mt-3">
+        {{ $interpretes->links() }}
+      </div>
+
     </div>
   </div>
-@stop
-
-@section('js')
-  <script>
-    $(document).ready(function() {
-      $('#interpretes').DataTable();
-    });
-  </script>
 @stop

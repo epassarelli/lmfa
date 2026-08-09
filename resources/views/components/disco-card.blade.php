@@ -11,7 +11,7 @@
     <div class="overflow-hidden">
       @if ($disco->images->isNotEmpty())
         <x-optimized-image :image="$disco->images->first()" variant="card" class="w-full h-50 object-cover transition-transform duration-300 ease-in-out hover:scale-105" :alt="$disco->titulo" />
-      @elseif ($disco->foto && file_exists(public_path('storage/albunes/' . $disco->foto)))
+      @elseif ($disco->foto)
         <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->album }}"
             class="w-full h-50 object-cover transition-transform duration-300 ease-in-out hover:scale-105" loading="lazy">
       @else

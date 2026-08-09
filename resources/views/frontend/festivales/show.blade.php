@@ -29,7 +29,7 @@
   <article class="bg-white rounded-xl shadow-sm p-6 mb-8">
     @if ($festival->images->isNotEmpty())
       <x-optimized-image :image="$festival->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px] mb-5" />
-    @elseif ($festival->featured_image_path && file_exists(public_path('storage/' . $festival->featured_image_path)))
+    @elseif ($festival->featured_image_path)
       <img src="{{ asset('storage/' . $festival->featured_image_path) }}" alt="{{ $festival->title }}"
           class="rounded shadow-lg w-full object-cover max-h-[500px] mb-5" loading="lazy">
     @endif

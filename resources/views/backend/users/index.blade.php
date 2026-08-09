@@ -3,7 +3,7 @@
 @section('metaTitle', 'Listado de Noticias')
 
 @section('content_header')
-  <h1>Gestión de Usuarios</h1>
+  <h1>Gestion de Usuarios</h1>
 @stop
 
 @section('content')
@@ -18,7 +18,7 @@
 
 
     <div class="card-body">
-      <table id="users-table" class="table table-striped table-bordered table-hover">
+      <table class="table table-striped table-bordered table-hover">
 
         <thead>
           <tr>
@@ -28,7 +28,6 @@
             <th>Acciones</th>
           </tr>
         </thead>
-        {{-- <tbody></tbody> --}}
 
         <tbody>
           @foreach ($data as $user)
@@ -44,7 +43,7 @@
                   @csrf
                   @method('DELETE')
                   <button type="submit" class="btn btn-danger"
-                    onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                    onclick="return confirm('Estas seguro de eliminar este usuario?')">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </form>
@@ -54,55 +53,10 @@
         </tbody>
 
       </table>
+
+      <div class="mt-3">
+        {{ $data->links() }}
+      </div>
     </div>
   </div>
-@endsection
-
-@section('js')
-
-  <script>
-    $(document).ready(function() {
-      $('#users-table').DataTable({
-        // Aquí puedes configurar DataTables sin server-side
-        processing: true,
-        // No uses server-side aquí
-        order: [
-          [0, 'desc']
-        ]
-      });
-    });
-  </script>
-  {{-- <script>
-    $(function() {
-      $('#users-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '{{ route('users.index') }}',
-        columns: [{
-            data: 'name',
-            name: 'name'
-          },
-          {
-            data: 'email',
-            name: 'email'
-          },
-          {
-            data: 'roles',
-            name: 'roles',
-            orderable: false,
-            searchable: false
-          },
-          {
-            data: 'action',
-            name: 'action',
-            orderable: false,
-            searchable: false
-          }
-        ],
-        order: [
-          [0, 'desc']
-        ]
-      });
-    });
-  </script> --}}
 @endsection

@@ -14,6 +14,7 @@ use App\Services\LinkService;
 use App\Support\SeoMetadata;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 
 class NoticiasController extends Controller
@@ -28,17 +29,21 @@ class NoticiasController extends Controller
     public function index()
     {
         $ultimas = News::publishedVisible()
-            ->with(['categoria', 'images'])
-            ->latest()
-            ->paginate(16);
+            ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'images'])
+            ->latest('published_at')
+            ->latest('created_at')
+            ->simplePaginate(16);
 
-        $ultimasSidebar = News::publishedVisible()
-            ->with(['categoria', 'interprete', 'images'])
-            ->latest()
-            ->take(10)
-            ->get();
+        $ultimasSidebar = Cache::remember('news:index:sidebar', now()->addMinutes(10), function () {
+            return News::publishedVisible()
+                ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'images'])
+                ->latest('published_at')
+                ->latest('created_at')
+                ->take(10)
+                ->get();
+        });
 
-        $categorias = Categoria::get();
+        $categorias = Cache::remember('news:index:categorias', now()->addHours(1), fn () => Categoria::get());
 
         $metaTitle = 'Noticias de Folklore Argentino: Novedades y Eventos Recientes';
         $metaDescription = 'Descubre las ultimas noticias del folklore argentino. Mantente al tanto de eventos, festivales y novedades culturales relevantes.';
@@ -145,13 +150,16 @@ class NoticiasController extends Controller
             ->publishedVisible()
             ->firstOrFail();
 
-        $ultimas_noticias = News::query()
-            ->with(['interprete', 'categoria', 'images'])
-            ->publishedVisible()
-            ->where('id', '<>', $noticia->id)
-            ->orderByDesc('created_at')
-            ->take(10)
-            ->get();
+        $ultimas_noticias = Cache::remember("news:{$noticia->id}:sidebar-latest", now()->addMinutes(10), function () use ($noticia) {
+            return News::query()
+                ->with(['interprete:id,interprete,slug', 'categoria:id,nombre', 'images'])
+                ->publishedVisible()
+                ->where('id', '<>', $noticia->id)
+                ->orderByDesc('published_at')
+                ->orderByDesc('created_at')
+                ->take(10)
+                ->get();
+        });
 
         $noticia->increment('visitas');
 
@@ -175,6 +183,7 @@ class NoticiasController extends Controller
                 }
             })
             ->with(['categoria', 'interprete', 'images'])
+            ->orderByDesc('published_at')
             ->orderByDesc('created_at')
             ->distinct('news.id')
             ->take(3)

@@ -32,9 +32,13 @@ class EventController extends Controller
             ->when($user->hasRole(['colaborador', 'prensa']), function ($query) use ($user) {
                 $query->where('created_by', $user->id);
             })
-            ->with(['user', 'interpretes'])
+            ->with([
+                'user:id,name',
+                'interpretes:id,interprete',
+            ])
             ->orderBy('start_at', 'desc')
-            ->get();
+            ->paginate(25)
+            ->withQueryString();
 
         return view('backend.events.index', compact('events'));
     }

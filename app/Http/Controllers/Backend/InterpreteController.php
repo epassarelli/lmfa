@@ -26,12 +26,11 @@ class InterpreteController extends Controller
 
   public function index()
   {
-    $user = Auth::user();
-    // $interpretes = Interprete::all();
     $interpretes = Interprete::withCount(['noticias', 'shows', 'discos', 'canciones'])
-      ->with(['noticias', 'shows', 'discos', 'canciones', 'images'])
+      ->with(['images'])
       ->orderByDesc('noticias_count')
-      ->get();
+      ->paginate(25)
+      ->withQueryString();
     return view('backend.interpretes.index', compact('interpretes'));
   }
 

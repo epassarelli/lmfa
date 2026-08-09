@@ -18,7 +18,11 @@ class UserController extends Controller
     public function index()
     {
         // Obtiene todos los usuarios con sus roles
-        $data = User::with('roles')->select(['id', 'name', 'email'])->get();
+        $data = User::with('roles:id,name')
+            ->select(['id', 'name', 'email'])
+            ->orderBy('name')
+            ->paginate(25)
+            ->withQueryString();
 
         // Pasar los datos a la vista
         return view('backend.users.index', compact('data'));

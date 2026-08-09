@@ -5,7 +5,7 @@
   <div class="overflow-hidden">
     @if ($festival->images->isNotEmpty())
       <x-optimized-image :image="$festival->images->first()" variant="card" class="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105" />
-    @elseif ($festival->featured_image_path && file_exists(public_path('storage/' . $festival->featured_image_path)))
+    @elseif ($festival->featured_image_path)
       <img src="{{ asset('storage/' . $festival->featured_image_path) }}" alt="{{ $festival->title }}"
           class="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105" loading="lazy">
     @else
