@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Http\Requests\Api\Concerns\ResolvesKnowledgeCategoryInput;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreKnowledgeArticleRequest extends FormRequest
 {
+    use ResolvesKnowledgeCategoryInput;
+
     public function authorize(): bool
     {
         return true;
@@ -15,7 +18,9 @@ class StoreKnowledgeArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'knowledge_category_id' => 'required|exists:knowledge_categories,id',
+            'knowledge_category_id' => 'nullable|integer',
+            'knowledge_category_slug' => 'nullable|string|max:255',
+            'knowledge_category_name' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
             'slug' => [
                 'required',

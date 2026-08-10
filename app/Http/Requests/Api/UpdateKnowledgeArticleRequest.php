@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Http\Requests\Api\Concerns\ResolvesKnowledgeCategoryInput;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateKnowledgeArticleRequest extends FormRequest
 {
+    use ResolvesKnowledgeCategoryInput;
+
     public function authorize(): bool
     {
         return true;
@@ -18,7 +21,9 @@ class UpdateKnowledgeArticleRequest extends FormRequest
         $categoryId = (int) ($this->input('knowledge_category_id') ?: $article?->knowledge_category_id);
 
         return [
-            'knowledge_category_id' => 'sometimes|exists:knowledge_categories,id',
+            'knowledge_category_id' => 'nullable|integer',
+            'knowledge_category_slug' => 'nullable|string|max:255',
+            'knowledge_category_name' => 'nullable|string|max:255',
             'title' => 'sometimes|string|max:255',
             'slug' => [
                 'sometimes',
@@ -57,5 +62,10 @@ class UpdateKnowledgeArticleRequest extends FormRequest
             'related_article_ids' => 'nullable|array',
             'related_article_ids.*' => 'exists:knowledge_articles,id',
         ];
+    }
+
+    protected function knowledgeCategoryIsRequired(): bool
+    {
+        return false;
     }
 }
