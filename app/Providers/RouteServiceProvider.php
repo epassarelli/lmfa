@@ -28,6 +28,10 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        RateLimiter::for('meta-deleteuserdata', function (Request $request) {
+            return Limit::perMinute(30)->by($request->ip());
+        });
+
         // 🛡️ Evita que slugs como /admin, /login, etc. sean interpretados como intérpretes
         $reservedSlugs = ['admin', 'login', 'logout', 'register', 'password', 'auth', 'api', 'pasarela'];
         Route::pattern('interprete', '^(?!' . implode('|', $reservedSlugs) . ')[a-z0-9\-]+$');

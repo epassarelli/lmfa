@@ -26,6 +26,24 @@
               Comidas
             </a>
           </li>
+          <li>
+            <a href="{{ route('legal.privacy') }}"
+              class="hover:text-white transition-colors {{ request()->routeIs('legal.privacy') ? 'text-white font-semibold' : '' }}">
+              Politica de privacidad
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('legal.terms') }}"
+              class="hover:text-white transition-colors {{ request()->routeIs('legal.terms') ? 'text-white font-semibold' : '' }}">
+              Condiciones del servicio
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('legal.data-deletion') }}"
+              class="hover:text-white transition-colors {{ request()->routeIs('legal.data-deletion', 'legal.deleteuserdata.instructions', 'legal.deleteuserdata.status') ? 'text-white font-semibold' : '' }}">
+              Eliminacion de datos
+            </a>
+          </li>
         </ul>
       </div>
 

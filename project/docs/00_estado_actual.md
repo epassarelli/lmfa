@@ -1,7 +1,7 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-08-10 (BL-0011B corregida en Laravel para categorias evergreen por slug/nombre/ID, mas tanda integral de performance backend/frontend/mobile y AGENTS.md consolidado)
+> Ultima actualizacion: 2026-08-20 (paginas legales y flujo Meta/Facebook de eliminacion de datos implementados, con callback firmado, estado publico y tests dedicados; migracion nueva aun pendiente de ejecutar en la BD local)
 
 ---
 
@@ -269,6 +269,7 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 
 - **Pasarela de Contenidos** (`/admin/pasarela`): dashboards, social accounts, publication requests, notifications y templates. Codigo completo, nunca probado end-to-end en produccion.
 - **Colaboraciones UGC** (`/admin/contribuir`): flujo unificado para contribuciones. Noticias verificadas end-to-end; el resto del flujo todavia requiere validacion operativa completa en produccion.
+- **Legales + Meta/Facebook**: paginas publicas en `/privacidad`, `/condiciones`, `/eliminacion-de-datos`, compatibilidad historica en `GET /deleteuserdata`, callback `POST /deleteuserdata` con `signed_request` firmado, persistencia `data_deletion_requests` y estado publico en `/deleteuserdata/status/{confirmationCode}`. Validado localmente con suite dedicada; pendiente aplicar migracion en BD local/produccion y configurar las URLs en Meta.
 
 ### Modulos diferidos - proxima version
 
@@ -318,6 +319,15 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 | Gobernanza del repo | `AGENTS.md` estaba incompleto respecto del criterio operativo actual | Se consolido el archivo y se incorporo la politica transversal de performance, UX y SEO por defecto |
 | API Enciclopedia / automatizacion editorial | El circuito Google Sheets/Apps Script podia bloquear Evergreen con `422` por categoria si la automatizacion dependia de IDs numericos o mandaba una familia invalida/inactiva | La API ahora resuelve categoria evergreen por `knowledge_category_id`, `knowledge_category_slug` o `knowledge_category_name`, exige que la familia exista y este activa, y devuelve `code: BLOQUEADO_CATEGORIA` cuando el error es deterministico |
 
+### 2026-08-20
+
+| Area | Problema | Fix |
+|------|----------|-----|
+| Cumplimiento Meta / legales | Las URLs requeridas por Meta para politica, condiciones, eliminacion de datos y callback devolvian `404` y no existia trazabilidad local para solicitudes de borrado | Se agregaron paginas publicas legales, callback `POST /deleteuserdata` con verificacion `HMAC-SHA256`, persistencia `data_deletion_requests`, estado publico por codigo y limpieza transaccional/idempotente de vinculos Facebook |
+| Seguridad web | El callback externo de Meta necesitaba entrar sin CSRF, pero no podia abrirse toda la proteccion del sitio | `VerifyCsrfToken` ahora exceptua solo `deleteuserdata` y el endpoint usa `throttle:meta-deleteuserdata` |
+| Configuracion OAuth Facebook | La configuracion seguia dependiendo de `FACEBOOK_REDIRECT_URL` y no dejaba explicita la URI canonica requerida | `config/services.php` ahora acepta `FACEBOOK_REDIRECT_URI` con fallback seguro, `.env.example` expone las variables Facebook/Google y la callback canonica `.com` |
+| Testing | No habia pruebas automaticas para el flujo legal/Meta | Se agrego `tests/Feature/MetaDataDeletionFlowTest.php` cubriendo paginas `200`, firma valida/invalida, idempotencia, URL canonica, estado publico y preservacion editorial |
+
 ---
 
 ## Archivos eliminados - 2026-04-26
@@ -345,11 +355,22 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 - `php artisan migrate:status`
 - `php artisan test tests/Feature/Knowledge/KnowledgeAuthorizationTest.php tests/Feature/Knowledge/KnowledgeCategorySeederTest.php tests/Feature/Knowledge/KnowledgeArticleApiTest.php tests/Feature/Knowledge/KnowledgeFrontendVisibilityTest.php`
 - `php artisan test tests/Feature/Festivals/FestivalFrontendRestructureTest.php tests/Feature/Seo/PublicTemplateSeoTest.php tests/Feature/Seo/SeoInfrastructureTest.php`
+- `php artisan test tests/Feature/Mitos/MitosFrontendTest.php`
+- `docker compose exec -T app php artisan route:list --path=deleteuserdata`
+- `docker compose exec -T app php artisan test tests/Feature/MetaDataDeletionFlowTest.php`
+- `docker compose exec -T app php artisan test`
+- `curl -I http://localhost/privacidad`
+- `curl -I http://localhost/condiciones`
+- `curl -I http://localhost/eliminacion-de-datos`
+- `curl -I http://localhost/deleteuserdata`
 
 Resultados recientes relevantes:
 
 - Knowledge: `9 passed (18 assertions)`
 - SEO + Festivales + Canonical + Sitemaps: `30 passed (52060 assertions)` en la tanda previa y `27 passed (52046 assertions)` en las ultimas tandas de performance/mobile
+- Mitos frontend: cobertura dedicada agregada para `/mitos-y-leyendas-argentinas`; ejecucion pendiente en un entorno con `php` disponible
+- Meta legales/data deletion: `10 passed (50 assertions)`
+- `php artisan test` completo: bloqueado por un error de sintaxis preexistente en `tests/Feature/TwoFactorAuthenticationSettingsTest.php` (`unexpected token "public"`), ajeno a este cambio
 
 ### Medicion local orientativa de performance
 
@@ -371,3 +392,5 @@ Nota: los `curl` locales no reflejan completamente la mejora de Core Web Vitals 
 4. Evaluar limpieza de tablas legacy (`noticias`, `shows`, `images`) despues de confirmar que no exista informacion unica.
 5. Verificar si conviene actualizar la imagen de MariaDB del stack local para evitar el bug de DDL observado en WSL/Docker.
 6. Validar en el Apps Script externo que los `422` con `code: BLOQUEADO_CATEGORIA` pasen a estado de correccion y no vuelvan a reintentarse automaticamente.
+7. Ejecutar la migracion `2026_08_20_120000_create_data_deletion_requests_table` en los entornos correspondientes y configurar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`).
+8. Corregir el error de sintaxis preexistente en `tests/Feature/TwoFactorAuthenticationSettingsTest.php` para recuperar la ejecucion completa de `php artisan test`.

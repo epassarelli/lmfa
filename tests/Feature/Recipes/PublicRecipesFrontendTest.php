@@ -11,6 +11,54 @@ class PublicRecipesFrontendTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
+    public function recipes_home_renders_published_collections_successfully(): void
+    {
+        DB::table('comidas')->insert([
+            [
+                'id' => 80101,
+                'titulo' => 'Humita en chala',
+                'slug' => 'humita-en-chala',
+                'receta' => '<p>Receta publicada.</p>',
+                'foto' => 'humita-en-chala.jpg',
+                'visitas' => 10,
+                'estado' => 1,
+                'created_at' => now()->subDays(2),
+                'updated_at' => now()->subDay(),
+            ],
+            [
+                'id' => 80102,
+                'titulo' => 'Mazamorra criolla',
+                'slug' => 'mazamorra-criolla',
+                'receta' => '<p>Otra receta publicada.</p>',
+                'foto' => 'mazamorra-criolla.jpg',
+                'visitas' => 25,
+                'estado' => 1,
+                'created_at' => now()->subDay(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 80103,
+                'titulo' => 'Receta oculta',
+                'slug' => 'receta-oculta',
+                'receta' => '<p>No deberia verse.</p>',
+                'foto' => 'receta-oculta.jpg',
+                'visitas' => 99,
+                'estado' => 0,
+                'created_at' => now()->subDay(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        $response = $this->call('GET', '/recetas-de-comidas-tipicas-argentinas', [], [], [], $this->serverVariables());
+
+        $response->assertOk();
+        $response->assertSee('Recetas de comidas');
+        $response->assertSee('Humita en chala');
+        $response->assertSee('Mazamorra criolla');
+        $response->assertDontSee('Receta oculta');
+    }
+
+    /** @test */
     public function recipe_detail_uses_clean_metadata_keeps_canonical_and_does_not_emit_incomplete_recipe_schema(): void
     {
         DB::table('comidas')->insert([

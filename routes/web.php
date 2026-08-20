@@ -24,6 +24,7 @@ use App\Http\Controllers\Frontend\FolkloreTournamentController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\InterpretesController;
 use App\Http\Controllers\Frontend\KnowledgeController;
+use App\Http\Controllers\Frontend\LegalController;
 use App\Http\Controllers\Frontend\MitosController;
 use App\Http\Controllers\Frontend\PeniasController;
 use App\Http\Controllers\Frontend\RadiosController;
@@ -48,6 +49,17 @@ Route::get('/sitemap-news.xml', [SitemapController::class, 'legacyGoogleNews'])-
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Legales / cumplimiento Meta
+Route::get('/privacidad', [LegalController::class, 'privacy'])->name('legal.privacy');
+Route::get('/condiciones', [LegalController::class, 'terms'])->name('legal.terms');
+Route::get('/eliminacion-de-datos', [LegalController::class, 'dataDeletion'])->name('legal.data-deletion');
+Route::get('/deleteuserdata', [LegalController::class, 'deleteUserDataInstructions'])->name('legal.deleteuserdata.instructions');
+Route::post('/deleteuserdata', [LegalController::class, 'handleDeleteUserData'])
+    ->middleware('throttle:meta-deleteuserdata')
+    ->name('legal.deleteuserdata.callback');
+Route::get('/deleteuserdata/status/{confirmationCode}', [LegalController::class, 'deletionStatus'])
+    ->name('legal.deleteuserdata.status');
 
 // Secciones generales (con slugs largos ya posicionados)
 Route::get('/noticias-del-folklore-argentino', [NoticiasController::class, 'index'])->name('noticias.index');

@@ -20,7 +20,7 @@ class RecetasController extends Controller
 
     public function index()
     {
-        $ultimas = Cache::remember("comidas:letter:{$letra}:ultimas", 600, function () {
+        $ultimas = Cache::remember('comidas:index:ultimas', 600, function () {
             return Comida::query()
                 ->where('estado', 1)
                 ->with('images')
@@ -28,7 +28,7 @@ class RecetasController extends Controller
                 ->take(6)
                 ->get();
         });
-        $visitadas = Cache::remember("comidas:letter:{$letra}:visitadas", 600, function () {
+        $visitadas = Cache::remember('comidas:index:visitadas', 600, function () {
             return Comida::query()
                 ->where('estado', 1)
                 ->with('images')

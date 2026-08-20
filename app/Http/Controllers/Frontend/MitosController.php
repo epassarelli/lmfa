@@ -19,7 +19,7 @@ class MitosController extends Controller
 
     public function index()
     {
-        $ultimos = Cache::remember("mitos:letter:{$letra}:ultimos", 600, function () {
+        $ultimos = Cache::remember('mitos:index:ultimos', 600, function () {
             return Mito::query()
                 ->where('estado', 1)
                 ->with('images')
@@ -27,7 +27,7 @@ class MitosController extends Controller
                 ->take(6)
                 ->get();
         });
-        $visitados = Cache::remember("mitos:letter:{$letra}:visitados", 600, function () {
+        $visitados = Cache::remember('mitos:index:visitados', 600, function () {
             return Mito::query()
                 ->where('estado', 1)
                 ->with('images')

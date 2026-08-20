@@ -10,7 +10,7 @@
         <article class="flex items-center gap-3 border border-gray-100 p-2 rounded-lg shadow-sm hover:shadow transition">
           <img src="{{ asset('img/mito-default.svg') }}" alt="{{ $mito->titulo }}" class="w-12 h-12 object-contain">
           <div class="flex-1">
-            <a href="{{ route('mito.show', $mito->slug) }}" class="hover:text-[#ff661f] font-semibold">
+            <a href="{{ route('mitos.show', $mito->slug) }}" class="hover:text-[#ff661f] font-semibold">
               {{ Str::limit($mito->titulo, 50) }}
             </a>
           </div>
