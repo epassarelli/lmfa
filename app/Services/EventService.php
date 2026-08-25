@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Event;
+use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -23,6 +24,12 @@ class EventService
     {
         return DB::transaction(function () use ($data, $image) {
             $data['created_by'] = $data['created_by'] ?? auth()->id();
+
+            foreach (['body', 'detalles'] as $field) {
+                if (array_key_exists($field, $data)) {
+                    $data[$field] = RichTextHeadingSanitizer::normalize($data[$field]);
+                }
+            }
 
             if (empty($data['slug'])) {
                 $data['slug'] = Str::slug($data['title'].'-'.now()->timestamp);
@@ -72,6 +79,12 @@ class EventService
     public function updateEvent(Event $event, array $data, ?UploadedFile $image = null): Event
     {
         return DB::transaction(function () use ($event, $data, $image) {
+            foreach (['body', 'detalles'] as $field) {
+                if (array_key_exists($field, $data)) {
+                    $data[$field] = RichTextHeadingSanitizer::normalize($data[$field]);
+                }
+            }
+
             if (isset($data['estado'])) {
                 $data['editorial_status'] = $data['estado'] == 1 ? 'published' : 'draft';
                 unset($data['estado']);

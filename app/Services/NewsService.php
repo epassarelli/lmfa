@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\News;
 use App\Support\NewsImagePathResolver;
+use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -38,6 +39,12 @@ class NewsService
                 // 2. Mapeo de campos legacy
                 if (isset($data['publicar'])) {
                     $data['published_at'] = $data['publicar'];
+                }
+
+                foreach (['body', 'noticia'] as $field) {
+                    if (array_key_exists($field, $data)) {
+                        $data[$field] = RichTextHeadingSanitizer::normalize($data[$field]);
+                    }
                 }
 
                 if (isset($data['interprete_principal_id'])) {
@@ -107,6 +114,12 @@ class NewsService
                 // 1. Mapeo de campos legacy
                 if (isset($data['publicar'])) {
                     $data['published_at'] = $data['publicar'];
+                }
+
+                foreach (['body', 'noticia'] as $field) {
+                    if (array_key_exists($field, $data)) {
+                        $data[$field] = RichTextHeadingSanitizer::normalize($data[$field]);
+                    }
                 }
 
                 if (isset($data['interprete_principal_id'])) {

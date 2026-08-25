@@ -34,6 +34,21 @@
 - Antes de renombrar o quitar una variable, listar todas las vistas que la consumen.
 - Si un controlador inyecta variables a un `View::share()` o `ViewComposer`, no tocar sin inventario completo.
 
+### Listados backend server-side
+- Todo listado administrativo nuevo o refactorizado en backend/pasarela debe priorizar un patron **server-side unificado** por defecto.
+- El contrato base del listado debe contemplar como minimo: `search`, `sort`, `direction`, paginacion y preservacion de estado en URL.
+- El ordenamiento debe implementarse con **whitelist explicita por modulo**; nunca aceptar columnas arbitrarias desde request.
+- Los encabezados de columnas ordenables deben resolverse con interaccion **server-side** y reflejar el estado de orden activo.
+- La definicion funcional del listado debe separar:
+  - columnas visibles
+  - columnas buscables
+  - columnas ordenables
+  - filtros permitidos
+  - orden por defecto y desempate estable
+- No replicar por defecto patrones client-side legacy heterogeneos si no existe una spec aprobada que lo justifique.
+- Si un listado legacy usa `get()`, colecciones completas o DataTables viejos, primero debe migrarse a query paginada server-side antes de sumar discovery avanzado.
+- Todo cambio en listados debe evaluar impacto de performance: `select()` acotado, `with()` minimo necesario, `withCount()` cuando corresponda, y revision de `whereHas()` / indices si la busqueda relacional crece.
+
 ### Migrations y base de datos
 - Nuevas migrations siempre con guards: `Schema::hasTable()` / `Schema::hasColumn()` / `IF NOT EXISTS`.
 - Nunca ejecutar `php artisan migrate` sin mostrar `migrate:status` y esperar confirmación del usuario.
@@ -60,15 +75,15 @@ Todo spec debe cubrir las siguientes secciones (ver `_template.md`):
 
 ```
 1. Agente escribe el spec en project/specs/<id>_<slug>.md
-2. Agente presenta el spec al usuario — NO implementa
-3. Usuario revisa y aprueba (o pide cambios al spec)
-4. Agente implementa estrictamente lo descrito en el spec aprobado
+2. Si el cambio es de riesgo alto, ambiguo o con impacto estructural: agente presenta el spec al usuario y espera aprobación
+3. Si la tarea es `IA_AUTONOMA` o `IA_CON_VALIDACION`, el alcance es reversible y no toca producción, secretos ni operaciones destructivas: el agente puede autoaprobar el spec dejando trazabilidad explícita
+4. Agente implementa estrictamente lo descrito en el spec aprobado o autoaprobado
 5. Agente ejecuta el checklist de validación
-6. Agente actualiza backlog.json y docs/00_estado_actual.md
-7. Commit con formato de convención
+6. Agente actualiza `project/docs/backlog.json` sólo si corresponde como legado histórico y siempre actualiza `project/docs/00_estado_actual.md`
+7. Commit con formato de convención cuando el usuario lo pida o el flujo lo habilite
 ```
 
-> **Regla de oro:** Si no hay spec aprobado, no hay código.
+> **Regla de oro:** Si no hay spec trazable, no hay código.
 
 ---
 

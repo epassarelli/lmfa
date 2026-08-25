@@ -12,6 +12,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Services\ImageUploadService;
+use App\Support\BackendListing;
 
 class InterpreteController extends Controller
 {
@@ -24,11 +25,26 @@ class InterpreteController extends Controller
     $this->authorizeResource(Interprete::class, 'interprete');
   }
 
-  public function index()
+  public function index(Request $request)
   {
+    [$sort, $direction] = BackendListing::resolveSort(
+      $request,
+      ['id', 'interprete', 'correo', 'visitas', 'noticias_count', 'shows_count', 'discos_count', 'canciones_count'],
+      'noticias_count'
+    );
+
     $interpretes = Interprete::withCount(['noticias', 'shows', 'discos', 'canciones'])
       ->with(['images'])
-      ->orderByDesc('noticias_count')
+      ->when($request->filled('search'), function ($query) use ($request) {
+        $search = $request->string('search')->trim()->toString();
+
+        $query->where(function ($inner) use ($search) {
+          $inner->where('interprete', 'like', '%'.$search.'%')
+            ->orWhere('correo', 'like', '%'.$search.'%');
+        });
+      })
+      ->orderBy($sort, $direction)
+      ->orderByDesc('id')
       ->paginate(25)
       ->withQueryString();
     return view('backend.interpretes.index', compact('interpretes'));

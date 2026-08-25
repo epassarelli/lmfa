@@ -26,7 +26,7 @@ class InterpretesController extends Controller
             ->select(['id', 'interprete', 'slug', 'foto', 'biografia', 'visitas'])
             ->with('images')
             ->orderBy('interprete', 'asc')
-            ->simplePaginate(24);
+            ->simplePaginate(12);
 
         $alphabet = range('a', 'z');
         $metaTitle = 'Biografias de Artistas del Folklore Argentino: Historia y Trayectoria';
@@ -148,7 +148,7 @@ class InterpretesController extends Controller
             ->with('images')
             ->whereRaw('LOWER(interprete) LIKE ?', [$letra.'%'])
             ->orderBy('interprete', 'asc')
-            ->simplePaginate(24);
+            ->simplePaginate(12);
 
         $alphabet = range('a', 'z');
         $metaTitle = "Biografias de interpretes folkloricos de Argentina que comienzan con {$letra}";

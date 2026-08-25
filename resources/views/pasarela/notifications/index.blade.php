@@ -29,8 +29,22 @@
     </div>
 @endif
 
-<div class="card">
-    <div class="card-body p-0">
+<div class="card card-outline card-primary shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title">Listado de Notificaciones</h3>
+    </div>
+    <div class="card-body pb-0">
+        <x-admin-listing-toolbar
+            :action="route('pasarela.notifications.index')"
+            search-placeholder="Buscar por titulo o mensaje"
+            :sort-options="[
+                'created_at' => 'Fecha',
+                'title' => 'Titulo',
+                'is_read' => 'Lectura',
+            ]"
+        />
+    </div>
+    <div class="card-body p-0 pt-0">
         @forelse($notifications as $notification)
             <div class="d-flex align-items-start p-3 border-bottom {{ $notification->is_read ? '' : 'bg-light' }}">
                 <div class="mr-3">
@@ -73,7 +87,7 @@
         @endforelse
     </div>
     @if($notifications->hasPages())
-        <div class="card-footer">
+        <div class="card-footer bg-white">
             {{ $notifications->links() }}
         </div>
     @endif

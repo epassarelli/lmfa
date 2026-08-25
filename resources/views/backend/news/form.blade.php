@@ -44,7 +44,7 @@
   <div class="col-md-12">
     <div class="form-group">
       <label for="noticia">Cuerpo de la noticia <span class="text-danger">*</span></label>
-      <textarea name="noticia" id="editor" class="form-control" rows="10">{{ old('noticia', $news->body ?? '') }}</textarea>
+      <textarea name="noticia" id="editor" class="form-control" rows="10" data-ckeditor-profile="editorial-body">{{ old('noticia', $news->body ?? '') }}</textarea>
       @error('noticia') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>

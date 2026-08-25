@@ -2,13 +2,21 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreFestivalRequest extends FormRequest
 {
+    use NormalizesRichTextFields;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeRichTextFields(['body']);
     }
 
     public function rules(): array

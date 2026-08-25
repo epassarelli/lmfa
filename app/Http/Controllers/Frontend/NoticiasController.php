@@ -32,14 +32,14 @@ class NoticiasController extends Controller
             ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'images'])
             ->latest('published_at')
             ->latest('created_at')
-            ->simplePaginate(16);
+            ->simplePaginate(12);
 
         $ultimasSidebar = Cache::remember('news:index:sidebar', now()->addMinutes(10), function () {
             return News::publishedVisible()
                 ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'images'])
                 ->latest('published_at')
                 ->latest('created_at')
-                ->take(10)
+                ->take(4)
                 ->get();
         });
 

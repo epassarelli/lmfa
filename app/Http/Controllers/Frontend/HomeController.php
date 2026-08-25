@@ -16,7 +16,7 @@ class HomeController extends Controller
                 ->with(['categoria:id,nombre', 'images'])
                 ->latest('published_at')
                 ->latest('created_at')
-                ->take(12)
+                ->take(6)
                 ->get();
         });
 

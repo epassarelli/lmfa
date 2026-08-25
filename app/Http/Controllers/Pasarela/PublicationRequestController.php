@@ -10,6 +10,7 @@ use App\Models\PublicationTarget;
 use App\Models\SocialAccount;
 use App\Jobs\Publication\PublishToProviderJob;
 use App\Services\Publication\PublicationService;
+use App\Support\BackendListing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -115,12 +116,31 @@ class PublicationRequestController extends Controller
     /**
      * Listar las solicitudes de publicación del usuario autenticado.
      */
-    public function index()
+    public function index(Request $request)
     {
+        [$sort, $direction] = BackendListing::resolveSort(
+            $request,
+            ['id', 'content_type', 'mode', 'status', 'created_at', 'targets_count'],
+            'created_at'
+        );
+
         $requests = PublicationRequest::where('requested_by', Auth::id())
-            ->with('targets')
-            ->orderByDesc('created_at')
-            ->paginate(15);
+            ->withCount('targets')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->string('search')->trim()->toString();
+
+                $query->where(function ($inner) use ($search) {
+                    $inner->where('id', 'like', '%'.$search.'%')
+                        ->orWhere('content_type', 'like', '%'.$search.'%')
+                        ->orWhere('content_id', 'like', '%'.$search.'%')
+                        ->orWhere('mode', 'like', '%'.$search.'%')
+                        ->orWhere('status', 'like', '%'.$search.'%');
+                });
+            })
+            ->orderBy($sort, $direction)
+            ->orderByDesc('id')
+            ->paginate(15)
+            ->withQueryString();
 
         return view('pasarela.publication_requests.index', [
             'requests' => $requests,

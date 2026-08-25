@@ -8,6 +8,8 @@ use App\Models\Categoria;
 use App\Models\Interprete;
 use App\Models\News;
 use App\Services\NewsService;
+use App\Support\BackendListing;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Log;
@@ -23,18 +25,40 @@ class NewsController extends Controller
         $this->authorizeResource(News::class, 'news');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', News::class);
 
+        [$sort, $direction] = BackendListing::resolveSort(
+            $request,
+            ['published_at', 'title', 'visitas', 'estado'],
+            'published_at'
+        );
+
         $query = News::with(['interpretes:id,interprete', 'user:id,name', 'categoria:id,nombre'])
-            ->orderByDesc('published_at')
-            ->orderByDesc('created_at');
+            ->when($request->filled('search'), function ($builder) use ($request) {
+                $search = $request->string('search')->trim()->toString();
+
+                $builder->where(function ($inner) use ($search) {
+                    $inner->where('title', 'like', '%'.$search.'%')
+                        ->orWhere('editorial_status', 'like', '%'.$search.'%')
+                        ->orWhereHas('interpretes', fn ($relation) => $relation->where('interprete', 'like', '%'.$search.'%'))
+                        ->orWhereHas('categoria', fn ($relation) => $relation->where('nombre', 'like', '%'.$search.'%'));
+                });
+            });
 
         // Si no es admin, solo ve lo suyo
         if (!auth()->user()->isAdmin()) {
             $query->where('created_by', auth()->id());
         }
+
+        if ($sort === 'estado') {
+            $query->orderBy('editorial_status', $direction);
+        } else {
+            $query->orderBy($sort, $direction);
+        }
+
+        $query->orderByDesc('created_at')->orderByDesc('id');
 
         $news = $query->paginate(25)->withQueryString();
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Permission\Models\Role;
+use App\Support\BackendListing;
 
 class UserController extends Controller
 {
@@ -17,10 +18,28 @@ class UserController extends Controller
 
     public function index()
     {
+        $request = request();
+        [$sort, $direction] = BackendListing::resolveSort(
+            $request,
+            ['id', 'name', 'email'],
+            'name',
+            'asc'
+        );
+
         // Obtiene todos los usuarios con sus roles
         $data = User::with('roles:id,name')
             ->select(['id', 'name', 'email'])
-            ->orderBy('name')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->string('search')->trim()->toString();
+
+                $query->where(function ($inner) use ($search) {
+                    $inner->where('name', 'like', '%'.$search.'%')
+                        ->orWhere('email', 'like', '%'.$search.'%')
+                        ->orWhereHas('roles', fn ($roles) => $roles->where('name', 'like', '%'.$search.'%'));
+                });
+            })
+            ->orderBy($sort, $direction)
+            ->orderBy('id')
             ->paginate(25)
             ->withQueryString();
 

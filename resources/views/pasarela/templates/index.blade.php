@@ -19,10 +19,26 @@
     </div>
 @endif
 
-<div class="card">
-    <div class="card-body p-0">
-        <table class="table table-striped table-hover mb-0">
-            <thead class="thead-dark">
+<div class="card card-outline card-primary shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title">Listado de Templates</h3>
+    </div>
+    <div class="card-body pb-0">
+        <x-admin-listing-toolbar
+            :action="route('pasarela.templates.index')"
+            search-placeholder="Buscar por proveedor, tipo o variante"
+            :sort-options="[
+                'provider' => 'Proveedor',
+                'content_type' => 'Tipo de contenido',
+                'variant_name' => 'Variante',
+                'is_active' => 'Estado',
+            ]"
+        />
+    </div>
+    <div class="card-body p-0 pt-0">
+        <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="thead-light">
                 <tr>
                     <th>Proveedor</th>
                     <th>Tipo de contenido</th>
@@ -70,9 +86,10 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
     @if($templates->hasPages())
-        <div class="card-footer">
+        <div class="card-footer bg-white">
             {{ $templates->links() }}
         </div>
     @endif

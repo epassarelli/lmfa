@@ -86,7 +86,7 @@ class MitosController extends Controller
                 ->where('estado', 1)
                 ->with('images')
                 ->orderByDesc('id')
-                ->take(12)
+                ->take(6)
                 ->get();
         });
         $visitados = Cache::remember('mitos:index:visitados', 600, function () {
@@ -94,7 +94,7 @@ class MitosController extends Controller
                 ->where('estado', 1)
                 ->with('images')
                 ->orderByDesc('visitas')
-                ->take(12)
+                ->take(6)
                 ->get();
         });
         $mitos = Mito::query()

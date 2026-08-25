@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreFestivalRequest;
 use App\Http\Requests\Api\UpdateFestivalRequest;
 use App\Models\Festival;
+use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -66,7 +67,7 @@ class FestivalController extends Controller
         }
 
         $validated['title'] = $title;
-        $validated['body'] = $body;
+        $validated['body'] = RichTextHeadingSanitizer::normalize($body);
 
         if (! array_key_exists('published_at', $validated) && $festival?->published_at) {
             $validated['published_at'] = $festival->published_at;

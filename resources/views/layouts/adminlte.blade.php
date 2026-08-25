@@ -13,7 +13,7 @@
 
 @section('css')
 
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  @vite(['resources/css/app-admin.css', 'resources/js/app.js'])
   @livewireStyles
 
 @stop

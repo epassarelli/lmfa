@@ -19,19 +19,34 @@
         </div>
     @endif
 
-    <div class="card">
+    <div class="card card-outline card-primary shadow-sm">
         <div class="card-header">
             <h3 class="card-title">Historial de publicaciones</h3>
         </div>
-        <div class="card-body p-0">
+        <div class="card-body pb-0">
+            <x-admin-listing-toolbar
+                :action="route('pasarela.publication-requests.index')"
+                search-placeholder="Buscar por id, contenido, modo o estado"
+                :sort-options="[
+                    'created_at' => 'Fecha',
+                    'id' => 'ID',
+                    'content_type' => 'Contenido',
+                    'mode' => 'Modo',
+                    'status' => 'Estado',
+                    'targets_count' => 'Targets',
+                ]"
+            />
+        </div>
+        <div class="card-body p-0 pt-0">
             @if ($requests->isEmpty())
                 <div class="p-4 text-center text-muted">
                     <i class="fas fa-inbox fa-2x mb-2"></i><br>
                     No tenés solicitudes de publicación todavía.
                 </div>
             @else
-                <table class="table table-striped table-hover mb-0">
-                    <thead>
+                <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="thead-light">
                         <tr>
                             <th>#</th>
                             <th>Contenido</th>
@@ -60,7 +75,7 @@
                                     #{{ $req->content_id }}
                                 </td>
                                 <td>{{ $req->mode }}</td>
-                                <td>{{ $req->targets->count() }}</td>
+                                <td>{{ $req->targets_count }}</td>
                                 <td><span class="badge badge-{{ $color }}">{{ $req->status }}</span></td>
                                 <td>{{ $req->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
@@ -73,10 +88,11 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
             @endif
         </div>
         @if ($requests->hasPages())
-            <div class="card-footer">
+            <div class="card-footer bg-white">
                 {{ $requests->links() }}
             </div>
         @endif

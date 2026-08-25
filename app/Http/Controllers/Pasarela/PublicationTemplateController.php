@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pasarela;
 
 use App\Http\Controllers\Controller;
 use App\Models\PublicationTemplate;
+use App\Support\BackendListing;
 use Illuminate\Http\Request;
 
 class PublicationTemplateController extends Controller
@@ -12,12 +13,29 @@ class PublicationTemplateController extends Controller
     private const CONTENT_TYPES = ['App\Models\Event', 'App\Models\News'];
     private const VARIANTS = ['default', 'facebook_default', 'instagram_default', 'telegram_default', 'institutional'];
 
-    public function index()
+    public function index(Request $request)
     {
-        $templates = PublicationTemplate::orderBy('provider')
-            ->orderBy('content_type')
-            ->orderBy('variant_name')
-            ->paginate(20);
+        [$sort, $direction] = BackendListing::resolveSort(
+            $request,
+            ['provider', 'content_type', 'variant_name', 'is_active'],
+            'provider',
+            'asc'
+        );
+
+        $templates = PublicationTemplate::query()
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->string('search')->trim()->toString();
+
+                $query->where(function ($inner) use ($search) {
+                    $inner->where('provider', 'like', '%'.$search.'%')
+                        ->orWhere('content_type', 'like', '%'.$search.'%')
+                        ->orWhere('variant_name', 'like', '%'.$search.'%');
+                });
+            })
+            ->orderBy($sort, $direction)
+            ->orderBy('id')
+            ->paginate(20)
+            ->withQueryString();
 
         return view('pasarela.templates.index', compact('templates'));
     }

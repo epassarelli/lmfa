@@ -29,7 +29,7 @@ class CancionesController extends Controller
                 'albunes.interprete:id,interprete,slug',
             ])
             ->orderBy('cancion', 'asc')
-            ->simplePaginate(36);
+            ->simplePaginate(18);
 
         $metaTitle = 'Letras de Canciones del Folklore Argentino | Cancionero Popular';
         $metaDescription = 'Encuentra letras de canciones del folklore argentino y explora un cancionero popular pensado para consulta y descubrimiento.';
@@ -52,7 +52,7 @@ class CancionesController extends Controller
             ])
             ->where('cancion', 'LIKE', $letra.'%')
             ->orderBy('cancion', 'asc')
-            ->simplePaginate(36);
+            ->simplePaginate(18);
 
         $metaTitle = "Letras de Canciones folkloricas de Argentina que comienzan con {$letra}";
         $metaDescription = "Letras de Canciones folkloricas de Argentina que comienzan con {$letra}";

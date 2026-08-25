@@ -31,13 +31,18 @@
     "file": "assets/fa-v4compatibility-BRdYr4HJ.woff2",
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2"
   },
+  "resources/css/app-admin.css": {
+    "file": "assets/app-admin-oOI2T85r.css",
+    "src": "resources/css/app-admin.css",
+    "isEntry": true
+  },
   "resources/css/app-public.css": {
-    "file": "assets/app-public-B3ZV_fPr.css",
+    "file": "assets/app-public-Df-GDclS.css",
     "src": "resources/css/app-public.css",
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-ToZQqn9v.css",
+    "file": "assets/app-Bo0tQV82.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },

@@ -2,29 +2,37 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateArtistRequest extends FormRequest
 {
-  public function authorize(): bool
-  {
-    return true;
-  }
+    use NormalizesRichTextFields;
 
-  public function rules(): array
-  {
-    return [
-      'interprete' => 'sometimes|string|max:255',
-      'biografia' => 'sometimes|string',
-      'foto' => 'nullable|string',
-      'correo' => 'nullable|email|max:255',
-      'telefono' => 'nullable|string|max:255',
-      'facebook' => 'nullable|url',
-      'instagram' => 'nullable|url',
-      'twitter' => 'nullable|url',
-      'web' => 'nullable|url',
-      'estado' => 'nullable|boolean',
-      'user_id' => 'sometimes|exists:users,id',
-    ];
-  }
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeRichTextFields(['biografia']);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'interprete' => 'sometimes|string|max:255',
+            'biografia' => 'sometimes|string',
+            'foto' => 'nullable|string',
+            'correo' => 'nullable|email|max:255',
+            'telefono' => 'nullable|string|max:255',
+            'facebook' => 'nullable|url',
+            'instagram' => 'nullable|url',
+            'twitter' => 'nullable|url',
+            'web' => 'nullable|url',
+            'estado' => 'nullable|boolean',
+            'user_id' => 'sometimes|exists:users,id',
+        ];
+    }
 }

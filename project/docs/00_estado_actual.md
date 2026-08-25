@@ -1,13 +1,13 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-08-20 (paginas legales y flujo Meta/Facebook de eliminacion de datos implementados, con callback firmado, estado publico y tests dedicados; migracion nueva aun pendiente de ejecutar en la BD local)
+> Ultima actualizacion: 2026-08-21 (inventario tecnico y legacy completado sobre repo + BD local; paginas legales y flujo Meta/Facebook de eliminacion de datos implementados, con callback firmado, estado publico y tests dedicados; cierre falso de BL-0011F reabierto en Drive como `Parcial`; runner nativo read-only para backlog de Drive y tarea programada deshabilitada preparados sin escrituras activas; auditoria de contratos editoriales por entidad cerrada con BD local en lectura y contraste publico `200` de sus siete superficies en `project/docs/10_auditoria_contratos_editoriales.md`; migracion nueva aun pendiente de ejecutar en la BD local)
 
 ---
 
 ## Rama activa
 
-`main` - rama activa actual. Contiene la unificacion arquitectonica, la Pasarela de Contenidos, el nuevo `NewsService` unificado, la infraestructura SEO/sitemaps y la tanda de optimizacion de performance realizada el 2026-08-09/10.
+`20260820` - rama activa observada en este entorno durante la auditoria del 2026-08-20. Contiene worktree con cambios locales en curso sobre formularios, requests, servicios y automatizacion/documentacion MFA.
 
 **Flujo de ramas:** `dev` -> rama feature/version -> validar -> merge a `dev` -> deploy desde `main`.
 
@@ -17,7 +17,19 @@
 
 Backlog original completo (PC-01 a PC-13 en `done`). El proyecto esta en fase de **estabilizacion, optimizacion y auditoria** previo a nuevas specs funcionales.
 
+El backlog operativo activo para MFA ya no vive en `project/docs/backlog.json`: la operacion diaria priorizada se sigue en Google Drive (`Backlog Asistente ChatGPT`, pestaña `Backlog`). El JSON local queda como legado estructurado e historico.
+
 Se realizo auditoria completa del codigo el 2026-04-26. Ver seccion de bugs corregidos.
+
+### Gobernanza documental verificada el 2026-08-20
+
+- ruta local contrastada: `C:\proyectos\lmfa`
+- rama contrastada: `20260820`
+- commit contrastado: `20c0394b5a9273b63ee059d52f9c26b627a43da2`
+- precedencia canónica consolidada en `project/docs/FUENTES_CANONICAS.md`
+- matriz puntual de entidades y relaciones consolidada en `project/docs/09_matriz_canonica_entidades_relaciones.md`
+- `project/docs/backlog.json` ratificado como legado no canónico para seguimiento diario
+- `project/docs/01-funcional.md` ratificado como nombre vigente frente a referencias legacy con guion bajo
 
 ---
 
@@ -76,6 +88,7 @@ Se realizo auditoria completa del codigo el 2026-04-26. Ver seccion de bugs corr
 | `audit_logs` | `AuditLog` | Activa |
 | `newsletter_subscribers` | `NewsletterSubscriber` | Activa |
 | `user_notifications` | `UserNotification` | Activa |
+| `data_deletion_requests` | `DataDeletionRequest` | Activa - legales / Meta-Facebook |
 
 #### Torneos folkloricos
 
@@ -128,6 +141,28 @@ Se realizo auditoria completa del codigo el 2026-04-26. Ver seccion de bugs corr
 | `radios` | Existe modelo y rutas frontend. No hay backend administrativo. Requiere auditoria para confirmar alcance real. |
 | `penias` | Existe modelo y rutas frontend. No hay backend administrativo. Requiere auditoria para confirmar alcance real. |
 | `venues` | Existe en BD por la transformacion a `events`, pero no hay `Venue` model en `app/Models`. Estado funcional incompleto / pendiente de auditoria. |
+
+### Observacion puntual de inventario local
+
+Conteos observados en la BD local durante la auditoria del 2026-08-20:
+
+- `news`: 353
+- `events`: 8
+- `noticias`: 0
+- `shows`: 0
+- `publication_requests`: 0
+- `publication_targets`: 0
+- `publication_attempts`: 0
+- `jobs`: 0
+- `failed_jobs`: 0
+- `newsletter_subscribers`: 2
+- `data_deletion_requests`: 0
+
+Lectura correcta:
+
+- `news` y `events` son las tablas canonicas efectivamente cargadas en este entorno local.
+- `noticias` y `shows` siguen existiendo por compatibilidad, pero no contienen datos operativos en esta BD local.
+- La Pasarela de Contenidos esta implementada en codigo y cubierta por tests, pero no presenta actividad cargada en este entorno local al momento de la auditoria.
 
 ### Indices de performance agregados recientemente
 
@@ -250,6 +285,7 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
   - Se priorizo mejor la primera imagen visible de home/noticias.
   - `optimized-image.blade.php` fue reescrito para elegir un `src` inicial mas razonable por variante y usar `decoding="async"`.
   - Se agrego `content-visibility: auto` para sidebar, footer y bloques secundarios de varias homes/listados, buscando reducir costo de render inicial en mobile.
+  - El 2026-08-25 se aplico una nueva tanda de recorte server-side para mobile: home bajo de 12 a 6 noticias iniciales; noticias bajo de 16 a 12 con sidebar de 10 a 4; discos bajo de 24 a 12; letras bajo de 36 a 18; artistas bajo de 24 a 12; festivales redujo destacados/relacionados a 3-4 items; comidas y mitos mantuvieron frontend legacy pero recortaron bloques secundarios alfabeticos de 12 a 6.
 
 - **Criterio de trabajo**:
   - `AGENTS.md` fue consolidado y ahora deja explicito que toda implementacion futura debe priorizar performance, UX y SEO desde el inicio, no como correccion posterior.
@@ -270,12 +306,14 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 - **Pasarela de Contenidos** (`/admin/pasarela`): dashboards, social accounts, publication requests, notifications y templates. Codigo completo, nunca probado end-to-end en produccion.
 - **Colaboraciones UGC** (`/admin/contribuir`): flujo unificado para contribuciones. Noticias verificadas end-to-end; el resto del flujo todavia requiere validacion operativa completa en produccion.
 - **Legales + Meta/Facebook**: paginas publicas en `/privacidad`, `/condiciones`, `/eliminacion-de-datos`, compatibilidad historica en `GET /deleteuserdata`, callback `POST /deleteuserdata` con `signed_request` firmado, persistencia `data_deletion_requests` y estado publico en `/deleteuserdata/status/{confirmationCode}`. Validado localmente con suite dedicada; pendiente aplicar migracion en BD local/produccion y configurar las URLs en Meta.
+- **Inventario tecnico y legacy**: auditoria dedicada consolidada en `project/docs/08_inventario_tecnico_legacy.md`, con evidencia de rutas, tablas, modelos, jobs, integraciones, modulos parciales y estado local de `news` / `events` / `noticias` / `shows` / Pasarela.
 
 ### Modulos diferidos - proxima version
 
 - **Entrevistas**: rutas activas en `web.php`, controller sin metodos `byArtista`/`show`, sin vistas, modelo inexistente.
 - **Radios**: existen rutas `index` y `show` y controller frontend, pero no estan documentados como modulo cerrado ni cuentan con backend administrativo propio. Requiere auditoria puntual para confirmar alcance real.
 - **Penias**: existen rutas `index` y `show` y controller frontend, pero no estan documentadas como modulo cerrado ni cuentan con backend administrativo propio. Requiere auditoria puntual para confirmar alcance real.
+- **Videos**: existe `Frontend/VideosController`, pero referencia un modelo/modulo no consolidado. Debe tratarse como componente incompleto.
 
 ---
 
@@ -327,6 +365,26 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 | Seguridad web | El callback externo de Meta necesitaba entrar sin CSRF, pero no podia abrirse toda la proteccion del sitio | `VerifyCsrfToken` ahora exceptua solo `deleteuserdata` y el endpoint usa `throttle:meta-deleteuserdata` |
 | Configuracion OAuth Facebook | La configuracion seguia dependiendo de `FACEBOOK_REDIRECT_URL` y no dejaba explicita la URI canonica requerida | `config/services.php` ahora acepta `FACEBOOK_REDIRECT_URI` con fallback seguro, `.env.example` expone las variables Facebook/Google y la callback canonica `.com` |
 | Testing | No habia pruebas automaticas para el flujo legal/Meta | Se agrego `tests/Feature/MetaDataDeletionFlowTest.php` cubriendo paginas `200`, firma valida/invalida, idempotencia, URL canonica, estado publico y preservacion editorial |
+| Operacion autonoma MFA | La primera via implementada quedo atada a Laravel + `codex exec`, no es apta como ejecucion live confiable en este host y cerro `BL-0011F` con evidencia local insuficiente | La auditoria reabrio `BL-0011F` en Drive como `Parcial`; se preparo una alternativa nativa read-only en PowerShell con tarea programada deshabilitada y sin escrituras automáticas activas |
+
+### Automatizacion del backlog MFA
+
+- Via anterior auditada:
+  - `php artisan mfa:orchestrate-backlog --project=mfa`
+  - dependia de `config/mfa_orchestrator.php`
+  - el bridge live previsto usaba `codex exec`
+  - `codex exec --help` sigue devolviendo `Acceso denegado` en este host
+  - el adapter live no quedo completo para lectura/escritura real de Drive
+- Correccion operativa:
+  - `BL-0011F` fue reabierta en Drive como `Parcial`
+  - el cierre por fixture/snapshot no se considera evidencia suficiente para marcar `Hecha` en el backlog real
+- Via preparada al cierre de esta sesion:
+  - runner nativo read-only: `scripts/run_mfa_backlog_readonly.ps1`
+  - prueba local segura: `scripts/test_mfa_backlog_readonly.ps1`
+  - tarea programada nativa deshabilitada: `scripts/register_mfa_backlog_readonly_task.ps1`
+  - guia operativa: `project/docs/ia/backlog_drive_readonly_runner.md`
+- Backlog local:
+  - `project/docs/backlog.json` queda marcado como `legacy_reference_only`
 
 ---
 
@@ -359,6 +417,7 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 - `docker compose exec -T app php artisan route:list --path=deleteuserdata`
 - `docker compose exec -T app php artisan test tests/Feature/MetaDataDeletionFlowTest.php`
 - `docker compose exec -T app php artisan test`
+- `docker compose exec -T app php artisan test tests/Feature/Performance/PublicMobilePerformanceBudgetTest.php tests/Feature/Recipes/PublicRecipesFrontendTest.php tests/Feature/Mitos/MitosFrontendTest.php tests/Feature/Festivals/FestivalFrontendRestructureTest.php`
 - `curl -I http://localhost/privacidad`
 - `curl -I http://localhost/condiciones`
 - `curl -I http://localhost/eliminacion-de-datos`
@@ -370,6 +429,7 @@ Resultados recientes relevantes:
 - SEO + Festivales + Canonical + Sitemaps: `30 passed (52060 assertions)` en la tanda previa y `27 passed (52046 assertions)` en las ultimas tandas de performance/mobile
 - Mitos frontend: cobertura dedicada agregada para `/mitos-y-leyendas-argentinas`; ejecucion pendiente en un entorno con `php` disponible
 - Meta legales/data deletion: `10 passed (50 assertions)`
+- Performance public mobile budget + recetas + mitos + festivales: `12 passed (57 assertions)`
 - `php artisan test` completo: bloqueado por un error de sintaxis preexistente en `tests/Feature/TwoFactorAuthenticationSettingsTest.php` (`unexpected token "public"`), ajeno a este cambio
 
 ### Medicion local orientativa de performance
@@ -394,3 +454,7 @@ Nota: los `curl` locales no reflejan completamente la mejora de Core Web Vitals 
 6. Validar en el Apps Script externo que los `422` con `code: BLOQUEADO_CATEGORIA` pasen a estado de correccion y no vuelvan a reintentarse automaticamente.
 7. Ejecutar la migracion `2026_08_20_120000_create_data_deletion_requests_table` en los entornos correspondientes y configurar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`).
 8. Corregir el error de sintaxis preexistente en `tests/Feature/TwoFactorAuthenticationSettingsTest.php` para recuperar la ejecucion completa de `php artisan test`.
+
+9. La auditoría de `BL-0017A` confirmó que Mitos y Leyendas es un módulo legacy-vivo con 284 entradas locales y sin modelo cultural, taxonomías o relaciones. Se acordó documentalmente adaptarlo en `BL-0017B`, sin crear un módulo paralelo ni migrar datos todavía. El test local focalizado pasó (1 prueba, 5 aserciones), pero el contraste público del 2026-08-22 devolvió HTTP 500 en `/mitos-y-leyendas-argentinas`; requiere verificación y despliegue autorizados antes de considerarlo disponible.
+
+10. La auditoría de `BL-0018A` mapeó 4.608 canciones activas y 397 discos activos con rutas, pivots y señales de tráfico locales. Las letras completas carecen de campos de fuente, licencia, autoría o autorización: no se debe automatizar ni ampliar su publicación hasta que exista una decisión humana de derechos y una spec aprobada que distinga obra, versión/grabación y créditos.

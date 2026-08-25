@@ -96,7 +96,7 @@ class RecetasController extends Controller
                 ->where('estado', 1)
                 ->with('images')
                 ->orderByDesc('id')
-                ->take(12)
+                ->take(6)
                 ->get();
         });
         $visitadas = Cache::remember('comidas:index:visitadas', 600, function () {
@@ -104,7 +104,7 @@ class RecetasController extends Controller
                 ->where('estado', 1)
                 ->with('images')
                 ->orderByDesc('visitas')
-                ->take(12)
+                ->take(6)
                 ->get();
         });
         $comidas = Comida::query()

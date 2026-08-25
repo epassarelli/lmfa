@@ -171,7 +171,7 @@
 <!-- Detalle (body) -->
 <div class="form-group">
   <label for="body">Detalles del Evento <span class="text-danger">*</span></label>
-  <textarea name="body" id="body" class="form-control summernote" rows="6" placeholder="Descripción completa del evento...">{{ old('body', $event->body ?? '') }}</textarea>
+  <textarea name="body" id="body" class="form-control summernote" rows="6" placeholder="Descripción completa del evento..." data-summernote-profile="editorial-body">{{ old('body', $event->body ?? '') }}</textarea>
   @error('body')
     <small class="text-danger">{{ $message }}</small>
   @enderror

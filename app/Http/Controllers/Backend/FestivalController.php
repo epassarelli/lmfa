@@ -13,6 +13,9 @@ use App\Models\Mes;
 use App\Models\News;
 use App\Models\Provincia;
 use App\Services\ImageUploadService;
+use App\Support\RichTextHeadingSanitizer;
+use App\Support\BackendListing;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -27,9 +30,14 @@ class FestivalController extends Controller
         $this->authorizeResource(Festival::class, 'festival');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
+        [$sort, $direction] = BackendListing::resolveSort(
+            $request,
+            ['published_at', 'title', 'status', 'noticias_count', 'events_count', 'interpretes_count', 'knowledge_articles_count'],
+            'published_at'
+        );
 
         $festivales = Festival::query()
             ->when($user->hasRole(['colaborador', 'prensa']), function ($query) use ($user) {
@@ -42,8 +50,19 @@ class FestivalController extends Controller
                 'locality:id,province_id,name',
             ])
             ->withCount(['noticias', 'events', 'interpretes', 'knowledgeArticles'])
-            ->orderByDesc('published_at')
-            ->orderBy('title')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->string('search')->trim()->toString();
+
+                $query->where(function ($inner) use ($search) {
+                    $inner->where('title', 'like', '%'.$search.'%')
+                        ->orWhere('status', 'like', '%'.$search.'%')
+                        ->orWhereHas('provincia', fn ($relation) => $relation->where('nombre', 'like', '%'.$search.'%'))
+                        ->orWhereHas('locality', fn ($relation) => $relation->where('name', 'like', '%'.$search.'%'))
+                        ->orWhereHas('mes', fn ($relation) => $relation->where('nombre', 'like', '%'.$search.'%'));
+                });
+            })
+            ->orderBy($sort, $direction)
+            ->orderByDesc('id')
             ->paginate(25)
             ->withQueryString();
 
@@ -147,7 +166,7 @@ class FestivalController extends Controller
         return array_merge($data, [
             'title' => $title,
             'slug' => $data['slug'] ?? Str::slug((string) $title),
-            'body' => $body,
+            'body' => RichTextHeadingSanitizer::normalize($body),
             'status' => $status,
             'published_at' => $publishedAt,
         ]);

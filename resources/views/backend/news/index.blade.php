@@ -21,8 +21,20 @@
     </div>
 
     <div class="card-body">
-      <table class="table table-striped table-bordered table-hover">
-        <thead>
+      <x-admin-listing-toolbar
+        :action="route('backend.news.index')"
+        search-placeholder="Buscar por titulo, interprete, categoria o estado"
+        :sort-options="[
+          'published_at' => 'Publicacion',
+          'title' => 'Titulo',
+          'visitas' => 'Visitas',
+          'estado' => 'Estado',
+        ]"
+      />
+
+      <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="thead-light">
           <tr>
             <th>Publicacion</th>
             <th>Titulo</th>
@@ -72,8 +84,9 @@
           @endforeach
         </tbody>
       </table>
+      </div>
 
-      <div class="mt-3">
+      <div class="card-footer bg-white px-0 pb-0 pt-3">
         {{ $news->links() }}
       </div>
     </div>

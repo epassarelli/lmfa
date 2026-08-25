@@ -72,6 +72,29 @@
                 let fileName = $(this).val().split('\\').pop();
                 $(this).next('.custom-file-label').addClass("selected").html(fileName);
             });
+
+            const $editor = $('#body[data-summernote-profile="editorial-body"]');
+            if ($editor.length && typeof $editor.summernote === 'function') {
+                if ($editor.next('.note-editor').length) {
+                    $editor.summernote('destroy');
+                }
+
+                $editor.summernote({
+                    height: 240,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['codeview', 'help']]
+                    ],
+                    styleTags: [
+                        'p',
+                        { title: 'Titulo 2', tag: 'h2', className: 'note-h2' },
+                        { title: 'Titulo 3', tag: 'h3', className: 'note-h3' }
+                    ]
+                });
+            }
         });
     </script>
 @stop

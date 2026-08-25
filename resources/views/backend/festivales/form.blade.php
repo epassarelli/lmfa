@@ -26,7 +26,7 @@
   <div class="col-md-12">
     <div class="form-group">
       <label for="editor">Contenido <span class="text-danger">*</span></label>
-      <textarea name="body" id="editor" class="form-control" rows="10" required>{{ old('body', $festival->body ?? '') }}</textarea>
+      <textarea name="body" id="editor" class="form-control" rows="10" required data-ckeditor-profile="editorial-body">{{ old('body', $festival->body ?? '') }}</textarea>
       @error('body') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>

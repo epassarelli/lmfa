@@ -3,16 +3,30 @@
 namespace App\Http\Requests\Api;
 
 use App\Http\Requests\Api\Concerns\ResolvesKnowledgeCategoryInput;
+use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateKnowledgeArticleRequest extends FormRequest
 {
-    use ResolvesKnowledgeCategoryInput;
+    use ResolvesKnowledgeCategoryInput {
+        prepareForValidation as prepareKnowledgeCategoryForValidation;
+    }
 
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->prepareKnowledgeCategoryForValidation();
+
+        if ($this->has('body')) {
+            $this->merge([
+                'body' => RichTextHeadingSanitizer::normalize($this->input('body')),
+            ]);
+        }
     }
 
     public function rules(): array

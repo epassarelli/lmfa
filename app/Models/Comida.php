@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\CommonMethodsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-use App\Models\User;
-use App\Traits\CommonMethodsTrait;
 
 class Comida extends Model
 {
@@ -16,8 +14,10 @@ class Comida extends Model
     protected $fillable = [
         'titulo',
         'receta',
+        'foto',
         'slug',
         'publicar',
+        'visitas',
         'estado',
     ];
 

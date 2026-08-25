@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\NormalizesKnowledgeArticleBody;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class KnowledgeArticleRequest extends FormRequest
 {
+    use NormalizesKnowledgeArticleBody;
+
     public function authorize(): bool
     {
         return true;

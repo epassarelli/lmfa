@@ -28,8 +28,20 @@
       </div>
     </div>
     <div class="card-body">
-      <table class="table table-striped table-bordered table-hover">
-        <thead>
+      <x-admin-listing-toolbar
+        :action="route('backend.events.index')"
+        search-placeholder="Buscar por titulo, interprete o estado"
+        :sort-options="[
+          'start_at' => 'Fecha del evento',
+          'title' => 'Titulo',
+          'editorial_status' => 'Estado',
+          'created_at' => 'Alta',
+        ]"
+      />
+
+      <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="thead-light">
           <tr>
             <th>Fecha</th>
             <th>Titulo</th>
@@ -73,8 +85,9 @@
           @endforeach
         </tbody>
       </table>
+      </div>
 
-      <div class="mt-3">
+      <div class="card-footer bg-white px-0 pb-0 pt-3">
         {{ $events->links() }}
       </div>
     </div>

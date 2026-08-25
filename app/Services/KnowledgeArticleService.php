@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\KnowledgeArticle;
 use App\Models\User;
+use App\Support\KnowledgeArticleBodySanitizer;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -90,6 +91,10 @@ class KnowledgeArticleService
         $data['slug'] = Str::slug($data['slug'] ?? $data['title'] ?? $article?->title ?? 'enciclopedia-'.now()->timestamp);
         $data['author_id'] = $data['author_id'] ?? auth()->id();
         $data['editorial_status'] = $data['editorial_status'] ?? ($article?->editorial_status ?? 'draft');
+
+        if (array_key_exists('body', $data)) {
+            $data['body'] = KnowledgeArticleBodySanitizer::normalize($data['body']);
+        }
 
         if ($data['editorial_status'] === 'published' && empty($data['published_at'])) {
             $data['published_at'] = $article?->published_at ?? now();

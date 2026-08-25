@@ -2,14 +2,22 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreEventRequest extends FormRequest
 {
+    use NormalizesRichTextFields;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeRichTextFields(['body', 'detalles']);
     }
 
     public function rules(): array

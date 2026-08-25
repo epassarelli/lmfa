@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Comida;
 use App\Http\Requests\ComidaRequest;
+use App\Models\Comida;
+use App\Models\Mes;
+use App\Models\Provincia;
+use App\Services\ImageUploadService;
+use App\Support\BackendListing;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
-use App\Models\Provincia;
-use App\Models\Mes;
-use App\Services\ImageUploadService;
 
 class ComidaController extends Controller
 {
@@ -24,18 +26,30 @@ class ComidaController extends Controller
         $this->authorizeResource(Comida::class, 'comida');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
+        $allowedSorts = ['titulo', 'visitas', 'estado', 'id'];
+        [$sort, $direction] = BackendListing::resolveSort($request, $allowedSorts, 'titulo', 'asc');
+        $search = trim($request->string('search')->toString());
+
         $comidas = Comida::query()
-            ->when($user->hasRole('colaborador'), function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->when($user->hasRole('prensa'), function ($query) use ($user) {
+            ->when($user->hasRole('colaborador') || $user->hasRole('prensa'), function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
             ->with(['user', 'images'])
-            ->get();
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($foodQuery) use ($search) {
+                    $foodQuery
+                        ->where('titulo', 'like', "%{$search}%")
+                        ->orWhere('receta', 'like', "%{$search}%")
+                        ->orWhere('visitas', 'like', "%{$search}%")
+                        ->orWhere('id', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy($sort, $direction)
+            ->paginate(20)
+            ->withQueryString();
 
         return view('backend.comidas.index', compact('comidas'));
     }
@@ -44,6 +58,7 @@ class ComidaController extends Controller
     {
         $provincias = Provincia::all();
         $meses = Mes::all();
+
         return view('backend.comidas.create', compact('provincias', 'meses'));
     }
 
@@ -68,7 +83,8 @@ class ComidaController extends Controller
             $this->sendNotification($comida);
         }
 
-        Alert::success('Comida creada', 'La comida ha sido creada con éxito.');
+        Alert::success('Comida creada', 'La comida ha sido creada con exito.');
+
         return redirect()->route('backend.comidas.index');
     }
 
@@ -76,6 +92,7 @@ class ComidaController extends Controller
     {
         $provincias = Provincia::all();
         $meses = Mes::all();
+
         return view('backend.comidas.edit', compact('comida', 'provincias', 'meses'));
     }
 
@@ -84,7 +101,6 @@ class ComidaController extends Controller
         $comida->fill($request->validated());
         $comida->slug = Str::slug($comida->titulo);
         $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
-
         $comida->save();
 
         if ($request->hasFile('foto')) {
@@ -97,7 +113,8 @@ class ComidaController extends Controller
             );
         }
 
-        Alert::success('Comida actualizada', 'La comida ha sido actualizada con éxito.');
+        Alert::success('Comida actualizada', 'La comida ha sido actualizada con exito.');
+
         return redirect()->route('backend.comidas.index');
     }
 
@@ -106,14 +123,15 @@ class ComidaController extends Controller
         $this->authorize('delete', $comida);
         $comida->delete();
 
-        Alert::success('Comida eliminada', 'La comida ha sido eliminada con éxito.');
+        Alert::success('Comida eliminada', 'La comida ha sido eliminada con exito.');
+
         return redirect()->route('backend.comidas.index');
     }
 
     private function sendNotification(Comida $comida)
     {
         $details = [
-            'title' => 'Se ha agregado un/a Comida en el portal',
+            'title' => 'Se ha agregado una comida en el portal',
             'comida' => $comida->titulo,
             'user' => $comida->user->name,
         ];

@@ -7,27 +7,38 @@
 @stop
 
 @section('content')
-<div class="card">
-    <div class="card-header bg-white border-bottom">
-        <form method="GET" action="{{ route('backend.newsletter.index') }}" class="form-inline">
-            <div class="input-group input-group-sm mr-2" style="width: 250px;">
-                <input type="text" name="search" class="form-control" placeholder="Buscar email o nombre..." value="{{ request('search') }}">
+<div class="card card-outline card-primary shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title">Listado de Suscriptores</h3>
+    </div>
+    <div class="card-body pb-0">
+        <x-admin-listing-toolbar
+            :action="route('backend.newsletter.index')"
+            search-placeholder="Buscar por email o nombre"
+            :sort-options="[
+                'created_at' => 'Alta',
+                'email' => 'Email',
+                'status' => 'Estado',
+                'unsubscribed_at' => 'Baja',
+            ]"
+        >
+            <div class="col-md-2">
+                <label for="status" class="small text-muted mb-1">Estado</label>
+                <select id="status" name="status" class="form-control">
+                    <option value="">Todos los estados</option>
+                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Activos</option>
+                    <option value="unsubscribed" {{ request('status') == 'unsubscribed' ? 'selected' : '' }}>Desuscriptos</option>
+                </select>
             </div>
-            <select name="status" class="form-control form-control-sm mr-2">
-                <option value="">Todos los estados</option>
-                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Activos</option>
-                <option value="unsubscribed" {{ request('status') == 'unsubscribed' ? 'selected' : '' }}>Desuscriptos</option>
-            </select>
-            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Filtrar</button>
-        </form>
+        </x-admin-listing-toolbar>
     </div>
     <div class="card-body p-0 table-responsive">
         @if(session('success'))
             <div class="alert alert-success m-2">{{ session('success') }}</div>
         @endif
         
-        <table class="table table-striped table-hover">
-            <thead>
+        <table class="table table-hover mb-0">
+            <thead class="thead-light">
                 <tr>
                     <th>Email</th>
                     <th>Estado</th>
@@ -64,7 +75,7 @@
             </tbody>
         </table>
     </div>
-    <div class="card-footer">
+    <div class="card-footer bg-white">
         {{ $subscribers->appends(request()->query())->links() }}
     </div>
 </div>

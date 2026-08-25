@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\CommonMethodsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-use App\Models\User;
-use App\Traits\CommonMethodsTrait;
 
 class Mito extends Model
 {
@@ -19,6 +17,7 @@ class Mito extends Model
         'foto',
         'slug',
         'publicar',
+        'visitas',
         'estado',
     ];
 

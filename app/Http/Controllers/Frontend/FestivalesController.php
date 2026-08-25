@@ -45,7 +45,7 @@ class FestivalesController extends Controller
                 return $this->publishedFestivalQuery()
                     ->with($this->festivalCardRelations())
                     ->orderByDesc('visitas')
-                    ->take(6)
+                    ->take(3)
                     ->get();
             });
 
@@ -56,7 +56,7 @@ class FestivalesController extends Controller
                     ->with($this->festivalCardRelations())
                     ->where('mes_id', $currentMonthId)
                     ->orderBy('title')
-                    ->take(8)
+                    ->take(4)
                     ->get();
             });
 
@@ -97,7 +97,7 @@ class FestivalesController extends Controller
                     ->whereHas('festivales')
                     ->with(['categoria:id,nombre', 'images'])
                     ->latest('published_at')
-                    ->take(6)
+                    ->take(3)
                     ->get();
             });
 
@@ -109,7 +109,7 @@ class FestivalesController extends Controller
                     ->whereHas('festivales')
                     ->with(['interpretes:id,interprete,slug', 'images', 'provincia:id,nombre'])
                     ->orderBy('start_at')
-                    ->take(6)
+                    ->take(3)
                     ->get();
             });
 

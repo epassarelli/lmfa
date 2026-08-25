@@ -2,14 +2,22 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class NoticiaRequest extends FormRequest
 {
+    use NormalizesRichTextFields;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeRichTextFields(['noticia']);
     }
 
     public function rules(): array
@@ -33,8 +41,6 @@ class NoticiaRequest extends FormRequest
             'estado' => 'required|in:0,1',
         ];
     }
-
-
 
     public function messages(): array
     {

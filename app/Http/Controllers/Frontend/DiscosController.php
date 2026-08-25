@@ -20,7 +20,7 @@ class DiscosController extends Controller
                 'images',
             ])
             ->orderByDesc('created_at')
-            ->simplePaginate(24);
+            ->simplePaginate(12);
 
         $metaTitle = 'Discografias de Folklore Argentino: Albumes y Obras Destacadas';
         $metaDescription = 'Explora las discografias completas del folklore argentino. Encuentra albumes y canciones clasicas de artistas destacados.';

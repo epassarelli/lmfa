@@ -8,6 +8,7 @@ use App\Models\News;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Services\NewsService;
+use App\Support\BackendListing;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,8 +20,7 @@ class ContributionController extends Controller
 {
     /**
      * Tipos de contenido que el moderador puede aprobar desde este flujo.
-     * Se restringe explícitamente para evitar instanciación arbitraria
-     * desde `contributable_type`.
+     * Se restringe explicitamente para evitar instanciacion arbitraria.
      */
     private const APPROVABLE_MODELS = [
         \App\Models\Interprete::class,
@@ -35,9 +35,42 @@ class ContributionController extends Controller
         $this->middleware(['auth', 'role:administrador']);
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $contributions = Contribution::with('user')->latest()->get();
+        $allowedSorts = ['created_at', 'status', 'contributable_type'];
+        [$sort, $direction] = BackendListing::resolveSort($request, $allowedSorts, 'created_at');
+        $search = trim($request->string('search')->toString());
+        $status = $request->string('status')->toString();
+        $allowedStatuses = ['pending', 'approved', 'rejected', 'auto-applied'];
+
+        if (! in_array($status, $allowedStatuses, true)) {
+            $status = '';
+        }
+
+        $contributions = Contribution::query()
+            ->with('user')
+            ->when($status !== '', function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->when($search !== '', function ($query) use ($search) {
+                $normalizedSearch = '%'.mb_strtolower($search).'%';
+
+                $query->where(function ($contributionQuery) use ($search, $normalizedSearch) {
+                    $contributionQuery
+                        ->where('contributable_type', 'like', "%{$search}%")
+                        ->orWhere('status', 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($userQuery) use ($search) {
+                            $userQuery->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereRaw(
+                            "LOWER(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(payload, '$.nombre')), JSON_UNQUOTE(JSON_EXTRACT(payload, '$.titulo')), JSON_UNQUOTE(JSON_EXTRACT(payload, '$.interprete')), JSON_UNQUOTE(JSON_EXTRACT(payload, '$.cancion')), JSON_UNQUOTE(JSON_EXTRACT(payload, '$.title')), '')) LIKE ?",
+                            [$normalizedSearch]
+                        );
+                });
+            })
+            ->orderBy($sort, $direction)
+            ->paginate(20)
+            ->withQueryString();
 
         return view('backend.contributions.index', compact('contributions'));
     }
@@ -56,7 +89,7 @@ class ContributionController extends Controller
         $contribution = Contribution::findOrFail($id);
 
         if ($contribution->status !== 'pending') {
-            return back()->with('error', 'Esta contribución ya fue procesada.');
+            return back()->with('error', 'Esta contribucion ya fue procesada.');
         }
 
         try {
@@ -76,12 +109,12 @@ class ContributionController extends Controller
         } catch (Throwable $e) {
             report($e);
 
-            return back()->with('error', 'No se pudo aprobar la contribución. Revisá el payload y volvé a intentar.');
+            return back()->with('error', 'No se pudo aprobar la contribucion. Revisa el payload y vuelve a intentar.');
         }
 
         return redirect()
             ->route('backend.contributions.admin.index')
-            ->with('success', 'Contribución aprobada y publicada.');
+            ->with('success', 'Contribucion aprobada y publicada.');
     }
 
     public function reject(Request $request, int $id): RedirectResponse
@@ -89,7 +122,7 @@ class ContributionController extends Controller
         $contribution = Contribution::findOrFail($id);
 
         if ($contribution->status !== 'pending') {
-            return back()->with('error', 'Esta contribución ya fue procesada.');
+            return back()->with('error', 'Esta contribucion ya fue procesada.');
         }
 
         $comment = $request->input('comment');
@@ -102,13 +135,13 @@ class ContributionController extends Controller
         UserNotification::notify(
             $contribution->user_id,
             'contribution.rejected',
-            'Tu contribución fue rechazada',
+            'Tu contribucion fue rechazada',
             $comment ? "Motivo: {$comment}" : 'Tu aporte no pudo ser publicado en esta oportunidad.'
         );
 
         return redirect()
             ->route('backend.contributions.admin.index')
-            ->with('success', 'Contribución rechazada.');
+            ->with('success', 'Contribucion rechazada.');
     }
 
     private function resolveContributionModel(Contribution $contribution): string
@@ -116,7 +149,7 @@ class ContributionController extends Controller
         $modelClass = $contribution->contributable_type;
 
         if (! is_string($modelClass) || ! in_array($modelClass, self::APPROVABLE_MODELS, true) || ! class_exists($modelClass)) {
-            abort(422, 'El tipo de contribución no está soportado por el moderador.');
+            abort(422, 'El tipo de contribucion no esta soportado por el moderador.');
         }
 
         return $modelClass;
@@ -181,7 +214,7 @@ class ContributionController extends Controller
         UserNotification::notify(
             $contribution->user_id,
             'contribution.approved',
-            'Tu contribución fue aprobada',
+            'Tu contribucion fue aprobada',
             'Tu aporte fue revisado y publicado. Gracias por colaborar.'
         );
     }

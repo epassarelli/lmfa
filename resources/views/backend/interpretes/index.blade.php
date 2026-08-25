@@ -8,11 +8,13 @@
 
 @section('content')
 
-  <div class="card">
+  <div class="card card-outline card-primary shadow-sm">
 
-    <div class="card-header text-right">
-      <a href="{{ route('backend.interpretes.create') }}" class="btn btn-success mb-3"><i class="fas fa-plus"></i> Crear
-        Interprete</a>
+    <div class="card-header">
+      <h3 class="card-title">Listado de Interpretes</h3>
+      <div class="card-tools">
+        <a href="{{ route('backend.interpretes.create') }}" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i> Crear Interprete</a>
+      </div>
     </div>
 
     <div class="card-body">
@@ -23,8 +25,24 @@
         </div>
       @endif
 
-      <table class="table table-striped table-bordered table-hover">
-        <thead>
+      <x-admin-listing-toolbar
+        :action="route('backend.interpretes.index')"
+        search-placeholder="Buscar por interprete o correo"
+        :sort-options="[
+          'noticias_count' => 'Noticias',
+          'interprete' => 'Interprete',
+          'correo' => 'Correo',
+          'visitas' => 'Visitas',
+          'shows_count' => 'Shows',
+          'discos_count' => 'Discos',
+          'canciones_count' => 'Canciones',
+          'id' => 'ID',
+        ]"
+      />
+
+      <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="thead-light">
           <th>ID</th>
           <th>Foto</th>
           <th>Interprete</th>
@@ -81,8 +99,9 @@
           @endforeach
         </tbody>
       </table>
+      </div>
 
-      <div class="mt-3">
+      <div class="card-footer bg-white px-0 pb-0 pt-3">
         {{ $interpretes->links() }}
       </div>
 

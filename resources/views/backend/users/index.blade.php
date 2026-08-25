@@ -8,19 +8,33 @@
 
 @section('content')
 
-  <div class="card">
+  <div class="card card-outline card-primary shadow-sm">
 
-    <div class="card-header text-right">
-      @can('create noticia')
-        <a href="{{ route('users.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Crear Usuario</a>
-      @endcan
+    <div class="card-header">
+      <h3 class="card-title">Listado de Usuarios</h3>
+      <div class="card-tools">
+        @can('create noticia')
+          <a href="{{ route('users.create') }}" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i> Crear Usuario</a>
+        @endcan
+      </div>
     </div>
 
 
     <div class="card-body">
-      <table class="table table-striped table-bordered table-hover">
+      <x-admin-listing-toolbar
+        :action="route('users.index')"
+        search-placeholder="Buscar por nombre, email o rol"
+        :sort-options="[
+          'name' => 'Nombre',
+          'email' => 'Email',
+          'id' => 'ID',
+        ]"
+      />
 
-        <thead>
+      <div class="table-responsive">
+      <table class="table table-hover mb-0">
+
+        <thead class="thead-light">
           <tr>
             <th>Nombre</th>
             <th>Email</th>
@@ -53,8 +67,9 @@
         </tbody>
 
       </table>
+      </div>
 
-      <div class="mt-3">
+      <div class="card-footer bg-white px-0 pb-0 pt-3">
         {{ $data->links() }}
       </div>
     </div>
