@@ -84,8 +84,8 @@ class InterpretesController extends Controller
             ->latest('created_at')
             ->take(3)
             ->get();
-        $canciones = $interprete->canciones()->latest()->take(3)->get();
-        $discos = $interprete->discos()->orderByDesc('anio')->take(3)->get();
+        $canciones = $interprete->canciones()->with('interprete')->latest()->take(3)->get();
+        $discos = $interprete->discos()->with('images')->orderByDesc('anio')->take(3)->get();
         $shows = $interprete->events()
             ->publishedVisible()
             ->where('start_at', '>=', now())

@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Frontend\BusquedaController;
 use App\Http\Controllers\Frontend\CancionesController;
 use App\Http\Controllers\Frontend\ClassifiedsController;
+use App\Http\Controllers\Frontend\CsrfController;
 use App\Http\Controllers\Frontend\CompartirController;
 use App\Http\Controllers\Frontend\ContactoController;
 use App\Http\Controllers\Frontend\DiscosController;
@@ -156,6 +157,10 @@ Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->nam
 Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 Route::get('auth/facebook', [SocialiteController::class, 'redirectToFacebook'])->name('auth.facebook');
 Route::get('auth/facebook/callback', [SocialiteController::class, 'handleFacebookCallback']);
+
+// Token CSRF fresco para forms que viven en paginas con full-page cache
+// (ver App\Support\ResponseCache\PublicPagesCacheProfile)
+Route::get('/csrf-refresh', [CsrfController::class, 'refresh'])->name('csrf.refresh');
 
 // Newsletter
 Route::post('/newsletter/subscribe', [\App\Http\Controllers\Frontend\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');

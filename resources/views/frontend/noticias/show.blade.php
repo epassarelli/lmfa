@@ -60,7 +60,7 @@
     @elseif ($noticia->legacy_featured_image_url)
       <div class="mb-4">
         <img src="{{ $noticia->legacy_featured_image_url }}" alt="{{ $noticia->titulo }}"
-            class="rounded shadow-lg w-full" loading="lazy">
+            class="rounded shadow-lg w-full" fetchpriority="high" decoding="async">
       </div>
     @else
       <div class="mb-4">

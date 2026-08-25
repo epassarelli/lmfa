@@ -19,7 +19,7 @@
               <x-optimized-image :image="$radio->images->first()" variant="card" class="w-full h-48 object-cover" />
             @else
               <img src="{{ asset('storage/radios/' . $radio->foto) }}" alt="{{ $radio->titulo }}"
-                class="w-full h-48 object-cover">
+                class="w-full h-48 object-cover" loading="lazy" decoding="async">
             @endif
             <div class="p-4">
               <h3 class="font-bold text-xl mb-2">{{ $radio->titulo }}</h3>

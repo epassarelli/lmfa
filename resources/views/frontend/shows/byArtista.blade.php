@@ -43,7 +43,7 @@
               @else
                 <img src="{{ asset('storage/interpretes/' . ($evento->interprete->foto ?? 'default.jpg')) }}"
                   alt="{{ $evento->interprete->interprete ?? 'Artista' }}"
-                  class="w-12 h-12 rounded-full object-cover border border-gray-300">
+                  class="w-12 h-12 rounded-full object-cover border border-gray-300" loading="lazy" decoding="async">
               @endif
               <h5 class="text-lg font-semibold">{{ $evento->interprete?->interprete ?? $interprete->interprete }}</h5>
             </div>

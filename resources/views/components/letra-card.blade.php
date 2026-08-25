@@ -8,7 +8,8 @@
     <div class="flex-shrink-0 w-16 h-16 rounded overflow-hidden bg-gray-100 border">
       @if ($letra->interprete && $letra->interprete->foto)
         <img src="{{ asset('storage/interpretes/' . $letra->interprete->foto) }}"
-          alt="{{ $letra->interprete->interprete }}" class="w-full h-full object-cover">
+          alt="{{ $letra->interprete->interprete }}" class="w-full h-full object-cover"
+          loading="lazy" decoding="async">
       @else
         <div class="w-full h-full flex items-center justify-center text-gray-400 text-2xl">🎵</div>
       @endif

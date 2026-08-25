@@ -15,7 +15,7 @@
                 class="w-16 h-16 object-cover rounded-md" :alt="$disco->album" />
             @elseif ($disco->foto && file_exists(public_path('storage/albunes/' . $disco->foto)))
               <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $disco->album }}"
-                class="w-16 h-16 object-cover rounded-md">
+                class="w-16 h-16 object-cover rounded-md" loading="lazy" decoding="async">
             @else
               <x-image-placeholder :label="null" class="w-16 h-16 rounded-md" />
             @endif

@@ -20,7 +20,7 @@
                 <x-optimized-image :image="$penia->images->first()" variant="card" class="w-full h-48 object-cover" />
               @else
                 <img src="{{ asset('storage/noticias/' . $penia->foto) }}" alt="{{ $penia->titulo }}"
-                  class="w-full h-48 object-cover">
+                  class="w-full h-48 object-cover" loading="lazy" decoding="async">
               @endif
               <div class="p-4">
                 <h3 class="font-bold text-xl mb-2">{{ $penia->titulo }}</h3>

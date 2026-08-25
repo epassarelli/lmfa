@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 # Configurar Apache
 COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
 
-RUN a2enmod rewrite
+RUN a2enmod rewrite deflate headers expires
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 # Configurar PHP
@@ -68,6 +68,13 @@ RUN apt-get update && apt-get install nodejs -y
 
 # Puerto expuesto
 EXPOSE 80
+
+# Entrypoint: cachea config/rutas/vistas de Laravel en cada arranque del
+# contenedor (ver docker/entrypoint.sh) y despues arranca Apache.
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Comando para ejecutar el servidor Apache
 CMD ["apache2-foreground"]

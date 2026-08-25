@@ -5,7 +5,7 @@
   @php
     use Illuminate\Support\Str;
 
-    $principal = $noticia->interprete_id ? \App\Models\Interprete::find($noticia->interprete_id) : null;
+    $principal = $noticia->interprete;
 
     $url = $principal
         ? route('artista.noticia', [$principal->slug, $noticia->slug])

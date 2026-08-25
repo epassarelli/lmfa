@@ -18,7 +18,8 @@
                 class="w-16 h-16 object-cover rounded-md" :alt="$show->interprete->interprete" />
             @elseif ($show->interprete && $show->interprete->foto && file_exists(public_path('storage/interpretes/' . $show->interprete->foto)))
               <img src="{{ asset('storage/interpretes/' . $show->interprete->foto) }}"
-                alt="{{ $show->interprete->interprete ?? 'Artista' }}" class="w-16 h-16 object-cover rounded-md">
+                alt="{{ $show->interprete->interprete ?? 'Artista' }}" class="w-16 h-16 object-cover rounded-md"
+                loading="lazy" decoding="async">
             @else
               <x-image-placeholder :label="null" class="w-16 h-16 rounded-md" />
             @endif

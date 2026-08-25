@@ -14,7 +14,8 @@
               src="{{ $cancion->interprete && file_exists(public_path('storage/interpretes/' . $cancion->interprete->foto))
                   ? asset('storage/interpretes/' . $cancion->interprete->foto)
                   : asset('img/interprete.jpg') }}"
-              alt="{{ $cancion->interprete->interprete ?? 'Intérprete' }}" class="w-16 h-16 object-cover rounded-md">
+              alt="{{ $cancion->interprete->interprete ?? 'Intérprete' }}" class="w-16 h-16 object-cover rounded-md"
+              loading="lazy" decoding="async">
           </a>
           <div class="flex-1">
             <h4 class="font-semibold leading-tight">

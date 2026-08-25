@@ -19,6 +19,11 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\EnforceCanonicalDomain::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        // Cachea la respuesta completa de paginas publicas (ver
+        // App\Support\ResponseCache\PublicPagesCacheProfile). Va temprano
+        // en el stack a proposito: en un cache HIT, corta aca y nunca llega
+        // a levantar sesion/CSRF/consultas a MySQL.
+        \Spatie\ResponseCache\Middlewares\CacheResponse::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,

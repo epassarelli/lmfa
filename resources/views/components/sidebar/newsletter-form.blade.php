@@ -14,8 +14,13 @@
       <p class="text-sm text-gray-600 mb-3">Recibí las novedades del folklore argentino directamente en tu correo.</p>
     @endif
 
-    <form method="POST" action="{{ route('newsletter.subscribe') }}" class="space-y-2">
-      @csrf
+    <form method="POST" action="{{ route('newsletter.subscribe') }}" class="space-y-2" data-csrf-refresh>
+      {{-- El token se completa por JS (ver app-public.js) leyendo /csrf-refresh
+           recien cuando el visitante interactua con el form. Este bloque se
+           sirve desde el cache de pagina completa, asi que un @csrf renderizado
+           aca quedaria "congelado" con el token de quien haya generado esa
+           copia cacheada -- y el resto de las visitas fallaria con 419. --}}
+      <input type="hidden" name="_token" value="">
       <input type="hidden" name="source" value="sidebar">
       <input type="email" name="email" placeholder="Tu correo electrónico" required
         class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff661f]">
