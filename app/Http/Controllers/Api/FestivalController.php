@@ -50,6 +50,7 @@ class FestivalController extends Controller
             $festival = Festival::create($this->normalizePayload($payload));
             $this->syncRelations($festival, $payload, true);
             $this->processImage($festival, $image, false);
+            $this->syncImageAlt($festival, $payload);
 
             return $festival;
         });
@@ -80,6 +81,7 @@ class FestivalController extends Controller
             $festival->update($this->normalizePayload($payload, $festival));
             $this->syncRelations($festival, $payload);
             $this->processImage($festival, $image, true);
+            $this->syncImageAlt($festival, $payload);
         });
 
         return response()->json($this->freshWithRelations($festival));
@@ -172,6 +174,21 @@ class FestivalController extends Controller
             if ($creating || array_key_exists($field, $payload)) {
                 $festival->{$relation}()->sync($payload[$field] ?? []);
             }
+        }
+    }
+
+    private function syncImageAlt(Festival $festival, array $payload): void
+    {
+        if (! array_key_exists('image_alt', $payload)) {
+            return;
+        }
+
+        $image = $festival->images()->orderBy('sort_order')->first();
+
+        if ($image) {
+            $image->update([
+                'alt' => $festival->image_alt ?: $festival->title,
+            ]);
         }
     }
 
