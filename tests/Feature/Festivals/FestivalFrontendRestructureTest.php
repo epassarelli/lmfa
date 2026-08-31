@@ -137,6 +137,50 @@ class FestivalFrontendRestructureTest extends TestCase
         $provinceMonth->assertSee('Festivales de folklore en Santiago del Estero Landing durante Enero');
     }
 
+
+    /** @test */
+    public function festival_detail_uses_persisted_seo_metadata_and_effective_social_image(): void
+    {
+        $provinceId = DB::table('provincias')->insertGetId([
+            'nombre' => 'Salta SEO Festival',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('festivales')->insert([
+            'province_id' => $provinceId,
+            'mes_id' => 1,
+            'title' => 'Festival SEO',
+            'slug' => 'festival-seo',
+            'excerpt' => 'Bajada del festival.',
+            'body' => '<p>Historia estable del festival.</p>',
+            'seo_title' => 'Festival SEO personalizado',
+            'meta_description' => 'Descripcion SEO personalizada del festival.',
+            'image_alt' => 'Identidad visual del Festival SEO',
+            'status' => 'published',
+            'published_at' => now()->subDay(),
+            'user_id' => 1,
+            'visitas' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $response = $this->call(
+            'GET',
+            '/festivales-y-fiestas-tradicionales/festival-seo',
+            [],
+            [],
+            [],
+            $this->serverVariables()
+        );
+
+        $response->assertOk();
+        $response->assertSee('<title>Festival SEO personalizado | Folklore Argentino</title>', false);
+        $response->assertSee('content="Descripcion SEO personalizada del festival."', false);
+        $response->assertSee('/img/fallbacks/festival-default.webp', false);
+        $response->assertSee('Identidad visual del Festival SEO', false);
+    }
+
     private function serverVariables(): array
     {
         return [
