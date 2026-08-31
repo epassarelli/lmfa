@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\Album;
+use App\Models\Comida;
 use App\Models\Event;
 use App\Models\Festival;
 use App\Models\Interprete;
 use App\Models\KnowledgeArticle;
 use App\Models\MediaAsset;
+use App\Models\Mito;
 use App\Models\News;
 use App\Support\ResolvedEditorialImage;
 use Illuminate\Database\Eloquent\Model;
@@ -91,6 +94,8 @@ class EditorialImageResolver
                 ?? $this->firstLoadedFrom($entity, 'festivales')
                 ?? $this->firstLoadedFrom($entity, 'events'),
 
+            $entity instanceof Album => $this->loadedBelongsTo($entity, 'interprete'),
+
             default => null,
         };
     }
@@ -129,6 +134,18 @@ class EditorialImageResolver
             return Storage::disk('public')->url('interpretes/'.ltrim($entity->foto, '/'));
         }
 
+        if ($entity instanceof Album && filled($entity->foto)) {
+            return Storage::disk('public')->url('albunes/'.ltrim($entity->foto, '/'));
+        }
+
+        if ($entity instanceof Comida && filled($entity->foto)) {
+            return Storage::disk('public')->url('comidas/'.ltrim($entity->foto, '/'));
+        }
+
+        if ($entity instanceof Mito && filled($entity->foto)) {
+            return Storage::disk('public')->url('mitos/'.ltrim($entity->foto, '/'));
+        }
+
         if (($entity instanceof Event || $entity instanceof Festival || $entity instanceof KnowledgeArticle)
             && filled($entity->featured_image_path)) {
             $path = preg_replace('#^/?storage/#', '', trim((string) $entity->featured_image_path));
@@ -157,6 +174,9 @@ class EditorialImageResolver
             $entity instanceof Festival => config('editorial_images.fallbacks.festival'),
             $entity instanceof Interprete => config('editorial_images.fallbacks.artist'),
             $entity instanceof KnowledgeArticle => config('editorial_images.fallbacks.knowledge'),
+            $entity instanceof Album => config('editorial_images.fallbacks.album', config('editorial_images.fallbacks.default')),
+            $entity instanceof Comida => config('editorial_images.fallbacks.recipe', config('editorial_images.fallbacks.default')),
+            $entity instanceof Mito => config('editorial_images.fallbacks.myth', config('editorial_images.fallbacks.default')),
             default => config('editorial_images.fallbacks.default'),
         };
     }
@@ -168,6 +188,7 @@ class EditorialImageResolver
             ?? $entity->title
             ?? $entity->titulo
             ?? $entity->interprete
+            ?? $entity->album
             ?? $entity->name
             ?? 'Mi Folklore Argentino'
         ));
