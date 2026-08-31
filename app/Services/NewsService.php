@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\News;
 use App\Support\NewsImagePathResolver;
+use App\Support\ImageSourceMetadata;
 use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -88,7 +89,8 @@ class NewsService
                         'news_full',
                         'news',
                         false,
-                        $news->slug
+                        $news->slug,
+                        ImageSourceMetadata::from($image)
                     );
 
                     $news->forceFill([
@@ -159,7 +161,8 @@ class NewsService
                         'news_full',
                         'news',
                         true, // Reemplazar
-                        $news->slug
+                        $news->slug,
+                        ImageSourceMetadata::from($image)
                     );
 
                     $news->forceFill([
