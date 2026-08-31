@@ -4,7 +4,7 @@ Este directorio versiona el Apps Script vinculado a **Mi Folklore Argentino — 
 
 ## Fuente de verdad
 
-- Código: `automation/apps-script/Code.gs`.
+- Código: `automation/apps-script/Código.js`.
 - El proyecto remoto se vincula mediante `.clasp.json` local.
 - `.clasp.json` y `.clasprc.json` no se versionan.
 - El manifiesto real `appsscript.json` se obtiene del proyecto remoto durante el bootstrap; no se inventa ni sobrescribe a ciegas.
@@ -16,7 +16,7 @@ Este directorio versiona el Apps Script vinculado a **Mi Folklore Argentino — 
    `npm run apps-script:link -- <SCRIPT_ID>`
 3. Autorizar clasp:
    `npx --yes @google/clasp login`
-4. Importar manifiesto/archivos remotos preservando nuestro Code.gs:
+4. Importar manifiesto/archivos remotos preservando nuestro Código.js:
    `npm run apps-script:bootstrap`
 5. Revisar:
    `git status`
