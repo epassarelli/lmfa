@@ -9,6 +9,20 @@
     : $resolvedEditorialImage->url;
 @endphp
 @section('metaImage', $metaImage)
+@section('ogType', 'article')
+
+@push('json-ld')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": @json($mito->titulo),
+  "description": @json($metaDescription),
+  "image": [@json($metaImage)],
+  "mainEntityOfPage": @json(\App\Support\CanonicalUrl::current())
+}
+</script>
+@endpush
 
 @section('content')
 
@@ -21,7 +35,7 @@
 
       {{-- Contenido principal --}}
       <div class="w-full lg:w-2/3">
-        <h1 class="text-3xl font-bold mb-4">{{ $mito->titulo }}</h1>
+        <h1 class="text-3xl font-bold mb-4">{{ $h1 }}</h1>
 
         <div class="mb-6">
           <x-editorial-image
