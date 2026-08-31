@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api;
 use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class StoreFestivalRequest extends FormRequest
 {
@@ -18,6 +19,10 @@ class StoreFestivalRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->normalizeRichTextFields(['body']);
+
+        if (blank($this->input('slug')) && filled($this->input('title'))) {
+            $this->merge(['slug' => Str::slug((string) $this->input('title'))]);
+        }
     }
 
     public function rules(): array
@@ -34,8 +39,8 @@ class StoreFestivalRequest extends FormRequest
             'locality_id' => 'nullable|exists:localities,id',
             'mes_id' => 'required|exists:meses,id',
             'published_at' => 'nullable|date',
-            'user_id' => 'required|exists:users,id',
-            'status' => 'required|in:draft,published,archived',
+            'user_id' => 'nullable|exists:users,id',
+            'status' => 'nullable|in:draft,published,archived',
             'image_alt' => 'nullable|string|max:255',
             'seo_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:320',
