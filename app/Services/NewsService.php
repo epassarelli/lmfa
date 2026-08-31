@@ -101,7 +101,7 @@ class NewsService
                 return $news;
             });
         } finally {
-            $this->cleanupTemporaryImage($resolvedImage);
+            $this->imageResolver->cleanupTemporary($resolvedImage);
         }
     }
 
@@ -174,19 +174,6 @@ class NewsService
             });
         } finally {
             $this->cleanupTemporaryImage($resolvedImage);
-        }
-    }
-
-    /**
-     * Limpia el archivo temporal si fue generado por el resolver (descarga de URL o similar).
-     */
-    protected function cleanupTemporaryImage($image): void
-    {
-        if ($image instanceof \Illuminate\Http\UploadedFile) {
-            $path = $image->getPathname();
-            if (str_contains($path, 'tmp/news-images')) {
-                @unlink($path);
-            }
         }
     }
 
