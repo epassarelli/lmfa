@@ -13,7 +13,7 @@ jobs:
       - name: Validate repository state
         shell: bash
         run: |
-          test -f automation/apps-script/Code.gs
+          test -f automation/apps-script/Código.js
           test -f automation/apps-script/appsscript.json
 
       - name: Configure clasp
