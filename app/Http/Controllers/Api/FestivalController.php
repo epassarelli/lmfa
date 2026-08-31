@@ -103,7 +103,10 @@ class FestivalController extends Controller
                 'festivales',
                 $replace,
                 $festival->slug,
-                ImageSourceMetadata::from($image)
+                array_merge(
+                    ImageSourceMetadata::from($image),
+                    ['alt' => $festival->image_alt ?: $festival->title]
+                )
             );
 
             $festival->forceFill([
