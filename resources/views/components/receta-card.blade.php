@@ -6,11 +6,13 @@
     class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-4 h-full">
     <div class="flex items-center space-x-4">
       <div class="flex-shrink-0 text-[#ff661f] text-3xl">
-        @if ($receta->images->isNotEmpty())
-          <x-optimized-image :image="$receta->images->first()" variant="card" :minimal="true" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" :alt="$receta->titulo" />
-        @else
-          🍽️
-        @endif
+        <x-editorial-image
+          :entity="$receta"
+          variant="card"
+          :minimal="true"
+          class="rounded w-[50px] h-[50px] object-cover"
+          loading="lazy"
+        />
       </div>
       <div class="flex-1">
         <h3 class="text-lg font-semibold text-gray-800 hover:text-[#ff661f] transition-colors duration-300">
