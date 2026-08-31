@@ -136,6 +136,14 @@ class FestivalController extends Controller
         $title = $validated['title'] ?? $festival?->title;
         $body = $validated['body'] ?? $festival?->body;
 
+        if (! $festival && empty($validated['user_id'])) {
+            $validated['user_id'] = auth()->id();
+        }
+
+        if (! $festival && ! isset($validated['status'])) {
+            $validated['status'] = 'draft';
+        }
+
         if (! array_key_exists('slug', $validated) && filled($title) && (! $festival || blank($festival->slug))) {
             $validated['slug'] = Str::slug($title);
         }
