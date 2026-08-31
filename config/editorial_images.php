@@ -13,17 +13,17 @@ return [
     */
     'fallbacks' => [
         'news' => [
-            1 => 'img/fallbacks/news-actualidad.webp',
-            2 => 'img/fallbacks/news-festivales.webp',
-            3 => 'img/fallbacks/news-lanzamientos.webp',
-            4 => 'img/fallbacks/news-entrevistas.webp',
-            5 => 'img/fallbacks/news-cartelera.webp',
-            'default' => 'img/fallbacks/news-default.webp',
+            1 => 'img/logo-share.jpg',
+            2 => 'img/logo-share.jpg',
+            3 => 'img/logo-share.jpg',
+            4 => 'img/logo-share.jpg',
+            5 => 'img/logo-share.jpg',
+            'default' => 'img/logo-share.jpg',
         ],
-        'event' => 'img/fallbacks/event-default.webp',
-        'festival' => 'img/fallbacks/festival-default.webp',
-        'artist' => 'img/fallbacks/artist-default.webp',
-        'knowledge' => 'img/fallbacks/knowledge-default.webp',
-        'default' => 'img/fallbacks/editorial-default.webp',
+        'event' => 'img/logo-share.jpg',
+        'festival' => 'img/logo-share.jpg',
+        'artist' => 'img/logo-share.jpg',
+        'knowledge' => 'img/logo-share.jpg',
+        'default' => 'img/logo-share.jpg',
     ],
 ];
