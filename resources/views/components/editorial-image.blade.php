@@ -30,6 +30,7 @@
         src="{{ $resolvedImage->url }}"
         alt="{{ $resolvedImage->alt }}"
         class="{{ $class }}"
+        @if ($minimal && $resolvedImage->isFallback()) style="object-fit: contain;" @endif
         loading="{{ $loading }}"
         fetchpriority="{{ $fetchpriority }}"
         decoding="async"
