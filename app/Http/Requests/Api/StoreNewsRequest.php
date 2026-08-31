@@ -28,6 +28,7 @@ class StoreNewsRequest extends FormRequest
             'slug' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'excerpt' => 'nullable|string|max:1000',
+            'featured_image_url' => 'nullable|url|max:2048',
             'featured_image_path' => 'nullable|string|max:255',
             'created_by' => 'nullable|exists:users,id',
             'approved_by' => 'nullable|exists:users,id',
