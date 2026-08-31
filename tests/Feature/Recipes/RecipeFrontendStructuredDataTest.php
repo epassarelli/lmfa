@@ -49,6 +49,8 @@ class RecipeFrontendStructuredDataTest extends TestCase
     /** @test */
     public function legacy_recipe_without_structure_does_not_emit_recipe_schema(): void
     {
+        $user = User::factory()->create();
+
         DB::table('comidas')->insert([
             'titulo' => 'Receta legacy',
             'slug' => 'receta-legacy',
