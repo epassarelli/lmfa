@@ -2,7 +2,13 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-@section('metaImage', $disco->images->isNotEmpty() ? $disco->images->first()->original_path : asset('storage/albunes/' . $disco->foto))
+@php
+  $resolvedEditorialImage = app(\App\Services\EditorialImageResolver::class)->resolve($disco);
+  $metaImage = $resolvedEditorialImage->isMedia()
+    ? $resolvedEditorialImage->media->original_path
+    : $resolvedEditorialImage->url;
+@endphp
+@section('metaImage', $metaImage)
 @section('ogType', 'music.album')
 
 @push('json-ld')
@@ -11,7 +17,7 @@
   "@context": "https://schema.org",
   "@type": "MusicAlbum",
   "name": "{{ $disco->album }}",
-  "image": "{{ $disco->images->isNotEmpty() ? $disco->images->first()->original_path : asset('storage/albunes/' . $disco->foto) }}",
+  "image": "{{ $metaImage }}",
   "datePublished": "{{ $disco->anio }}",
   "byArtist": {
     "@type": "MusicGroup",
@@ -29,13 +35,13 @@
   <div class="grid grid-cols-12 gap-6">
     <div class="col-span-12 md:col-span-4">
       <div class="bg-white rounded shadow p-2 space-y-2">
-        @if ($disco->images->isNotEmpty())
-          <x-optimized-image :image="$disco->images->first()" variant="card" class="rounded mb-4 w-full" />
-        @elseif ($disco->foto && file_exists(public_path('storage/albunes/' . $disco->foto)))
-          <img src="{{ asset('storage/albunes/' . $disco->foto) }}" alt="{{ $h1 }}" class="rounded mb-4 w-full">
-        @else
-          <x-image-placeholder class="w-full rounded mb-4 aspect-square" />
-        @endif
+        <x-editorial-image
+          :entity="$disco"
+          variant="main"
+          class="rounded mb-4 w-full"
+          loading="eager"
+          fetchpriority="high"
+        />
 
         <h1 class="text-2xl font-bold text-gray-800">{{ $h1 }}</h1>
 
