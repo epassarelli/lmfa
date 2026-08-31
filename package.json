@@ -3,7 +3,12 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "apps-script:link": "node automation/apps-script/tools/link.mjs",
+        "apps-script:bootstrap": "node automation/apps-script/tools/bootstrap.mjs",
+        "apps-script:status": "npx --yes @google/clasp status",
+        "apps-script:pull": "npx --yes @google/clasp pull",
+        "apps-script:push": "npx --yes @google/clasp push"
     },
     "devDependencies": {
         "@popperjs/core": "^2.11.6",
