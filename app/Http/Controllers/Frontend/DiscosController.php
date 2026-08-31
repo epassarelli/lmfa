@@ -17,6 +17,7 @@ class DiscosController extends Controller
             ->where('estado', 1)
             ->with([
                 'interprete:id,interprete,slug',
+                'interprete.images',
                 'images',
             ])
             ->orderByDesc('created_at')
@@ -35,7 +36,7 @@ class DiscosController extends Controller
     public function byArtista($slug)
     {
         $interprete = Interprete::where('slug', $slug)->first();
-        $discos = $interprete->discos()->where('estado', 1)->with('images')->orderby('anio', 'desc')->get();
+        $discos = $interprete->discos()->where('estado', 1)->with(['images', 'interprete.images'])->orderby('anio', 'desc')->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
         $section = 'discografias';
 
@@ -54,7 +55,7 @@ class DiscosController extends Controller
     public function show($slugInterprete, $slugDisco)
     {
         $interprete = Interprete::where('slug', $slugInterprete)->first();
-        $disco = Album::where('slug', $slugDisco)->with('images')->firstOrFail();
+        $disco = Album::where('slug', $slugDisco)->with(['images', 'interprete.images'])->firstOrFail();
 
         $disco->increment('visitas');
 
