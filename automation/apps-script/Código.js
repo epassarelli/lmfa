@@ -738,6 +738,7 @@ function procesarEvergreenMFA_(row, token, etapa) {
     primary_keyword: primeraPalabraClaveMFA_(row.PALABRAS_CLAVE),
     secondary_keywords: limitarTextoMFA_(row.PALABRAS_CLAVE, 1000),
     featured_image_path: row.FEATURED_IMAGE_PATH,
+    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
     image_alt: row.IMAGE_ALT,
     last_verified_at: Utilities.formatDate(new Date(), MFA_CONFIG.TIME_ZONE, 'yyyy-MM-dd'),
   }, ['published_at']);
@@ -847,9 +848,8 @@ function procesarEventoMFA_(row, token, etapa) {
    * Se mantienen los campos editoriales y de ubicación que la API reconoce.
    * EVENT_TYPE y MODALITY sólo se incluyen si existen en la hoja.
    *
-   * featured_image_path se omite deliberadamente en Eventos hasta resolver
-   * el HTTP 500, porque el módulo Events tiene tratamiento específico de imagen
-   * y la imagen no debe bloquear el alta del contenido.
+   * FEATURED_IMAGE_URL se envía como featured_image_url cuando contiene una URL válida.
+   * La API moderna se encarga de descargarla e incorporarla al sistema de media_assets.
    */
   const payload = limpiarObjetoMFA_({
     title: String(row.TITULO || '').trim(),
@@ -878,6 +878,7 @@ function procesarEventoMFA_(row, token, etapa) {
 
     seo_title: row.META_TITLE,
     meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
   }, ['is_free']);
 
   /*
@@ -1010,6 +1011,7 @@ function procesarNoticiaMFA_(row, token, etapa) {
     seo_title: row.META_TITLE,
     meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
     featured_image_path: row.FEATURED_IMAGE_PATH,
+    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
   }, ['published_at']);
   etapa('PROCESANDO_POST');
   const response = apiMFA_('post', '/news', token, payload);
