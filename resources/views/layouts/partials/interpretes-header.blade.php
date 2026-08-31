@@ -2,15 +2,12 @@
 
   <div class="w-full">
     {{-- Imagen del intérprete --}}
-    @if ($interprete->images->isNotEmpty())
-      <x-optimized-image :image="$interprete->images->first()" variant="card" width="400" height="400"
-        class="rounded shadow-md object-cover w-full" alt="{{ $interprete->interprete }}" title="{{ $interprete->interprete }}" />
-    @elseif ($interprete->foto)
-      <img src="{{ asset('storage/interpretes/' . $interprete->foto) }}" alt="{{ $interprete->interprete }}"
-          class="rounded shadow-md object-cover w-full" loading="lazy">
-    @else
-      <x-image-placeholder class="w-full rounded shadow-md min-h-[200px]" />
-    @endif
+    <x-editorial-image
+      :entity="$interprete"
+      variant="detail"
+      class="rounded shadow-md object-cover w-full"
+      loading="lazy"
+    />
 
     {{-- Menú de navegación por secciones --}}
     <nav class="flex flex-col border border-gray-300 rounded overflow-hidden shadow-md">
