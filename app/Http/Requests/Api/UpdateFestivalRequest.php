@@ -35,6 +35,7 @@ class UpdateFestivalRequest extends FormRequest
             'published_at' => 'sometimes|date',
             'user_id' => 'sometimes|exists:users,id',
             'status' => 'sometimes|in:draft,published,archived',
+            'image_alt' => 'nullable|string|max:255',
             'seo_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:320',
         ];
