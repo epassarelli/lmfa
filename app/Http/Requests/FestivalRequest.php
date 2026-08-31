@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class FestivalRequest extends FormRequest
 {
@@ -18,6 +19,10 @@ class FestivalRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->normalizeRichTextFields(['body']);
+
+        if (blank($this->input('slug')) && filled($this->input('title'))) {
+            $this->merge(['slug' => Str::slug((string) $this->input('title'))]);
+        }
     }
 
     public function rules(): array
