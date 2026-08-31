@@ -24,6 +24,8 @@ No incluye:
 
 `2026_08_31_233000_modernize_interpretes_editorial_fields.php`
 
+Además se ejecuta `2026_08_31_233100_widen_interpretes_legacy_columns.php`, que amplía nombres, slugs, correos y URLs legacy a 255 caracteres para alinear el esquema con las validaciones modernas. Ese ensanchamiento no se revierte automáticamente porque reducirlo podría truncar datos válidos creados después del release.
+
 Agrega:
 - artist_type
 - excerpt
