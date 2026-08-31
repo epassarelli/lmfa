@@ -120,6 +120,15 @@ jobs:
             echo "No changed PHP files."
           fi
 
+      - name: Apps Script syntax check
+        shell: bash
+        run: |
+          if compgen -G "automation/apps-script/*.js" > /dev/null; then
+            for file in automation/apps-script/*.js; do
+              node --check "$file"
+            done
+          fi
+
       - name: Compile Blade views
         run: php artisan view:cache
 
