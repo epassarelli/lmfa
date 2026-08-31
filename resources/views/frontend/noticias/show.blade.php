@@ -3,7 +3,7 @@
 @php
   $publishedIso = optional($noticia->published_at ?? $noticia->created_at ?? $noticia->updated_at)->toIso8601String();
   $modifiedIso = optional($noticia->updated_at ?? $noticia->published_at ?? $noticia->created_at)->toIso8601String();
-  $resolvedEditorialImage = app(\\App\\Services\\EditorialImageResolver::class)->resolve($noticia);
+  $resolvedEditorialImage = app(\App\Services\EditorialImageResolver::class)->resolve($noticia);
   $metaImage = $resolvedEditorialImage->isMedia()
     ? $resolvedEditorialImage->media->original_path
     : $resolvedEditorialImage->url;
