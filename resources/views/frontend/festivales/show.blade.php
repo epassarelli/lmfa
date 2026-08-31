@@ -4,7 +4,13 @@
 @section('metaDescription', $metaDescription)
 @section('canonical', $canonical)
 @section('metaRobots', $metaRobots)
-@section('metaImage', $festival->images->isNotEmpty() ? $festival->images->first()->original_path : ($festival->featured_image_path ? asset('storage/' . $festival->featured_image_path) : asset('img/logo-share.jpg')))
+@php
+  $resolvedEditorialImage = app(\App\Services\EditorialImageResolver::class)->resolve($festival);
+  $metaImage = $resolvedEditorialImage->isMedia()
+    ? $resolvedEditorialImage->media->original_path
+    : $resolvedEditorialImage->url;
+@endphp
+@section('metaImage', $metaImage)
 @section('ogType', 'article')
 
 @push('json-ld')
@@ -27,12 +33,13 @@
   @include('frontend.festivales._filters')
 
   <article class="bg-white rounded-xl shadow-sm p-6 mb-8">
-    @if ($festival->images->isNotEmpty())
-      <x-optimized-image :image="$festival->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px] mb-5" />
-    @elseif ($festival->featured_image_path)
-      <img src="{{ asset('storage/' . $festival->featured_image_path) }}" alt="{{ $festival->title }}"
-          class="rounded shadow-lg w-full object-cover max-h-[500px] mb-5" loading="lazy">
-    @endif
+    <x-editorial-image
+      :entity="$festival"
+      variant="hero"
+      class="rounded shadow-lg w-full object-cover max-h-[500px] mb-5"
+      loading="eager"
+      fetchpriority="high"
+    />
 
     <h1 class="text-3xl font-bold mb-2">{{ $h1 }}</h1>
 
