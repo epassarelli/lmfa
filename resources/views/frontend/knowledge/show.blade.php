@@ -3,7 +3,13 @@
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
 @section('canonical', $canonical)
-@section('metaImage', $article->images->isNotEmpty() ? $article->images->first()->original_path : ($article->featured_image_path ? asset('storage/' . $article->featured_image_path) : asset('img/logo-share.jpg')))
+@php
+  $resolvedEditorialImage = app(\App\Services\EditorialImageResolver::class)->resolve($article);
+  $metaImage = $resolvedEditorialImage->isMedia()
+    ? $resolvedEditorialImage->media->original_path
+    : $resolvedEditorialImage->url;
+@endphp
+@section('metaImage', $metaImage)
 @section('ogType', 'article')
 
 @section('ogArticleTags')
@@ -56,11 +62,15 @@
       @endif
     </div>
 
-    @if ($article->images->isNotEmpty())
-      <div class="mb-5">
-        <x-optimized-image :image="$article->images->first()" variant="detail" class="rounded-lg shadow-md w-full" :alt="$article->image_alt ?: $article->title" />
-      </div>
-    @endif
+    <div class="mb-5">
+      <x-editorial-image
+        :entity="$article"
+        variant="detail"
+        class="rounded-lg shadow-md w-full"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
 
     @if ($article->excerpt)
       <p class="text-lg text-slate-700 mb-6">{{ $article->excerpt }}</p>
