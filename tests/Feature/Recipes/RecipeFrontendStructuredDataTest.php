@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Recipes;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -13,6 +14,8 @@ class RecipeFrontendStructuredDataTest extends TestCase
     /** @test */
     public function structured_recipe_emits_recipe_schema_with_only_persisted_data(): void
     {
+        $user = User::factory()->create();
+
         DB::table('comidas')->insert([
             'titulo' => 'Locro estructurado',
             'slug' => 'locro-estructurado',
@@ -27,7 +30,7 @@ class RecipeFrontendStructuredDataTest extends TestCase
             'meta_description' => 'Ingredientes y preparación del locro argentino.',
             'foto' => null,
             'publicar' => now(),
-            'user_id' => 1,
+            'user_id' => $user->id,
             'visitas' => 0,
             'estado' => 1,
             'created_at' => now(),
@@ -52,7 +55,7 @@ class RecipeFrontendStructuredDataTest extends TestCase
             'receta' => '<p>Texto legacy sin estructura.</p>',
             'foto' => null,
             'publicar' => now(),
-            'user_id' => 1,
+            'user_id' => $user->id,
             'visitas' => 0,
             'estado' => 1,
             'created_at' => now(),
