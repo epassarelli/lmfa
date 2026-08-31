@@ -13,6 +13,7 @@ class FestivalFrontendRestructureTest extends TestCase
     /** @test */
     public function province_month_landing_is_noindex_when_it_does_not_reach_the_configured_minimum(): void
     {
+        $this->ensureMonth(1, 'Enero');
         $provinceId = DB::table('provincias')->insertGetId([
             'nombre' => 'Cordoba Festivales',
             'created_at' => now(),
@@ -58,6 +59,7 @@ class FestivalFrontendRestructureTest extends TestCase
     /** @test */
     public function festival_sitemap_includes_indexable_landings_and_excludes_non_indexable_province_month_combinations(): void
     {
+        $this->ensureMonth(2, 'Febrero');
         $provinceA = DB::table('provincias')->insertGetId([
             'nombre' => 'Salta Sitemap',
             'created_at' => now(),
@@ -104,6 +106,7 @@ class FestivalFrontendRestructureTest extends TestCase
     /** @test */
     public function province_and_month_landings_resolve_using_generated_slugs(): void
     {
+        $this->ensureMonth(1, 'Enero');
         $provinceId = DB::table('provincias')->insertGetId([
             'nombre' => 'Santiago del Estero Landing',
             'created_at' => now(),
@@ -141,6 +144,7 @@ class FestivalFrontendRestructureTest extends TestCase
     /** @test */
     public function festival_detail_uses_persisted_seo_metadata_and_effective_social_image(): void
     {
+        $this->ensureMonth(1, 'Enero');
         $provinceId = DB::table('provincias')->insertGetId([
             'nombre' => 'Salta SEO Festival',
             'created_at' => now(),
@@ -179,6 +183,18 @@ class FestivalFrontendRestructureTest extends TestCase
         $response->assertSee('content="Descripcion SEO personalizada del festival."', false);
         $response->assertSee('/img/fallbacks/festival-default.webp', false);
         $response->assertSee('Identidad visual del Festival SEO', false);
+    }
+
+    private function ensureMonth(int $id, string $name): void
+    {
+        DB::table('meses')->updateOrInsert(
+            ['id' => $id],
+            [
+                'nombre' => $name,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
 
     private function serverVariables(): array
