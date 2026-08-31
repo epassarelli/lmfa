@@ -544,11 +544,9 @@ function cargarContenidosMFA() {
         );
 
         /**
-         * Una fila se considera PUBLICADA en el contexto de este Excel Ãºnicamente
-         * cuando la API confirma la creaciÃ³n con HTTP 201.
-         *
-         * Aunque Laravel cree el registro con editorial_status = draft, para la
-         * bandeja editorial significa que el envÃ­o terminÃ³ correctamente.
+         * PUBLICADO en esta bandeja significa "envÃ­o API completado".
+         * Puede corresponder a una creaciÃ³n HTTP 201 o a una actualizaciÃ³n HTTP 200.
+         * El estado editorial real dentro de Laravel se administra por separado.
          */
         const enviadoCorrectamente =
           ['CREADO_DRAFT', 'CREADO_PUBLICADO', 'ACTUALIZADO_API'].includes(resultado.resultado) &&
