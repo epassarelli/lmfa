@@ -1435,6 +1435,22 @@ function enteroOpcionalMFA_(value) {
   return Number.isInteger(number) && number > 0 ? number : null;
 }
 
+function listaEnterosMFA_(value) {
+  if (value === '' || value === null || value === undefined) return null;
+
+  const values = Array.isArray(value)
+    ? value
+    : String(value).split(/[;,\s]+/);
+
+  const result = [...new Set(
+    values
+      .map((item) => enteroOpcionalMFA_(item))
+      .filter((item) => item !== null)
+  )];
+
+  return result.length ? result : null;
+}
+
 function booleanoOpcionalMFA_(value) {
   const normalized = normalizarTextoMFA_(value);
   if (!normalized) return null;
