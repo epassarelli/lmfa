@@ -42,3 +42,7 @@ backlog.json
 
 # Temporales de tests
 .phpunit.result.cache
+
+# Google Apps Script / clasp local credentials
+.clasp.json
+.clasprc.json
