@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class ImageSourceResolver
 {
-    protected string $tmpDir = 'tmp/news-images';
+    protected string $tmpDir = 'tmp/editorial-images';
 
     /**
      * Resuelve una fuente de imagen (Archivo, Path o URL) a un objeto UploadedFile.
@@ -131,6 +131,19 @@ class ImageSourceResolver
     {
         // filter_var con estos flags devuelve false si la IP es privada o reservada
         return !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+    }
+
+    public function cleanupTemporary(?UploadedFile $image): void
+    {
+        if (! $image) {
+            return;
+        }
+
+        $path = $image->getPathname();
+
+        if (str_contains($path, $this->tmpDir)) {
+            @unlink($path);
+        }
     }
 
     protected function getExtensionFromMime(string $mime): string
