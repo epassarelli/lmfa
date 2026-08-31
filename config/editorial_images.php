@@ -24,6 +24,9 @@ return [
         'festival' => 'img/logo-share.jpg',
         'artist' => 'img/logo-share.jpg',
         'knowledge' => 'img/logo-share.jpg',
+        'album' => 'img/logo-share.jpg',
+        'recipe' => 'img/logo-share.jpg',
+        'myth' => 'img/logo-share.jpg',
         'default' => 'img/logo-share.jpg',
     ],
 ];
