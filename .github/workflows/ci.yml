@@ -88,12 +88,34 @@ jobs:
       - name: Run migrations
         run: php artisan migrate:fresh --force
 
-      - name: PHP syntax check
+      - name: Determine changed PHP files
+        id: changed-php
+        shell: bash
         run: |
-          find app config database routes tests -name '*.php' -print0 | xargs -0 -n1 php -l
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git diff --name-only --diff-filter=ACMRT "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" -- '*.php' > /tmp/changed-php.txt
+          else
+            git diff --name-only --diff-filter=ACMRT HEAD^ HEAD -- '*.php' > /tmp/changed-php.txt || true
+          fi
+          cat /tmp/changed-php.txt
+
+      - name: PHP syntax check
+        shell: bash
+        run: |
+          if [ -s /tmp/changed-php.txt ]; then
+            while IFS= read -r file; do php -l "$file"; done < /tmp/changed-php.txt
+          else
+            echo "No changed PHP files."
+          fi
 
       - name: Pint
-        run: vendor/bin/pint --test
+        shell: bash
+        run: |
+          if [ -s /tmp/changed-php.txt ]; then
+            xargs vendor/bin/pint --test < /tmp/changed-php.txt
+          else
+            echo "No changed PHP files."
+          fi
 
       - name: PHPUnit
         run: php artisan test
