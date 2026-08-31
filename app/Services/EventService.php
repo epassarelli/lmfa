@@ -137,9 +137,7 @@ class EventService
                 'featured_image_path' => $media->path,
             ])->save();
         } finally {
-            if ($resolved instanceof UploadedFile && str_contains($resolved->getPathname(), 'tmp/news-images')) {
-                @unlink($resolved->getPathname());
-            }
+            $this->imageResolver->cleanupTemporary($resolved);
         }
     }
 
