@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Event;
 use App\Support\RichTextHeadingSanitizer;
+use App\Support\ImageSourceMetadata;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -127,7 +128,8 @@ class EventService
                 'event',
                 'events',
                 $replace,
-                $event->slug
+                $event->slug,
+                ImageSourceMetadata::from($image)
             );
 
             $event->forceFill([
