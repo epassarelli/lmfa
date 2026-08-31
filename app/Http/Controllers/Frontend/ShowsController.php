@@ -136,7 +136,7 @@ class ShowsController extends Controller
     public function byArtista($slug)
     {
         $interprete = Interprete::where('slug', $slug)->firstOrFail();
-        $shows = $interprete->events()->with('images')->get();
+        $shows = $interprete->events()->with(['images', 'interpretes.images'])->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
         $section = 'shows';
