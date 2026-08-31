@@ -7,6 +7,7 @@ use App\Http\Requests\Api\StoreEventRequest;
 use App\Http\Requests\Api\UpdateEventRequest;
 use App\Models\Event;
 use App\Services\EventService;
+use App\Support\ApiImageInput;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -59,10 +60,10 @@ class EventController extends Controller
     {
         $this->authorize('create', Event::class);
 
-        $event = $this->eventService->createEvent(
-            $request->validated(),
-            $request->file('featured_image')
-        );
+        $payload = $request->validated();
+        $image = ApiImageInput::extract($request, $payload, 'featured_image');
+
+        $event = $this->eventService->createEvent($payload, $image);
 
         return response()->json($event, 201);
     }
@@ -71,11 +72,10 @@ class EventController extends Controller
     {
         $this->authorize('update', $event);
 
-        $event = $this->eventService->updateEvent(
-            $event,
-            $request->validated(),
-            $request->file('featured_image')
-        );
+        $payload = $request->validated();
+        $image = ApiImageInput::extract($request, $payload, 'featured_image');
+
+        $event = $this->eventService->updateEvent($event, $payload, $image);
 
         return response()->json($event);
     }
