@@ -787,9 +787,17 @@ function procesarEvergreenMFA_(row, token, etapa) {
 }
 
 function procesarFestivalMFA_(row, token, etapa) {
-  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG', 'CUERPO']);
+  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG']);
   validarLongitudMFA_(row);
-  validarContenidoVisibleMFA_(row.CUERPO, 300);
+
+  const accion = normalizarTextoMFA_(row.ACCION_API) || 'crear';
+
+  if (accion === 'crear') {
+    exigirCamposMFA_(row, ['CUERPO']);
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  } else if (row.CUERPO) {
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  }
 
   etapa('RESOLVIENDO_CATALOGOS');
   const catalogos = resolverCatalogosFestivalMFA_(row, token);
@@ -800,8 +808,6 @@ function procesarFestivalMFA_(row, token, etapa) {
   if (!catalogos.monthId) {
     throw crearErrorMFA_('ERROR_VALIDACION', 422, 'No se pudo resolver MES_ID.');
   }
-
-  const accion = normalizarTextoMFA_(row.ACCION_API) || 'crear';
   if (!['crear', 'actualizar'].includes(accion)) {
     throw crearErrorMFA_(
       'ERROR_VALIDACION',
