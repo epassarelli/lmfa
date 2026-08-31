@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Album;
 use App\Models\Cancion;
+use App\Models\Comida;
 use App\Models\Event;
 use App\Models\Festival;
 use App\Models\Interprete;
@@ -121,6 +122,31 @@ class SeoMetadata
             'title' => $title,
             'description' => $description,
             'h1' => $h1,
+        ];
+    }
+
+    public static function recipe(Comida $recipe): array
+    {
+        $title = static::preferredText(
+            $recipe->seo_title,
+            'Receta de '.static::clean($recipe->titulo),
+            'Receta argentina'
+        );
+
+        $description = static::preferredDescription(
+            $recipe->meta_description,
+            $recipe->excerpt,
+            $recipe->receta,
+            160,
+            'Receta tradicional argentina con ingredientes, preparación y contexto regional.'
+        );
+
+        return [
+            'title' => str_contains($title, 'Folklore') || str_contains($title, 'Argentina')
+                ? $title
+                : $title.' | Cocina Argentina',
+            'description' => $description,
+            'h1' => static::preferredText($recipe->titulo, 'Receta argentina'),
         ];
     }
 
