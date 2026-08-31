@@ -77,6 +77,34 @@ class FestivalApiModernizationTest extends TestCase
         $this->assertSame([$artist->id], $festival->interpretes()->pluck('interpretes.id')->all());
     }
 
+
+    /** @test */
+    public function api_defaults_new_festival_to_authenticated_author_and_draft_status(): void
+    {
+        $admin = $this->makeAdminUser();
+        Sanctum::actingAs($admin);
+
+        $provinceId = $this->makeProvince();
+
+        $response = $this->postJson('/api/v1/festivals', [
+            'title' => 'Festival API Borrador',
+            'body' => '<p>Contenido editorial.</p>',
+            'province_id' => $provinceId,
+            'mes_id' => 1,
+        ]);
+
+        $response->assertCreated()
+            ->assertJsonPath('slug', 'festival-api-borrador')
+            ->assertJsonPath('status', 'draft')
+            ->assertJsonPath('user_id', $admin->id);
+
+        $this->assertDatabaseHas('festivales', [
+            'slug' => 'festival-api-borrador',
+            'status' => 'draft',
+            'user_id' => $admin->id,
+        ]);
+    }
+
     /** @test */
     public function api_rejects_duplicate_festival_slug(): void
     {
