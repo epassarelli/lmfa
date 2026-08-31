@@ -90,6 +90,7 @@ class FestivalController extends Controller
 
             $this->syncRelations($festival, $payload);
             $this->processImage($festival, $request->file('foto'), false);
+            $this->syncImageAlt($festival, $payload);
 
             return $festival;
         });
@@ -120,6 +121,7 @@ class FestivalController extends Controller
 
             $this->syncRelations($festival, $payload);
             $this->processImage($festival, $request->file('foto'), true);
+            $this->syncImageAlt($festival, $payload);
         });
 
         Alert::success('Festival actualizado', 'El festival ha sido actualizado con exito.');
@@ -192,6 +194,21 @@ class FestivalController extends Controller
             'featured_image_id' => $media->id,
             'featured_image_path' => $media->path,
         ])->save();
+    }
+
+    private function syncImageAlt(Festival $festival, array $data): void
+    {
+        if (! array_key_exists('image_alt', $data)) {
+            return;
+        }
+
+        $image = $festival->images()->orderBy('sort_order')->first();
+
+        if ($image) {
+            $image->update([
+                'alt' => $festival->image_alt ?: $festival->title,
+            ]);
+        }
     }
 
     private function syncRelations(Festival $festival, array $data): void
