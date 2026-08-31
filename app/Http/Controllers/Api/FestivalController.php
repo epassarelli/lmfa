@@ -48,17 +48,27 @@ class FestivalController extends Controller
 
         $festival = DB::transaction(function () use ($payload, $image) {
             $festival = Festival::create($this->normalizePayload($payload));
+            $this->syncRelations($festival, $payload, true);
             $this->processImage($festival, $image, false);
 
             return $festival;
         });
 
-        return response()->json($festival->fresh('images'), 201);
+        return response()->json($this->freshWithRelations($festival), 201);
     }
 
     public function show(Festival $festival)
     {
-        return response()->json($festival->load(['provincia', 'mes', 'locality']));
+        return response()->json($festival->load([
+            'provincia',
+            'mes',
+            'locality',
+            'images',
+            'noticias',
+            'events',
+            'interpretes',
+            'knowledgeArticles',
+        ]));
     }
 
     public function update(UpdateFestivalRequest $request, Festival $festival)
@@ -68,10 +78,11 @@ class FestivalController extends Controller
 
         DB::transaction(function () use ($festival, $payload, $image) {
             $festival->update($this->normalizePayload($payload, $festival));
+            $this->syncRelations($festival, $payload);
             $this->processImage($festival, $image, true);
         });
 
-        return response()->json($festival->fresh('images'));
+        return response()->json($this->freshWithRelations($festival));
     }
 
     public function destroy(Festival $festival)
@@ -123,7 +134,7 @@ class FestivalController extends Controller
         $title = $validated['title'] ?? $festival?->title;
         $body = $validated['body'] ?? $festival?->body;
 
-        if (! isset($validated['slug']) && filled($title)) {
+        if (! array_key_exists('slug', $validated) && filled($title) && (! $festival || blank($festival->slug))) {
             $validated['slug'] = Str::slug($title);
         }
 
@@ -138,6 +149,43 @@ class FestivalController extends Controller
             $validated['status'] = $festival->status;
         }
 
+        $effectiveStatus = $validated['status'] ?? $festival?->status;
+        $effectivePublishedAt = $validated['published_at'] ?? $festival?->published_at;
+
+        if ($effectiveStatus === 'published' && empty($effectivePublishedAt)) {
+            $validated['published_at'] = now();
+        }
+
         return $validated;
+    }
+
+    private function syncRelations(Festival $festival, array $payload, bool $creating = false): void
+    {
+        $relations = [
+            'news_ids' => 'noticias',
+            'event_ids' => 'events',
+            'interprete_ids' => 'interpretes',
+            'knowledge_article_ids' => 'knowledgeArticles',
+        ];
+
+        foreach ($relations as $field => $relation) {
+            if ($creating || array_key_exists($field, $payload)) {
+                $festival->{$relation}()->sync($payload[$field] ?? []);
+            }
+        }
+    }
+
+    private function freshWithRelations(Festival $festival): Festival
+    {
+        return $festival->fresh([
+            'provincia',
+            'mes',
+            'locality',
+            'images',
+            'noticias',
+            'events',
+            'interpretes',
+            'knowledgeArticles',
+        ]);
     }
 }
