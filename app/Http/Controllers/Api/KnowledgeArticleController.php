@@ -10,6 +10,7 @@ use App\Http\Resources\KnowledgeCategoryResource;
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeCategory;
 use App\Services\KnowledgeArticleService;
+use App\Support\ApiImageInput;
 use Illuminate\Http\Request;
 
 class KnowledgeArticleController extends Controller
@@ -61,7 +62,7 @@ class KnowledgeArticleController extends Controller
         $this->authorize('create', KnowledgeArticle::class);
 
         $payload = $request->validated();
-        $image = $request->file('image') ?: ($payload['featured_image_path'] ?? null);
+        $image = ApiImageInput::extract($request, $payload, 'image');
 
         $article = $this->service->createArticle($payload, $image);
 
@@ -84,7 +85,7 @@ class KnowledgeArticleController extends Controller
         $this->authorize('update', $knowledge_article);
 
         $payload = $request->validated();
-        $image = $request->file('image') ?: ($payload['featured_image_path'] ?? null);
+        $image = ApiImageInput::extract($request, $payload, 'image');
 
         $article = $this->service->updateArticle($knowledge_article, $payload, $image);
 
