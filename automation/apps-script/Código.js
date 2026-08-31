@@ -1106,17 +1106,31 @@ function leerTablaConEncabezados_(sheet) {
 function seleccionarCandidatoMFA_(rows, tipos) {
   const prioridad = { alta: 3, media: 2, baja: 1 };
   const estadosExcluidos = ['publicado', 'descartado', 'duplicado'];
+
   return rows
     .filter((r) => tipos.includes(normalizarTextoMFA_(r.values.TIPO)))
     .filter((r) => !estadosExcluidos.includes(normalizarTextoMFA_(r.values.ESTADO)))
     .filter((r) => normalizarTextoMFA_(r.values.ENVIAR_API) === 's')
     .filter((r) => {
       const resultado = normalizarTextoMFA_(r.values.RESULTADO_API);
+      const tipo = normalizarTextoMFA_(r.values.TIPO);
+      const accion = normalizarTextoMFA_(r.values.ACCION_API) || 'crear';
+
+      if (tipo === 'festival' && accion === 'actualizar') {
+        return Boolean(enteroOpcionalMFA_(r.values.ID_WEB)) &&
+          !['actualizado_api'].includes(resultado);
+      }
+
       return !r.values.ID_WEB &&
         !r.values.URL_PUBLICADA &&
         !['creado_draft', 'creado_publicado'].includes(resultado);
     })
-    .sort((a, b) => (prioridad[normalizarTextoMFA_(b.values.PRIORIDAD)] || 0) - (prioridad[normalizarTextoMFA_(a.values.PRIORIDAD)] || 0) || a.rowNumber - b.rowNumber)[0] || null;
+    .sort((a, b) =>
+      (prioridad[normalizarTextoMFA_(b.values.PRIORIDAD)] || 0) -
+      (prioridad[normalizarTextoMFA_(a.values.PRIORIDAD)] || 0) ||
+      numero_(a.values.SCORE_CALIDAD || 999) - numero_(b.values.SCORE_CALIDAD || 999) ||
+      a.rowNumber - b.rowNumber
+    )[0] || null;
 }
 
 function apiMFA_(method, path, token, payload, query) {
