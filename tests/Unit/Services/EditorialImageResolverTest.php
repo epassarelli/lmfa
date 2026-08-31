@@ -2,11 +2,14 @@
 
 namespace Tests\Unit\Services;
 
+use App\Models\Album;
+use App\Models\Comida;
 use App\Models\Event;
 use App\Models\Festival;
 use App\Models\Interprete;
 use App\Models\KnowledgeArticle;
 use App\Models\MediaAsset;
+use App\Models\Mito;
 use App\Models\News;
 use App\Services\EditorialImageResolver;
 use Illuminate\Support\Collection;
@@ -103,6 +106,24 @@ class EditorialImageResolverTest extends TestCase
 
         $this->assertSame($media, $resolved->media);
         $this->assertSame(Festival::class, $resolved->sourceEntity);
+    }
+
+    public function test_it_supports_legacy_photo_paths_without_migrating_the_entity(): void
+    {
+        $album = new Album(['album' => 'Disco legacy', 'foto' => 'cover.jpg']);
+        $album->setRelation('images', new Collection());
+
+        $recipe = new Comida(['titulo' => 'Locro', 'foto' => 'locro.jpg']);
+        $recipe->setRelation('images', new Collection());
+
+        $myth = new Mito(['titulo' => 'Leyenda', 'foto' => 'leyenda.jpg']);
+        $myth->setRelation('images', new Collection());
+
+        $resolver = app(EditorialImageResolver::class);
+
+        $this->assertStringContainsString('storage/albunes/cover.jpg', $resolver->resolve($album)->url);
+        $this->assertStringContainsString('storage/comidas/locro.jpg', $resolver->resolve($recipe)->url);
+        $this->assertStringContainsString('storage/mitos/leyenda.jpg', $resolver->resolve($myth)->url);
     }
 
     public function test_it_does_not_query_unloaded_relations_and_uses_safe_fallback(): void
