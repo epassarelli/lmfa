@@ -28,6 +28,7 @@ class UpdateNewsRequest extends FormRequest
             'slug' => 'sometimes|nullable|string|max:255',
             'subtitle' => 'sometimes|nullable|string|max:255',
             'excerpt' => 'sometimes|nullable|string|max:1000',
+            'featured_image_url' => 'sometimes|nullable|url|max:2048',
             'featured_image_path' => 'sometimes|nullable|string|max:255',
             'created_by' => 'sometimes|nullable|exists:users,id',
             'approved_by' => 'sometimes|nullable|exists:users,id',
