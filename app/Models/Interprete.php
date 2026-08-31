@@ -24,14 +24,21 @@ class Interprete extends Model
     // protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
     protected $fillable = [
         'interprete',
+        'artist_type',
         'slug',
         'biografia',
+        'excerpt',
+        'seo_title',
+        'meta_description',
         'foto',
+        'image_alt',
         'telefono',
         'correo',
+        'facebook',
         'instagram',
         'twitter',
         'youtube',
+        'web',
         'visitas',
         'estado',
         'user_id'
