@@ -24,6 +24,7 @@ class EventService
     {
         return DB::transaction(function () use ($data, $image) {
             $data['created_by'] = $data['created_by'] ?? auth()->id();
+            $data['is_free'] = $data['is_free'] ?? false;
 
             foreach (['body', 'detalles'] as $field) {
                 if (array_key_exists($field, $data)) {
@@ -70,6 +71,10 @@ class EventService
     public function updateEvent(Event $event, array $data, mixed $image = null): Event
     {
         return DB::transaction(function () use ($event, $data, $image) {
+            if (array_key_exists('is_free', $data) && $data['is_free'] === null) {
+                $data['is_free'] = false;
+            }
+
             foreach (['body', 'detalles'] as $field) {
                 if (array_key_exists($field, $data)) {
                     $data[$field] = RichTextHeadingSanitizer::normalize($data[$field]);
