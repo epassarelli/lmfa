@@ -16,13 +16,25 @@ if (!fs.existsSync(codePath)) {
 
 const backup = path.join(os.tmpdir(), 'mfa-Code.gs.backup');
 fs.copyFileSync(codePath, backup);
-const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-const result = spawnSync(command, ['--yes', '@google/clasp', 'pull'], { stdio: 'inherit' });
+
+const isWindows = process.platform === 'win32';
+const command = isWindows ? 'npx.cmd' : 'npx';
+const args = ['--yes', '@google/clasp', 'pull'];
+
+const result = spawnSync(command, args, {
+  stdio: 'inherit',
+  shell: isWindows,
+});
+
 fs.copyFileSync(backup, codePath);
 fs.rmSync(backup, { force: true });
 
+if (result.error) {
+  console.error(`No se pudo ejecutar clasp: ${result.error.message}`);
+}
+
 if (result.status !== 0) {
-  console.error('clasp pull falló. Code.gs fue restaurado; no se perdió el trabajo local.');
+  console.error(`clasp pull falló (exit=${result.status ?? 'sin código'}). Code.gs fue restaurado; no se perdió el trabajo local.`);
   process.exit(result.status ?? 1);
 }
 
