@@ -183,7 +183,9 @@ class FestivalController extends Controller
             $festival,
             'festival',
             'festivales',
-            $replace
+            $replace,
+            $festival->slug,
+            ['alt' => $festival->image_alt ?: $festival->title]
         );
 
         $festival->forceFill([
