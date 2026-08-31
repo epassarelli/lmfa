@@ -26,6 +26,8 @@ class UpdateFestivalRequest extends FormRequest
             'slug' => 'sometimes|string|max:255',
             'excerpt' => 'nullable|string|max:1000',
             'body' => 'sometimes|string',
+            'featured_image' => 'sometimes|nullable|image|max:5120',
+            'featured_image_url' => 'sometimes|nullable|url|max:2048',
             'featured_image_path' => 'nullable|string|max:255',
             'province_id' => 'sometimes|exists:provincias,id',
             'locality_id' => 'nullable|exists:localities,id',
