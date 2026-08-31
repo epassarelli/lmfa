@@ -788,6 +788,92 @@ function procesarEvergreenMFA_(row, token, etapa) {
   };
 }
 
+function procesarFestivalMFA_(row, token, etapa) {
+  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG', 'CUERPO', 'PROVINCE_ID', 'MES_ID']);
+  validarLongitudMFA_(row);
+  validarContenidoVisibleMFA_(row.CUERPO, 300);
+
+  const accion = normalizarTextoMFA_(row.ACCION_API) || 'crear';
+  if (!['crear', 'actualizar'].includes(accion)) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      'ACCION_API debe ser CREAR o ACTUALIZAR para TIPO=Festival.'
+    );
+  }
+
+  const festivalId = enteroOpcionalMFA_(row.ID_WEB);
+  if (accion === 'actualizar' && !festivalId) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      'Un Festival con ACCION_API=ACTUALIZAR requiere ID_WEB.'
+    );
+  }
+  if (accion === 'crear' && festivalId) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      'Un Festival con ACCION_API=CREAR no debe tener ID_WEB.'
+    );
+  }
+
+  const payload = limpiarObjetoMFA_({
+    title: String(row.TITULO || '').trim(),
+    slug: String(row.SLUG || '').trim(),
+    excerpt: limitarTextoMFA_(row.BAJADA, 1000),
+    body: row.CUERPO,
+    province_id: enteroOpcionalMFA_(row.PROVINCE_ID),
+    locality_id: enteroOpcionalMFA_(row.LOCALITY_ID),
+    mes_id: enteroOpcionalMFA_(row.MES_ID),
+    seo_title: row.META_TITLE,
+    meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    image_alt: limitarTextoMFA_(row.IMAGE_ALT, 255),
+    featured_image_path: row.FEATURED_IMAGE_PATH,
+    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
+    news_ids: listaEnterosMFA_(row.NEWS_IDS),
+    event_ids: listaEnterosMFA_(row.EVENT_IDS),
+    interprete_ids: listaEnterosMFA_(row.INTERPRETE_IDS),
+    knowledge_article_ids: listaEnterosMFA_(row.KNOWLEDGE_ARTICLE_IDS),
+    status: accion === 'crear' ? 'draft' : null,
+  });
+
+  const method = accion === 'actualizar' ? 'put' : 'post';
+  const apiPath = accion === 'actualizar'
+    ? `/festivals/${festivalId}`
+    : '/festivals';
+
+  etapa(accion === 'actualizar' ? 'PROCESANDO_UPDATE' : 'PROCESANDO_POST');
+  console.log(
+    `MFA FESTIVAL DEBUG: fila=${row.ID_CONTENIDO || '-'} accion=${accion.toUpperCase()} payload=${JSON.stringify(payload)}`
+  );
+
+  const response = apiMFA_(method, apiPath, token, payload);
+  const expected = accion === 'actualizar' ? 200 : 201;
+
+  if (response.status !== expected) {
+    throw errorDesdeRespuestaMFA_(response);
+  }
+
+  const id = extraerIdMFA_(response.json) || festivalId;
+  if (!id) {
+    throw crearErrorMFA_(
+      'ERROR_RESPUESTA',
+      response.status,
+      'La API respondió correctamente pero no devolvió un ID reconocible.'
+    );
+  }
+
+  return {
+    resultado: accion === 'actualizar' ? 'ACTUALIZADO_API' : 'CREADO_DRAFT',
+    http: response.status,
+    id,
+    error: '',
+    desautorizar: true,
+    fechaEnvio: new Date()
+  };
+}
+
 function procesarEventoMFA_(row, token, etapa) {
   exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG', 'START_AT']);
   validarLongitudMFA_(row);
