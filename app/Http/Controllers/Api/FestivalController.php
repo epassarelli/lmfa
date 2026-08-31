@@ -111,9 +111,7 @@ class FestivalController extends Controller
                 'featured_image_path' => $media->path,
             ])->save();
         } finally {
-            if ($resolved instanceof \Illuminate\Http\UploadedFile && str_contains($resolved->getPathname(), 'tmp/news-images')) {
-                @unlink($resolved->getPathname());
-            }
+            $this->imageResolver->cleanupTemporary($resolved);
         }
     }
 
