@@ -1297,7 +1297,10 @@ function registrarEjecucionCargaMFA_(ss, inicio, fin, estado, errores, duplicado
     FUENTES_REVISADAS: 0,
     HALLAZGOS: 0,
     CONTENIDOS_GENERADOS: resumen.filter(
-      (x) => x.indexOf('CREADO_DRAFT') >= 0 || x.indexOf('CREADO_PUBLICADO') >= 0
+      (x) =>
+        x.indexOf('CREADO_DRAFT') >= 0 ||
+        x.indexOf('CREADO_PUBLICADO') >= 0 ||
+        x.indexOf('ACTUALIZADO_API') >= 0
     ).length,
     DUPLICADOS_DESCARTADOS: duplicados,
     ERRORES: errores,
