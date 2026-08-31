@@ -50,6 +50,8 @@ class StoreEventRequest extends FormRequest
             'status' => 'nullable|string|max:30',
             'editorial_status' => ['nullable', Rule::in(['draft', 'published', 'archived'])],
             'publication_mode' => 'nullable|string|max:40',
+            'featured_image' => 'nullable|image|max:5120',
+            'featured_image_url' => 'nullable|url|max:2048',
             'featured_image_path' => 'nullable|string|max:255',
             'seo_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:320',
