@@ -6,12 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreFestivalRequest;
 use App\Http\Requests\Api\UpdateFestivalRequest;
 use App\Models\Festival;
+use App\Services\ImageSourceResolver;
+use App\Services\ImageUploadService;
+use App\Support\ApiImageInput;
 use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class FestivalController extends Controller
 {
+    public function __construct(
+        protected ImageUploadService $imageService,
+        protected ImageSourceResolver $imageResolver
+    ) {
+    }
     public function index(Request $request)
     {
         $query = Festival::query()->with(['provincia', 'mes', 'locality']);
@@ -33,9 +41,13 @@ class FestivalController extends Controller
 
     public function store(StoreFestivalRequest $request)
     {
-        $festival = Festival::create($this->normalizePayload($request->validated()));
+        $payload = $request->validated();
+        $image = ApiImageInput::extract($request, $payload, 'featured_image');
 
-        return response()->json($festival, 201);
+        $festival = Festival::create($this->normalizePayload($payload));
+        $this->processImage($festival, $image, false);
+
+        return response()->json($festival->fresh('images'), 201);
     }
 
     public function show(Festival $festival)
@@ -45,9 +57,13 @@ class FestivalController extends Controller
 
     public function update(UpdateFestivalRequest $request, Festival $festival)
     {
-        $festival->update($this->normalizePayload($request->validated(), $festival));
+        $payload = $request->validated();
+        $image = ApiImageInput::extract($request, $payload, 'featured_image');
 
-        return response()->json($festival);
+        $festival->update($this->normalizePayload($payload, $festival));
+        $this->processImage($festival, $image, true);
+
+        return response()->json($festival->fresh('images'));
     }
 
     public function destroy(Festival $festival)
@@ -55,6 +71,41 @@ class FestivalController extends Controller
         $festival->delete();
 
         return response()->json(null, 204);
+    }
+
+    private function processImage(Festival $festival, mixed $image, bool $replace): void
+    {
+        if (! $image) {
+            return;
+        }
+
+        $resolved = null;
+
+        try {
+            $resolved = $this->imageResolver->resolve($image);
+
+            if (! $resolved instanceof \Illuminate\Http\UploadedFile) {
+                return;
+            }
+
+            $media = $this->imageService->process(
+                $resolved,
+                $festival,
+                'festival',
+                'festivales',
+                $replace,
+                $festival->slug
+            );
+
+            $festival->forceFill([
+                'featured_image_id' => $media->id,
+                'featured_image_path' => $media->path,
+            ])->save();
+        } finally {
+            if ($resolved instanceof \Illuminate\Http\UploadedFile && str_contains($resolved->getPathname(), 'tmp/news-images')) {
+                @unlink($resolved->getPathname());
+            }
+        }
     }
 
     private function normalizePayload(array $validated, ?Festival $festival = null): array
