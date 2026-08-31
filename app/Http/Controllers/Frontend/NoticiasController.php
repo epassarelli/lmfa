@@ -29,14 +29,14 @@ class NoticiasController extends Controller
     public function index()
     {
         $ultimas = News::publishedVisible()
-            ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'images'])
+            ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'interprete.images', 'images'])
             ->latest('published_at')
             ->latest('created_at')
             ->simplePaginate(12);
 
         $ultimasSidebar = Cache::remember('news:index:sidebar', now()->addMinutes(10), function () {
             return News::publishedVisible()
-                ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'images'])
+                ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'interprete.images', 'images'])
                 ->latest('published_at')
                 ->latest('created_at')
                 ->take(4)
@@ -103,12 +103,12 @@ class NoticiasController extends Controller
 
         $noticias = News::where('categoria_id', $categoria->id)
             ->publishedVisible()
-            ->with(['interpretes', 'images'])
+            ->with(['interpretes', 'interprete', 'interprete.images', 'images'])
             ->latest()
             ->paginate(10);
 
         $ultimas = News::publishedVisible()
-            ->with('images')
+            ->with(['images', 'interprete', 'interprete.images'])
             ->orderByDesc('created_at')
             ->take(5)
             ->get();
@@ -145,7 +145,7 @@ class NoticiasController extends Controller
         }
 
         $noticia = News::query()
-            ->with(['categoria', 'interprete', 'interpretes', 'images'])
+            ->with(['categoria', 'interprete', 'interprete.images', 'interpretes', 'images'])
             ->where('slug', $slugNoticia)
             ->publishedVisible()
             ->firstOrFail();
