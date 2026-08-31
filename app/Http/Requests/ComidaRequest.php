@@ -18,6 +18,20 @@ class ComidaRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->normalizeRichTextFields(['receta']);
+
+        foreach (['ingredients', 'instructions'] as $field) {
+            $value = $this->input($field);
+
+            if (is_string($value)) {
+                $items = collect(preg_split('/\R+/u', $value) ?: [])
+                    ->map(fn ($item) => trim((string) $item))
+                    ->filter()
+                    ->values()
+                    ->all();
+
+                $this->merge([$field => $items ?: null]);
+            }
+        }
     }
 
     public function rules()
