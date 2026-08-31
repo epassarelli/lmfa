@@ -27,7 +27,7 @@ class FestivalRequest extends FormRequest
             'slug' => ['nullable', 'string', 'max:255', Rule::unique('festivales', 'slug')->ignore($this->route('festival')?->id)],
             'excerpt' => 'nullable|string|max:1000',
             'body' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png|max:200',
+            'foto' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
             'province_id' => 'required|exists:provincias,id',
             'locality_id' => 'nullable|exists:localities,id',
             'mes_id' => 'required|exists:meses,id',
