@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\Festival;
 use App\Models\Interprete;
 use App\Models\KnowledgeArticle;
+use App\Models\Mito;
 use App\Models\News;
 use Illuminate\Support\Str;
 
@@ -121,6 +122,29 @@ class SeoMetadata
             'title' => $title,
             'description' => $description,
             'h1' => $h1,
+        ];
+    }
+
+    public static function myth(Mito $myth): array
+    {
+        $title = static::preferredText(
+            $myth->seo_title,
+            $myth->titulo,
+            'Mito o leyenda argentina'
+        );
+
+        $description = static::preferredDescription(
+            $myth->meta_description,
+            $myth->excerpt,
+            $myth->mito,
+            160,
+            'Mito o leyenda del folklore argentino con contexto cultural y relato tradicional.'
+        );
+
+        return [
+            'title' => str_contains($title, 'Folklore Argentino') ? $title : $title.' | Folklore Argentino',
+            'description' => $description,
+            'h1' => static::preferredText($myth->titulo, 'Mito o leyenda argentina'),
         ];
     }
 
