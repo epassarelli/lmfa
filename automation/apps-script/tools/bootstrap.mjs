@@ -8,13 +8,13 @@ if (!fs.existsSync('.clasp.json')) {
   process.exit(1);
 }
 
-const codePath = path.resolve('automation/apps-script/Code.gs');
+const codePath = path.resolve('automation/apps-script/Código.js');
 if (!fs.existsSync(codePath)) {
-  console.error('No existe automation/apps-script/Code.gs');
+  console.error('No existe automation/apps-script/Código.js');
   process.exit(1);
 }
 
-const backup = path.join(os.tmpdir(), 'mfa-Code.gs.backup');
+const backup = path.join(os.tmpdir(), 'mfa-Código.js.backup');
 fs.copyFileSync(codePath, backup);
 
 const isWindows = process.platform === 'win32';
@@ -34,9 +34,9 @@ if (result.error) {
 }
 
 if (result.status !== 0) {
-  console.error(`clasp pull falló (exit=${result.status ?? 'sin código'}). Code.gs fue restaurado; no se perdió el trabajo local.`);
+  console.error(`clasp pull falló (exit=${result.status ?? 'sin código'}). Código.js fue restaurado; no se perdió el trabajo local.`);
   process.exit(result.status ?? 1);
 }
 
-console.log('Bootstrap completo: manifiesto/archivos remotos importados y Code.gs preservado.');
+console.log('Bootstrap completo: manifiesto/archivos remotos importados y Código.js preservado.');
 console.log('Revisá git status antes de hacer cualquier push.');
