@@ -3,9 +3,10 @@
 @php
   $publishedIso = optional($noticia->published_at ?? $noticia->created_at ?? $noticia->updated_at)->toIso8601String();
   $modifiedIso = optional($noticia->updated_at ?? $noticia->published_at ?? $noticia->created_at)->toIso8601String();
-  $metaImage = $noticia->images->isNotEmpty()
-    ? $noticia->images->first()->original_path
-    : ($noticia->legacy_featured_image_url ?? asset('img/album.jpg'));
+  $resolvedEditorialImage = app(\\App\\Services\\EditorialImageResolver::class)->resolve($noticia);
+  $metaImage = $resolvedEditorialImage->isMedia()
+    ? $resolvedEditorialImage->media->original_path
+    : $resolvedEditorialImage->url;
 @endphp
 
 @section('metaTitle', $metaTitle)
@@ -52,21 +53,15 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
   <section class="bg-white p-2 mb-4">
-    @if ($noticia->images->isNotEmpty())
-      <div class="mb-4">
-        <x-optimized-image :image="$noticia->images->first()" variant="detail" class="rounded shadow-lg w-full"
-          :alt="$noticia->titulo" fetchpriority="high" />
-      </div>
-    @elseif ($noticia->legacy_featured_image_url)
-      <div class="mb-4">
-        <img src="{{ $noticia->legacy_featured_image_url }}" alt="{{ $noticia->titulo }}"
-            class="rounded shadow-lg w-full" fetchpriority="high" decoding="async">
-      </div>
-    @else
-      <div class="mb-4">
-        <x-image-placeholder class="w-full rounded-lg shadow-md min-h-[200px]" />
-      </div>
-    @endif
+    <div class="mb-4">
+      <x-editorial-image
+        :entity="$noticia"
+        variant="detail"
+        class="rounded shadow-lg w-full"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
 
     <h1 class="text-2xl font-semibold text-gray-800 mb-2">{{ $h1 }}</h1>
 
