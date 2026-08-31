@@ -787,11 +787,27 @@ function procesarEvergreenMFA_(row, token, etapa) {
 }
 
 function procesarFestivalMFA_(row, token, etapa) {
-  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG', 'CUERPO', 'PROVINCE_ID', 'MES_ID']);
+  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG']);
   validarLongitudMFA_(row);
-  validarContenidoVisibleMFA_(row.CUERPO, 300);
 
   const accion = normalizarTextoMFA_(row.ACCION_API) || 'crear';
+
+  if (accion === 'crear') {
+    exigirCamposMFA_(row, ['CUERPO']);
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  } else if (row.CUERPO) {
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  }
+
+  etapa('RESOLVIENDO_CATALOGOS');
+  const catalogos = resolverCatalogosFestivalMFA_(row, token);
+
+  if (!catalogos.provinceId) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'No se pudo resolver PROVINCE_ID desde PROVINCIA.');
+  }
+  if (!catalogos.monthId) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'No se pudo resolver MES_ID.');
+  }
   if (!['crear', 'actualizar'].includes(accion)) {
     throw crearErrorMFA_(
       'ERROR_VALIDACION',
@@ -821,9 +837,9 @@ function procesarFestivalMFA_(row, token, etapa) {
     slug: String(row.SLUG || '').trim(),
     excerpt: limitarTextoMFA_(row.BAJADA, 1000),
     body: row.CUERPO,
-    province_id: enteroOpcionalMFA_(row.PROVINCE_ID),
-    locality_id: enteroOpcionalMFA_(row.LOCALITY_ID),
-    mes_id: enteroOpcionalMFA_(row.MES_ID),
+    province_id: catalogos.provinceId,
+    locality_id: catalogos.localityId,
+    mes_id: catalogos.monthId,
     seo_title: row.META_TITLE,
     meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
     image_alt: limitarTextoMFA_(row.IMAGE_ALT, 255),
@@ -868,8 +884,47 @@ function procesarFestivalMFA_(row, token, etapa) {
     id,
     error: '',
     desautorizar: true,
-    fechaEnvio: new Date()
+    fechaEnvio: new Date(),
+    provinceId: catalogos.provinceId,
+    localityId: catalogos.localityId,
+    monthId: catalogos.monthId
   };
+}
+
+function resolverCatalogosFestivalMFA_(row, token) {
+  let provinceId = enteroOpcionalMFA_(row.PROVINCE_ID);
+  let localityId = enteroOpcionalMFA_(row.LOCALITY_ID);
+  const monthId = enteroOpcionalMFA_(row.MES_ID);
+
+  if (!provinceId && row.PROVINCIA) {
+    const response = apiMFA_('get', '/editorial-catalogs/provinces', token);
+    const provincia = buscarCatalogoPorNombreMFA_(response.json, row.PROVINCIA);
+    provinceId = provincia ? enteroOpcionalMFA_(provincia.id) : null;
+  }
+
+  if (!localityId && provinceId && row.LOCALIDAD) {
+    const response = apiMFA_(
+      'get',
+      '/editorial-catalogs/localities',
+      token,
+      null,
+      { province_id: provinceId }
+    );
+    const localidad = buscarCatalogoPorNombreMFA_(response.json, row.LOCALIDAD);
+    localityId = localidad ? enteroOpcionalMFA_(localidad.id) : null;
+  }
+
+  return { provinceId, localityId, monthId };
+}
+
+function buscarCatalogoPorNombreMFA_(json, nombre) {
+  const needle = normalizarTextoMFA_(nombre);
+  const slug = slugMFA_(nombre);
+
+  return extraerColeccionMFA_(json).find((item) =>
+    normalizarTextoMFA_(item.name || item.nombre) === needle ||
+    normalizarTextoMFA_(item.slug) === slug
+  ) || null;
 }
 
 function procesarEventoMFA_(row, token, etapa) {
@@ -1268,6 +1323,9 @@ function aplicarResultadoFilaMFA_(sheet, headers, rowNumber, result) {
   // Si una Noticia resolviÃ³ la categorÃ­a desde su nombre, persiste el ID en el Excel.
   if (result.categoriaId) updates.CATEGORIA_ID = result.categoriaId;
   if (result.knowledgeCategoryId) updates.KNOWLEDGE_CATEGORY_ID = result.knowledgeCategoryId;
+  if (result.provinceId) updates.PROVINCE_ID = result.provinceId;
+  if (result.localityId) updates.LOCALITY_ID = result.localityId;
+  if (result.monthId) updates.MES_ID = result.monthId;
   Object.keys(updates).forEach((name) => {
     const col = headers.indexOf(name);
     if (col >= 0) sheet.getRange(rowNumber, col + 1).setValue(updates[name]);

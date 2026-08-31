@@ -33,6 +33,9 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('artists', \App\Http\Controllers\Api\ArtistController::class)->only(['index', 'show']);
     Route::apiResource('myths', \App\Http\Controllers\Api\MythController::class)->only(['index', 'show']);
     Route::apiResource('events', \App\Http\Controllers\Api\EventController::class)->only(['index', 'show']);
+    Route::get('editorial-catalogs/provinces', [\App\Http\Controllers\Api\EditorialCatalogController::class, 'provinces']);
+    Route::get('editorial-catalogs/localities', [\App\Http\Controllers\Api\EditorialCatalogController::class, 'localities']);
+    Route::get('editorial-catalogs/months', [\App\Http\Controllers\Api\EditorialCatalogController::class, 'months']);
 
     // Rutas de escritura — solo administradores
     Route::middleware('role:administrador')->group(function () {
