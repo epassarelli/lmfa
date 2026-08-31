@@ -50,6 +50,8 @@ class UpdateEventRequest extends FormRequest
             'status' => 'sometimes|nullable|string|max:30',
             'editorial_status' => ['sometimes', 'nullable', Rule::in(['draft', 'published', 'archived'])],
             'publication_mode' => 'sometimes|nullable|string|max:40',
+            'featured_image' => 'sometimes|nullable|image|max:5120',
+            'featured_image_url' => 'sometimes|nullable|url|max:2048',
             'featured_image_path' => 'sometimes|nullable|string|max:255',
             'seo_title' => 'sometimes|nullable|string|max:255',
             'meta_description' => 'sometimes|nullable|string|max:320',
