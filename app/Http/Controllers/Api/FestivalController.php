@@ -11,6 +11,7 @@ use App\Services\ImageUploadService;
 use App\Support\ApiImageInput;
 use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class FestivalController extends Controller
@@ -44,8 +45,12 @@ class FestivalController extends Controller
         $payload = $request->validated();
         $image = ApiImageInput::extract($request, $payload, 'featured_image');
 
-        $festival = Festival::create($this->normalizePayload($payload));
-        $this->processImage($festival, $image, false);
+        $festival = DB::transaction(function () use ($payload, $image) {
+            $festival = Festival::create($this->normalizePayload($payload));
+            $this->processImage($festival, $image, false);
+
+            return $festival;
+        });
 
         return response()->json($festival->fresh('images'), 201);
     }
@@ -60,8 +65,10 @@ class FestivalController extends Controller
         $payload = $request->validated();
         $image = ApiImageInput::extract($request, $payload, 'featured_image');
 
-        $festival->update($this->normalizePayload($payload, $festival));
-        $this->processImage($festival, $image, true);
+        DB::transaction(function () use ($festival, $payload, $image) {
+            $festival->update($this->normalizePayload($payload, $festival));
+            $this->processImage($festival, $image, true);
+        });
 
         return response()->json($festival->fresh('images'));
     }
