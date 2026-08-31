@@ -21,6 +21,7 @@ class Festival extends Model
         'body',
         'featured_image_id',
         'featured_image_path',
+        'image_alt',
         'seo_title',
         'meta_description',
         'status',
