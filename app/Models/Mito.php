@@ -11,14 +11,27 @@ class Mito extends Model
     use CommonMethodsTrait;
     use HasFactory;
 
+    protected $casts = [
+        'publicar' => 'datetime',
+        'visitas' => 'integer',
+        'estado' => 'integer',
+    ];
+
     protected $fillable = [
         'titulo',
-        'mito',
-        'foto',
+        'content_type',
         'slug',
+        'mito',
+        'excerpt',
+        'region',
+        'seo_title',
+        'meta_description',
+        'foto',
+        'image_alt',
         'publicar',
         'visitas',
         'estado',
+        'user_id',
     ];
 
     public function images()
