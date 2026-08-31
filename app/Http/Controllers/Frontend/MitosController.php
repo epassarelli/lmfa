@@ -53,12 +53,14 @@ class MitosController extends Controller
         $relacionados = Mito::where('estado', 1)
             ->where('id', '<>', $mito->id)
             ->where('titulo', 'LIKE', substr($mito->titulo, 0, 1) . '%')
+            ->with('images')
             ->take(6)
             ->get();
 
         if ($relacionados->isEmpty()) {
             $relacionados = Mito::where('estado', 1)
                 ->where('id', '<>', $mito->id)
+                ->with('images')
                 ->latest()
                 ->take(6)
                 ->get();
