@@ -49,7 +49,7 @@ class InterpretesController extends Controller
 
         $recursos = [
             'Noticias' => 5,
-            'Shows' => 2,
+            'Eventos' => 2,
             'Discos' => 6,
             'Canciones' => 78,
             'Fotos' => 0,
@@ -86,7 +86,7 @@ class InterpretesController extends Controller
             ->get();
         $canciones = $interprete->canciones()->with('interprete')->latest()->take(3)->get();
         $discos = $interprete->discos()->with('images')->orderByDesc('anio')->take(3)->get();
-        $shows = $interprete->events()
+        $eventos = $interprete->events()
             ->publishedVisible()
             ->where('start_at', '>=', now())
             ->orderBy('start_at')
@@ -110,7 +110,7 @@ class InterpretesController extends Controller
             'noticias',
             'canciones',
             'discos',
-            'shows',
+            'eventos',
             'interpretes',
             'metaTitle',
             'metaDescription',
