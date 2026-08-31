@@ -34,9 +34,22 @@ class FestivalApiModernizationTest extends TestCase
         ]);
     }
 
+    private function ensureMonth(int $id = 1, string $name = 'Enero'): void
+    {
+        DB::table('meses')->updateOrInsert(
+            ['id' => $id],
+            [
+                'nombre' => $name,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+    }
+
     /** @test */
     public function admin_can_create_a_published_festival_with_seo_media_alt_and_artist_relation(): void
     {
+        $this->ensureMonth();
         $admin = $this->makeAdminUser();
         Sanctum::actingAs($admin);
 
@@ -45,6 +58,7 @@ class FestivalApiModernizationTest extends TestCase
         $artist = Interprete::create([
             'interprete' => 'Artista Festival API',
             'slug' => 'artista-festival-api',
+            'biografia' => '',
             'estado' => 1,
             'user_id' => $admin->id,
         ]);
@@ -81,6 +95,8 @@ class FestivalApiModernizationTest extends TestCase
     /** @test */
     public function api_defaults_new_festival_to_authenticated_author_and_draft_status(): void
     {
+        $this->ensureMonth();
+
         $admin = $this->makeAdminUser();
         Sanctum::actingAs($admin);
 
@@ -108,6 +124,8 @@ class FestivalApiModernizationTest extends TestCase
     /** @test */
     public function api_rejects_duplicate_festival_slug(): void
     {
+        $this->ensureMonth();
+
         $admin = $this->makeAdminUser();
         Sanctum::actingAs($admin);
 
