@@ -96,11 +96,11 @@
       </section>
     @endif
 
-    @if ($shows->count())
+    @if ($eventos->count())
       <section class="mb-8">
         <h2 class="text-2xl font-semibold border-b-2 border-[#ff661f] pb-2 mb-4">Próximos eventos</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          @foreach ($shows as $show)
+          @foreach ($eventos as $show)
             <x-show-card :show="$show" />
           @endforeach
         </div>
