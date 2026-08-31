@@ -2,7 +2,13 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-@section('metaImage', $show->images->isNotEmpty() ? $show->images->first()->original_path : ($show->interprete && $show->interprete->images->isNotEmpty() ? $show->interprete->images->first()->original_path : asset('storage/' . $show->imagen_destacada)))
+@php
+  $resolvedEditorialImage = app(\App\Services\EditorialImageResolver::class)->resolve($show);
+  $metaImage = $resolvedEditorialImage->isMedia()
+    ? $resolvedEditorialImage->media->original_path
+    : $resolvedEditorialImage->url;
+@endphp
+@section('metaImage', $metaImage)
 
 @push('json-ld')
 <script type="application/ld+json">
@@ -16,7 +22,7 @@
     "name": "{{ $show->lugar }}",
     "address": "{{ $show->direccion ?? $show->lugar }}"
   },
-  "image": "{{ $show->images->isNotEmpty() ? $show->images->first()->original_path : ($show->interprete && $show->interprete->images->isNotEmpty() ? $show->interprete->images->first()->original_path : asset('storage/' . $show->imagen_destacada)) }}",
+  "image": "{{ $metaImage }}",
   "description": "{{ $metaDescription }}",
   "performer": {
     "@type": "MusicGroup",
@@ -36,23 +42,15 @@
     <div class="container mx-auto px-4">
       <div class="flex flex-col lg:flex-row gap-8">
         <div class="w-full lg:w-2/3">
-          @if ($show->images->isNotEmpty())
-            <div class="mb-6">
-              <x-optimized-image :image="$show->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px]" />
-            </div>
-          @elseif ($show->interprete && $show->interprete->images->isNotEmpty())
-            <div class="mb-6">
-              <x-optimized-image :image="$show->interprete->images->first()" variant="hero" class="rounded shadow-lg w-full object-cover max-h-[500px]" />
-            </div>
-          @elseif ($show->imagen_destacada)
-            <img src="{{ asset('storage/' . $show->imagen_destacada) }}" alt="{{ $show->titulo }}"
-              class="mb-6 rounded shadow-lg w-full object-cover max-h-[500px]">
-          @elseif ($show->interprete && $show->interprete->foto)
-            <img src="{{ asset('storage/interpretes/' . $show->interprete->foto) }}" alt="{{ $show->interprete->interprete }}"
-              class="mb-6 rounded shadow-lg w-full object-cover max-h-[500px]">
-          @else
-            <x-image-placeholder class="mb-6 w-full rounded shadow-lg min-h-[200px] max-h-[500px]" />
-          @endif
+          <div class="mb-6">
+            <x-editorial-image
+              :entity="$show"
+              variant="hero"
+              class="rounded shadow-lg w-full object-cover max-h-[500px]"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
 
           <h1 class="text-3xl font-bold mb-2">{{ $h1 }}</h1>
           <div class="mb-4">
