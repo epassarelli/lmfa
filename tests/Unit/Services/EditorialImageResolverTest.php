@@ -126,6 +126,20 @@ class EditorialImageResolverTest extends TestCase
         $this->assertStringContainsString('storage/mitos/leyenda.jpg', $resolver->resolve($myth)->url);
     }
 
+    public function test_all_configured_fallback_assets_exist_in_public_directory(): void
+    {
+        $paths = collect(config('editorial_images.fallbacks'))
+            ->flatMap(function ($value) {
+                return is_array($value) ? array_values($value) : [$value];
+            })
+            ->unique()
+            ->values();
+
+        foreach ($paths as $path) {
+            $this->assertFileExists(public_path($path), "Missing fallback asset: {$path}");
+        }
+    }
+
     public function test_it_does_not_query_unloaded_relations_and_uses_safe_fallback(): void
     {
         $news = new News(['title' => 'Sin ninguna imagen', 'categoria_id' => 1]);
