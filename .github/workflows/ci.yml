@@ -93,6 +93,8 @@ jobs:
         shell: bash
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch --no-tags origin "${{ github.event.pull_request.base.sha }}"
+            git fetch --no-tags origin "${{ github.event.pull_request.head.sha }}"
             git diff --name-only --diff-filter=ACMRT "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" -- '*.php' > /tmp/changed-php.txt
           else
             git diff --name-only --diff-filter=ACMRT HEAD^ HEAD -- '*.php' > /tmp/changed-php.txt || true
