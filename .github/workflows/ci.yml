@@ -1,5 +1,7 @@
 name: CI
 
+# Validates Laravel changes on feature branches and pull requests.
+
 on:
   push:
     branches:
