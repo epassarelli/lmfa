@@ -35,6 +35,7 @@ class StoreFestivalRequest extends FormRequest
             'published_at' => 'nullable|date',
             'user_id' => 'required|exists:users,id',
             'status' => 'required|in:draft,published,archived',
+            'image_alt' => 'nullable|string|max:255',
             'seo_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:320',
         ];
