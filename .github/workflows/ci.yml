@@ -138,4 +138,4 @@ jobs:
 
       - name: PHPUnit - Festivals
         run: |
-          php artisan test             tests/Feature/Festivals/FestivalFrontendRestructureTest.php             tests/Feature/Festivals/FestivalApiModernizationTest.php
+          php artisan test             tests/Feature/Festivals/FestivalFrontendRestructureTest.php             tests/Feature/Festivals/FestivalApiModernizationTest.php             tests/Feature/Festivals/FestivalAuditCommandTest.php
