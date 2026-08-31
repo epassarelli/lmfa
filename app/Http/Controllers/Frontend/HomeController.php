@@ -13,7 +13,7 @@ class HomeController extends Controller
     {
         $ultimasNoticias = Cache::remember('home:ultimas-noticias', now()->addMinutes(10), function () {
             return News::publishedVisible()
-                ->with(['categoria:id,nombre', 'images'])
+                ->with(['categoria:id,nombre', 'images', 'interprete:id,interprete,slug,foto', 'interprete.images'])
                 ->latest('published_at')
                 ->latest('created_at')
                 ->take(6)
