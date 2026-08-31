@@ -1,0 +1,14 @@
+--- a/Codigo.gs
++++ b/Codigo.gs
+@@ procesarEvergreenMFA_
+     featured_image_path: row.FEATURED_IMAGE_PATH,
++    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
+     image_alt: row.IMAGE_ALT,
+
+@@ procesarEventoMFA_
+     featured_image_path: row.FEATURED_IMAGE_PATH,
++    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
+
+@@ procesarNoticiaMFA_
+     featured_image_path: row.FEATURED_IMAGE_PATH,
++    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
