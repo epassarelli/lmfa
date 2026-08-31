@@ -135,3 +135,7 @@ jobs:
       - name: PHPUnit - INI-0020
         run: |
           php artisan test             tests/Unit/Services/EditorialImageResolverTest.php             tests/Unit/Support/ApiImageInputTest.php
+
+      - name: PHPUnit - Festivals
+        run: |
+          php artisan test             tests/Feature/Festivals/FestivalFrontendRestructureTest.php             tests/Feature/Festivals/FestivalApiModernizationTest.php
