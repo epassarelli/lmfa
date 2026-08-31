@@ -79,7 +79,7 @@
   <div class="col-md-6">
     <div class="form-group">
       <label for="foto">Imagen destacada</label>
-      <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png">
+      <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png,image/webp">\n      <small class="form-text text-muted">JPEG, PNG o WebP. Maximo 5 MB.</small>
       @if (isset($festival) && $festival->images->isNotEmpty())
         <div class="mt-2 text-center">
           <x-optimized-image :image="$festival->images->first()" variant="card" style="max-height: 80px;" class="img-thumbnail" />
