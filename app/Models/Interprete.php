@@ -22,6 +22,11 @@ class Interprete extends Model
 
     use HasFactory;
     // protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
+    protected $casts = [
+        'estado' => 'boolean',
+        'visitas' => 'integer',
+    ];
+
     protected $fillable = [
         'interprete',
         'artist_type',
