@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class FestivalRequest extends FormRequest
 {
@@ -23,7 +24,7 @@ class FestivalRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255',
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('festivales', 'slug')->ignore($this->route('festival')?->id)],
             'excerpt' => 'nullable|string|max:1000',
             'body' => 'required|string',
             'foto' => 'nullable|image|mimes:jpeg,png|max:200',
