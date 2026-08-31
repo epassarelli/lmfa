@@ -10,17 +10,16 @@ use Illuminate\Support\Str;
 
 class EventService
 {
-    protected $imageService;
-
-    public function __construct(ImageUploadService $imageService)
-    {
-        $this->imageService = $imageService;
+    public function __construct(
+        protected ImageUploadService $imageService,
+        protected ImageSourceResolver $imageResolver
+    ) {
     }
 
     /**
      * Crea un nuevo evento centralizando toda la logica de negocio.
      */
-    public function createEvent(array $data, ?UploadedFile $image = null): Event
+    public function createEvent(array $data, mixed $image = null): Event
     {
         return DB::transaction(function () use ($data, $image) {
             $data['created_by'] = $data['created_by'] ?? auth()->id();
@@ -58,16 +57,7 @@ class EventService
 
             $this->syncInterpretes($event, $data);
 
-            if ($image) {
-                $this->imageService->process(
-                    $image,
-                    $event,
-                    'event',
-                    'events',
-                    false,
-                    $event->slug
-                );
-            }
+            $this->processImage($event, $image, false);
 
             return $event;
         });
@@ -76,7 +66,7 @@ class EventService
     /**
      * Actualiza un evento existente.
      */
-    public function updateEvent(Event $event, array $data, ?UploadedFile $image = null): Event
+    public function updateEvent(Event $event, array $data, mixed $image = null): Event
     {
         return DB::transaction(function () use ($event, $data, $image) {
             foreach (['body', 'detalles'] as $field) {
@@ -110,19 +100,45 @@ class EventService
 
             $this->syncInterpretes($event, $data);
 
-            if ($image) {
-                $this->imageService->process(
-                    $image,
-                    $event,
-                    'event',
-                    'events',
-                    true,
-                    $event->slug
-                );
-            }
+            $this->processImage($event, $image, true);
 
             return $event;
         });
+    }
+
+    protected function processImage(Event $event, mixed $image, bool $replace): void
+    {
+        if (! $image) {
+            return;
+        }
+
+        $resolved = null;
+
+        try {
+            $resolved = $this->imageResolver->resolve($image);
+
+            if (! $resolved instanceof UploadedFile) {
+                return;
+            }
+
+            $media = $this->imageService->process(
+                $resolved,
+                $event,
+                'event',
+                'events',
+                $replace,
+                $event->slug
+            );
+
+            $event->forceFill([
+                'featured_image_id' => $media->id,
+                'featured_image_path' => $media->path,
+            ])->save();
+        } finally {
+            if ($resolved instanceof UploadedFile && str_contains($resolved->getPathname(), 'tmp/news-images')) {
+                @unlink($resolved->getPathname());
+            }
+        }
     }
 
     protected function syncInterpretes(Event $event, array $data): void
