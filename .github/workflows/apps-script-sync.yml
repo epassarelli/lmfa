@@ -1,0 +1,36 @@
+name: Apps Script Sync
+
+on:
+  workflow_dispatch:
+
+jobs:
+  push-apps-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate repository state
+        shell: bash
+        run: |
+          test -f automation/apps-script/Code.gs
+          test -f automation/apps-script/appsscript.json
+
+      - name: Configure clasp
+        shell: bash
+        env:
+          APPS_SCRIPT_ID: ${{ secrets.APPS_SCRIPT_ID }}
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+        run: |
+          test -n "$APPS_SCRIPT_ID"
+          test -n "$CLASPRC_JSON"
+          printf '%s' "$CLASPRC_JSON" > "$HOME/.clasprc.json"
+          cat > .clasp.json <<EOF
+          {
+            "scriptId": "$APPS_SCRIPT_ID",
+            "rootDir": "automation/apps-script"
+          }
+          EOF
+
+      - name: Push Git version to Apps Script
+        run: npx --yes @google/clasp push --force
