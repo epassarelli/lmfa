@@ -30,6 +30,7 @@ class FestivalRequest extends FormRequest
             'province_id' => 'required|exists:provincias,id',
             'locality_id' => 'nullable|exists:localities,id',
             'mes_id' => 'required|exists:meses,id',
+            'image_alt' => 'nullable|string|max:255',
             'seo_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:320',
             'status' => 'required|in:draft,published,archived',
