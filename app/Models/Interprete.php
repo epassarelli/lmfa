@@ -66,7 +66,7 @@ class Interprete extends Model
         return News::query()
             ->forInterprete($this)
             ->publishedVisible()
-            ->with(['categoria', 'interprete', 'interpretes', 'images']);
+            ->with(['categoria', 'interprete', 'interprete.images', 'interpretes', 'images']);
     }
 
     /**
