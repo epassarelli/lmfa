@@ -30,7 +30,8 @@ class ImageUploadService
         string $profile,
         string $folder,
         bool $replace = false,
-        ?string $filename = null
+        ?string $filename = null,
+        array $metadata = []
     ) {
         $config = config("image_profiles.{$profile}");
 
@@ -101,7 +102,7 @@ class ImageUploadService
             $model->images()->delete();
         }
 
-        return $model->images()->create([
+        return $model->images()->create(array_merge([
             'profile' => $profile,
             'disk' => 'public',
             'original_path' => $originalPath, // ruta relativa; la URL se resuelve en tiempo de render
@@ -110,6 +111,12 @@ class ImageUploadService
             'original_height' => $originalHeight,
             'mime' => $mime,
             'alt' => Str::limit($model->title ?? $model->titulo ?? $model->interprete ?? $model->album ?? $model->show ?? $model->name ?? '', 250),
-        ]);
+        ], collect($metadata)->only([
+            'source_url',
+            'source_type',
+            'rights_status',
+            'caption',
+            'alt',
+        ])->toArray()));
     }
 }
