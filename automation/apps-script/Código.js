@@ -427,13 +427,15 @@ function configurarCargaContenidosMFA() {
  * En cada ejecuciÃ³n intenta cargar, como mÃ¡ximo:
  *   1. un artÃ­culo Evergreen;
  *   2. un Evento;
- *   3. una Noticia.
+ *   3. una Noticia;
+ *   4. un Festival.
  *
  * IMPORTANTE SOBRE LOS TIPOS:
- * - TIPO solo puede ser: Noticia, Evento o Evergreen.
- * - Lanzamientos, Festivales, Actualidad y Cartelera son categorÃ­as de Noticia.
- * - La ficha histÃ³rica o permanente de un festival pertenece a su mÃ³dulo propio
- *   y no se procesa como un tipo independiente en esta funciÃ³n.
+ * - TIPO puede ser: Noticia, Evento, Evergreen o Festival.
+ * - "Festivales" sigue siendo una categorÃ­a vÃ¡lida de Noticia cuando la pieza
+ *   es cobertura de actualidad. TIPO=Festival se reserva para la ficha evergreen
+ *   y estable del festival.
+ * - Para Festival, ACCION_API define CREAR (POST) o ACTUALIZAR (PUT).
  *
  * IMPORTANTE SOBRE LOS ESTADOS DEL SHEET:
  * - BORRADOR: todavÃ­a no fue recibido correctamente por la API.
@@ -480,8 +482,8 @@ function cargarContenidosMFA() {
 
     /**
      * Cada circuito selecciona como mÃ¡ximo una fila.
-     * Festival y Lanzamiento ya no aparecen como tipos: deben llegar como Noticia
-     * y diferenciarse mediante CATEGORIA_CONTENIDO.
+     * Festival es un tipo propio cuando representa la ficha evergreen estable.
+     * Una noticia sobre un festival sigue siendo TIPO=Noticia + categorÃ­a Festivales.
      */
     const circuitos = [
       {
@@ -498,6 +500,11 @@ function cargarContenidosMFA() {
         nombre: 'Noticia',
         tipos: ['noticia'],
         procesar: procesarNoticiaMFA_,
+      },
+      {
+        nombre: 'Festival',
+        tipos: ['festival'],
+        procesar: procesarFestivalMFA_,
       },
     ];
 
@@ -520,7 +527,7 @@ function cargarContenidosMFA() {
             nombre
           );
 
-        // Ejecuta el procesador especÃ­fico: Evergreen, Evento o Noticia.
+        // Ejecuta el procesador especÃ­fico: Evergreen, Evento, Noticia o Festival.
         const resultado = circuito.procesar(
           candidato.values,
           token,
@@ -537,18 +544,16 @@ function cargarContenidosMFA() {
         );
 
         /**
-         * Una fila se considera PUBLICADA en el contexto de este Excel Ãºnicamente
-         * cuando la API confirma la creaciÃ³n con HTTP 201.
-         *
-         * Aunque Laravel cree el registro con editorial_status = draft, para la
-         * bandeja editorial significa que el envÃ­o terminÃ³ correctamente.
+         * PUBLICADO en esta bandeja significa "envÃ­o API completado".
+         * Puede corresponder a una creaciÃ³n HTTP 201 o a una actualizaciÃ³n HTTP 200.
+         * El estado editorial real dentro de Laravel se administra por separado.
          */
-        const creadoCorrectamente =
-          ['CREADO_DRAFT', 'CREADO_PUBLICADO'].includes(resultado.resultado) &&
+        const enviadoCorrectamente =
+          ['CREADO_DRAFT', 'CREADO_PUBLICADO', 'ACTUALIZADO_API'].includes(resultado.resultado) &&
           Number(resultado.http) >= 200 &&
           Number(resultado.http) < 300;
 
-        if (creadoCorrectamente) {
+        if (enviadoCorrectamente) {
           sheet
             .getRange(candidato.rowNumber, columnaEstado)
             .setValue('PUBLICADO');
@@ -778,6 +783,92 @@ function procesarEvergreenMFA_(row, token, etapa) {
     desautorizar: true,
     fechaEnvio: new Date(),
     knowledgeCategoryId: Number(categoria.id)
+  };
+}
+
+function procesarFestivalMFA_(row, token, etapa) {
+  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG', 'CUERPO', 'PROVINCE_ID', 'MES_ID']);
+  validarLongitudMFA_(row);
+  validarContenidoVisibleMFA_(row.CUERPO, 300);
+
+  const accion = normalizarTextoMFA_(row.ACCION_API) || 'crear';
+  if (!['crear', 'actualizar'].includes(accion)) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      'ACCION_API debe ser CREAR o ACTUALIZAR para TIPO=Festival.'
+    );
+  }
+
+  const festivalId = enteroOpcionalMFA_(row.ID_WEB);
+  if (accion === 'actualizar' && !festivalId) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      'Un Festival con ACCION_API=ACTUALIZAR requiere ID_WEB.'
+    );
+  }
+  if (accion === 'crear' && festivalId) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      'Un Festival con ACCION_API=CREAR no debe tener ID_WEB.'
+    );
+  }
+
+  const payload = limpiarObjetoMFA_({
+    title: String(row.TITULO || '').trim(),
+    slug: String(row.SLUG || '').trim(),
+    excerpt: limitarTextoMFA_(row.BAJADA, 1000),
+    body: row.CUERPO,
+    province_id: enteroOpcionalMFA_(row.PROVINCE_ID),
+    locality_id: enteroOpcionalMFA_(row.LOCALITY_ID),
+    mes_id: enteroOpcionalMFA_(row.MES_ID),
+    seo_title: row.META_TITLE,
+    meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    image_alt: limitarTextoMFA_(row.IMAGE_ALT, 255),
+    featured_image_path: row.FEATURED_IMAGE_PATH,
+    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
+    news_ids: listaEnterosMFA_(row.NEWS_IDS),
+    event_ids: listaEnterosMFA_(row.EVENT_IDS),
+    interprete_ids: listaEnterosMFA_(row.INTERPRETE_IDS),
+    knowledge_article_ids: listaEnterosMFA_(row.KNOWLEDGE_ARTICLE_IDS),
+    status: accion === 'crear' ? 'draft' : null,
+  });
+
+  const method = accion === 'actualizar' ? 'put' : 'post';
+  const apiPath = accion === 'actualizar'
+    ? `/festivals/${festivalId}`
+    : '/festivals';
+
+  etapa(accion === 'actualizar' ? 'PROCESANDO_UPDATE' : 'PROCESANDO_POST');
+  console.log(
+    `MFA FESTIVAL DEBUG: fila=${row.ID_CONTENIDO || '-'} accion=${accion.toUpperCase()} payload=${JSON.stringify(payload)}`
+  );
+
+  const response = apiMFA_(method, apiPath, token, payload);
+  const expected = accion === 'actualizar' ? 200 : 201;
+
+  if (response.status !== expected) {
+    throw errorDesdeRespuestaMFA_(response);
+  }
+
+  const id = extraerIdMFA_(response.json) || festivalId;
+  if (!id) {
+    throw crearErrorMFA_(
+      'ERROR_RESPUESTA',
+      response.status,
+      'La API respondió correctamente pero no devolvió un ID reconocible.'
+    );
+  }
+
+  return {
+    resultado: accion === 'actualizar' ? 'ACTUALIZADO_API' : 'CREADO_DRAFT',
+    http: response.status,
+    id,
+    error: '',
+    desautorizar: true,
+    fechaEnvio: new Date()
   };
 }
 
@@ -1099,17 +1190,31 @@ function leerTablaConEncabezados_(sheet) {
 function seleccionarCandidatoMFA_(rows, tipos) {
   const prioridad = { alta: 3, media: 2, baja: 1 };
   const estadosExcluidos = ['publicado', 'descartado', 'duplicado'];
+
   return rows
     .filter((r) => tipos.includes(normalizarTextoMFA_(r.values.TIPO)))
     .filter((r) => !estadosExcluidos.includes(normalizarTextoMFA_(r.values.ESTADO)))
     .filter((r) => normalizarTextoMFA_(r.values.ENVIAR_API) === 's')
     .filter((r) => {
       const resultado = normalizarTextoMFA_(r.values.RESULTADO_API);
+      const tipo = normalizarTextoMFA_(r.values.TIPO);
+      const accion = normalizarTextoMFA_(r.values.ACCION_API) || 'crear';
+
+      if (tipo === 'festival' && accion === 'actualizar') {
+        return Boolean(enteroOpcionalMFA_(r.values.ID_WEB)) &&
+          !['actualizado_api'].includes(resultado);
+      }
+
       return !r.values.ID_WEB &&
         !r.values.URL_PUBLICADA &&
         !['creado_draft', 'creado_publicado'].includes(resultado);
     })
-    .sort((a, b) => (prioridad[normalizarTextoMFA_(b.values.PRIORIDAD)] || 0) - (prioridad[normalizarTextoMFA_(a.values.PRIORIDAD)] || 0) || a.rowNumber - b.rowNumber)[0] || null;
+    .sort((a, b) =>
+      (prioridad[normalizarTextoMFA_(b.values.PRIORIDAD)] || 0) -
+      (prioridad[normalizarTextoMFA_(a.values.PRIORIDAD)] || 0) ||
+      numero_(a.values.SCORE_CALIDAD || 999) - numero_(b.values.SCORE_CALIDAD || 999) ||
+      a.rowNumber - b.rowNumber
+    )[0] || null;
 }
 
 function apiMFA_(method, path, token, payload, query) {
@@ -1190,7 +1295,10 @@ function registrarEjecucionCargaMFA_(ss, inicio, fin, estado, errores, duplicado
     FUENTES_REVISADAS: 0,
     HALLAZGOS: 0,
     CONTENIDOS_GENERADOS: resumen.filter(
-      (x) => x.indexOf('CREADO_DRAFT') >= 0 || x.indexOf('CREADO_PUBLICADO') >= 0
+      (x) =>
+        x.indexOf('CREADO_DRAFT') >= 0 ||
+        x.indexOf('CREADO_PUBLICADO') >= 0 ||
+        x.indexOf('ACTUALIZADO_API') >= 0
     ).length,
     DUPLICADOS_DESCARTADOS: duplicados,
     ERRORES: errores,
@@ -1326,6 +1434,22 @@ function enteroOpcionalMFA_(value) {
   if (value === '' || value === null || value === undefined) return null;
   const number = Number(value);
   return Number.isInteger(number) && number > 0 ? number : null;
+}
+
+function listaEnterosMFA_(value) {
+  if (value === '' || value === null || value === undefined) return null;
+
+  const values = Array.isArray(value)
+    ? value
+    : String(value).split(/[;,\s]+/);
+
+  const result = [...new Set(
+    values
+      .map((item) => enteroOpcionalMFA_(item))
+      .filter((item) => item !== null)
+  )];
+
+  return result.length ? result : null;
 }
 
 function booleanoOpcionalMFA_(value) {
