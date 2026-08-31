@@ -2,7 +2,13 @@
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-@section('metaImage', $receta->images->isNotEmpty() ? $receta->images->first()->original_path : ($receta->foto ? asset('storage/comidas/' . $receta->foto) : asset('img/logo-share.jpg')))
+@php
+  $resolvedEditorialImage = app(\App\Services\EditorialImageResolver::class)->resolve($receta);
+  $metaImage = $resolvedEditorialImage->isMedia()
+    ? $resolvedEditorialImage->media->original_path
+    : $resolvedEditorialImage->url;
+@endphp
+@section('metaImage', $metaImage)
 @section('ogType', 'article')
 
 @section('ogArticleTags')
@@ -23,14 +29,15 @@
 
         <h1 class="text-3xl font-bold mb-4">{{ $receta->titulo }}</h1>
 
-        @if ($receta->images->isNotEmpty())
-          <div class="mb-4">
-            <x-optimized-image :image="$receta->images->first()" variant="card" class="rounded-lg shadow w-full" :alt="'Receta de ' . $receta->titulo" fetchpriority="high" />
-          </div>
-        @elseif ($receta->foto)
-          <img src="{{ asset('storage/comidas/' . $receta->foto) }}" alt="Receta de {{ $receta->titulo }}"
-            class="mb-4 rounded-lg shadow w-full">
-        @endif
+        <div class="mb-4">
+          <x-editorial-image
+            :entity="$receta"
+            variant="main"
+            class="rounded-lg shadow w-full"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
 
         <div class="prose receta-contenido max-w-none mb-4">
           {!! $receta->receta !!}
