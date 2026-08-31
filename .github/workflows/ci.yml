@@ -139,3 +139,8 @@ jobs:
       - name: PHPUnit - Festivals
         run: |
           php artisan test             tests/Feature/Festivals/FestivalFrontendRestructureTest.php             tests/Feature/Festivals/FestivalApiModernizationTest.php             tests/Feature/Festivals/FestivalAuditCommandTest.php
+
+
+      - name: PHPUnit - Artists
+        run: |
+          php artisan test             tests/Feature/Artists/ArtistApiModernizationTest.php             tests/Feature/Artists/ArtistBiographyFrontendTest.php             tests/Feature/Artists/ArtistAuditCommandTest.php
