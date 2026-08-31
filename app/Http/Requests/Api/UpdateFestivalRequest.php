@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api;
 
 use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateFestivalRequest extends FormRequest
 {
@@ -23,7 +24,7 @@ class UpdateFestivalRequest extends FormRequest
     {
         return [
             'title' => 'sometimes|string|max:255',
-            'slug' => 'sometimes|string|max:255',
+            'slug' => ['sometimes', 'string', 'max:255', Rule::unique('festivales', 'slug')->ignore($this->route('festival')?->id)],
             'excerpt' => 'nullable|string|max:1000',
             'body' => 'sometimes|string',
             'featured_image' => 'sometimes|nullable|image|max:5120',
@@ -38,6 +39,14 @@ class UpdateFestivalRequest extends FormRequest
             'image_alt' => 'nullable|string|max:255',
             'seo_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:320',
+            'news_ids' => 'sometimes|nullable|array',
+            'news_ids.*' => 'integer|exists:news,id',
+            'event_ids' => 'sometimes|nullable|array',
+            'event_ids.*' => 'integer|exists:events,id',
+            'interprete_ids' => 'sometimes|nullable|array',
+            'interprete_ids.*' => 'integer|exists:interpretes,id',
+            'knowledge_article_ids' => 'sometimes|nullable|array',
+            'knowledge_article_ids.*' => 'integer|exists:knowledge_articles,id',
         ];
     }
 }
