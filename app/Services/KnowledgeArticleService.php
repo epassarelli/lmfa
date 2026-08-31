@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\KnowledgeArticle;
 use App\Models\User;
 use App\Support\KnowledgeArticleBodySanitizer;
+use App\Support\ImageSourceMetadata;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -163,7 +164,11 @@ class KnowledgeArticleService
                 'news_full',
                 'enciclopedia',
                 $replace,
-                $article->slug
+                $article->slug,
+                array_merge(
+                    ImageSourceMetadata::from($image),
+                    $imageAlt ? ['alt' => $imageAlt] : []
+                )
             );
 
             $article->forceFill([
