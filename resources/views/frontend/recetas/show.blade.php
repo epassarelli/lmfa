@@ -11,6 +11,31 @@
 @section('metaImage', $metaImage)
 @section('ogType', 'article')
 
+@if (is_array($receta->ingredients) && count($receta->ingredients) > 0 && is_array($receta->instructions) && count($receta->instructions) > 0)
+  @push('json-ld')
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    "name": @json($receta->titulo),
+    "description": @json($metaDescription),
+    "image": [@json($metaImage)],
+    "recipeIngredient": @json(array_values($receta->ingredients)),
+    "recipeInstructions": @json(collect($receta->instructions)->values()->map(fn ($step) => ['@type' => 'HowToStep', 'text' => $step])->all())
+    @if($receta->prep_time_minutes),
+    "prepTime": @json('PT'.$receta->prep_time_minutes.'M')
+    @endif
+    @if($receta->cook_time_minutes),
+    "cookTime": @json('PT'.$receta->cook_time_minutes.'M')
+    @endif
+    @if($receta->servings),
+    "recipeYield": @json($receta->servings)
+    @endif
+  }
+  </script>
+  @endpush
+@endif
+
 @section('ogArticleTags')
   <meta property="article:section" content="Cocina Regional Argentina">
 @endsection
@@ -27,7 +52,7 @@
       <!-- Columna principal -->
       <div class="w-full lg:w-2/3">
 
-        <h1 class="text-3xl font-bold mb-4">{{ $receta->titulo }}</h1>
+        <h1 class="text-3xl font-bold mb-4">{{ $h1 }}</h1>
 
         <div class="mb-4">
           <x-editorial-image
