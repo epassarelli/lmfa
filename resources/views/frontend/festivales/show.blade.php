@@ -20,6 +20,7 @@
   "@type": "Article",
   "headline": @json($festival->title),
   "description": @json($metaDescription),
+  "image": [@json($metaImage)],
   "url": @json(\App\Support\CanonicalUrl::normalize($canonical))
 }
 </script>
