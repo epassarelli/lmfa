@@ -427,13 +427,15 @@ function configurarCargaContenidosMFA() {
  * En cada ejecuciÃ³n intenta cargar, como mÃ¡ximo:
  *   1. un artÃ­culo Evergreen;
  *   2. un Evento;
- *   3. una Noticia.
+ *   3. una Noticia;
+ *   4. un Festival.
  *
  * IMPORTANTE SOBRE LOS TIPOS:
- * - TIPO solo puede ser: Noticia, Evento o Evergreen.
- * - Lanzamientos, Festivales, Actualidad y Cartelera son categorÃ­as de Noticia.
- * - La ficha histÃ³rica o permanente de un festival pertenece a su mÃ³dulo propio
- *   y no se procesa como un tipo independiente en esta funciÃ³n.
+ * - TIPO puede ser: Noticia, Evento, Evergreen o Festival.
+ * - "Festivales" sigue siendo una categorÃ­a vÃ¡lida de Noticia cuando la pieza
+ *   es cobertura de actualidad. TIPO=Festival se reserva para la ficha evergreen
+ *   y estable del festival.
+ * - Para Festival, ACCION_API define CREAR (POST) o ACTUALIZAR (PUT).
  *
  * IMPORTANTE SOBRE LOS ESTADOS DEL SHEET:
  * - BORRADOR: todavÃ­a no fue recibido correctamente por la API.
@@ -480,8 +482,8 @@ function cargarContenidosMFA() {
 
     /**
      * Cada circuito selecciona como mÃ¡ximo una fila.
-     * Festival y Lanzamiento ya no aparecen como tipos: deben llegar como Noticia
-     * y diferenciarse mediante CATEGORIA_CONTENIDO.
+     * Festival es un tipo propio cuando representa la ficha evergreen estable.
+     * Una noticia sobre un festival sigue siendo TIPO=Noticia + categorÃ­a Festivales.
      */
     const circuitos = [
       {
@@ -498,6 +500,11 @@ function cargarContenidosMFA() {
         nombre: 'Noticia',
         tipos: ['noticia'],
         procesar: procesarNoticiaMFA_,
+      },
+      {
+        nombre: 'Festival',
+        tipos: ['festival'],
+        procesar: procesarFestivalMFA_,
       },
     ];
 
@@ -520,7 +527,7 @@ function cargarContenidosMFA() {
             nombre
           );
 
-        // Ejecuta el procesador especÃ­fico: Evergreen, Evento o Noticia.
+        // Ejecuta el procesador especÃ­fico: Evergreen, Evento, Noticia o Festival.
         const resultado = circuito.procesar(
           candidato.values,
           token,
@@ -543,12 +550,12 @@ function cargarContenidosMFA() {
          * Aunque Laravel cree el registro con editorial_status = draft, para la
          * bandeja editorial significa que el envÃ­o terminÃ³ correctamente.
          */
-        const creadoCorrectamente =
-          ['CREADO_DRAFT', 'CREADO_PUBLICADO'].includes(resultado.resultado) &&
+        const enviadoCorrectamente =
+          ['CREADO_DRAFT', 'CREADO_PUBLICADO', 'ACTUALIZADO_API'].includes(resultado.resultado) &&
           Number(resultado.http) >= 200 &&
           Number(resultado.http) < 300;
 
-        if (creadoCorrectamente) {
+        if (enviadoCorrectamente) {
           sheet
             .getRange(candidato.rowNumber, columnaEstado)
             .setValue('PUBLICADO');
