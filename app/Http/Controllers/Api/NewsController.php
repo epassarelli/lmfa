@@ -7,6 +7,7 @@ use App\Http\Requests\Api\StoreNewsRequest;
 use App\Http\Requests\Api\UpdateNewsRequest;
 use App\Models\News;
 use App\Services\NewsService;
+use App\Support\ApiImageInput;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
@@ -46,10 +47,10 @@ class NewsController extends Controller
     {
         $this->authorize('create', News::class);
 
-        $news = $this->newsService->createNews(
-            $request->validated(),
-            $request->file('foto')
-        );
+        $payload = $request->validated();
+        $image = ApiImageInput::extract($request, $payload, 'foto');
+
+        $news = $this->newsService->createNews($payload, $image);
 
         return response()->json($news, 201);
     }
@@ -65,11 +66,10 @@ class NewsController extends Controller
     {
         $this->authorize('update', $news);
 
-        $news = $this->newsService->updateNews(
-            $news,
-            $request->validated(),
-            $request->file('foto')
-        );
+        $payload = $request->validated();
+        $image = ApiImageInput::extract($request, $payload, 'foto');
+
+        $news = $this->newsService->updateNews($news, $payload, $image);
 
         return response()->json($news);
     }
