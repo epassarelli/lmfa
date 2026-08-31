@@ -9,6 +9,7 @@ use App\Models\Festival;
 use App\Services\ImageSourceResolver;
 use App\Services\ImageUploadService;
 use App\Support\ApiImageInput;
+use App\Support\ImageSourceMetadata;
 use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -101,7 +102,8 @@ class FestivalController extends Controller
                 'festival',
                 'festivales',
                 $replace,
-                $festival->slug
+                $festival->slug,
+                ImageSourceMetadata::from($image)
             );
 
             $festival->forceFill([
