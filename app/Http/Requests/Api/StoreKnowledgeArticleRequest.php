@@ -47,6 +47,7 @@ class StoreKnowledgeArticleRequest extends FormRequest
             'excerpt' => 'nullable|string|max:1000',
             'body' => 'required|string',
             'image' => 'nullable|image',
+            'featured_image_url' => 'nullable|url|max:2048',
             'featured_image_path' => 'nullable|string',
             'image_alt' => 'nullable|string|max:255',
             'seo_title' => 'nullable|string|max:255',
