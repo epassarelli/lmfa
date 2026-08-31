@@ -357,7 +357,7 @@ class FestivalesController extends Controller
 
     private function festivalCardRelations(): array
     {
-        return ['images', 'provincia', 'mes', 'locality'];
+        return ['images', 'interpretes.images', 'events.images', 'provincia', 'mes', 'locality'];
     }
 
     private function extractFilters(Request $request): array
