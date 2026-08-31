@@ -298,12 +298,23 @@ class FestivalesController extends Controller
                 'provincia',
                 'locality',
                 'mes',
-                'noticias.categoria',
-                'noticias.images',
-                'events.interpretes',
-                'events.images',
-                'interpretes.images',
-                'knowledgeArticles.category',
+                'noticias' => fn ($query) => $query
+                    ->publishedVisible()
+                    ->with(['categoria', 'images', 'interprete.images'])
+                    ->latest('published_at'),
+                'events' => fn ($query) => $query
+                    ->publishedVisible()
+                    ->where('start_at', '>=', now())
+                    ->with(['interpretes.images', 'images', 'provincia'])
+                    ->orderBy('start_at'),
+                'interpretes' => fn ($query) => $query
+                    ->where('estado', 1)
+                    ->with('images')
+                    ->orderBy('interprete'),
+                'knowledgeArticles' => fn ($query) => $query
+                    ->visible()
+                    ->with(['category', 'images'])
+                    ->latest('published_at'),
             ])
             ->where('slug', $slug)
             ->firstOrFail();
