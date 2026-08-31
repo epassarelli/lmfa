@@ -120,5 +120,9 @@ jobs:
             echo "No changed PHP files."
           fi
 
-      - name: PHPUnit
-        run: php artisan test
+      - name: Compile Blade views
+        run: php artisan view:cache
+
+      - name: PHPUnit - INI-0020
+        run: |
+          php artisan test             tests/Unit/Services/EditorialImageResolverTest.php             tests/Unit/Support/ApiImageInputTest.php
