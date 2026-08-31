@@ -114,19 +114,34 @@
     </div>
   </div>
 
+  <div class="col-md-12 mt-2">
+    <h5 class="border-bottom pb-2">SEO y metadatos</h5>
+  </div>
+
   <div class="col-md-6">
     <div class="form-group">
-      <label for="seo_title">SEO title</label>
+      <label for="seo_title">Titulo SEO</label>
       <input type="text" name="seo_title" id="seo_title" class="form-control" maxlength="255" value="{{ old('seo_title', $festival->seo_title ?? '') }}">
+      <small class="form-text text-muted">Si queda vacio, el frontend usa el titulo del festival.</small>
       @error('seo_title') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
   <div class="col-md-6">
     <div class="form-group">
-      <label for="meta_description">Meta description</label>
-      <input type="text" name="meta_description" id="meta_description" class="form-control" maxlength="320" value="{{ old('meta_description', $festival->meta_description ?? '') }}">
+      <label for="meta_description">Meta descripcion</label>
+      <textarea name="meta_description" id="meta_description" class="form-control" rows="3" maxlength="320">{{ old('meta_description', $festival->meta_description ?? '') }}</textarea>
+      <small class="form-text text-muted">Si queda vacia, se deriva de la bajada o del cuerpo.</small>
       @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="form-group">
+      <label for="image_alt">Texto alternativo de imagen</label>
+      <input type="text" name="image_alt" id="image_alt" class="form-control" maxlength="255" value="{{ old('image_alt', $festival->image_alt ?? '') }}">
+      <small class="form-text text-muted">Describe la imagen de forma breve. Si queda vacio, se usa el titulo del festival.</small>
+      @error('image_alt') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
