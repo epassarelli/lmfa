@@ -181,19 +181,7 @@ class KnowledgeArticleService
                 $media->update(['alt' => $imageAlt]);
             }
         } finally {
-            $this->cleanupTemporaryImage($resolved);
-        }
-    }
-
-    protected function cleanupTemporaryImage(mixed $image): void
-    {
-        if (! $image instanceof UploadedFile) {
-            return;
-        }
-
-        $path = $image->getPathname();
-        if (str_contains($path, 'tmp/news-images')) {
-            @unlink($path);
+            $this->imageResolver->cleanupTemporary($resolved);
         }
     }
 }
