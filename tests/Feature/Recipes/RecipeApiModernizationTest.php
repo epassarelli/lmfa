@@ -104,4 +104,42 @@ class RecipeApiModernizationTest extends TestCase
             ->assertJsonPath('user_id', $admin->id)
             ->assertJsonPath('visitas', 0);
     }
+
+    /** @test */
+    public function admin_can_partially_update_structured_recipe_without_changing_protected_fields(): void
+    {
+        $admin = $this->admin();
+        Sanctum::actingAs($admin);
+
+        $recipe = Comida::create([
+            'titulo' => 'Receta antes del refresh',
+            'slug' => 'receta-antes-del-refresh',
+            'receta' => '<p>Preparación anterior.</p>',
+            'user_id' => $admin->id,
+            'estado' => 0,
+            'visitas' => 23,
+        ]);
+
+        $response = $this->putJson("/api/v1/foods/{$recipe->id}", [
+            'receta' => '<h1>No debe persistir</h1><p>Preparación actualizada.</p>',
+            'ingredients' => ['500 g de harina', '250 ml de agua'],
+            'instructions' => ['Mezclar los ingredientes.', 'Cocinar a fuego lento.'],
+            'prep_time_minutes' => 20,
+            'cook_time_minutes' => 45,
+            'region' => 'Cuyo',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('id', $recipe->id)
+            ->assertJsonPath('ingredients.0', '500 g de harina')
+            ->assertJsonPath('instructions.1', 'Cocinar a fuego lento.')
+            ->assertJsonPath('region', 'Cuyo')
+            ->assertJsonPath('user_id', $admin->id)
+            ->assertJsonPath('visitas', 23);
+
+        $recipe->refresh();
+        $this->assertStringNotContainsString('<h1', strtolower($recipe->receta));
+        $this->assertSame(23, $recipe->visitas);
+        $this->assertSame($admin->id, $recipe->user_id);
+    }
 }

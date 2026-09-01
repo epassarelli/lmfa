@@ -135,8 +135,11 @@ class ShowsController extends Controller
 
     public function byArtista($slug)
     {
-        $interprete = Interprete::where('slug', $slug)->firstOrFail();
-        $shows = $interprete->events()->with(['images', 'interpretes.images'])->get();
+        $interprete = Interprete::where('estado', 1)->where('slug', $slug)->firstOrFail();
+        $shows = $interprete->events()
+            ->publiclyVisible()
+            ->with(['images', 'interpretes.images'])
+            ->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
         $section = 'shows';
@@ -155,9 +158,12 @@ class ShowsController extends Controller
 
     public function show($slug)
     {
-        $show = Event::with(['interpretes.images', 'provincia', 'images'])->where('slug', $slug)->firstOrFail();
+        $show = Event::publiclyVisible()
+            ->with(['interpretes.images', 'provincia', 'images'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-        $ultimos_shows = Event::where('editorial_status', 'published')
+        $ultimos_shows = Event::publiclyVisible()
             ->where('id', '<>', $show->id)
             ->orderByDesc('created_at')
             ->take(10)

@@ -100,4 +100,40 @@ class MythApiModernizationTest extends TestCase
             ->assertJsonPath('user_id', $admin->id)
             ->assertJsonPath('visitas', 0);
     }
+
+    /** @test */
+    public function admin_can_partially_update_myth_editorial_fields_without_changing_protected_fields(): void
+    {
+        $admin = $this->admin();
+        Sanctum::actingAs($admin);
+
+        $myth = Mito::create([
+            'titulo' => 'Relato antes del refresh',
+            'slug' => 'relato-antes-del-refresh',
+            'mito' => '<p>Relato anterior.</p>',
+            'content_type' => 'myth',
+            'user_id' => $admin->id,
+            'estado' => 0,
+            'visitas' => 31,
+        ]);
+
+        $response = $this->putJson("/api/v1/myths/{$myth->id}", [
+            'content_type' => 'legend',
+            'mito' => '<h1>No debe persistir</h1><p>Relato actualizado por la bandeja editorial.</p>',
+            'region' => 'Noroeste argentino',
+            'seo_title' => 'Relato actualizado: historia y tradición',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('id', $myth->id)
+            ->assertJsonPath('content_type', 'legend')
+            ->assertJsonPath('region', 'Noroeste argentino')
+            ->assertJsonPath('user_id', $admin->id)
+            ->assertJsonPath('visitas', 31);
+
+        $myth->refresh();
+        $this->assertStringNotContainsString('<h1', strtolower($myth->mito));
+        $this->assertSame(31, $myth->visitas);
+        $this->assertSame($admin->id, $myth->user_id);
+    }
 }

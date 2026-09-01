@@ -98,4 +98,38 @@ class ArtistApiModernizationTest extends TestCase
 
         $validResponse->assertCreated()->assertJsonPath('user_id', $admin->id);
     }
+
+    /** @test */
+    public function admin_can_partially_update_artist_editorial_fields_without_changing_ownership(): void
+    {
+        $admin = $this->admin();
+        Sanctum::actingAs($admin);
+
+        $artist = Interprete::create([
+            'interprete' => 'Artista antes del refresh',
+            'slug' => 'artista-antes-del-refresh',
+            'biografia' => '<p>Biografía anterior.</p>',
+            'user_id' => $admin->id,
+            'estado' => 0,
+            'visitas' => 17,
+        ]);
+
+        $response = $this->putJson("/api/v1/artists/{$artist->id}", [
+            'artist_type' => 'group',
+            'biografia' => '<h1>No debe persistir</h1><p>Biografía actualizada por la bandeja editorial.</p>',
+            'seo_title' => 'Artista actualizado: biografía',
+            'meta_description' => 'Trayectoria actualizada del artista.',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('id', $artist->id)
+            ->assertJsonPath('artist_type', 'group')
+            ->assertJsonPath('seo_title', 'Artista actualizado: biografía')
+            ->assertJsonPath('user_id', $admin->id);
+
+        $artist->refresh();
+        $this->assertStringNotContainsString('<h1', strtolower($artist->biografia));
+        $this->assertSame(17, $artist->visitas);
+        $this->assertSame($admin->id, $artist->user_id);
+    }
 }

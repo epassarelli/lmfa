@@ -21,31 +21,45 @@ class BusquedaController extends Controller
         $query = $request->input('q');
 
         $resultados = [
-            'noticias' => News::where('title', 'like', "%$query%")
-                ->orWhere('body', 'like', "%$query%")
+            'noticias' => News::publishedVisible()
+                ->where(function ($builder) use ($query) {
+                    $builder->where('title', 'like', "%$query%")
+                        ->orWhere('body', 'like', "%$query%");
+                })
                 ->orderBy('id', 'desc')->take(5)->get(),
 
-            'biografias' => Interprete::where('interprete', 'like', "%$query%")
+            'biografias' => Interprete::where('estado', 1)
+                ->where('interprete', 'like', "%$query%")
                 ->orderBy('id', 'desc')->take(5)->get(),
 
-            'discos' => Album::where('album', 'like', "%$query%")
+            'discos' => Album::where('estado', 1)
+                ->where('album', 'like', "%$query%")
                 ->orderBy('id', 'desc')->take(5)->get(),
 
-            'canciones' => Cancion::where('cancion', 'like', "%$query%")
-                ->orWhere('letra', 'like', "%$query%")
+            'canciones' => Cancion::where('estado', 1)
+                ->where(function ($builder) use ($query) {
+                    $builder->where('cancion', 'like', "%$query%")
+                        ->orWhere('letra', 'like', "%$query%");
+                })
                 ->orderBy('id', 'desc')->take(5)->get(),
 
-            'festivales' => Festival::where('title', 'like', "%$query%")
+            'festivales' => Festival::publishedVisible()
+                ->where('title', 'like', "%$query%")
                 ->orderBy('id', 'desc')->take(5)->get(),
 
-            'shows' => Event::where('title', 'like', "%$query%")
-                ->orWhere('body', 'like', "%$query%")
+            'shows' => Event::publiclyVisible()
+                ->where(function ($builder) use ($query) {
+                    $builder->where('title', 'like', "%$query%")
+                        ->orWhere('body', 'like', "%$query%");
+                })
                 ->orderBy('id', 'desc')->take(5)->get(),
 
-            'recetas' => Comida::where('titulo', 'like', "%$query%")
+            'recetas' => Comida::where('estado', 1)
+                ->where('titulo', 'like', "%$query%")
                 ->orderBy('id', 'desc')->take(5)->get(),
 
-            'mitos' => Mito::where('titulo', 'like', "%$query%")
+            'mitos' => Mito::where('estado', 1)
+                ->where('titulo', 'like', "%$query%")
                 ->orderBy('id', 'desc')->take(5)->get(),
         ];
 
