@@ -1646,6 +1646,48 @@ function enteroOpcionalMFA_(value) {
   return Number.isInteger(number) && number > 0 ? number : null;
 }
 
+function enteroNoNegativoMFA_(value) {
+  if (value === '' || value === null || value === undefined) return null;
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 0 ? number : null;
+}
+
+function listaTextoMFA_(value) {
+  if (value === '' || value === null || value === undefined) return null;
+
+  if (Array.isArray(value)) {
+    const clean = value.map((item) => String(item || '').trim()).filter(Boolean);
+    return clean.length ? clean : null;
+  }
+
+  const text = String(value).trim();
+  if (!text) return null;
+
+  if (text.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(text);
+      if (!Array.isArray(parsed)) {
+        throw new Error('El JSON debe ser un array.');
+      }
+      const clean = parsed.map((item) => String(item || '').trim()).filter(Boolean);
+      return clean.length ? clean : null;
+    } catch (error) {
+      throw crearErrorMFA_(
+        'ERROR_VALIDACION',
+        422,
+        `Lista JSON inválida: ${error.message}`
+      );
+    }
+  }
+
+  const clean = text
+    .split(/\r?\n|;/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return clean.length ? clean : null;
+}
+
 function listaEnterosMFA_(value) {
   if (value === '' || value === null || value === undefined) return null;
 
