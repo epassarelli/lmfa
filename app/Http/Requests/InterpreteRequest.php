@@ -34,10 +34,11 @@ class InterpreteRequest extends FormRequest
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'correo' => 'nullable|email|max:255',
             'telefono' => 'nullable|string|max:255',
-            'facebook' => 'nullable|url',
-            'instagram' => 'nullable|url',
-            'twitter' => 'nullable|url',
-            'web' => 'nullable|url',
+            'facebook' => 'nullable|url|max:255',
+            'instagram' => 'nullable|url|max:255',
+            'twitter' => 'nullable|url|max:255',
+            'youtube' => 'nullable|url|max:255',
+            'web' => 'nullable|url|max:255',
             'estado' => 'nullable|boolean',
         ];
 

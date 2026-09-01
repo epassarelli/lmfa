@@ -37,4 +37,22 @@ class ArtistBiographyFrontendTest extends TestCase
         $response->assertSee('"@type": "Person"', false);
         $response->assertDontSee('"@type": "FAQPage"', false);
     }
+
+    /** @test */
+    public function inactive_artist_hub_and_biography_are_not_publicly_accessible(): void
+    {
+        DB::table('interpretes')->insert([
+            'interprete' => 'Artista Inactivo',
+            'slug' => 'artista-inactivo',
+            'biografia' => '<p>Contenido pendiente de revisión editorial.</p>',
+            'user_id' => 1,
+            'visitas' => 0,
+            'estado' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->get('/artista-inactivo')->assertNotFound();
+        $this->get('/artista-inactivo/biografia')->assertNotFound();
+    }
 }

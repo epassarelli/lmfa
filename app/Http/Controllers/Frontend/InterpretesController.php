@@ -41,7 +41,11 @@ class InterpretesController extends Controller
 
     public function biografia($slug)
     {
-        $interprete = Interprete::where('slug', $slug)->with('images')->firstOrFail();
+        $interprete = Interprete::query()
+            ->where('estado', 1)
+            ->where('slug', $slug)
+            ->with('images')
+            ->firstOrFail();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
         $section = 'biografias';
 
@@ -78,6 +82,8 @@ class InterpretesController extends Controller
 
     public function show(Interprete $interprete)
     {
+        abort_unless($interprete->estado, 404);
+
         $interprete->load('images');
         $noticias = $interprete->noticiasRelacionadas()
             ->latest('published_at')

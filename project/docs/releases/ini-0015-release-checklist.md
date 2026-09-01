@@ -56,6 +56,7 @@ php artisan view:cache
 - GET /api/v1/artists
 - GET /api/v1/artists/{id}
 - POST sin user_id/estado -> autor autenticado + estado inactivo
+- user_id enviado por cliente -> 422; la autoría no puede suplantarse
 - slug duplicado -> 422
 - PUT parcial
 - imagen externa/interna si se prueba media
@@ -75,6 +76,8 @@ Crear/editar artista sin publicar:
 - web/redes
 - estado
 
+Al editar como administrador, comprobar que `estado=0` permanece inactivo y no se reactiva por el solo hecho de guardar.
+
 ## Smoke frontend
 
 Validar:
@@ -87,6 +90,7 @@ Validar:
 - no FAQPage artificial
 - canonical/meta/social image
 - media propia/legacy/fallback
+- artista inactivo -> 404 tanto en el hub como en `/biografia`
 - wording visible Eventos, no Shows, salvo URLs legacy.
 
 ## Auditoría

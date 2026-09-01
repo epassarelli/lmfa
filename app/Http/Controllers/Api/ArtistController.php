@@ -91,8 +91,10 @@ class ArtistController extends Controller
     {
         $name = $payload['interprete'] ?? $artist?->interprete;
 
-        if (! $artist && empty($payload['user_id'])) {
+        if (! $artist) {
             $payload['user_id'] = auth()->id();
+        } else {
+            unset($payload['user_id']);
         }
 
         if (! $artist && ! array_key_exists('estado', $payload)) {

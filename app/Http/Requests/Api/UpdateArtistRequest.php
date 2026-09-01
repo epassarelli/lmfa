@@ -36,13 +36,13 @@ class UpdateArtistRequest extends FormRequest
             'featured_image_url' => 'sometimes|nullable|url|max:2048',
             'correo' => 'nullable|email|max:255',
             'telefono' => 'nullable|string|max:255',
-            'facebook' => 'nullable|url',
-            'instagram' => 'nullable|url',
-            'twitter' => 'nullable|url',
-            'youtube' => 'nullable|url',
-            'web' => 'nullable|url',
+            'facebook' => 'nullable|url|max:255',
+            'instagram' => 'nullable|url|max:255',
+            'twitter' => 'nullable|url|max:255',
+            'youtube' => 'nullable|url|max:255',
+            'web' => 'nullable|url|max:255',
             'estado' => 'nullable|boolean',
-            'user_id' => 'sometimes|exists:users,id',
+            'user_id' => 'prohibited',
         ];
     }
 }

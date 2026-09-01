@@ -133,7 +133,9 @@ class InterpreteController extends Controller
 
 
     if (Auth::user()->isAdmin() || Auth::user()->hasRole('administrador')) {
-        $interprete->estado = 1;
+        if (! array_key_exists('estado', $payload)) {
+            $interprete->estado = 1;
+        }
     } else {
         $interprete->estado = 0;
     }

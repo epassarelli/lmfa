@@ -143,4 +143,4 @@ jobs:
 
       - name: PHPUnit - Artists
         run: |
-          php artisan test             tests/Feature/Artists/ArtistApiModernizationTest.php             tests/Feature/Artists/ArtistBiographyFrontendTest.php             tests/Feature/Artists/ArtistAuditCommandTest.php
+          php artisan test             tests/Feature/Artists/ArtistApiModernizationTest.php             tests/Feature/Artists/ArtistBackofficeModernizationTest.php             tests/Feature/Artists/ArtistBiographyFrontendTest.php             tests/Feature/Artists/ArtistAuditCommandTest.php

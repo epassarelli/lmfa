@@ -73,4 +73,29 @@ class ArtistApiModernizationTest extends TestCase
 
         $response->assertStatus(422)->assertJsonValidationErrors(['slug']);
     }
+
+    /** @test */
+    public function api_uses_authenticated_author_and_rejects_oversized_legacy_urls(): void
+    {
+        $admin = $this->admin();
+        $otherUser = User::factory()->create();
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson('/api/v1/artists', [
+            'interprete' => 'Autor Protegido',
+            'biografia' => '<p>Biografía editorial.</p>',
+            'user_id' => $otherUser->id,
+            'youtube' => 'https://www.youtube.com/'.str_repeat('a', 240),
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['user_id', 'youtube']);
+
+        $validResponse = $this->postJson('/api/v1/artists', [
+            'interprete' => 'Autor Protegido',
+            'biografia' => '<p>Biografía editorial.</p>',
+        ]);
+
+        $validResponse->assertCreated()->assertJsonPath('user_id', $admin->id);
+    }
 }
