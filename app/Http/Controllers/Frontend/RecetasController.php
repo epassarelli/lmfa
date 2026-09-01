@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Comida;
 use App\Services\LinkService;
 use App\Support\RecipeContent;
+use App\Support\SeoMetadata;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -73,11 +74,10 @@ class RecetasController extends Controller
 
         $receta->increment('visitas');
 
-        $metaTitle = 'Receta de ' . $receta->titulo . ' | Comida Tipica del Folklore';
-        $metaDescription = RecipeContent::excerpt(RecipeContent::visibleText($receta->receta), 155);
-        if (blank($metaDescription)) {
-            $metaDescription = 'Receta de ' . $receta->titulo . ' dentro de la cocina tradicional argentina.';
-        }
+        $seo = SeoMetadata::recipe($receta);
+        $metaTitle = $seo['title'];
+        $metaDescription = $seo['description'];
+        $h1 = $seo['h1'];
         $receta->receta = $this->linkService->autoLinkArtists($receta->receta);
 
         $breadcrumbs = [
@@ -85,7 +85,7 @@ class RecetasController extends Controller
             ['label' => $receta->titulo]
         ];
 
-        return view('frontend.recetas.show', compact('receta', 'relacionadas', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.recetas.show', compact('receta', 'relacionadas', 'metaTitle', 'metaDescription', 'h1', 'breadcrumbs'));
     }
 
     public function letra($letra)

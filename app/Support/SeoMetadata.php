@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Album;
 use App\Models\Cancion;
+use App\Models\Comida;
 use App\Models\Event;
 use App\Models\Festival;
 use App\Models\Interprete;
@@ -26,11 +27,18 @@ class SeoMetadata
     public static function artist(Interprete $interprete): array
     {
         $name = static::fallback($interprete->interprete, 'Artista del folklore argentino');
-        $bio = static::excerpt($interprete->biografia, 160);
+        $bio = static::preferredDescription(
+            $interprete->meta_description,
+            $interprete->excerpt,
+            $interprete->biografia,
+            160,
+            "{$name}, artista del folklore argentino. Biografia, canciones, discos, noticias y eventos relacionados."
+        );
+        $title = static::preferredText($interprete->seo_title, "Biografia de {$name}");
 
         return [
-            'title' => "Biografia de {$name} | Folklore Argentino",
-            'description' => $bio !== '' ? $bio : "{$name}, artista del folklore argentino. Biografia, canciones, discos, noticias y shows relacionados.",
+            'title' => str_contains($title, 'Folklore Argentino') ? $title : "{$title} | Folklore Argentino",
+            'description' => $bio,
             'h1' => $name,
         ];
     }
@@ -38,11 +46,18 @@ class SeoMetadata
     public static function biography(Interprete $interprete): array
     {
         $name = static::fallback($interprete->interprete, 'Artista del folklore argentino');
-        $bio = static::excerpt($interprete->biografia, 160);
+        $bio = static::preferredDescription(
+            $interprete->meta_description,
+            $interprete->excerpt,
+            $interprete->biografia,
+            160,
+            "Biografia de {$name}, artista del folklore argentino, con su trayectoria y contexto musical."
+        );
+        $title = static::preferredText($interprete->seo_title, "Biografia de {$name}");
 
         return [
-            'title' => "Biografia de {$name} | Folklore Argentino",
-            'description' => $bio !== '' ? $bio : "Biografia de {$name}, artista del folklore argentino, con su trayectoria y contexto musical.",
+            'title' => str_contains($title, 'Folklore Argentino') ? $title : "{$title} | Folklore Argentino",
+            'description' => $bio,
             'h1' => "Biografia de {$name}",
         ];
     }
@@ -145,6 +160,31 @@ class SeoMetadata
             'title' => str_contains($title, 'Folklore Argentino') ? $title : $title.' | Folklore Argentino',
             'description' => $description,
             'h1' => static::preferredText($myth->titulo, 'Mito o leyenda argentina'),
+        ];
+    }
+
+    public static function recipe(Comida $recipe): array
+    {
+        $title = static::preferredText(
+            $recipe->seo_title,
+            'Receta de '.static::clean($recipe->titulo),
+            'Receta argentina'
+        );
+
+        $description = static::preferredDescription(
+            $recipe->meta_description,
+            $recipe->excerpt,
+            $recipe->receta,
+            160,
+            'Receta tradicional argentina con ingredientes, preparación y contexto regional.'
+        );
+
+        return [
+            'title' => str_contains($title, 'Folklore') || str_contains($title, 'Argentina')
+                ? $title
+                : $title.' | Cocina Argentina',
+            'description' => $description,
+            'h1' => static::preferredText($recipe->titulo, 'Receta argentina'),
         ];
     }
 

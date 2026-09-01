@@ -41,4 +41,25 @@ class MythFrontendModernizationTest extends TestCase
         $response->assertSee('Meta description persistida para la leyenda.', false);
         $response->assertSee('"@type": "Article"', false);
     }
+
+    /** @test */
+    public function inactive_myth_is_not_publicly_accessible(): void
+    {
+        $user = User::factory()->create();
+
+        DB::table('mitos')->insert([
+            'titulo' => 'Mito inactivo',
+            'slug' => 'mito-inactivo',
+            'mito' => '<p>Relato pendiente de revisión.</p>',
+            'foto' => null,
+            'publicar' => null,
+            'user_id' => $user->id,
+            'visitas' => 0,
+            'estado' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->get('/mitos-y-leyendas-argentinas/mito-inactivo')->assertNotFound();
+    }
 }

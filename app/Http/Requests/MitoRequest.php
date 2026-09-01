@@ -34,6 +34,7 @@ class MitoRequest extends FormRequest
             'image_alt' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
             'publicar' => 'nullable|date',
+            'estado' => 'nullable|integer|in:0,1',
         ];
     }
 }

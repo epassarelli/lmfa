@@ -49,7 +49,11 @@ class MitosController extends Controller
 
     public function show($slug)
     {
-        $mito = Mito::where('slug', $slug)->with('images')->firstOrFail();
+        $mito = Mito::query()
+            ->where('estado', 1)
+            ->where('slug', $slug)
+            ->with('images')
+            ->firstOrFail();
 
         $relacionados = Mito::where('estado', 1)
             ->where('id', '<>', $mito->id)

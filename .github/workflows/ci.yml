@@ -143,4 +143,12 @@ jobs:
 
       - name: PHPUnit - Myths
         run: |
-          php artisan test             tests/Feature/Myths/MythApiModernizationTest.php             tests/Feature/Myths/MythFrontendModernizationTest.php             tests/Feature/Myths/MythAuditCommandTest.php
+          php artisan test             tests/Feature/Myths/MythApiModernizationTest.php             tests/Feature/Myths/MythBackofficeModernizationTest.php             tests/Feature/Myths/MythFrontendModernizationTest.php             tests/Feature/Myths/MythAuditCommandTest.php
+
+      - name: PHPUnit - Recipes
+        run: |
+          php artisan test             tests/Feature/Recipes/RecipeApiModernizationTest.php             tests/Feature/Recipes/RecipeBackofficeModernizationTest.php             tests/Feature/Recipes/RecipeFrontendStructuredDataTest.php             tests/Feature/Recipes/RecipeQualityAuditCommandTest.php
+
+      - name: PHPUnit - Artists
+        run: |
+          php artisan test             tests/Feature/Artists/ArtistApiModernizationTest.php             tests/Feature/Artists/ArtistBackofficeModernizationTest.php             tests/Feature/Artists/ArtistBiographyFrontendTest.php             tests/Feature/Artists/ArtistAuditCommandTest.php

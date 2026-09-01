@@ -41,7 +41,11 @@ class InterpretesController extends Controller
 
     public function biografia($slug)
     {
-        $interprete = Interprete::where('slug', $slug)->with('images')->firstOrFail();
+        $interprete = Interprete::query()
+            ->where('estado', 1)
+            ->where('slug', $slug)
+            ->with('images')
+            ->firstOrFail();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
         $section = 'biografias';
 
@@ -49,7 +53,7 @@ class InterpretesController extends Controller
 
         $recursos = [
             'Noticias' => 5,
-            'Shows' => 2,
+            'Eventos' => 2,
             'Discos' => 6,
             'Canciones' => 78,
             'Fotos' => 0,
@@ -78,6 +82,8 @@ class InterpretesController extends Controller
 
     public function show(Interprete $interprete)
     {
+        abort_unless($interprete->estado, 404);
+
         $interprete->load('images');
         $noticias = $interprete->noticiasRelacionadas()
             ->latest('published_at')
@@ -86,7 +92,7 @@ class InterpretesController extends Controller
             ->get();
         $canciones = $interprete->canciones()->with('interprete')->latest()->take(3)->get();
         $discos = $interprete->discos()->with('images')->orderByDesc('anio')->take(3)->get();
-        $shows = $interprete->events()
+        $eventos = $interprete->events()
             ->publishedVisible()
             ->where('start_at', '>=', now())
             ->orderBy('start_at')
@@ -110,7 +116,7 @@ class InterpretesController extends Controller
             'noticias',
             'canciones',
             'discos',
-            'shows',
+            'eventos',
             'interpretes',
             'metaTitle',
             'metaDescription',

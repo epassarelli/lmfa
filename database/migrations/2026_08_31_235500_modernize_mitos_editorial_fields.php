@@ -9,6 +9,19 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Las instalaciones legacy pueden conservar fechas cero. MySQL vuelve
+        // a validar cada fila durante los ALTER TABLE y NO_ZERO_DATE las
+        // rechaza, por lo que una fecha histórica desconocida se normaliza a
+        // NULL antes de modificar la tabla.
+        foreach (['created_at', 'updated_at', 'publicar'] as $column) {
+            DB::statement(
+                "UPDATE mitos
+                    SET {$column} = NULL
+                    WHERE {$column} IS NOT NULL
+                      AND {$column} < '1000-01-01 00:00:00'"
+            );
+        }
+
         Schema::table('mitos', function (Blueprint $table) {
             $table->string('content_type', 30)->nullable()->after('titulo');
             $table->text('excerpt')->nullable()->after('mito');

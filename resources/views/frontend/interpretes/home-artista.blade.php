@@ -1,20 +1,25 @@
+@inject('editorialImageResolver', 'App\\Services\\EditorialImageResolver')
 @extends('layouts.app')
 
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-@section('metaImage', $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : asset('storage/interpretes/' . $interprete->foto))
+@php
+  $resolvedImage = $editorialImageResolver->resolve($interprete);
+  $schemaType = $interprete->artist_type === 'soloist' ? 'Person' : 'MusicGroup';
+@endphp
+
+@section('metaImage', $resolvedImage->url)
 
 @push('json-ld')
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@id": "{{ \App\Support\CanonicalUrl::current() }}",
-  "@type": "MusicGroup",
-  "name": "{{ $interprete->interprete }}",
-  "description": "{{ $metaDescription }}",
-  "url": "{{ \App\Support\CanonicalUrl::current() }}",
-  "image": "{{ $interprete->images->isNotEmpty() ? $interprete->images->first()->original_path : asset('storage/interpretes/' . $interprete->foto) }}",
-  "genre": "Folklore Argentino"
+  "@id": @json(\App\Support\CanonicalUrl::current()),
+  "@type": @json($schemaType),
+  "name": @json($interprete->interprete),
+  "description": @json($metaDescription),
+  "url": @json(\App\Support\CanonicalUrl::current()),
+  "image": @json($resolvedImage->url)
 }
 </script>
 @endpush
@@ -91,11 +96,11 @@
       </section>
     @endif
 
-    @if ($shows->count())
+    @if ($eventos->count())
       <section class="mb-8">
-        <h2 class="text-2xl font-semibold border-b-2 border-[#ff661f] pb-2 mb-4">Proximos shows</h2>
+        <h2 class="text-2xl font-semibold border-b-2 border-[#ff661f] pb-2 mb-4">Próximos eventos</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          @foreach ($shows as $show)
+          @foreach ($eventos as $show)
             <x-show-card :show="$show" />
           @endforeach
         </div>

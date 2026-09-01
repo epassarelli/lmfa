@@ -41,9 +41,9 @@ class StoreMythRequest extends FormRequest
             'featured_image_path' => 'nullable|string|max:2048',
             'featured_image_url' => 'nullable|url|max:2048',
             'publicar' => 'nullable|date',
-            'visitas' => 'nullable|integer|min:0',
+            'visitas' => 'prohibited',
             'estado' => 'nullable|integer|in:0,1',
-            'user_id' => 'nullable|exists:users,id',
+            'user_id' => 'prohibited',
         ];
     }
 }

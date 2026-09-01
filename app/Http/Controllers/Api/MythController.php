@@ -94,8 +94,10 @@ class MythController extends Controller
     {
         $title = $payload['titulo'] ?? $myth?->titulo;
 
-        if (! $myth && empty($payload['user_id'])) {
+        if (! $myth) {
             $payload['user_id'] = auth()->id();
+        } else {
+            unset($payload['user_id'], $payload['visitas']);
         }
 
         if (! $myth && ! array_key_exists('estado', $payload)) {

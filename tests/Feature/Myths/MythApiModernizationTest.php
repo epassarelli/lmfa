@@ -73,4 +73,31 @@ class MythApiModernizationTest extends TestCase
 
         $response->assertStatus(422)->assertJsonValidationErrors(['slug']);
     }
+
+    /** @test */
+    public function api_protects_myth_author_and_visit_counter(): void
+    {
+        $admin = $this->admin();
+        $otherUser = User::factory()->create();
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson('/api/v1/myths', [
+            'titulo' => 'Mito protegido',
+            'mito' => '<p>Relato editorial.</p>',
+            'user_id' => $otherUser->id,
+            'visitas' => 5000,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['user_id', 'visitas']);
+
+        $validResponse = $this->postJson('/api/v1/myths', [
+            'titulo' => 'Mito protegido',
+            'mito' => '<p>Relato editorial.</p>',
+        ]);
+
+        $validResponse->assertCreated()
+            ->assertJsonPath('user_id', $admin->id)
+            ->assertJsonPath('visitas', 0);
+    }
 }

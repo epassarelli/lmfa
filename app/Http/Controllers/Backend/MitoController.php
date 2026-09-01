@@ -70,7 +70,13 @@ class MitoController extends Controller
             ? Str::slug($payload['slug'])
             : Str::slug($mito->titulo);
         $mito->user_id = Auth::id();
-        $mito->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        if (Auth::user()->hasRole('administrador')) {
+            if (! array_key_exists('estado', $payload)) {
+                $mito->estado = 1;
+            }
+        } else {
+            $mito->estado = 0;
+        }
         $mito->save();
 
         if ($request->hasFile('foto')) {
@@ -109,8 +115,13 @@ class MitoController extends Controller
         $mito->slug = filled($payload['slug'] ?? null)
             ? Str::slug($payload['slug'])
             : Str::slug($mito->titulo);
-        $mito->user_id = Auth::id();
-        $mito->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        if (Auth::user()->hasRole('administrador')) {
+            if (! array_key_exists('estado', $payload)) {
+                $mito->estado = 1;
+            }
+        } else {
+            $mito->estado = 0;
+        }
         $mito->save();
 
         if ($request->hasFile('foto')) {

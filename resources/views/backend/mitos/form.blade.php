@@ -100,3 +100,16 @@
     <div class="text-danger">{{ $message }}</div>
   @enderror
 </div>
+
+@if (isset($mito) && Auth::user()->hasRole('administrador'))
+  <div class="form-group">
+    <label for="estado">Estado</label>
+    <select name="estado" id="estado" class="form-control" required>
+      <option value="0" @selected((string) old('estado', $mito->estado) === '0')>Inactivo</option>
+      <option value="1" @selected((string) old('estado', $mito->estado) === '1')>Activo</option>
+    </select>
+    @error('estado')
+      <div class="text-danger">{{ $message }}</div>
+    @enderror
+  </div>
+@endif
