@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Myths;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -13,6 +14,8 @@ class MythFrontendModernizationTest extends TestCase
     /** @test */
     public function myth_detail_uses_persisted_seo_and_grounded_article_schema(): void
     {
+        $user = User::factory()->create();
+
         DB::table('mitos')->insert([
             'titulo' => 'Leyenda Frontend',
             'content_type' => 'legend',
@@ -24,7 +27,7 @@ class MythFrontendModernizationTest extends TestCase
             'meta_description' => 'Meta description persistida para la leyenda.',
             'foto' => null,
             'publicar' => now(),
-            'user_id' => 1,
+            'user_id' => $user->id,
             'visitas' => 0,
             'estado' => 1,
             'created_at' => now(),
