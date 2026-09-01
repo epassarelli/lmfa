@@ -1215,7 +1215,7 @@ function seleccionarCandidatoMFA_(rows, tipos) {
       const tipo = normalizarTextoMFA_(r.values.TIPO);
       const accion = normalizarTextoMFA_(r.values.ACCION_API) || 'crear';
 
-      if (tipo === 'festival' && accion === 'actualizar') {
+      if (accion === 'actualizar') {
         return Boolean(enteroOpcionalMFA_(r.values.ID_WEB)) &&
           !['actualizado_api'].includes(resultado);
       }
