@@ -1,191 +1,75 @@
-# Rollout por oleadas — Modernización de entidades MFA
+# Rollout por oleadas - Modernizacion de entidades MFA
 
-## Principio
+> Documento historico-operativo alineado al 2026-09-01.
+> Conserva el orden de despliegue y aclara que ya fue desplegado tecnicamente y que sigue pendiente a nivel operativo/editorial.
 
-Cada entidad se despliega como release independiente. No agrupar migraciones de Biografías, Recetas, Mitos y Discografía en una única ventana.
+---
 
-Orden recomendado:
+## Resumen
 
-1. Biografías / Artistas
+El programa de modernizacion se desplego por oleadas independientes:
+
+1. Biografias / Artistas
 2. Recetas
 3. Mitos y Leyendas
-4. Integración editorial Artista + Receta + Mito
-5. Discografía / Cancionero
+4. Integracion editorial Artista + Receta + Mito
+5. Discografia / Cancionero
 
-La integración editorial se despliega después de los tres backends que consume.
+La regla de no mezclar varias entidades en una sola ventana de release sigue siendo valida como historial util.
 
-## Precheck común
+---
 
-En cada release:
+## Estado por oleada al 2026-09-01
 
-```bash
-git status
-git branch --show-current
-php artisan migrate:status
-php artisan migrate --pretend
-```
+### Oleada 1 - Biografias / Artistas
 
-Confirmar:
-- PR/CI verde;
-- backup de BD disponible;
-- branch correcta;
-- rollback documentado;
-- sin cambios de Composer/NPM no previstos.
+- desplegada tecnicamente;
+- backend, API, frontend, SEO/schema y auditor operativos;
+- pendiente la curacion masiva posterior.
 
-## Oleada 1 — Biografías
+### Oleada 2 - Recetas
 
-PR #9 — feature/biographies-modernization
+- desplegada tecnicamente;
+- contrato editorial y campos estructurados activos;
+- pendiente la recuperacion masiva del inventario.
 
-Migraciones:
-- 2026_08_31_233000_modernize_interpretes_editorial_fields.php
-- 2026_08_31_233100_widen_interpretes_legacy_columns.php
+### Oleada 3 - Mitos y Leyendas
 
-Después del deploy:
+- desplegada tecnicamente;
+- contrato cultural y auditor operativos;
+- pendiente la recuperacion masiva del inventario.
 
-```bash
-php artisan optimize:clear
-php artisan view:cache
-php artisan mfa:artists:audit --active
-```
+### Oleada 4 - Integracion editorial
 
-Smoke:
-- índice biografías;
-- hub artista;
-- /biografia;
-- alta/edición backend;
-- GET/POST/PUT API;
-- Person/MusicGroup schema;
-- media propia/legacy/fallback.
+- desplegada tecnicamente;
+- Artista, Receta y Mito ya soportados por la bandeja `Contenidos` y Apps Script;
+- siguen pendientes los seis casos controlados de CREAR/ACTUALIZAR en produccion antes de reactivar flujo automatico de volumen.
 
-No habilitar todavía ENVIAR_API=S para Artista hasta completar smoke.
+### Oleada 5 - Discografia / Cancionero
 
-## Oleada 2 — Recetas
+- no debe tratarse como frente cerrado a nivel operativo;
+- permanece condicionado por la politica de derechos;
+- no habilitar automatizacion de letras ni enriquecimiento textual sin gate humano explicito.
 
-PR #10 — feature/recipes-modernization
+---
 
-Migración:
-- 2026_08_31_234500_modernize_comidas_editorial_fields.php
+## Criterio de cierre actualizado
 
-Después:
+La modernizacion tecnica ya puede leerse como desplegada en Festivales, Biografias, Recetas y Mitos.
 
-```bash
-php artisan optimize:clear
-php artisan view:cache
-php artisan mfa:recipes:audit --active
-```
+Todavia no debe considerarse completamente cerrada en terminos operativos mientras sigan pendientes:
 
-Smoke:
-- listado/detalle;
-- receta legacy;
-- receta estructurada;
-- Recipe JSON-LD sólo con datos reales;
-- alta/edición;
-- API create/update;
-- media.
+1. piloto controlado de seis operaciones de Content Refresh;
+2. lotes editoriales iniciales con medicion antes/despues;
+3. incorporacion de visitas al auditor de Festivales;
+4. definicion de derechos para musica y letras.
 
-No habilitar actualización masiva. Primero revisar auditor y lote P1.
+---
 
-## Oleada 3 — Mitos
+## Historial util conservado
 
-PR #11 — feature/myths-modernization
+Se conserva como antecedente valido:
 
-Migración:
-- 2026_08_31_235500_modernize_mitos_editorial_fields.php
-
-Después:
-
-```bash
-php artisan optimize:clear
-php artisan view:cache
-php artisan mfa:myths:audit --active
-```
-
-Smoke:
-- índice/detalle;
-- myth/legend/urban_legend;
-- región;
-- SEO;
-- Article schema;
-- backoffice/API;
-- media.
-
-No inferir ni completar automáticamente orígenes culturales dudosos.
-
-## Oleada 4 — Integración editorial
-
-PR #13 — feature/editorial-refresh-entities
-
-Sin migraciones Laravel.
-
-Dependencias:
-- Oleadas 1, 2 y 3 validadas.
-
-Acciones:
-- merge/pull;
-- sincronizar Apps Script desde fuente GitHub/clasp según flujo vigente;
-- mantener MFA - Carga contenidos diario deshabilitada durante prueba manual.
-
-Prueba controlada:
-1. Artista CREAR draft/inactivo;
-2. Artista ACTUALIZAR;
-3. Receta CREAR draft/inactiva;
-4. Receta ACTUALIZAR;
-5. Mito CREAR draft/inactivo;
-6. Mito ACTUALIZAR.
-
-Validar en Sheet:
-- ID_WEB;
-- RESULTADO_API;
-- ERROR_API vacío;
-- FECHA_ENVIO_API;
-- ENVIAR_API=N tras éxito.
-
-Sólo después reactivar la tarea automática de carga.
-
-## Oleada 5 — Discografía / Cancionero
-
-PR #12 — feature/discography-modernization
-
-Migración:
-- 2026_09_01_000500_modernize_discography_and_songs.php
-
-Antes:
-- aprobar política operativa de derechos;
-- no habilitar automatización de letras completas.
-
-Después:
-
-```bash
-php artisan optimize:clear
-php artisan view:cache
-php artisan mfa:music:audit --active
-```
-
-Smoke:
-- álbum create/update;
-- tracklist;
-- canción con letra histórica;
-- canción sin letra;
-- instrumental;
-- credits;
-- rights_status;
-- frontend/SEO;
-- alta rápida desde álbum sin placeholder.
-
-Regla permanente:
-- nunca generar letra para rellenar;
-- una canción puede existir sin letra;
-- no eliminar letras legacy masivamente;
-- auditar derechos antes de enriquecimiento textual.
-
-## Criterio de cierre global
-
-El programa de modernización técnica puede considerarse desplegado cuando:
-- las cinco oleadas estén verdes en producción;
-- auditores reales hayan sido ejecutados;
-- los flujos CREAR/ACTUALIZAR de la bandeja estén validados;
-- la tarea de carga vuelva a estar habilitada;
-- las colas P1 de cada entidad estén creadas;
-- no existan errores 5xx atribuibles a los releases.
-
-La recuperación editorial masiva continúa después, por score y por entidad; no bloquea el cierre técnico.
+- el despliegue por oleadas;
+- la recomendacion de prechecks de branch, `git status` y `migrate:status`;
+- la separacion entre cierre tecnico del release y recuperacion editorial posterior.

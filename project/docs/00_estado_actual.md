@@ -1,25 +1,96 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-08-21 (inventario tecnico y legacy completado sobre repo + BD local; paginas legales y flujo Meta/Facebook de eliminacion de datos implementados, con callback firmado, estado publico y tests dedicados; cierre falso de BL-0011F reabierto en Drive como `Parcial`; runner nativo read-only para backlog de Drive y tarea programada deshabilitada preparados sin escrituras activas; auditoria de contratos editoriales por entidad cerrada con BD local en lectura y contraste publico `200` de sus siete superficies en `project/docs/10_auditoria_contratos_editoriales.md`; migracion nueva aun pendiente de ejecutar en la BD local)
+> Ultima actualizacion: 2026-09-01 (modernizacion tecnica de Festivales, Biografias, Recetas y Mitos desplegada por oleadas; integracion Content Refresh extendida a Artista/Receta/Mito; auditorias de produccion consolidadas con visitas; linea base editorial y dos programas paralelos de trabajo definidos)
 
 ---
 
 ## Rama activa
 
-`20260820` - rama activa observada en este entorno durante la auditoria del 2026-08-20. Contiene worktree con cambios locales en curso sobre formularios, requests, servicios y automatizacion/documentacion MFA.
+`feature/editorial-refresh-entities` - rama activa observada el 2026-09-01. Contiene la integracion de Artista, Receta y Mito con la bandeja editorial y Apps Script. Al momento del corte local se encuentra por delante y por detras de su remoto; debe sincronizarse antes de iniciar una nueva feature o preparar otro merge.
 
-**Flujo de ramas:** `dev` -> rama feature/version -> validar -> merge a `dev` -> deploy desde `main`.
+**Flujo observado en las ultimas oleadas:** rama feature -> PR/CI -> merge a `main` -> pull y deploy en produccion. No mezclar modernizaciones de entidades distintas en una sola ventana de release.
 
 ---
 
 ## Estado del proyecto
 
-Backlog original completo (PC-01 a PC-13 en `done`). El proyecto esta en fase de **estabilizacion, optimizacion y auditoria** previo a nuevas specs funcionales.
+Backlog original completo (PC-01 a PC-13 en `done`). El proyecto salio de la fase puramente tecnica de estabilizacion y entro en una fase dual: **autoridad editorial continua** y **evolucion funcional del portal**.
 
 El backlog operativo activo para MFA ya no vive en `project/docs/backlog.json`: la operacion diaria priorizada se sigue en Google Drive (`Backlog Asistente ChatGPT`, pestaña `Backlog`). El JSON local queda como legado estructurado e historico.
 
 Se realizo auditoria completa del codigo el 2026-04-26. Ver seccion de bugs corregidos.
+
+### Direccion vigente: dos programas paralelos
+
+La vision de convertir MFA en el portal de referencia del folklore argentino no se alcanza con un unico backlog lineal. Desde este corte se gestionan dos programas permanentes, con capacidad y metricas propias:
+
+| Programa | Objetivo | Unidad de avance | Gate principal |
+|----------|----------|------------------|----------------|
+| **A. Autoridad editorial** | Mejorar profundidad, verificabilidad, estructura, SEO, relaciones y media de los contenidos publicados; descubrir altas relevantes sin degradar calidad. | Lotes pequenos por entidad, priorizados por deuda y demanda. | Investigacion y fuentes completas; revision humana antes de habilitar `ENVIAR_API=S`. |
+| **B. Producto y servicios** | Completar funcionalidades, navegacion, automatizacion, comunidad, distribucion y servicios diferenciales que vuelvan a MFA el portal mas util y completo del sector. | Releases tecnicos independientes, con CI, smoke, medicion y rollback. | Release gate por modulo y validacion real en produccion. |
+
+Reglas de gobierno:
+
+- ninguno de los dos programas reemplaza al otro;
+- reservar capacidad en cada ciclo para ambos, evitando que toda la ejecucion quede absorbida por la deuda editorial;
+- el backlog oficial sigue siendo `Backlog Asistente ChatGPT` en Drive;
+- `project/docs/backlog.json`, cuando exista, es referencia tecnica/legacy y no gobierna prioridades;
+- `00_estado_actual.md` registra hechos comprobados; vision, arquitectura y contratos detallados viven en sus documentos especificos.
+
+### Corte tecnico y operativo 2026-09-01
+
+- **Festivales:** modernizacion tecnica y Content Refresh en condiciones productivas; auditor y cola editorial funcionando. El auditor todavia no incorpora visitas, por lo que su desempate sigue siendo provisional hasta integrar GA4.
+- **Biografias / Artistas:** modelo, migraciones legacy, backoffice, API, frontend, SEO/schema y auditor modernizados. Migraciones ejecutadas en produccion y auditor real regenerado con visitas.
+- **Recetas:** contrato editorial y campos estructurados modernizados; backoffice, API, frontend/schema y auditor disponibles en produccion. La recuperacion masiva de contenido sigue pendiente.
+- **Mitos y Leyendas:** contrato cultural, region/tipo, SEO, media, backoffice/API/frontend y auditor modernizados. La recuperacion masiva de contenido sigue pendiente.
+- **Integracion editorial:** Apps Script y la bandeja `Contenidos` soportan `Artista`, `Receta` y `Mito` con `CREAR/ACTUALIZAR`, `ID_WEB`, `SCORE_CALIDAD`, `FALTANTES` y gate `ENVIAR_API`. Antes de automatizar volumen deben cerrarse los seis casos controlados POST/PUT documentados en `project/docs/releases/entity-modernization-rollout.md`.
+- **Auditoria consolidada:** existe una matriz editorial de corte 2026-09-01 con resumen, faltantes, imagenes y lotes priorizados. Artistas, Recetas y Mitos ya incluyen visitas; se programo repeticion mensual de la auditoria.
+
+### Linea base editorial de produccion — 2026-09-01
+
+| Entidad | Total | P1 | P2 | P3 | Score promedio | Imagen fallback | Visitas en auditor |
+|---------|------:|---:|---:|---:|---------------:|----------------:|-------------------:|
+| Festivales | 30 | 22 | 6 | 2 | 45,5 | 2 | No |
+| Artistas | 444 | 313 | 131 | 0 | 39,0 | 125 | Si |
+| Recetas | 808 | 808 | 0 | 0 | 13,0 | 808 | Si |
+| Mitos | 284 | 284 | 0 | 0 | 20,9 | 284 | Si |
+| **Total** | **1.566** | **1.427** | **137** | **2** | **22,4 ponderado** | **1.219** | **1.536 registros** |
+
+Orden operativo de curacion:
+
+1. prioridad (`P1`, `P2`, `P3`);
+2. menor `SCORE_CALIDAD`;
+3. mayores visitas dentro del mismo nivel de deuda;
+4. ID como desempate estable.
+
+La magnitud de P1 no se resuelve con una carga masiva. Se trabaja con lotes pequenos, auditoria antes/despues y medicion posterior en GA4/Search Console.
+
+### Alineacion con la vision
+
+Estado cualitativo al 2026-09-01:
+
+| Dimension de la vision | Alineacion | Lectura |
+|------------------------|------------|---------|
+| Cobertura integral del folklore | Alta | MFA ya articula artistas, discos, letras, noticias, eventos, festivales, enciclopedia, recetas y mitos. |
+| Autoridad y calidad editorial | Media/alta en sistema; baja en inventario legacy | Existen contratos, auditores y flujo de curacion, pero 1.427 registros siguen P1. |
+| Arquitectura SEO y performance | Alta | Sitemaps, canonical, schema, media y optimizaciones transversales estan implementados; falta medicion continua de impacto real. |
+| Interconexion y descubrimiento | Media | Hay pivots y silos, pero falta convertirlos en navegacion transversal consistente y recomendaciones utiles en todas las entidades. |
+| Servicios diferenciales y recurrencia | Media/baja | Agenda, Pasarela, UGC, newsletter, torneos y modulos parciales existen, pero varios no tienen validacion productiva o propuesta operativa cerrada. |
+| Automatizacion editorial segura | Media/alta | Descubrimiento, bandeja, API y auditores estan integrados; faltan cerrar pruebas controladas y escalar sin sacrificar revision humana. |
+| Monetizacion sostenible | Baja/media | La base SEO y de contenidos mejora, pero falta ligar roadmap, audiencias, servicios y medicion a ingresos mas alla de AdSense. |
+
+Conclusion: la ejecucion esta alineada con la vision en sus fundamentos, pero el siguiente salto no debe ser solamente "mas contenido". Debe combinar autoridad demostrable con mejores recorridos de usuario, servicios recurrentes, distribucion y medicion de valor.
+
+### Proximos gates comunes
+
+1. Cerrar el piloto controlado de seis operaciones de Content Refresh: crear y actualizar un Artista, una Receta y un Mito.
+2. Ejecutar el primer lote editorial de 10 Biografias P1 y medir auditoria antes/despues.
+3. Continuar con lotes equivalentes de Recetas y Mitos, sin habilitar updates masivos.
+4. Incorporar visitas al auditor de Festivales y reordenar su cola.
+5. Aprobar la politica de derechos antes de automatizar Discografia/Cancionero.
+6. Validar Pasarela y UGC end-to-end en produccion antes de tratarlos como servicios cerrados.
+7. Definir el siguiente release funcional por impacto en descubrimiento/recurrencia, no por disponibilidad de codigo legacy.
 
 ### Gobernanza documental verificada el 2026-08-20
 
@@ -404,7 +475,12 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 - **`EventPolicy`**: CRUD de `Event`. Admins con acceso total, colaboradores pueden crear/editar propios.
 - **`NewsPolicy`**: CRUD de `News`. Compatibilidad con permisos legacy `read noticia`.
 - **`KnowledgeArticlePolicy`**: CRUD de `KnowledgeArticle`. Reutiliza permisos legacy de Noticias y acceso total para `administrador`.
-- Las tres estan registradas en `AuthServiceProvider`.
+- **`FestivalPolicy`**: autorizacion del CRUD y API modernizada de Festivales.
+- **`InterpretePolicy`**: autorizacion de Biografias/Artistas.
+- **`ComidaPolicy`**: autorizacion de Recetas.
+- **`MitoPolicy`**: autorizacion de Mitos y Leyendas.
+- **`AlbumPolicy`** y **`CancionPolicy`**: autorizacion de Discografia/Cancionero.
+- Las policies de dominio estan registradas en `AuthServiceProvider`.
 
 ---
 
@@ -427,7 +503,7 @@ Resultados recientes relevantes:
 
 - Knowledge: `9 passed (18 assertions)`
 - SEO + Festivales + Canonical + Sitemaps: `30 passed (52060 assertions)` en la tanda previa y `27 passed (52046 assertions)` en las ultimas tandas de performance/mobile
-- Mitos frontend: cobertura dedicada agregada para `/mitos-y-leyendas-argentinas`; ejecucion pendiente en un entorno con `php` disponible
+- Festivales, Biografias, Recetas y Mitos: releases tecnicos integrados por PR/CI y desplegados por oleadas; auditores reales ejecutados en produccion el 2026-09-01
 - Meta legales/data deletion: `10 passed (50 assertions)`
 - Performance public mobile budget + recetas + mitos + festivales: `12 passed (57 assertions)`
 - `php artisan test` completo: bloqueado por un error de sintaxis preexistente en `tests/Feature/TwoFactorAuthenticationSettingsTest.php` (`unexpected token "public"`), ajeno a este cambio
@@ -455,6 +531,8 @@ Nota: los `curl` locales no reflejan completamente la mejora de Core Web Vitals 
 7. Ejecutar la migracion `2026_08_20_120000_create_data_deletion_requests_table` en los entornos correspondientes y configurar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`).
 8. Corregir el error de sintaxis preexistente en `tests/Feature/TwoFactorAuthenticationSettingsTest.php` para recuperar la ejecucion completa de `php artisan test`.
 
-9. La auditoría de `BL-0017A` confirmó que Mitos y Leyendas es un módulo legacy-vivo con 284 entradas locales y sin modelo cultural, taxonomías o relaciones. Se acordó documentalmente adaptarlo en `BL-0017B`, sin crear un módulo paralelo ni migrar datos todavía. El test local focalizado pasó (1 prueba, 5 aserciones), pero el contraste público del 2026-08-22 devolvió HTTP 500 en `/mitos-y-leyendas-argentinas`; requiere verificación y despliegue autorizados antes de considerarlo disponible.
+9. Cerrar en produccion los seis casos controlados de la integracion editorial: CREAR y ACTUALIZAR un Artista, una Receta y un Mito; luego reactivar el flujo automatico con monitoreo de errores.
 
-10. La auditoría de `BL-0018A` mapeó 4.608 canciones activas y 397 discos activos con rutas, pivots y señales de tráfico locales. Las letras completas carecen de campos de fuente, licencia, autoría o autorización: no se debe automatizar ni ampliar su publicación hasta que exista una decisión humana de derechos y una spec aprobada que distinga obra, versión/grabación y créditos.
+10. Ejecutar los primeros lotes de curacion de Biografias, Recetas y Mitos, registrando score antes/despues y evitando actualizaciones masivas sin revision.
+
+11. La auditoría de `BL-0018A` mapeó 4.608 canciones activas y 397 discos activos con rutas, pivots y señales de tráfico locales. Las letras completas carecen de campos de fuente, licencia, autoría o autorización: no se debe automatizar ni ampliar su publicación hasta que exista una decisión humana de derechos y una spec aprobada que distinga obra, versión/grabación y créditos.
