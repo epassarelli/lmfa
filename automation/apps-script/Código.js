@@ -431,7 +431,7 @@ function configurarCargaContenidosMFA() {
  *   4. un Festival.
  *
  * IMPORTANTE SOBRE LOS TIPOS:
- * - TIPO puede ser: Noticia, Evento, Evergreen o Festival.
+ * - TIPO puede ser: Noticia, Evento, Evergreen, Festival, Artista, Receta o Mito.
  * - "Festivales" sigue siendo una categorÃ­a vÃ¡lida de Noticia cuando la pieza
  *   es cobertura de actualidad. TIPO=Festival se reserva para la ficha evergreen
  *   y estable del festival.
@@ -620,7 +620,7 @@ function cargarContenidosMFA() {
       ? (exitos || duplicados ? 'PARCIAL' : 'ERROR')
       : (exitos || duplicados ? 'OK' : 'SIN_PENDIENTES');
 
-    // Deja una Ãºnica fila de auditorÃ­a con el resultado de los tres circuitos.
+    // Deja una única fila de auditoría con el resultado de todos los circuitos editoriales.
     registrarEjecucionCargaMFA_(
       ss,
       inicio,
