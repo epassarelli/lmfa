@@ -162,6 +162,28 @@ assert.throws(
   () => vm.runInContext("resolverAccionEntidadMFA_({ ACCION_API: 'CREAR', ID_WEB: 99 }, 'Receta')", validationContext),
   /no debe tener ID_WEB/,
 );
+assert.throws(
+  () => vm.runInContext("resolverAccionEntidadMFA_({}, 'Artista')", validationContext),
+  /debe ser CREAR o ACTUALIZAR/,
+  'Las entidades de refresh no deben inferir CREAR cuando falta ACCION_API',
+);
+
+for (const [processor, type] of [
+  ['procesarArtistaMFA_', 'Artista'],
+  ['procesarRecetaMFA_', 'Receta'],
+  ['procesarMitoMFA_', 'Mito'],
+]) {
+  assert.throws(
+    () => executeProcessor({
+      processor,
+      status: 200,
+      responseId: 99,
+      row: { ID_CONTENIDO: `MFA-${type}-NOOP`, ACCION_API: 'ACTUALIZAR', ID_WEB: 99 },
+    }),
+    /no contiene campos para modificar/,
+    `${type} ACTUALIZAR debe rechazar un payload vacío`,
+  );
+}
 
 function selectCandidate(rows, types) {
   const context = createContext();
