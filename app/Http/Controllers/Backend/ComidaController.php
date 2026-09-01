@@ -64,10 +64,19 @@ class ComidaController extends Controller
 
     public function store(ComidaRequest $request)
     {
-        $comida = new Comida($request->validated());
-        $comida->slug = Str::slug($comida->titulo);
+        $payload = $request->validated();
+        $comida = new Comida($payload);
+        $comida->slug = filled($payload['slug'] ?? null)
+            ? Str::slug($payload['slug'])
+            : Str::slug($comida->titulo);
         $comida->user_id = Auth::id();
-        $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        if (Auth::user()->hasRole('administrador')) {
+            if (! array_key_exists('estado', $payload)) {
+                $comida->estado = 1;
+            }
+        } else {
+            $comida->estado = 0;
+        }
         $comida->save();
 
         if ($request->hasFile('foto')) {
@@ -75,7 +84,10 @@ class ComidaController extends Controller
                 $request->file('foto'),
                 $comida,
                 'recipe',
-                'comidas'
+                'comidas',
+                false,
+                $comida->slug,
+                ['alt' => $comida->image_alt ?: $comida->titulo]
             );
         }
 
@@ -98,9 +110,18 @@ class ComidaController extends Controller
 
     public function update(ComidaRequest $request, Comida $comida)
     {
-        $comida->fill($request->validated());
-        $comida->slug = Str::slug($comida->titulo);
-        $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $payload = $request->validated();
+        $comida->fill($payload);
+        $comida->slug = filled($payload['slug'] ?? null)
+            ? Str::slug($payload['slug'])
+            : Str::slug($comida->titulo);
+        if (Auth::user()->hasRole('administrador')) {
+            if (! array_key_exists('estado', $payload)) {
+                $comida->estado = 1;
+            }
+        } else {
+            $comida->estado = 0;
+        }
         $comida->save();
 
         if ($request->hasFile('foto')) {
@@ -109,8 +130,17 @@ class ComidaController extends Controller
                 $comida,
                 'recipe',
                 'comidas',
-                true
+                true,
+                $comida->slug,
+                ['alt' => $comida->image_alt ?: $comida->titulo]
             );
+        }
+
+        if (array_key_exists('image_alt', $payload)) {
+            $image = $comida->images()->orderBy('sort_order')->first();
+            if ($image) {
+                $image->update(['alt' => $comida->image_alt ?: $comida->titulo]);
+            }
         }
 
         Alert::success('Comida actualizada', 'La comida ha sido actualizada con exito.');

@@ -424,18 +424,22 @@ function configurarCargaContenidosMFA() {
 /**
  * Procesa la cola editorial de Mi Folklore Argentino.
  *
- * En cada ejecuciÃ³n intenta cargar, como mÃ¡ximo:
+ * En cada ejecuciÃ³n intenta cargar, como mÃ¡ximo, una fila por circuito:
  *   1. un artÃ­culo Evergreen;
  *   2. un Evento;
  *   3. una Noticia;
  *   4. un Festival.
+ *   5. un Artista;
+ *   6. una Receta;
+ *   7. un Mito.
  *
  * IMPORTANTE SOBRE LOS TIPOS:
  * - TIPO puede ser: Noticia, Evento, Evergreen, Festival, Artista, Receta o Mito.
  * - "Festivales" sigue siendo una categorÃ­a vÃ¡lida de Noticia cuando la pieza
  *   es cobertura de actualidad. TIPO=Festival se reserva para la ficha evergreen
  *   y estable del festival.
- * - Para Festival, ACCION_API define CREAR (POST) o ACTUALIZAR (PUT).
+ * - Para Festival, Artista, Receta y Mito, ACCION_API define CREAR (POST)
+ *   o ACTUALIZAR (PUT).
  *
  * IMPORTANTE SOBRE LOS ESTADOS DEL SHEET:
  * - BORRADOR: todavÃ­a no fue recibido correctamente por la API.
@@ -833,18 +837,18 @@ function resolverAccionEntidadMFA_(row, nombre) {
 }
 
 function procesarArtistaMFA_(row, token, etapa) {
-  exigirCamposMFA_(row, ['ID_CONTENIDO', 'SLUG']);
+  exigirCamposMFA_(row, ['ID_CONTENIDO']);
   validarLongitudMFA_(row);
 
   const { accion, id } = resolverAccionEntidadMFA_(row, 'Artista');
   const nombre = String(row.ARTISTA || row.TITULO || '').trim();
 
-  if (!nombre) {
+  if (accion === 'crear' && !nombre) {
     throw crearErrorMFA_('ERROR_VALIDACION', 422, 'Artista requiere ARTISTA o TITULO.');
   }
 
   if (accion === 'crear') {
-    exigirCamposMFA_(row, ['CUERPO']);
+    exigirCamposMFA_(row, ['SLUG', 'CUERPO']);
     validarContenidoVisibleMFA_(row.CUERPO, 300);
   } else if (row.CUERPO) {
     validarContenidoVisibleMFA_(row.CUERPO, 300);
@@ -890,13 +894,13 @@ function procesarArtistaMFA_(row, token, etapa) {
 }
 
 function procesarRecetaMFA_(row, token, etapa) {
-  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG']);
+  exigirCamposMFA_(row, ['ID_CONTENIDO']);
   validarLongitudMFA_(row);
 
   const { accion, id } = resolverAccionEntidadMFA_(row, 'Receta');
 
   if (accion === 'crear') {
-    exigirCamposMFA_(row, ['CUERPO']);
+    exigirCamposMFA_(row, ['TITULO', 'SLUG', 'CUERPO']);
     validarContenidoVisibleMFA_(row.CUERPO, 300);
   } else if (row.CUERPO) {
     validarContenidoVisibleMFA_(row.CUERPO, 300);
@@ -943,13 +947,13 @@ function procesarRecetaMFA_(row, token, etapa) {
 }
 
 function procesarMitoMFA_(row, token, etapa) {
-  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG']);
+  exigirCamposMFA_(row, ['ID_CONTENIDO']);
   validarLongitudMFA_(row);
 
   const { accion, id } = resolverAccionEntidadMFA_(row, 'Mito');
 
   if (accion === 'crear') {
-    exigirCamposMFA_(row, ['CUERPO']);
+    exigirCamposMFA_(row, ['TITULO', 'SLUG', 'CUERPO']);
     validarContenidoVisibleMFA_(row.CUERPO, 300);
   } else if (row.CUERPO) {
     validarContenidoVisibleMFA_(row.CUERPO, 300);
@@ -1407,7 +1411,6 @@ function seleccionarCandidatoMFA_(rows, tipos) {
     .filter((r) => normalizarTextoMFA_(r.values.ENVIAR_API) === 's')
     .filter((r) => {
       const resultado = normalizarTextoMFA_(r.values.RESULTADO_API);
-      const tipo = normalizarTextoMFA_(r.values.TIPO);
       const accion = normalizarTextoMFA_(r.values.ACCION_API) || 'crear';
 
       if (accion === 'actualizar') {

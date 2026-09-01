@@ -70,6 +70,7 @@ Mapeo:
 - CREAR no puede tener ID_WEB.
 - ACTUALIZAR exige ID_WEB.
 - Updates pueden ser parciales.
+- Los auditores desempatan igual score por mayor cantidad de visitas y luego por ID.
 - CREAR exige cuerpo suficiente.
 - ENVIAR_API=S es el único permiso de envío.
 - Después de éxito: RESULTADO_API y ENVIAR_API=N.

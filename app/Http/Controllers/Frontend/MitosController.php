@@ -7,6 +7,7 @@ use App\Models\Mito;
 use App\Services\LinkService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use App\Support\SeoMetadata;
 
 class MitosController extends Controller
 {
@@ -48,7 +49,11 @@ class MitosController extends Controller
 
     public function show($slug)
     {
-        $mito = Mito::where('slug', $slug)->with('images')->firstOrFail();
+        $mito = Mito::query()
+            ->where('estado', 1)
+            ->where('slug', $slug)
+            ->with('images')
+            ->firstOrFail();
 
         $relacionados = Mito::where('estado', 1)
             ->where('id', '<>', $mito->id)
@@ -68,8 +73,10 @@ class MitosController extends Controller
 
         $mito->increment('visitas');
 
-        $metaTitle = $mito->titulo . ' | Mitos y leyendas urbanas';
-        $metaDescription = Str::limit(strip_tags(html_entity_decode($mito->mito)), 150);
+        $seo = SeoMetadata::myth($mito);
+        $metaTitle = $seo['title'];
+        $metaDescription = $seo['description'];
+        $h1 = $seo['h1'];
         $mito->mito = $this->linkService->autoLinkArtists($mito->mito);
 
         $breadcrumbs = [
@@ -77,7 +84,7 @@ class MitosController extends Controller
             ['label' => $mito->titulo]
         ];
 
-        return view('frontend.mitos.show', compact('mito', 'relacionados', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.mitos.show', compact('mito', 'relacionados', 'metaTitle', 'metaDescription', 'h1', 'breadcrumbs'));
     }
 
     public function letra($letra)

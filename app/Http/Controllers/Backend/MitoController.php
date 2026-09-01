@@ -64,18 +64,30 @@ class MitoController extends Controller
 
     public function store(MitoRequest $request)
     {
-        $mito = new Mito($request->validated());
-        $mito->slug = Str::slug($mito->titulo);
+        $payload = $request->validated();
+        $mito = new Mito($payload);
+        $mito->slug = filled($payload['slug'] ?? null)
+            ? Str::slug($payload['slug'])
+            : Str::slug($mito->titulo);
         $mito->user_id = Auth::id();
-        $mito->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        if (Auth::user()->hasRole('administrador')) {
+            if (! array_key_exists('estado', $payload)) {
+                $mito->estado = 1;
+            }
+        } else {
+            $mito->estado = 0;
+        }
         $mito->save();
 
         if ($request->hasFile('foto')) {
             $this->imageService->process(
                 $request->file('foto'),
                 $mito,
-                'news_full',
-                'mitos'
+                'myth',
+                'mitos',
+                false,
+                $mito->slug,
+                ['alt' => $mito->image_alt ?: $mito->titulo]
             );
         }
 
@@ -98,20 +110,37 @@ class MitoController extends Controller
 
     public function update(MitoRequest $request, Mito $mito)
     {
-        $mito->fill($request->validated());
-        $mito->slug = Str::slug($mito->titulo);
-        $mito->user_id = Auth::id();
-        $mito->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $payload = $request->validated();
+        $mito->fill($payload);
+        $mito->slug = filled($payload['slug'] ?? null)
+            ? Str::slug($payload['slug'])
+            : Str::slug($mito->titulo);
+        if (Auth::user()->hasRole('administrador')) {
+            if (! array_key_exists('estado', $payload)) {
+                $mito->estado = 1;
+            }
+        } else {
+            $mito->estado = 0;
+        }
         $mito->save();
 
         if ($request->hasFile('foto')) {
             $this->imageService->process(
                 $request->file('foto'),
                 $mito,
-                'news_full',
+                'myth',
                 'mitos',
-                true
+                true,
+                $mito->slug,
+                ['alt' => $mito->image_alt ?: $mito->titulo]
             );
+        }
+
+        if (array_key_exists('image_alt', $payload)) {
+            $image = $mito->images()->orderBy('sort_order')->first();
+            if ($image) {
+                $image->update(['alt' => $mito->image_alt ?: $mito->titulo]);
+            }
         }
 
         Alert::success('Mito actualizado', 'El mito ha sido actualizado con exito.');

@@ -59,9 +59,12 @@ class InterpreteController extends Controller
   public function store(InterpreteRequest $request)
   {
     // Valido todos los campos que lleguen antes de procesar
-    $artista = new Interprete($request->validated());
+    $payload = $request->validated();
+    $artista = new Interprete($payload);
 
-    $artista->slug = Str::slug($artista->interprete);
+    $artista->slug = filled($payload['slug'] ?? null)
+      ? Str::slug($payload['slug'])
+      : Str::slug($artista->interprete);
     $artista->user_id = Auth::id();
     $artista->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
@@ -72,7 +75,10 @@ class InterpreteController extends Controller
         $request->file('foto'),
         $artista,
         'artist',
-        'interpretes'
+        'interpretes',
+        false,
+        $artista->slug,
+        ['alt' => $artista->image_alt ?: $artista->interprete]
       );
     }
 
@@ -94,8 +100,11 @@ class InterpreteController extends Controller
   public function update(InterpreteRequest $request, Interprete $interprete)
   {
     // Valido todos los campos que lleguen antes de procesar
-    $interprete->fill($request->validated());
-    $interprete->slug = Str::slug($interprete->interprete);
+    $payload = $request->validated();
+    $interprete->fill($payload);
+    $interprete->slug = filled($payload['slug'] ?? null)
+      ? Str::slug($payload['slug'])
+      : Str::slug($interprete->interprete);
 
     // if ($request->hasFile('foto')) {
 
@@ -115,19 +124,30 @@ class InterpreteController extends Controller
         $interprete,
         'artist',
         'interpretes',
-        true // Reemplazar anterior
+        true,
+        $interprete->slug,
+        ['alt' => $interprete->image_alt ?: $interprete->interprete]
       );
     }
 
 
 
     if (Auth::user()->isAdmin() || Auth::user()->hasRole('administrador')) {
-        $interprete->estado = 1;
+        if (! array_key_exists('estado', $payload)) {
+            $interprete->estado = 1;
+        }
     } else {
         $interprete->estado = 0;
     }
 
     $interprete->save();
+
+    if (array_key_exists('image_alt', $payload)) {
+      $image = $interprete->images()->orderBy('sort_order')->first();
+      if ($image) {
+        $image->update(['alt' => $interprete->image_alt ?: $interprete->interprete]);
+      }
+    }
 
     return redirect()->route('backend.interpretes.index')
       ->with('success', 'Interprete actualizado correctamente.');
