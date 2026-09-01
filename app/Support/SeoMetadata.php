@@ -131,9 +131,18 @@ class SeoMetadata
         $year = static::clean($album->anio);
         $yearChunk = $year !== '' ? " ({$year})" : '';
 
+        $title = static::preferredText($album->seo_title, "{$albumName}{$yearChunk} | {$artist}");
+        $description = static::preferredDescription(
+            $album->meta_description,
+            $album->excerpt,
+            null,
+            160,
+            "{$albumName}{$yearChunk} de {$artist}. Ficha del disco, canciones relacionadas y contexto dentro del folklore argentino."
+        );
+
         return [
-            'title' => "{$albumName}{$yearChunk} | {$artist}",
-            'description' => "{$albumName}{$yearChunk} de {$artist}. Ficha del disco, canciones relacionadas y contexto dentro del folklore argentino.",
+            'title' => $title,
+            'description' => $description,
             'h1' => $albumName,
         ];
     }
@@ -143,10 +152,23 @@ class SeoMetadata
         $artist = static::preferredText($interprete?->interprete, $cancion->interprete?->interprete, 'Folklore argentino');
         $songName = static::preferredText($cancion->cancion, 'Letra del folklore argentino');
         $lyricsExcerpt = static::lyricsExcerpt($cancion->letra, 160);
+        $defaultTitle = filled($cancion->letra)
+            ? "Letra de {$songName} | {$artist}"
+            : "{$songName} | {$artist}";
+        $title = static::preferredText($cancion->seo_title, $defaultTitle);
+        $description = static::preferredDescription(
+            $cancion->meta_description,
+            $cancion->excerpt,
+            $lyricsExcerpt,
+            160,
+            filled($cancion->letra)
+                ? "Letra y ficha de {$songName}, interpretada por {$artist}."
+                : "Ficha de {$songName}, interpretada por {$artist}, con créditos, discos relacionados y enlaces oficiales."
+        );
 
         return [
-            'title' => "Letra de {$songName} | {$artist}",
-            'description' => $lyricsExcerpt !== '' ? $lyricsExcerpt : "Letra de {$songName} interpretada por {$artist}.",
+            'title' => $title,
+            'description' => $description,
             'h1' => $songName,
         ];
     }
