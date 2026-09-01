@@ -128,6 +128,31 @@ assert.deepEqual(mythUpdate.request, { method: 'put', path: '/myths/303', payloa
 assert.deepEqual(mythUpdate.stages, ['PROCESANDO_UPDATE']);
 assert.equal(mythUpdate.result.resultado, 'ACTUALIZADO_API');
 
+const festivalUpdate = executeProcessor({
+  processor: 'procesarFestivalMFA_', status: 200,
+  row: {
+    ID_CONTENIDO: 'MFA-FES-UPDATE', ACCION_API: 'ACTUALIZAR', ID_WEB: 404,
+    TITULO: 'Festival Nacional del Folklore', SLUG: 'festival-nacional-del-folklore',
+    CUERPO: longBody('festival'), PROVINCE_ID: 7, MES_ID: 1,
+    META_TITLE: 'Festival Nacional del Folklore actualizado',
+  },
+});
+assert.deepEqual(festivalUpdate.request, {
+  method: 'put', path: '/festivals/404',
+  payload: {
+    title: 'Festival Nacional del Folklore', slug: 'festival-nacional-del-folklore',
+    body: festivalUpdate.request.payload.body, province_id: 7, mes_id: 1,
+    seo_title: 'Festival Nacional del Folklore actualizado',
+  },
+});
+assert.equal('status' in festivalUpdate.request.payload, false, 'ACTUALIZAR debe preservar el estado existente');
+for (const relation of ['news_ids', 'event_ids', 'interprete_ids', 'knowledge_article_ids']) {
+  assert.equal(relation in festivalUpdate.request.payload, false, `ACTUALIZAR debe preservar ${relation} si la celda está vacía`);
+}
+assert.deepEqual(festivalUpdate.stages, ['PROCESANDO_UPDATE']);
+assert.equal(festivalUpdate.result.resultado, 'ACTUALIZADO_API');
+assert.equal(festivalUpdate.result.id, 404, 'ACTUALIZAR conserva ID_WEB cuando la respuesta no repite el ID');
+
 const validationContext = createContext();
 assert.throws(
   () => vm.runInContext("resolverAccionEntidadMFA_({ ACCION_API: 'ACTUALIZAR' }, 'Mito')", validationContext),
@@ -144,7 +169,7 @@ function selectCandidate(rows, types) {
   return vm.runInContext('seleccionarCandidatoMFA_(__rows, __types)', context);
 }
 
-for (const type of ['Artista', 'Receta', 'Mito']) {
+for (const type of ['Artista', 'Receta', 'Mito', 'Festival']) {
   const common = { TIPO: type, ESTADO: 'BORRADOR', ENVIAR_API: 'S', PRIORIDAD: 'ALTA' };
   const candidate = selectCandidate([
     { rowNumber: 2, values: { ...common, ACCION_API: 'CREAR', RESULTADO_API: 'CREADO_DRAFT' } },

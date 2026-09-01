@@ -154,4 +154,52 @@ class FestivalApiModernizationTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['slug']);
     }
+
+    /** @test */
+    public function api_update_is_idempotent_and_preserves_status_and_omitted_relations(): void
+    {
+        $this->ensureMonth();
+
+        $admin = $this->makeAdminUser();
+        Sanctum::actingAs($admin);
+
+        $artist = Interprete::create([
+            'interprete' => 'Artista relacionado existente',
+            'slug' => 'artista-relacionado-existente',
+            'biografia' => '',
+            'estado' => 1,
+            'user_id' => $admin->id,
+        ]);
+
+        $festival = Festival::create([
+            'title' => 'Festival para actualizar',
+            'slug' => 'festival-para-actualizar',
+            'body' => '<p>Contenido editorial existente.</p>',
+            'province_id' => $this->makeProvince(),
+            'mes_id' => 1,
+            'user_id' => $admin->id,
+            'status' => 'published',
+            'published_at' => now()->subDay(),
+        ]);
+        $festival->interpretes()->attach($artist);
+
+        $payload = ['seo_title' => 'SEO refrescado del festival'];
+
+        $this->putJson("/api/v1/festivals/{$festival->id}", $payload)
+            ->assertOk()
+            ->assertJsonPath('id', $festival->id)
+            ->assertJsonPath('status', 'published')
+            ->assertJsonPath('seo_title', 'SEO refrescado del festival');
+
+        $this->putJson("/api/v1/festivals/{$festival->id}", $payload)
+            ->assertOk()
+            ->assertJsonPath('id', $festival->id)
+            ->assertJsonPath('status', 'published');
+
+        $festival->refresh();
+
+        $this->assertSame('published', $festival->status);
+        $this->assertNotNull($festival->published_at);
+        $this->assertSame([$artist->id], $festival->interpretes()->pluck('interpretes.id')->all());
+    }
 }
