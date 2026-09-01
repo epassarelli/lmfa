@@ -8,11 +8,12 @@
 {
   "@context": "https://schema.org",
   "@type": "MusicRecording",
-  "name": "{{ $cancion->cancion }}",
+  "name": @json($cancion->cancion),
   "byArtist": {
-    "@type": "MusicGroup",
-    "name": "{{ $interprete->interprete }}"
-  }
+    "@type": "{{ $interprete->artist_type === 'soloist' ? 'Person' : 'MusicGroup' }}",
+    "name": @json($interprete->interprete)
+  }@if($cancion->composer),
+  "composer": {"@type": "Person", "name": @json($cancion->composer)}@endif
 }
 </script>
 
@@ -46,9 +47,26 @@
     </div>
     <p class="text-lg text-gray-700 mb-4">{{ $interprete->interprete }}</p>
 
-    <div class="prose prose-lg max-w-none text-gray-800">
-      {!! $cancion->letra !!}
-    </div>
+    @if (filled($cancion->letra))
+      <div class="prose prose-lg max-w-none text-gray-800">
+        {!! $cancion->letra !!}
+      </div>
+    @elseif ($cancion->is_instrumental)
+      <div class="bg-blue-50 text-blue-800 p-4 rounded">
+        Esta obra es instrumental y no tiene letra.
+      </div>
+    @else
+      <div class="bg-yellow-50 text-yellow-800 p-4 rounded">
+        La letra no está disponible en Mi Folklore Argentino. La ficha conserva información de la obra, créditos y grabaciones relacionadas.
+      </div>
+    @endif
+
+    @if ($cancion->composer || $cancion->lyricist)
+      <div class="mt-5 text-sm text-gray-700">
+        @if ($cancion->composer)<p><strong>Composición:</strong> {{ $cancion->composer }}</p>@endif
+        @if ($cancion->lyricist)<p><strong>Letra:</strong> {{ $cancion->lyricist }}</p>@endif
+      </div>
+    @endif
 
     <p class="text-base text-gray-600 mt-4">{{ $cancion->visitas }} veces vista</p>
   </div>
