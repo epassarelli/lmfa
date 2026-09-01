@@ -193,7 +193,8 @@ class CancionController extends Controller
         $cancion = new Cancion();
         $cancion->cancion = $request->cancion;
         $cancion->slug = Str::slug($request->cancion);
-        $cancion->letra = 'No disponible aun';
+        $cancion->letra = null;
+        $cancion->rights_status = 'not_available';
         $cancion->youtube = null;
         $cancion->spotify = null;
         $cancion->estado = 1;
