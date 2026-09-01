@@ -506,6 +506,21 @@ function cargarContenidosMFA() {
         tipos: ['festival'],
         procesar: procesarFestivalMFA_,
       },
+      {
+        nombre: 'Artista',
+        tipos: ['artista'],
+        procesar: procesarArtistaMFA_,
+      },
+      {
+        nombre: 'Receta',
+        tipos: ['receta'],
+        procesar: procesarRecetaMFA_,
+      },
+      {
+        nombre: 'Mito',
+        tipos: ['mito'],
+        procesar: procesarMitoMFA_,
+      },
     ];
 
     circuitos.forEach((circuito) => {
@@ -527,7 +542,7 @@ function cargarContenidosMFA() {
             nombre
           );
 
-        // Ejecuta el procesador especÃ­fico: Evergreen, Evento, Noticia o Festival.
+        // Ejecuta el procesador específico del tipo editorial seleccionado.
         const resultado = circuito.procesar(
           candidato.values,
           token,
