@@ -14,7 +14,7 @@
     @foreach ($radios as $radio)
       <div class="w-full sm:w-1/2 md:w-1/3 p-4">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-          <a href="{{ route('radios.show', $radio->slug) }}">
+          <a href="{{ route('noticias.show', $radio->slug) }}">
             @if ($radio->images->isNotEmpty())
               <x-optimized-image :image="$radio->images->first()" variant="card" class="w-full h-48 object-cover" />
             @else

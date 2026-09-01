@@ -15,7 +15,7 @@
       @foreach ($penias as $penia)
         <div class="w-full sm:w-1/2 md:w-1/3 p-4">
           <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <a href="{{ route('penias.show', $penia->slug) }}">
+            <a href="{{ route('noticias.show', $penia->slug) }}">
               @if ($penia->images->isNotEmpty())
                 <x-optimized-image :image="$penia->images->first()" variant="card" class="w-full h-48 object-cover" />
               @else
