@@ -801,6 +801,201 @@ function procesarEvergreenMFA_(row, token, etapa) {
   };
 }
 
+function resolverAccionEntidadMFA_(row, nombre) {
+  const accion = normalizarTextoMFA_(row.ACCION_API) || 'crear';
+  if (!['crear', 'actualizar'].includes(accion)) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      `ACCION_API debe ser CREAR o ACTUALIZAR para TIPO=${nombre}.`
+    );
+  }
+
+  const id = enteroOpcionalMFA_(row.ID_WEB);
+
+  if (accion === 'actualizar' && !id) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      `${nombre} con ACCION_API=ACTUALIZAR requiere ID_WEB.`
+    );
+  }
+
+  if (accion === 'crear' && id) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      `${nombre} con ACCION_API=CREAR no debe tener ID_WEB.`
+    );
+  }
+
+  return { accion, id };
+}
+
+function procesarArtistaMFA_(row, token, etapa) {
+  exigirCamposMFA_(row, ['ID_CONTENIDO', 'SLUG']);
+  validarLongitudMFA_(row);
+
+  const { accion, id } = resolverAccionEntidadMFA_(row, 'Artista');
+  const nombre = String(row.ARTISTA || row.TITULO || '').trim();
+
+  if (!nombre) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'Artista requiere ARTISTA o TITULO.');
+  }
+
+  if (accion === 'crear') {
+    exigirCamposMFA_(row, ['CUERPO']);
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  } else if (row.CUERPO) {
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  }
+
+  const payload = limpiarObjetoMFA_({
+    interprete: nombre,
+    artist_type: normalizarTextoMFA_(row.ARTIST_TYPE) || null,
+    slug: String(row.SLUG || '').trim(),
+    biografia: row.CUERPO || null,
+    excerpt: limitarTextoMFA_(row.BAJADA, 1000),
+    seo_title: row.META_TITLE,
+    meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    image_alt: limitarTextoMFA_(row.IMAGE_ALT, 255),
+    featured_image_path: row.FEATURED_IMAGE_PATH,
+    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
+    web: urlOpcionalMFA_(row.WEB_URL),
+    facebook: urlOpcionalMFA_(row.FACEBOOK_URL),
+    instagram: urlOpcionalMFA_(row.INSTAGRAM_URL),
+    youtube: urlOpcionalMFA_(row.YOUTUBE_URL),
+  });
+
+  const method = accion === 'actualizar' ? 'put' : 'post';
+  const apiPath = accion === 'actualizar' ? `/artists/${id}` : '/artists';
+
+  etapa(accion === 'actualizar' ? 'PROCESANDO_UPDATE' : 'PROCESANDO_POST');
+  const response = apiMFA_(method, apiPath, token, payload);
+  const expected = accion === 'actualizar' ? 200 : 201;
+
+  if (response.status !== expected) throw errorDesdeRespuestaMFA_(response);
+
+  const apiId = extraerIdMFA_(response.json) || id;
+  if (!apiId) throw crearErrorMFA_('ERROR_RESPUESTA', response.status, 'La API de Artistas no devolvió un ID reconocible.');
+
+  return {
+    resultado: accion === 'actualizar' ? 'ACTUALIZADO_API' : 'CREADO_DRAFT',
+    http: response.status,
+    id: apiId,
+    error: '',
+    desautorizar: true,
+    fechaEnvio: new Date(),
+  };
+}
+
+function procesarRecetaMFA_(row, token, etapa) {
+  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG']);
+  validarLongitudMFA_(row);
+
+  const { accion, id } = resolverAccionEntidadMFA_(row, 'Receta');
+
+  if (accion === 'crear') {
+    exigirCamposMFA_(row, ['CUERPO']);
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  } else if (row.CUERPO) {
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  }
+
+  const payload = limpiarObjetoMFA_({
+    titulo: String(row.TITULO || '').trim(),
+    slug: String(row.SLUG || '').trim(),
+    receta: row.CUERPO || null,
+    excerpt: limitarTextoMFA_(row.BAJADA, 1000),
+    ingredients: listaTextoMFA_(row.RECIPE_INGREDIENTS_JSON),
+    instructions: listaTextoMFA_(row.RECIPE_INSTRUCTIONS_JSON),
+    prep_time_minutes: enteroNoNegativoMFA_(row.PREP_TIME_MINUTES),
+    cook_time_minutes: enteroNoNegativoMFA_(row.COOK_TIME_MINUTES),
+    servings: limitarTextoMFA_(row.SERVINGS, 100),
+    region: limitarTextoMFA_(row.REGION, 150),
+    seo_title: row.META_TITLE,
+    meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    image_alt: limitarTextoMFA_(row.IMAGE_ALT, 255),
+    featured_image_path: row.FEATURED_IMAGE_PATH,
+    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
+  });
+
+  const method = accion === 'actualizar' ? 'put' : 'post';
+  const apiPath = accion === 'actualizar' ? `/foods/${id}` : '/foods';
+
+  etapa(accion === 'actualizar' ? 'PROCESANDO_UPDATE' : 'PROCESANDO_POST');
+  const response = apiMFA_(method, apiPath, token, payload);
+  const expected = accion === 'actualizar' ? 200 : 201;
+
+  if (response.status !== expected) throw errorDesdeRespuestaMFA_(response);
+
+  const apiId = extraerIdMFA_(response.json) || id;
+  if (!apiId) throw crearErrorMFA_('ERROR_RESPUESTA', response.status, 'La API de Recetas no devolvió un ID reconocible.');
+
+  return {
+    resultado: accion === 'actualizar' ? 'ACTUALIZADO_API' : 'CREADO_DRAFT',
+    http: response.status,
+    id: apiId,
+    error: '',
+    desautorizar: true,
+    fechaEnvio: new Date(),
+  };
+}
+
+function procesarMitoMFA_(row, token, etapa) {
+  exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG']);
+  validarLongitudMFA_(row);
+
+  const { accion, id } = resolverAccionEntidadMFA_(row, 'Mito');
+
+  if (accion === 'crear') {
+    exigirCamposMFA_(row, ['CUERPO']);
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  } else if (row.CUERPO) {
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  }
+
+  const contentType = normalizarTextoMFA_(row.CONTENT_TYPE) || null;
+  if (contentType && !['myth', 'legend', 'urban_legend'].includes(contentType)) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'CONTENT_TYPE inválido para Mito.');
+  }
+
+  const payload = limpiarObjetoMFA_({
+    titulo: String(row.TITULO || '').trim(),
+    content_type: contentType,
+    slug: String(row.SLUG || '').trim(),
+    mito: row.CUERPO || null,
+    excerpt: limitarTextoMFA_(row.BAJADA, 1000),
+    region: limitarTextoMFA_(row.REGION, 150),
+    seo_title: row.META_TITLE,
+    meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    image_alt: limitarTextoMFA_(row.IMAGE_ALT, 255),
+    featured_image_path: row.FEATURED_IMAGE_PATH,
+    featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
+  });
+
+  const method = accion === 'actualizar' ? 'put' : 'post';
+  const apiPath = accion === 'actualizar' ? `/myths/${id}` : '/myths';
+
+  etapa(accion === 'actualizar' ? 'PROCESANDO_UPDATE' : 'PROCESANDO_POST');
+  const response = apiMFA_(method, apiPath, token, payload);
+  const expected = accion === 'actualizar' ? 200 : 201;
+
+  if (response.status !== expected) throw errorDesdeRespuestaMFA_(response);
+
+  const apiId = extraerIdMFA_(response.json) || id;
+  if (!apiId) throw crearErrorMFA_('ERROR_RESPUESTA', response.status, 'La API de Mitos no devolvió un ID reconocible.');
+
+  return {
+    resultado: accion === 'actualizar' ? 'ACTUALIZADO_API' : 'CREADO_DRAFT',
+    http: response.status,
+    id: apiId,
+    error: '',
+    desautorizar: true,
+    fechaEnvio: new Date(),
+  };
+}
+
 function procesarFestivalMFA_(row, token, etapa) {
   exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG', 'CUERPO', 'PROVINCE_ID', 'MES_ID']);
   validarLongitudMFA_(row);
