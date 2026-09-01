@@ -77,4 +77,31 @@ class RecipeApiModernizationTest extends TestCase
 
         $response->assertStatus(422)->assertJsonValidationErrors(['slug']);
     }
+
+    /** @test */
+    public function api_protects_recipe_author_and_visit_counter(): void
+    {
+        $admin = $this->admin();
+        $otherUser = User::factory()->create();
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson('/api/v1/foods', [
+            'titulo' => 'Receta protegida',
+            'receta' => '<p>Contenido editorial.</p>',
+            'user_id' => $otherUser->id,
+            'visitas' => 5000,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['user_id', 'visitas']);
+
+        $validResponse = $this->postJson('/api/v1/foods', [
+            'titulo' => 'Receta protegida',
+            'receta' => '<p>Contenido editorial.</p>',
+        ]);
+
+        $validResponse->assertCreated()
+            ->assertJsonPath('user_id', $admin->id)
+            ->assertJsonPath('visitas', 0);
+    }
 }

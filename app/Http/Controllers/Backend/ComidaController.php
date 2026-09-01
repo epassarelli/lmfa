@@ -70,7 +70,13 @@ class ComidaController extends Controller
             ? Str::slug($payload['slug'])
             : Str::slug($comida->titulo);
         $comida->user_id = Auth::id();
-        $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        if (Auth::user()->hasRole('administrador')) {
+            if (! array_key_exists('estado', $payload)) {
+                $comida->estado = 1;
+            }
+        } else {
+            $comida->estado = 0;
+        }
         $comida->save();
 
         if ($request->hasFile('foto')) {
@@ -109,7 +115,13 @@ class ComidaController extends Controller
         $comida->slug = filled($payload['slug'] ?? null)
             ? Str::slug($payload['slug'])
             : Str::slug($comida->titulo);
-        $comida->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        if (Auth::user()->hasRole('administrador')) {
+            if (! array_key_exists('estado', $payload)) {
+                $comida->estado = 1;
+            }
+        } else {
+            $comida->estado = 0;
+        }
         $comida->save();
 
         if ($request->hasFile('foto')) {

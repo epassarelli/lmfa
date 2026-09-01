@@ -90,8 +90,10 @@ class FoodController extends Controller
     {
         $title = $payload['titulo'] ?? $food?->titulo;
 
-        if (! $food && empty($payload['user_id'])) {
+        if (! $food) {
             $payload['user_id'] = auth()->id();
+        } else {
+            unset($payload['user_id'], $payload['visitas']);
         }
 
         if (! $food && ! array_key_exists('estado', $payload)) {

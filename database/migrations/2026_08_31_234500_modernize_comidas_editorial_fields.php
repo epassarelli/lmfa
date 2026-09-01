@@ -9,6 +9,18 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // El ALTER TABLE posterior vuelve a validar todas las filas. Se
+        // normalizan primero las fechas cero aceptadas por MySQL legacy para
+        // que el release sea compatible con NO_ZERO_DATE en producción.
+        foreach (['created_at', 'updated_at', 'publicar'] as $column) {
+            DB::statement(
+                "UPDATE comidas
+                    SET {$column} = NULL
+                    WHERE {$column} IS NOT NULL
+                      AND {$column} < '1000-01-01 00:00:00'"
+            );
+        }
+
         Schema::table('comidas', function (Blueprint $table) {
             $table->text('excerpt')->nullable()->after('receta');
             $table->json('ingredients')->nullable()->after('excerpt');

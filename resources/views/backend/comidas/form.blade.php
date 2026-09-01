@@ -127,3 +127,16 @@
     <div class="text-danger">{{ $message }}</div>
   @enderror
 </div>
+
+@if (isset($comida) && Auth::user()->hasRole('administrador'))
+  <div class="form-group">
+    <label for="estado">Estado</label>
+    <select name="estado" id="estado" class="form-control" required>
+      <option value="0" @selected((string) old('estado', $comida->estado) === '0')>Inactiva</option>
+      <option value="1" @selected((string) old('estado', $comida->estado) === '1')>Activa</option>
+    </select>
+    @error('estado')
+      <div class="text-danger">{{ $message }}</div>
+    @enderror
+  </div>
+@endif

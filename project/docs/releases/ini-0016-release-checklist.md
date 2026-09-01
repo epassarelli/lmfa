@@ -22,6 +22,7 @@ Agrega campos modernos y hace compatible el legacy:
 - foto nullable;
 - visitas default 0;
 - estado default 0.
+- timestamps cero legacy normalizados a NULL antes de reconstruir la tabla.
 
 Rollback elimina sólo campos nuevos; no vuelve a imponer restricciones legacy incompatibles.
 
@@ -30,6 +31,7 @@ API:
 - GET/POST/PUT foods
 - slug duplicado 422
 - alta sin publicar/estado/visitas
+- user_id y visitas enviados por cliente -> 422
 - imagen externa/interna
 - body sin H1
 
@@ -38,6 +40,7 @@ Backoffice:
 - tiempos/porciones/región
 - SEO/image_alt
 - foto opcional
+- estado inactivo preservado al editar como administrador
 
 Frontend:
 - legacy sigue visible

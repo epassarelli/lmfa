@@ -42,9 +42,9 @@ class UpdateFoodRequest extends FormRequest
             'featured_image_path' => 'sometimes|nullable|string|max:2048',
             'featured_image_url' => 'sometimes|nullable|url|max:2048',
             'publicar' => 'sometimes|nullable|date',
-            'visitas' => 'nullable|integer|min:0',
+            'visitas' => 'prohibited',
             'estado' => 'sometimes|integer|in:0,1',
-            'user_id' => 'sometimes|exists:users,id',
+            'user_id' => 'prohibited',
         ];
     }
 }

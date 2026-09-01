@@ -26,11 +26,18 @@ class SeoMetadata
     public static function artist(Interprete $interprete): array
     {
         $name = static::fallback($interprete->interprete, 'Artista del folklore argentino');
-        $bio = static::excerpt($interprete->biografia, 160);
+        $bio = static::preferredDescription(
+            $interprete->meta_description,
+            $interprete->excerpt,
+            $interprete->biografia,
+            160,
+            "{$name}, artista del folklore argentino. Biografia, canciones, discos, noticias y eventos relacionados."
+        );
+        $title = static::preferredText($interprete->seo_title, "Biografia de {$name}");
 
         return [
-            'title' => "Biografia de {$name} | Folklore Argentino",
-            'description' => $bio !== '' ? $bio : "{$name}, artista del folklore argentino. Biografia, canciones, discos, noticias y shows relacionados.",
+            'title' => str_contains($title, 'Folklore Argentino') ? $title : "{$title} | Folklore Argentino",
+            'description' => $bio,
             'h1' => $name,
         ];
     }
@@ -38,11 +45,18 @@ class SeoMetadata
     public static function biography(Interprete $interprete): array
     {
         $name = static::fallback($interprete->interprete, 'Artista del folklore argentino');
-        $bio = static::excerpt($interprete->biografia, 160);
+        $bio = static::preferredDescription(
+            $interprete->meta_description,
+            $interprete->excerpt,
+            $interprete->biografia,
+            160,
+            "Biografia de {$name}, artista del folklore argentino, con su trayectoria y contexto musical."
+        );
+        $title = static::preferredText($interprete->seo_title, "Biografia de {$name}");
 
         return [
-            'title' => "Biografia de {$name} | Folklore Argentino",
-            'description' => $bio !== '' ? $bio : "Biografia de {$name}, artista del folklore argentino, con su trayectoria y contexto musical.",
+            'title' => str_contains($title, 'Folklore Argentino') ? $title : "{$title} | Folklore Argentino",
+            'description' => $bio,
             'h1' => "Biografia de {$name}",
         ];
     }
