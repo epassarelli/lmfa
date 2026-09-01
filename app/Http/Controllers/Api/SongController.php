@@ -98,7 +98,13 @@ class SongController extends Controller
             $payload['letra'] = RichTextHeadingSanitizer::normalize($payload['letra']);
         }
 
-        if (($payload['is_instrumental'] ?? $song?->is_instrumental) === true) {
+        $isInstrumental = filter_var(
+            $payload['is_instrumental'] ?? $song?->is_instrumental ?? false,
+            FILTER_VALIDATE_BOOLEAN
+        );
+
+        if ($isInstrumental) {
+            $payload['is_instrumental'] = true;
             $payload['letra'] = null;
             $payload['lyricist'] = null;
             $payload['rights_status'] = $payload['rights_status'] ?? 'not_available';
