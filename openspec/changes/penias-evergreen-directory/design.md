@@ -62,6 +62,12 @@ Las fichas públicas tendrán URL canónica bajo una base corta nueva, breadcrum
 
 No se declarará un tipo de negocio que contradiga la naturaleza del espacio ni se indexarán borradores, archivos o fichas sin requisitos de calidad.
 
+### Verification responsibility
+
+The canonical profile will include `verified_by_user_id` and `verification_method`, alongside `last_verified_at` and structured sources. To remain published, the verifier must be an authorized internal user and the verification of hours, contact, and reservations must be less than 90 days old. When that period expires, the profile remains available for editorial review but is no longer public or indexable as current.
+
+Future assignment of external representatives to artists, festivals, and PeÃ±as is not part of this module. It requires a cross-domain specification for claims, human approval, entity permissions, revocation, and audit; the verification field does not grant ownership or delegated permissions.
+
 ## Risks / Trade-offs
 
 - [Datos legacy incompletos o duplicados] → Auditar antes de migrar, conservar referencia de origen y activar un lote piloto manualmente verificado.

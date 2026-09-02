@@ -11,6 +11,17 @@ The system SHALL manage each Peña as a canonical, permanent cultural venue dist
 - **WHEN** an authorized editor attempts to publish a profile without verified location, source references, or last verification date
 - **THEN** the system SHALL reject publication and identify the missing requirements.
 
+### Requirement: Verification accountability and freshness
+The system SHALL record the internal user responsible for each verification, its method, source references, and date. A published PeÃ±a profile SHALL have verification that is no older than 90 days.
+
+#### Scenario: Reject publication without a responsible verification
+- **WHEN** an authorized editor attempts to publish a PeÃ±a without a verifier, verification method, source reference, or current verification date
+- **THEN** the system SHALL reject publication and identify every missing verification requirement.
+
+#### Scenario: Hide an expired profile
+- **WHEN** a published PeÃ±a reaches 90 days since its last verification
+- **THEN** the system SHALL remove it from public directory visibility and sitemap eligibility until the verification is renewed.
+
 ### Requirement: Territorial public directory
 The system SHALL provide a public national Peña directory with paginated discovery by text, province, locality, and venue type. The directory MUST expose only profiles that are published and valid for public visibility.
 
