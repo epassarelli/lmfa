@@ -11,21 +11,23 @@
     </div>
   </div>
 
-  <!-- Intérprete -->
+  <!-- Artistas -->
   <div class="col-md-4">
     <div class="form-group">
-      <label for="interprete_id">Intérprete Principal</label>
-      <select name="interprete_id" id="interprete_id" class="form-control select2">
-        <option value="">— Seleccionar —</option>
+      <label for="interprete_ids">Artistas participantes</label>
+      @php
+        $selectedInterpreteIds = old('interprete_ids', $event->interpretes->pluck('id')->all());
+      @endphp
+      <select name="interprete_ids[]" id="interprete_ids" class="form-control select2" multiple data-placeholder="Seleccionar artistas">
         @foreach ($interpretes as $interprete)
-          @php $currentInterpreteId = old('interprete_id', $event->interpretes->first()?->id ?? ''); @endphp
           <option value="{{ $interprete->id }}"
-            {{ $currentInterpreteId == $interprete->id ? 'selected' : '' }}>
+            {{ in_array($interprete->id, $selectedInterpreteIds) ? 'selected' : '' }}>
             {{ $interprete->interprete }}
           </option>
         @endforeach
       </select>
-      @error('interprete_id')
+      <small class="form-text text-muted">Podés asociar uno o varios artistas. La lista reemplaza la nómina actual al guardar.</small>
+      @error('interprete_ids')
         <small class="text-danger">{{ $message }}</small>
       @enderror
     </div>

@@ -59,6 +59,8 @@ class StoreEventRequest extends FormRequest
             'created_by' => 'nullable|exists:users,id',
             'user_id' => 'nullable|exists:users,id',
             'interprete_id' => 'nullable|exists:interpretes,id',
+            'interprete_ids' => 'nullable|array',
+            'interprete_ids.*' => 'exists:interpretes,id',
             'interprete_secundarios' => 'nullable|array',
             'interprete_secundarios.*' => 'exists:interpretes,id',
             'estado' => ['nullable', Rule::in(['0', '1', 0, 1])],

@@ -82,6 +82,7 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
+        $event->load('interpretes');
         $interpretes = Interprete::active()->get();
         $provincias = Provincia::all();
         $action = 'edit';

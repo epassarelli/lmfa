@@ -55,6 +55,17 @@ class AdminAutoPublishBackendTest extends TestCase
         ]);
     }
 
+    private function createInterprete(string $name, string $slug): Interprete
+    {
+        return Interprete::create([
+            'interprete' => $name,
+            'slug' => $slug,
+            'biografia' => 'Biografia de prueba para el artista.',
+            'estado' => 1,
+            'user_id' => 1,
+        ]);
+    }
+
     private function month(): Mes
     {
         return Mes::first() ?: Mes::create([
@@ -150,6 +161,34 @@ class AdminAutoPublishBackendTest extends TestCase
 
         $this->assertSame('draft', $event->fresh()->editorial_status);
         $this->assertNull($event->fresh()->published_at);
+    }
+
+    /** @test */
+    public function event_service_syncs_multiple_artists_and_replaces_the_previous_lineup(): void
+    {
+        $admin = $this->makeAdminUser();
+        $this->actingAs($admin);
+        $first = $this->createInterprete('Primer artista evento', 'primer-artista-evento');
+        $second = $this->createInterprete('Segundo artista evento', 'segundo-artista-evento');
+        $third = $this->createInterprete('Tercer artista evento', 'tercer-artista-evento');
+
+        $event = app(EventService::class)->createEvent([
+            'title' => 'Evento con cartel completo',
+            'body' => 'Detalle',
+            'start_at' => now()->addDay()->toDateTimeString(),
+            'interprete_ids' => [$first->id, $second->id],
+        ]);
+
+        $this->assertEqualsCanonicalizing([$first->id, $second->id], $event->interpretes()->pluck('interpretes.id')->all());
+
+        app(EventService::class)->updateEvent($event, [
+            'title' => 'Evento con cartel actualizado',
+            'body' => 'Detalle',
+            'start_at' => now()->addDays(2)->toDateTimeString(),
+            'interprete_ids' => [$third->id],
+        ]);
+
+        $this->assertSame([$third->id], $event->fresh()->interpretes()->pluck('interpretes.id')->all());
     }
 
     /** @test */

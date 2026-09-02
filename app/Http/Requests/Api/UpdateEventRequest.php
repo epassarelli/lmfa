@@ -59,6 +59,8 @@ class UpdateEventRequest extends FormRequest
             'created_by' => 'sometimes|nullable|exists:users,id',
             'user_id' => 'sometimes|nullable|exists:users,id',
             'interprete_id' => 'sometimes|nullable|exists:interpretes,id',
+            'interprete_ids' => 'sometimes|nullable|array',
+            'interprete_ids.*' => 'exists:interpretes,id',
             'interprete_secundarios' => 'sometimes|nullable|array',
             'interprete_secundarios.*' => 'exists:interpretes,id',
             'estado' => ['sometimes', 'nullable', Rule::in(['0', '1', 0, 1])],

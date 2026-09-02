@@ -148,6 +148,12 @@ class EventService
 
     protected function syncInterpretes(Event $event, array $data): void
     {
+        if (array_key_exists('interprete_ids', $data)) {
+            $event->interpretes()->sync(array_values(array_unique(array_filter($data['interprete_ids'] ?? []))));
+
+            return;
+        }
+
         $interpreteIds = [];
 
         if (! empty($data['interprete_id'])) {
@@ -158,7 +164,7 @@ class EventService
             $interpreteIds = array_merge($interpreteIds, $data['interprete_secundarios']);
         }
 
-        if (! empty($interpreteIds)) {
+        if (array_key_exists('interprete_id', $data) || array_key_exists('interprete_secundarios', $data)) {
             $event->interpretes()->sync(array_unique($interpreteIds));
         }
     }

@@ -30,6 +30,8 @@ class ShowRequest extends FormRequest
             'address' => 'nullable|string|max:255',
             'province_id' => 'nullable|exists:provincias,id',
             'interprete_id' => 'nullable|exists:interpretes,id',
+            'interprete_ids' => 'nullable|array',
+            'interprete_ids.*' => 'exists:interpretes,id',
             'ticket_url' => 'nullable|url|max:255',
             'price_text' => 'nullable|string|max:100',
             'is_free' => 'nullable|boolean',
