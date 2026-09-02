@@ -16,10 +16,10 @@
 
 ## 3. Reglas editoriales, permisos y API
 
-- [ ] 3.1 Implementar requests y servicio de dominio para alta, edición, publicación, archivado y sincronización de relaciones.
+- [x] 3.1 Implementar requests y servicio de dominio para alta, edición, publicación, archivado y sincronización de relaciones.
 - [x] 3.2 Implementar policy y registrar autorización siguiendo los patrones existentes de admin y API.
-- [ ] 3.3 Crear endpoints API autenticados para listado, detalle, creación y actualización, con búsqueda, filtros y paginación.
-- [ ] 3.4 Impedir publicación por API cuando falten ubicación, fuentes, verificación u otros campos obligatorios.
+- [x] 3.3 Crear endpoints API autenticados para listado, detalle, creación y actualización, con búsqueda, filtros y paginación.
+- [x] 3.4 Impedir publicación por API cuando falten ubicación, fuentes, verificación u otros campos obligatorios.
 - [ ] 3.5 Definir el contrato de auditoría y dejar la integración de Content Refresh desactivada hasta cumplir el gate de release.
 
 ## 4. Backoffice y auditor de calidad
