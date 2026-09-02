@@ -336,9 +336,11 @@ class FestivalesController extends Controller
             ->get();
 
         $seo = SeoMetadata::festival($festival);
+        $journey = app(\App\Services\Product\FestivalJourneyService::class)->forFestival($festival);
 
         return view('frontend.festivales.show', [
             'festival' => $festival,
+            'journey' => $journey,
             'sameProvince' => $sameProvince,
             'sameMonth' => $sameMonth,
             'filters' => ['province_slug' => null, 'month_slug' => null, 'search' => null, 'province_id' => null, 'month_id' => null, 'locality_id' => null],

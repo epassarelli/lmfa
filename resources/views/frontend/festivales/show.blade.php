@@ -81,38 +81,40 @@
     </div>
   </article>
 
-  @foreach ([
-    'Noticias relacionadas' => $festival->noticias->take(6),
-    'Proximos eventos relacionados' => $festival->events->take(6),
-    'Artistas relacionados' => $festival->interpretes->take(6),
-    'Entradas de Enciclopedia relacionadas' => $festival->knowledgeArticles->take(6),
-  ] as $label => $items)
-    @if ($items->isNotEmpty())
-      <section class="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <h2 class="text-xl font-semibold text-slate-900 mb-4">{{ $label }}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          @foreach ($items as $item)
-            <article class="border border-slate-200 rounded-xl p-4">
-              @php
-                $name = $item->title ?? $item->titulo ?? $item->interprete ?? 'Relacionado';
-                $url = method_exists($item, 'getUrl') ? $item->getUrl() : (isset($item->slug) ? (
-                  $label === 'Noticias relacionadas' ? route('noticias.show', $item->slug) :
-                  ($label === 'Proximos eventos relacionados' ? route('cartelera.show', $item->slug) :
-                  ($label === 'Artistas relacionados' ? route('artista.show', $item->slug) :
-                  route('enciclopedia.show', ['categorySlug' => $item->category?->slug, 'articleSlug' => $item->slug])))
-                ) : null);
-              @endphp
-              @if ($url)
-                <a href="{{ $url }}" class="text-lg font-semibold hover:text-orange-700">{{ $name }}</a>
-              @else
-                <p class="text-lg font-semibold">{{ $name }}</p>
-              @endif
-            </article>
+  @if ($journey->enabled)
+    @if ($journey->upcomingEvents->isNotEmpty())
+      <x-content-journey.section title="Proximas fechas">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          @foreach ($journey->upcomingEvents as $event)
+            <x-show-card :show="$event" />
           @endforeach
         </div>
-      </section>
+      </x-content-journey.section>
     @endif
-  @endforeach
+
+    @if ($journey->artists->isNotEmpty())
+      <x-content-journey.section title="Artistas vinculados al festival">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          @foreach ($journey->artists as $artist)
+            <x-biografia-card :interprete="$artist" />
+          @endforeach
+        </div>
+      </x-content-journey.section>
+    @endif
+
+    @if ($journey->knowledgeArticles->isNotEmpty() || $journey->news->isNotEmpty())
+      <x-content-journey.section title="Historia y contexto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          @foreach ($journey->knowledgeArticles as $article)
+            <a href="{{ $article->getUrl() }}" class="rounded-lg border border-slate-200 p-4 font-semibold hover:text-orange-700">{{ $article->title }}</a>
+          @endforeach
+          @foreach ($journey->news as $news)
+            <a href="{{ route('noticias.show', $news->slug) }}" class="rounded-lg border border-slate-200 p-4 font-semibold hover:text-orange-700">{{ $news->title ?? $news->titulo }}</a>
+          @endforeach
+        </div>
+      </x-content-journey.section>
+    @endif
+  @endif
 
   @if ($sameProvince->isNotEmpty())
     <section class="mb-8">
