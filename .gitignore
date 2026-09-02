@@ -36,7 +36,9 @@ antigravity/
 # Documentacion de desarrollo
 /docs/
 /openspec/
-/project/
+/project/*
+!/project/docs/
+!/project/docs/**/*.md
 AGENTS.md
 backlog.json
 
