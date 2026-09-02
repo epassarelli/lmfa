@@ -47,7 +47,7 @@
             <a href="{{ route('festivales.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Festivales</a>
           </li>
           <li>
-            <span class="block cursor-default rounded-md px-3 py-2 text-slate-400" title="Directorio de peñas en preparación" aria-label="Peñas, en preparación">Peñas <span class="text-[10px] uppercase tracking-wide">pronto</span></span>
+            <a href="{{ route('penia-profiles.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Peñas</a>
           </li>
           <li>
             <details class="group relative">

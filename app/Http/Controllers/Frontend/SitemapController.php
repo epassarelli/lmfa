@@ -13,6 +13,7 @@ use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeCategory;
 use App\Models\Mito;
 use App\Models\News;
+use App\Models\PeniaProfile;
 use App\Support\CanonicalUrl;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
@@ -87,6 +88,13 @@ class SitemapController extends Controller
         ]);
     }
 
+    public function penias(): Response
+    {
+        return $this->xmlResponse('sitemap-urlset', [
+            'urls' => $this->peniaEntries(),
+        ]);
+    }
+
     public function discographies(): Response
     {
         return $this->xmlResponse('sitemap-urlset', [
@@ -118,6 +126,7 @@ class SitemapController extends Controller
             $this->sitemapIndexEntry(route('sitemap.google-news'), $this->googleNewsEntries()),
             $this->sitemapIndexEntry(route('sitemap.events'), $this->eventEntries()),
             $this->sitemapIndexEntry(route('sitemap.festivals'), $this->festivalEntries()),
+            $this->sitemapIndexEntry(route('sitemap.penias'), $this->peniaEntries()),
             $this->sitemapIndexEntry(route('sitemap.discographies'), $this->discographyEntries()),
             $this->sitemapIndexEntry(route('sitemap.lyrics'), $this->lyricEntries()),
             $this->sitemapIndexEntry(route('sitemap.evergreen'), $this->evergreenEntries()),
@@ -135,6 +144,7 @@ class SitemapController extends Controller
             $this->entry(route('canciones.index')),
             $this->entry(route('discografias.index')),
             $this->entry(route('festivales.index')),
+            $this->entry(route('penia-profiles.index')),
             $this->entry(route('enciclopedia.index')),
             $this->entry(route('mitos.index')),
             $this->entry(route('comidas.index')),
@@ -280,6 +290,19 @@ class SitemapController extends Controller
                 ->merge($monthEntries)
                 ->merge($provinceMonthEntries)
         );
+    }
+
+    protected function peniaEntries(): Collection
+    {
+        return $this->uniqueEntries(PeniaProfile::query()
+            ->publiclyVisible()
+            ->whereNotNull('slug')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (PeniaProfile $penia) => $this->entry(
+                $penia->getUrl(),
+                $this->bestDate($penia->updated_at, $penia->last_verified_at, $penia->published_at, $penia->created_at)
+            )));
     }
 
     protected function discographyEntries(): Collection

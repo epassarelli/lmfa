@@ -28,6 +28,7 @@ use App\Http\Controllers\Frontend\KnowledgeController;
 use App\Http\Controllers\Frontend\LegalController;
 use App\Http\Controllers\Frontend\MitosController;
 use App\Http\Controllers\Frontend\PeniasController;
+use App\Http\Controllers\Frontend\PeniaProfilesController;
 use App\Http\Controllers\Frontend\RadiosController;
 use App\Http\Controllers\Frontend\RecetasController;
 use App\Http\Controllers\Frontend\ShowsController;
@@ -42,6 +43,7 @@ Route::get('/sitemap-noticias.xml', [SitemapController::class, 'news'])->name('s
 Route::get('/sitemap-google-news.xml', [SitemapController::class, 'googleNews'])->name('sitemap.google-news');
 Route::get('/sitemap-eventos.xml', [SitemapController::class, 'events'])->name('sitemap.events');
 Route::get('/sitemap-festivales.xml', [SitemapController::class, 'festivals'])->name('sitemap.festivals');
+Route::get('/sitemap-penias.xml', [SitemapController::class, 'penias'])->name('sitemap.penias');
 Route::get('/sitemap-discografias.xml', [SitemapController::class, 'discographies'])->name('sitemap.discographies');
 Route::get('/sitemap-letras.xml', [SitemapController::class, 'lyrics'])->name('sitemap.lyrics');
 Route::get('/sitemap-evergreen.xml', [SitemapController::class, 'evergreen'])->name('sitemap.evergreen');
@@ -88,6 +90,8 @@ Route::get('/radios-de-folklore-argentino/{slug}', [RadiosController::class, 'sh
 
 Route::get('/penias-folkloricas-de-argentina', [PeniasController::class, 'index'])->name('penias.index');
 Route::get('/penias-folkloricas-de-argentina/{slug}', [PeniasController::class, 'show'])->name('penias.show');
+Route::get('/penias', [PeniaProfilesController::class, 'index'])->name('penia-profiles.index');
+Route::get('/penias/{slug}', [PeniaProfilesController::class, 'show'])->name('penia-profiles.show');
 
 Route::get('/mitos-y-leyendas-argentinas', [MitosController::class, 'index'])->name('mitos.index');
 Route::get('/mitos-y-leyendas-argentinas/letra/{slug}', [MitosController::class, 'letra'])->name('mitos.letra');

@@ -31,12 +31,12 @@
 
 ## 5. Frontend, navegación y SEO
 
-- [ ] 5.1 Crear la landing nacional de Peñas con búsqueda, filtros territoriales y por tipo, paginación, eager loading y caché selectiva.
-- [ ] 5.2 Crear el detalle público de Peña con información permanente, fuentes, fecha de verificación, contacto y accesibilidad.
-- [ ] 5.3 Mostrar únicamente Eventos futuros y publicados vinculados de forma explícita; ocultar el bloque cuando no existan.
+- [x] 5.1 Crear la landing nacional de Peñas con búsqueda, filtros territoriales y por tipo, paginación, eager loading y caché selectiva.
+- [x] 5.2 Crear el detalle público de Peña con información permanente, fuentes, fecha de verificación, contacto y accesibilidad.
+- [x] 5.3 Mostrar únicamente Eventos futuros y publicados vinculados de forma explícita; ocultar el bloque cuando no existan.
 - [ ] 5.4 Incorporar relaciones editoriales y enlaces internos rastreables solo cuando existan asociaciones persistidas.
-- [ ] 5.5 Implementar canonical, robots para filtros, breadcrumbs, metadata persistida, JSON-LD apropiado y sitemap condicionado por estado y verificación.
-- [ ] 5.6 Mantener la ruta legacy sin cambios hasta contar con equivalencias auditadas; implementar 301 solo para mapeos aprobados.
+- [x] 5.5 Implementar canonical, robots para filtros, breadcrumbs, metadata persistida, JSON-LD apropiado y sitemap condicionado por estado y verificación.
+- [x] 5.6 Mantener la ruta legacy sin cambios hasta contar con equivalencias auditadas; implementar 301 solo para mapeos aprobados.
 
 ## 6. Piloto editorial y release gate
 
