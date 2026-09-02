@@ -1,13 +1,13 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-01 (modernizacion tecnica de Festivales, Biografias, Recetas y Mitos desplegada; Content Refresh extendido y endurecido para Artista/Receta/Mito; auditoria editorial consolidada; ciclo multiagente 4 abierto sobre producto, automatizacion segura y curacion)
+> Ultima actualizacion: 2026-09-02 (estado consolidado sin marcadores de conflicto; propuesta OpenSpec de Penas evergreen incorporada a cycle-4, sin cambios de aplicacion, migraciones ni datos)
 
 ---
 
 ## Rama activa
 
-`feature/mfa-multiagent-cycle-4` - rama creada sobre `feature/mfa-multiagent-cycle-3` remota corregida (`88c3970`). Reune tres frentes independientes: especificacion del primer recorrido transversal, salvaguardas del piloto Content Refresh y tercer borrador del lote de Biografias P1.
+`feature/mfa-multiagent-cycle-4` - rama creada sobre `feature/mfa-multiagent-cycle-3` remota corregida (`88c3970`). Reune cuatro frentes independientes: especificacion del primer recorrido transversal, salvaguardas del piloto Content Refresh, tercer borrador del lote de Biografias P1 y propuesta del directorio evergreen de Penas.
 
 **Flujo vigente:** rama feature -> PR/CI -> revision de Eduardo -> merge a `main` por Eduardo -> pull y deploy en produccion. Los agentes no tocan ni fusionan `main` ni ejecutan despliegues.
 
@@ -39,7 +39,8 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Content Refresh:** soporta Artista, Receta y Mito con `CREAR/ACTUALIZAR`. Cycle-4 exige `ACCION_API` explicita, bloquea updates vacios y agrega preflight offline de los seis casos. El E2E productivo sigue pendiente.
 - **Producto:** `BL-0022C` recomienda como primer piloto `Festival evergreen -> Evento futuro -> Artista -> repertorio/actualidad`, condicionado a auditoria de cobertura, feature flag, allowlist y aprobacion funcional.
 - **Curacion:** `BL-0021B` tiene 3 de 10 borradores preparados: Gaston Cordero, Los Trovadores de Cuyo y Juan Bautista Bertorello. Todos permanecen con `ENVIAR_API=N`.
-- **Radios y Penas:** horizonte futuro. Se reconstruiran como directorios evergreen con release propio; no estan activados por cycle-3 ni cycle-4.
+- **Penas:** propuesta OpenSpec `penias-evergreen-directory` creada y validada. Define un directorio evergreen separado de Eventos y del legado, con piloto editorial y gate de release; la implementacion aun no comenzo.
+- **Radios:** horizonte futuro. Se reconstruira como directorio evergreen con release propio y permanece fuera de cycle-3 y cycle-4.
 
 ### Linea base editorial de produccion — 2026-09-01
 
