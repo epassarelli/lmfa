@@ -33,16 +33,51 @@
       <!-- Menú -->
       <div id="site-mobile-menu" data-mobile-menu
         class="w-full lg:flex lg:items-center lg:w-auto hidden mt-4 lg:mt-0">
-        <ul class="lg:flex lg:space-x-6 text-white text-sm font-medium">
-          <li><a href="{{ route('interpretes.index') }}" class="block py-2 hover:text-[#ff661f]">Artistas</a></li>
-          <li><a href="{{ route('noticias.index') }}" class="block py-2 hover:text-[#ff661f]">Noticias</a></li>
-          <li><a href="{{ route('cartelera.index') }}" class="block py-2 hover:text-[#ff661f]">Cartelera</a></li>
-          <li><a href="{{ route('enciclopedia.index') }}" class="block py-2 hover:text-[#ff661f]">Enciclopedia</a></li>
-          <li><a href="{{ route('classifieds.index') }}" class="block py-2 hover:text-[#ff661f]">Clasificados</a></li>
-          <li><a href="{{ route('discografias.index') }}" class="block py-2 hover:text-[#ff661f]">Discos</a></li>
-          <li><a href="{{ route('canciones.index') }}" class="block py-2 hover:text-[#ff661f]">Canciones</a></li>
-          <li><a href="{{ route('festivales.index') }}" class="block py-2 hover:text-[#ff661f]">Festivales</a></li>
-          <li><a href="{{ route('backend.contributions.index') }}" class="block py-2 text-[#ff661f] font-semibold hover:underline">Publicar</a></li>
+        <ul class="lg:flex lg:items-center lg:gap-1 text-white text-sm font-medium">
+          <li>
+            <a href="{{ route('interpretes.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Artistas</a>
+          </li>
+          <li>
+            <a href="{{ route('noticias.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Noticias</a>
+          </li>
+          <li>
+            <a href="{{ route('cartelera.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Cartelera</a>
+          </li>
+          <li>
+            <a href="{{ route('festivales.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Festivales</a>
+          </li>
+          <li>
+            <span class="block cursor-default rounded-md px-3 py-2 text-slate-400" title="Directorio de peñas en preparación" aria-label="Peñas, en preparación">Peñas <span class="text-[10px] uppercase tracking-wide">pronto</span></span>
+          </li>
+          <li>
+            <details class="group relative">
+              <summary class="flex cursor-pointer list-none items-center gap-1 rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">
+                Cultura
+                <svg class="h-3.5 w-3.5 transition group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.09 1.03l-4.25 4.51a.75.75 0 01-1.09 0l-4.25-4.51a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+              </summary>
+              <div class="mt-1 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 text-slate-800 shadow-xl lg:absolute lg:left-0 lg:z-50 lg:mt-2 lg:w-56">
+                <a href="{{ route('enciclopedia.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Enciclopedia</a>
+                <a href="{{ route('mitos.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Mitos y leyendas</a>
+                <a href="{{ route('comidas.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Recetas tradicionales</a>
+              </div>
+            </details>
+          </li>
+          <li>
+            <details class="group relative">
+              <summary class="flex cursor-pointer list-none items-center gap-1 rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">
+                Más
+                <svg class="h-3.5 w-3.5 transition group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.09 1.03l-4.25 4.51a.75.75 0 01-1.09 0l-4.25-4.51a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+              </summary>
+              <div class="mt-1 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 text-slate-800 shadow-xl lg:absolute lg:right-0 lg:z-50 lg:mt-2 lg:w-52">
+                <a href="{{ route('discografias.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Discos</a>
+                <a href="{{ route('canciones.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Canciones</a>
+                <a href="{{ route('classifieds.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Clasificados</a>
+              </div>
+            </details>
+          </li>
+          <li class="mt-2 lg:mt-0 lg:ml-1">
+            <a href="{{ route('backend.contributions.index') }}" class="inline-flex rounded-md bg-[#ff661f] px-3 py-2 font-semibold text-white transition hover:bg-orange-600">Publicar</a>
+          </li>
         </ul>
 
         <!-- Buscador -->

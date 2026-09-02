@@ -1,13 +1,13 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-02 (estado consolidado sin marcadores de conflicto; propuesta OpenSpec de Penas evergreen incorporada a cycle-4, sin cambios de aplicacion, migraciones ni datos)
+> Ultima actualizacion: 2026-09-02 (Festival Vivo listo para piloto local controlado; la validacion de siete dias sigue pendiente)
 
 ---
 
 ## Rama activa
 
-`feature/mfa-multiagent-cycle-4` - rama creada sobre `feature/mfa-multiagent-cycle-3` remota corregida (`88c3970`). Reune cuatro frentes independientes: especificacion del primer recorrido transversal, salvaguardas del piloto Content Refresh, tercer borrador del lote de Biografias P1 y propuesta del directorio evergreen de Penas.
+`dev` - integra el trabajo de producto y los pilotos tecnicos antes de su evaluacion para `main`.
 
 **Flujo vigente:** rama feature -> PR/CI -> revision de Eduardo -> merge a `main` por Eduardo -> pull y deploy en produccion. Los agentes no tocan ni fusionan `main` ni ejecutan despliegues.
 
@@ -42,6 +42,14 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Penas:** propuesta OpenSpec `penias-evergreen-directory` creada y validada. Define un directorio evergreen separado de Eventos y del legado, con piloto editorial y gate de release; la implementacion aun no comenzo.
 - **Radios:** horizonte futuro. Se reconstruira como directorio evergreen con release propio y permanece fuera de cycle-3 y cycle-4.
 
+### Festival Vivo - piloto local 2026-09-02
+
+- El recorrido `Festival -> Evento futuro -> Artista` esta implementado en las tres fichas, limitado en SQL y protegido por feature flag + allowlist.
+- La auditoria read-only local encontro dos festivales elegibles: IDs `4279` y `4280`, cada uno con un evento futuro publico y un artista activo relacionado. Solo el `.env` local habilita esos IDs; el default versionado permanece apagado.
+- Las impresiones `view_item_list` y clics `select_content` usan IDs internos, modulo y posicion, sin datos personales.
+- Pruebas de servicio, render habilitado/deshabilitado, SEO/canonical y enlaces publicos locales: `7 passed (30 assertions)`; compilacion Vite correcta.
+- No esta cerrado para produccion: falta observar el piloto durante siete dias y decidir expansion o rollback con medicion real.
+
 ### Linea base editorial de produccion — 2026-09-01
 
 | Entidad | Total | P1 | P2 | P3 | Score promedio | Imagen fallback | Visitas en auditor |
@@ -71,7 +79,7 @@ El siguiente salto combina autoridad demostrable con mejores recorridos de usuar
 ### Proximos gates comunes
 
 1. Ejecutar los seis casos controlados de Content Refresh con el preflight y runbook de cycle-4.
-2. Aprobar y desarrollar por PRs pequenos el recorrido transversal `Festival vivo`, si la auditoria confirma al menos dos festivales elegibles.
+2. Validar durante siete dias el piloto local/controlado de `Festival Vivo` antes de ampliar allowlist o evaluar release.
 3. Completar y revisar el lote de 10 Biografias P1; despues continuar con Recetas y Mitos.
 4. Incorporar visitas al auditor de Festivales.
 5. Aprobar la politica de derechos antes de automatizar Discografia/Cancionero.

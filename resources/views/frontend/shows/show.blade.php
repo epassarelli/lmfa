@@ -56,13 +56,13 @@
             {!! $show->detalle !!}
           </div>
           @if ($journey['enabled'] && $journey['festivals']->isNotEmpty())
-            <x-content-journey.section title="Este evento forma parte de">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">@foreach ($journey['festivals'] as $festival)<x-festival-card :festival="$festival" />@endforeach</div>
+            <x-content-journey.section title="Este evento forma parte de" module="event_festivals" source-type="event" :source-id="$show->id" :items="$journey['festivals']">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">@foreach ($journey['festivals'] as $festival)<x-festival-card :festival="$festival" :journey="['sourceType' => 'event', 'sourceId' => $show->id, 'module' => 'event_festivals', 'position' => $loop->iteration]" />@endforeach</div>
             </x-content-journey.section>
           @endif
           @if ($journey['enabled'] && $journey['artists']->isNotEmpty())
-            <x-content-journey.section title="Artistas en escena">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">@foreach ($journey['artists'] as $artist)<x-biografia-card :interprete="$artist" />@endforeach</div>
+            <x-content-journey.section title="Artistas en escena" module="event_artists" source-type="event" :source-id="$show->id" :items="$journey['artists']">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">@foreach ($journey['artists'] as $artist)<x-biografia-card :interprete="$artist" :journey="['sourceType' => 'event', 'sourceId' => $show->id, 'module' => 'event_artists', 'position' => $loop->iteration]" />@endforeach</div>
             </x-content-journey.section>
           @endif
         </div>

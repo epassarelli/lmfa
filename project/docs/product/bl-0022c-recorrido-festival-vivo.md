@@ -224,6 +224,13 @@ gtag('event', 'select_content', {
 });
 ```
 
+### Eventos implementados
+
+- `view_item_list`: una impresion por modulo visible, con `item_list_id`, tipo e ID de la entidad origen e IDs internos de los destinos.
+- `select_content`: un evento delegado al activar un enlace del recorrido, con el tipo de transicion (`festival_to_event`, por ejemplo), IDs internos, modulo y posicion.
+
+No se envian titulos, terminos de busqueda, correo, usuario ni otra informacion personal.
+
 Cada modulo renderizado emite una sola impresion `view_item_list`, con `items` que incluyan al menos el `item_id` de cada destino. Los `item_list_id` son `upcoming_events`, `festival_artists`, `festival_context`, `festival_news`, `event_festivals`, `event_artists`, `artist_events` y `artist_festivals`. Esta impresion es el denominador del CTR; no se calcula CTR usando todas las vistas de pagina cuando el bloque no existe.
 
 No enviar titulo libre, correo, usuario ni otros datos personales. Los identificadores son IDs internos de contenido.

@@ -1,6 +1,16 @@
-@props(['festival'])
+@props(['festival', 'journey' => null])
 
 <a href="{{ route('festivales.show', $festival->slug) }}"
+  @if($journey)
+    data-journey-link
+    data-source-type="{{ $journey['sourceType'] }}"
+    data-source-id="{{ $journey['sourceId'] }}"
+    data-destination-type="festival"
+    data-destination-id="{{ $festival->id }}"
+    data-module="{{ $journey['module'] }}"
+    data-position="{{ $journey['position'] }}"
+    aria-label="Festival: {{ $festival->title }}"
+  @endif
   class="block rounded overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
   <div class="overflow-hidden">
     <x-editorial-image

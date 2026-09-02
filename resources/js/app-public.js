@@ -1,4 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const trackJourney = (event, payload) => {
+    window.dataLayer = window.dataLayer || [];
+    if (typeof window.gtag === 'function') window.gtag('event', event, payload);
+    else window.dataLayer.push(['event', event, payload]);
+  };
+
+  document.querySelectorAll('[data-journey-list]').forEach((section) => {
+    const ids = (section.dataset.itemIds || '').split(',').filter(Boolean).map((id) => ({ item_id: id }));
+    if (ids.length) {
+      trackJourney('view_item_list', {
+        item_list_id: section.dataset.module,
+        journey_source_type: section.dataset.sourceType,
+        journey_source_id: section.dataset.sourceId,
+        items: ids,
+      });
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('[data-journey-link]');
+    if (!link) return;
+    trackJourney('select_content', {
+      content_type: `${link.dataset.sourceType}_to_${link.dataset.destinationType}`,
+      item_id: link.dataset.destinationId,
+      journey_source_type: link.dataset.sourceType,
+      journey_source_id: link.dataset.sourceId,
+      journey_module: link.dataset.module,
+      journey_position: Number(link.dataset.position),
+    });
+  });
+
   const toggleButton = document.querySelector('[data-mobile-menu-toggle]');
   const menu = document.querySelector('[data-mobile-menu]');
 

@@ -1,9 +1,19 @@
 <div>
-  @props(['show'])
+  @props(['show', 'journey' => null])
 
   @php $interprete = $show->interprete; @endphp
 
   <a href="{{ $show->slug ? route('cartelera.show', $show->slug) : '#' }}"
+    @if($journey)
+      data-journey-link
+      data-source-type="{{ $journey['sourceType'] }}"
+      data-source-id="{{ $journey['sourceId'] }}"
+      data-destination-type="event"
+      data-destination-id="{{ $show->id }}"
+      data-module="{{ $journey['module'] }}"
+      data-position="{{ $journey['position'] }}"
+      aria-label="Próxima fecha: {{ $show->title }}"
+    @endif
     class="block rounded overflow-hidden bg-white shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
     <div class="overflow-hidden">
       <x-editorial-image

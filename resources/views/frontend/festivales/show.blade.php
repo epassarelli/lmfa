@@ -83,33 +83,40 @@
 
   @if ($journey->enabled)
     @if ($journey->upcomingEvents->isNotEmpty())
-      <x-content-journey.section title="Proximas fechas">
+      <x-content-journey.section title="Proximas fechas" module="upcoming_events" source-type="festival" :source-id="$festival->id" :items="$journey->upcomingEvents">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           @foreach ($journey->upcomingEvents as $event)
-            <x-show-card :show="$event" />
+            <x-show-card :show="$event" :journey="['sourceType' => 'festival', 'sourceId' => $festival->id, 'module' => 'upcoming_events', 'position' => $loop->iteration]" />
           @endforeach
         </div>
       </x-content-journey.section>
     @endif
 
     @if ($journey->artists->isNotEmpty())
-      <x-content-journey.section title="Artistas vinculados al festival">
+      <x-content-journey.section title="Artistas vinculados al festival" module="festival_artists" source-type="festival" :source-id="$festival->id" :items="$journey->artists">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           @foreach ($journey->artists as $artist)
-            <x-biografia-card :interprete="$artist" />
+            <x-biografia-card :interprete="$artist" :journey="['sourceType' => 'festival', 'sourceId' => $festival->id, 'module' => 'festival_artists', 'position' => $loop->iteration]" />
           @endforeach
         </div>
       </x-content-journey.section>
     @endif
 
-    @if ($journey->knowledgeArticles->isNotEmpty() || $journey->news->isNotEmpty())
-      <x-content-journey.section title="Historia y contexto">
+    @if ($journey->knowledgeArticles->isNotEmpty())
+      <x-content-journey.section title="Historia y contexto" module="festival_context" source-type="festival" :source-id="$festival->id" :items="$journey->knowledgeArticles">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           @foreach ($journey->knowledgeArticles as $article)
-            <a href="{{ $article->getUrl() }}" class="rounded-lg border border-slate-200 p-4 font-semibold hover:text-orange-700">{{ $article->title }}</a>
+            <a href="{{ $article->getUrl() }}" data-journey-link data-source-type="festival" data-source-id="{{ $festival->id }}" data-destination-type="knowledge_article" data-destination-id="{{ $article->id }}" data-module="festival_context" data-position="{{ $loop->iteration }}" aria-label="Artículo: {{ $article->title }}" class="rounded-lg border border-slate-200 p-4 font-semibold hover:text-orange-700">{{ $article->title }}</a>
           @endforeach
+        </div>
+      </x-content-journey.section>
+    @endif
+
+    @if ($journey->news->isNotEmpty())
+      <x-content-journey.section title="Actualidad del festival" module="festival_news" source-type="festival" :source-id="$festival->id" :items="$journey->news">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           @foreach ($journey->news as $news)
-            <a href="{{ route('noticias.show', $news->slug) }}" class="rounded-lg border border-slate-200 p-4 font-semibold hover:text-orange-700">{{ $news->title ?? $news->titulo }}</a>
+            <a href="{{ route('noticias.show', $news->slug) }}" data-journey-link data-source-type="festival" data-source-id="{{ $festival->id }}" data-destination-type="news" data-destination-id="{{ $news->id }}" data-module="festival_news" data-position="{{ $loop->iteration }}" aria-label="Noticia: {{ $news->title ?? $news->titulo }}" class="rounded-lg border border-slate-200 p-4 font-semibold hover:text-orange-700">{{ $news->title ?? $news->titulo }}</a>
           @endforeach
         </div>
       </x-content-journey.section>

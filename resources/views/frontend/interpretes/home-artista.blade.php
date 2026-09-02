@@ -107,8 +107,14 @@
       </section>
     @endif
     @if ($journey['enabled'] && $journey['festivals']->isNotEmpty())
-      <x-content-journey.section title="Festivales relacionados">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">@foreach ($journey['festivals'] as $festival)<x-festival-card :festival="$festival" />@endforeach</div>
+      <x-content-journey.section title="Festivales relacionados" module="artist_festivals" source-type="artist" :source-id="$interprete->id" :items="$journey['festivals']">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">@foreach ($journey['festivals'] as $festival)<x-festival-card :festival="$festival" :journey="['sourceType' => 'artist', 'sourceId' => $interprete->id, 'module' => 'artist_festivals', 'position' => $loop->iteration]" />@endforeach</div>
+      </x-content-journey.section>
+    @endif
+
+    @if ($journey['enabled'] && $journey['events']->isNotEmpty())
+      <x-content-journey.section title="Próximas fechas en festivales vinculados" module="artist_events" source-type="artist" :source-id="$interprete->id" :items="$journey['events']">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">@foreach ($journey['events'] as $event)<x-show-card :show="$event" :journey="['sourceType' => 'artist', 'sourceId' => $interprete->id, 'module' => 'artist_events', 'position' => $loop->iteration]" />@endforeach</div>
       </x-content-journey.section>
     @endif
   </div>
