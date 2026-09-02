@@ -82,6 +82,17 @@ No se declarará un tipo de negocio que contradiga la naturaleza del espacio ni 
 
 Rollback: deshabilitar la superficie nueva, excluirla de navegación y sitemap, y revertir la migración únicamente si no contiene datos aprobados. Una vez cargados datos editoriales, el rollback será lógico mediante estado `archived`, nunca borrado automático.
 
+## Relevamiento inicial - 2026-09-02
+
+- La tabla legacy `penias` existe pero esta vacia. Su modelo `Penia` solo expone `user` e `images`; no cuenta con estado editorial canonico, datos territoriales ni detalle publico funcional.
+- La ruta legacy `/penias-folkloricas-de-argentina` conserva dos rutas publicas. La vista enlaza incorrectamente a Noticias y el controlador declara un detalle que no implementa. No hay coincidencias de uso en el log local disponible, por lo que no se define migracion ni redirect 301 en esta etapa.
+- El contrato canonico sera `App\\Models\\PeniaProfile` sobre la tabla nueva `penia_profiles`. Asi se evita alterar la tabla/modelo legacy y se conserva una separacion reversible y auditable.
+- La URL publica canonica propuesta es `/penias/{slug}`. No colisiona con las rutas actuales; la base legacy se mantiene sin cambios hasta que existan equivalencias uno-a-uno auditadas.
+- `Provincia`, `Locality`, `Event`, `Interprete`, `Festival` y `media_assets` son contratos reutilizables. `Venue` no tiene modelo canonico, por lo que queda fuera del MVP.
+- La relacion inicial confirmada sera solo `penia_profile_event`. Relaciones directas con artistas, festivales, noticias o enciclopedia quedan fuera hasta que exista curacion editorial persistida.
+- API y autorizacion reutilizaran el patron de Festivales: lectura con token Sanctum y escritura para `administrador`; backoffice para administrador, prensa y colaborador segun propiedad.
+- Falta aprobacion funcional para el umbral de vigencia de contacto, horarios y reservas antes de crear las reglas de publicacion y la migracion.
+
 ## Open Questions
 
 - ¿La implementación vigente de `Penia` y la tabla `penias` permiten coexistencia con un nuevo modelo o requieren un nombre canónico distinto?

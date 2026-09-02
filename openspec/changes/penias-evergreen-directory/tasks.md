@@ -1,10 +1,10 @@
 ## 1. Relevamiento y decisiones de transición
 
-- [ ] 1.1 Inventariar en modo solo lectura la tabla, modelo, rutas, vistas, tráfico y datos de Peñas legacy.
-- [ ] 1.2 Confirmar modelos, claves y convenciones reales para Provincia, Localidad, Evento, Artista/Intérprete, Festival, media, permisos y auditoría.
-- [ ] 1.3 Definir el nombre de la tabla y modelo canónicos, la estrategia de slug y la base de URL pública sin colisionar con rutas existentes.
+- [x] 1.1 Inventariar en modo solo lectura la tabla, modelo, rutas, vistas, tráfico y datos de Peñas legacy.
+- [x] 1.2 Confirmar modelos, claves y convenciones reales para Provincia, Localidad, Evento, Artista/Intérprete, Festival, media, permisos y auditoría.
+- [x] 1.3 Definir el nombre de la tabla y modelo canónicos, la estrategia de slug y la base de URL pública sin colisionar con rutas existentes.
 - [ ] 1.4 Definir el umbral de vigencia para contacto, horarios y reservas, y documentar los requisitos editoriales de publicación.
-- [ ] 1.5 Diseñar el mapeo legacy-a-canónico, criterios de equivalencia y condiciones para una futura redirección 301.
+- [x] 1.5 Diseñar el mapeo legacy-a-canónico, criterios de equivalencia y condiciones para una futura redirección 301.
 
 ## 2. Persistencia y dominio canónicos
 
