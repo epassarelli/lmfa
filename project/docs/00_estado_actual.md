@@ -1,25 +1,15 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-<<<<<<< HEAD
-> Ultima actualizacion: 2026-09-01 (modernizacion tecnica de Festivales, Biografias, Recetas y Mitos desplegada por oleadas; integracion Content Refresh extendida a Artista/Receta/Mito; auditorias de produccion consolidadas con visitas; linea base editorial y dos programas paralelos de trabajo definidos)
-=======
-> Ultima actualizacion: 2026-09-01 (modernizacion tecnica de Festivales, Biografias, Recetas y Mitos desplegada; Content Refresh extendido y endurecido para Artista/Receta/Mito; auditoria editorial consolidada; ciclo multiagente 4 abierto sobre producto, automatizacion segura y curacion)
->>>>>>> feature/mfa-multiagent-cycle-4
+> Ultima actualizacion: 2026-09-02 (estado consolidado sin marcadores de conflicto; propuesta OpenSpec de Penas evergreen incorporada a cycle-4, sin cambios de aplicacion, migraciones ni datos)
 
 ---
 
 ## Rama activa
 
-<<<<<<< HEAD
-`feature/editorial-refresh-entities` - rama activa observada el 2026-09-01. Contiene la integracion de Artista, Receta y Mito con la bandeja editorial y Apps Script. Al momento del corte local se encuentra por delante y por detras de su remoto; debe sincronizarse antes de iniciar una nueva feature o preparar otro merge.
-
-**Flujo observado en las ultimas oleadas:** rama feature -> PR/CI -> merge a `main` -> pull y deploy en produccion. No mezclar modernizaciones de entidades distintas en una sola ventana de release.
-=======
-`feature/mfa-multiagent-cycle-4` - rama creada sobre `feature/mfa-multiagent-cycle-3` remota corregida (`88c3970`). Reune tres frentes independientes: especificacion del primer recorrido transversal, salvaguardas del piloto Content Refresh y tercer borrador del lote de Biografias P1.
+`feature/mfa-multiagent-cycle-4` - rama creada sobre `feature/mfa-multiagent-cycle-3` remota corregida (`88c3970`). Reune cuatro frentes independientes: especificacion del primer recorrido transversal, salvaguardas del piloto Content Refresh, tercer borrador del lote de Biografias P1 y propuesta del directorio evergreen de Penas.
 
 **Flujo vigente:** rama feature -> PR/CI -> revision de Eduardo -> merge a `main` por Eduardo -> pull y deploy en produccion. Los agentes no tocan ni fusionan `main` ni ejecutan despliegues.
->>>>>>> feature/mfa-multiagent-cycle-4
 
 ---
 
@@ -33,31 +23,6 @@ Se realizo auditoria completa del codigo el 2026-04-26. Ver seccion de bugs corr
 
 ### Direccion vigente: dos programas paralelos
 
-<<<<<<< HEAD
-La vision de convertir MFA en el portal de referencia del folklore argentino no se alcanza con un unico backlog lineal. Desde este corte se gestionan dos programas permanentes, con capacidad y metricas propias:
-
-| Programa | Objetivo | Unidad de avance | Gate principal |
-|----------|----------|------------------|----------------|
-| **A. Autoridad editorial** | Mejorar profundidad, verificabilidad, estructura, SEO, relaciones y media de los contenidos publicados; descubrir altas relevantes sin degradar calidad. | Lotes pequenos por entidad, priorizados por deuda y demanda. | Investigacion y fuentes completas; revision humana antes de habilitar `ENVIAR_API=S`. |
-| **B. Producto y servicios** | Completar funcionalidades, navegacion, automatizacion, comunidad, distribucion y servicios diferenciales que vuelvan a MFA el portal mas util y completo del sector. | Releases tecnicos independientes, con CI, smoke, medicion y rollback. | Release gate por modulo y validacion real en produccion. |
-
-Reglas de gobierno:
-
-- ninguno de los dos programas reemplaza al otro;
-- reservar capacidad en cada ciclo para ambos, evitando que toda la ejecucion quede absorbida por la deuda editorial;
-- el backlog oficial sigue siendo `Backlog Asistente ChatGPT` en Drive;
-- `project/docs/backlog.json`, cuando exista, es referencia tecnica/legacy y no gobierna prioridades;
-- `00_estado_actual.md` registra hechos comprobados; vision, arquitectura y contratos detallados viven en sus documentos especificos.
-
-### Corte tecnico y operativo 2026-09-01
-
-- **Festivales:** modernizacion tecnica y Content Refresh en condiciones productivas; auditor y cola editorial funcionando. El auditor todavia no incorpora visitas, por lo que su desempate sigue siendo provisional hasta integrar GA4.
-- **Biografias / Artistas:** modelo, migraciones legacy, backoffice, API, frontend, SEO/schema y auditor modernizados. Migraciones ejecutadas en produccion y auditor real regenerado con visitas.
-- **Recetas:** contrato editorial y campos estructurados modernizados; backoffice, API, frontend/schema y auditor disponibles en produccion. La recuperacion masiva de contenido sigue pendiente.
-- **Mitos y Leyendas:** contrato cultural, region/tipo, SEO, media, backoffice/API/frontend y auditor modernizados. La recuperacion masiva de contenido sigue pendiente.
-- **Integracion editorial:** Apps Script y la bandeja `Contenidos` soportan `Artista`, `Receta` y `Mito` con `CREAR/ACTUALIZAR`, `ID_WEB`, `SCORE_CALIDAD`, `FALTANTES` y gate `ENVIAR_API`. Antes de automatizar volumen deben cerrarse los seis casos controlados POST/PUT documentados en `project/docs/releases/entity-modernization-rollout.md`.
-- **Auditoria consolidada:** existe una matriz editorial de corte 2026-09-01 con resumen, faltantes, imagenes y lotes priorizados. Artistas, Recetas y Mitos ya incluyen visitas; se programo repeticion mensual de la auditoria.
-=======
 | Programa | Objetivo | Unidad de avance | Gate principal |
 |----------|----------|------------------|----------------|
 | **A. Autoridad editorial** | Mejorar profundidad, verificabilidad, estructura, SEO, relaciones y media; descubrir altas relevantes sin degradar calidad. | Lotes pequenos por entidad, priorizados por deuda y demanda. | Investigacion y fuentes completas; revision humana antes de `ENVIAR_API=S`. |
@@ -74,8 +39,8 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Content Refresh:** soporta Artista, Receta y Mito con `CREAR/ACTUALIZAR`. Cycle-4 exige `ACCION_API` explicita, bloquea updates vacios y agrega preflight offline de los seis casos. El E2E productivo sigue pendiente.
 - **Producto:** `BL-0022C` recomienda como primer piloto `Festival evergreen -> Evento futuro -> Artista -> repertorio/actualidad`, condicionado a auditoria de cobertura, feature flag, allowlist y aprobacion funcional.
 - **Curacion:** `BL-0021B` tiene 3 de 10 borradores preparados: Gaston Cordero, Los Trovadores de Cuyo y Juan Bautista Bertorello. Todos permanecen con `ENVIAR_API=N`.
-- **Radios y Penas:** horizonte futuro. Se reconstruiran como directorios evergreen con release propio; no estan activados por cycle-3 ni cycle-4.
->>>>>>> feature/mfa-multiagent-cycle-4
+- **Penas:** propuesta OpenSpec `penias-evergreen-directory` creada y validada. Define un directorio evergreen separado de Eventos y del legado, con piloto editorial y gate de release; la implementacion aun no comenzo.
+- **Radios:** horizonte futuro. Se reconstruira como directorio evergreen con release propio y permanece fuera de cycle-3 y cycle-4.
 
 ### Linea base editorial de produccion — 2026-09-01
 
@@ -87,42 +52,6 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 | Mitos | 284 | 284 | 0 | 0 | 20,9 | 284 | Si |
 | **Total** | **1.566** | **1.427** | **137** | **2** | **22,4 ponderado** | **1.219** | **1.536 registros** |
 
-<<<<<<< HEAD
-Orden operativo de curacion:
-
-1. prioridad (`P1`, `P2`, `P3`);
-2. menor `SCORE_CALIDAD`;
-3. mayores visitas dentro del mismo nivel de deuda;
-4. ID como desempate estable.
-
-La magnitud de P1 no se resuelve con una carga masiva. Se trabaja con lotes pequenos, auditoria antes/despues y medicion posterior en GA4/Search Console.
-
-### Alineacion con la vision
-
-Estado cualitativo al 2026-09-01:
-
-| Dimension de la vision | Alineacion | Lectura |
-|------------------------|------------|---------|
-| Cobertura integral del folklore | Alta | MFA ya articula artistas, discos, letras, noticias, eventos, festivales, enciclopedia, recetas y mitos. |
-| Autoridad y calidad editorial | Media/alta en sistema; baja en inventario legacy | Existen contratos, auditores y flujo de curacion, pero 1.427 registros siguen P1. |
-| Arquitectura SEO y performance | Alta | Sitemaps, canonical, schema, media y optimizaciones transversales estan implementados; falta medicion continua de impacto real. |
-| Interconexion y descubrimiento | Media | Hay pivots y silos, pero falta convertirlos en navegacion transversal consistente y recomendaciones utiles en todas las entidades. |
-| Servicios diferenciales y recurrencia | Media/baja | Agenda, Pasarela, UGC, newsletter, torneos y modulos parciales existen, pero varios no tienen validacion productiva o propuesta operativa cerrada. |
-| Automatizacion editorial segura | Media/alta | Descubrimiento, bandeja, API y auditores estan integrados; faltan cerrar pruebas controladas y escalar sin sacrificar revision humana. |
-| Monetizacion sostenible | Baja/media | La base SEO y de contenidos mejora, pero falta ligar roadmap, audiencias, servicios y medicion a ingresos mas alla de AdSense. |
-
-Conclusion: la ejecucion esta alineada con la vision en sus fundamentos, pero el siguiente salto no debe ser solamente "mas contenido". Debe combinar autoridad demostrable con mejores recorridos de usuario, servicios recurrentes, distribucion y medicion de valor.
-
-### Proximos gates comunes
-
-1. Cerrar el piloto controlado de seis operaciones de Content Refresh: crear y actualizar un Artista, una Receta y un Mito.
-2. Ejecutar el primer lote editorial de 10 Biografias P1 y medir auditoria antes/despues.
-3. Continuar con lotes equivalentes de Recetas y Mitos, sin habilitar updates masivos.
-4. Incorporar visitas al auditor de Festivales y reordenar su cola.
-5. Aprobar la politica de derechos antes de automatizar Discografia/Cancionero.
-6. Validar Pasarela y UGC end-to-end en produccion antes de tratarlos como servicios cerrados.
-7. Definir el siguiente release funcional por impacto en descubrimiento/recurrencia, no por disponibilidad de codigo legacy.
-=======
 Orden operativo de curacion: prioridad, menor score, mayores visitas dentro del mismo nivel de deuda e ID como desempate estable. La magnitud de P1 requiere lotes pequenos, auditoria antes/despues y medicion posterior.
 
 ### Alineacion con la vision
@@ -147,7 +76,6 @@ El siguiente salto combina autoridad demostrable con mejores recorridos de usuar
 4. Incorporar visitas al auditor de Festivales.
 5. Aprobar la politica de derechos antes de automatizar Discografia/Cancionero.
 6. Validar Pasarela y UGC end-to-end antes de tratarlos como servicios cerrados.
->>>>>>> feature/mfa-multiagent-cycle-4
 
 ### Gobernanza documental verificada el 2026-08-20
 
@@ -590,10 +518,6 @@ Nota: los `curl` locales no reflejan completamente la mejora de Core Web Vitals 
 
 9. Cerrar en produccion los seis casos controlados de la integracion editorial: CREAR y ACTUALIZAR un Artista, una Receta y un Mito; luego reactivar el flujo automatico con monitoreo de errores.
 
-<<<<<<< HEAD
-10. Ejecutar los primeros lotes de curacion de Biografias, Recetas y Mitos, registrando score antes/despues y evitando actualizaciones masivas sin revision.
-=======
 10. Completar los primeros lotes de curacion de Biografias, Recetas y Mitos, registrando score antes/despues y evitando actualizaciones masivas sin revision.
->>>>>>> feature/mfa-multiagent-cycle-4
 
 11. La auditoría de `BL-0018A` mapeó 4.608 canciones activas y 397 discos activos con rutas, pivots y señales de tráfico locales. Las letras completas carecen de campos de fuente, licencia, autoría o autorización: no se debe automatizar ni ampliar su publicación hasta que exista una decisión humana de derechos y una spec aprobada que distinga obra, versión/grabación y créditos.

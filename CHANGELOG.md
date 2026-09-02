@@ -5,6 +5,21 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Unreleased]
+
+### Agregado
+
+- **Directorio evergreen de Peñas**: propuesta OpenSpec completa para un módulo de espacios culturales permanentes, separado de Eventos y de los datos legacy. Define el contrato editorial, piloto verificable, auditoría, API, SEO y migración segura antes de implementar.
+- **Piloto controlado de Content Refresh**: runbook, preflight local y pruebas para las seis operaciones obligatorias de crear y actualizar un Artista, una Receta y un Mito.
+- **Recorrido Festival vivo**: especificación de un recorrido transversal desde Festival evergreen hacia un Evento futuro y Artista relacionado, condicionado por cobertura auditada y feature flag.
+- **Curación de Biografías P1**: borrador editorial de Juan Bautista Bertorello incorporado al lote controlado BL-0021B.
+
+### Cambiado
+
+- **Gobernanza documental**: `00_estado_actual.md` consolidado sin marcadores de conflicto y actualizado con los gates operativos y la propuesta de Peñas.
+- **Automatización editorial**: la validación del piloto exige `ACCION_API` explícita y evita actualizaciones vacías antes de cualquier automatización de volumen.
+- **CI de Apps Script**: el pipeline incorpora la validación del preflight de Content Refresh.
+
 ## [2.1.0] — 2026-05-02
 
 ### Agregado
@@ -31,9 +46,9 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
-## [Unreleased] — rama `v2`
+## [2.0.0] — 2026-04-26
 
-Cambios en curso hacia `v2.0.0` estable.
+Historial de estabilización integrado en la rama `v2` antes de las versiones posteriores.
 
 ### Corregido (2026-04-26 — post-deploy)
 
