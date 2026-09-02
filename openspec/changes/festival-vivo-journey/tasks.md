@@ -7,10 +7,10 @@
 
 ## 2. Public journey surfaces
 
-- [ ] 2.1 Add reusable semantic journey components and accessible canonical links.
-- [ ] 2.2 Integrate eligible modules in Festival and Event detail pages.
-- [ ] 2.3 Integrate eligible Event and Festival modules in Artist detail pages.
-- [ ] 2.4 Correct Event structured data for multiple public performers and persisted Festival relation.
+- [x] 2.1 Add reusable semantic journey components and accessible canonical links.
+- [x] 2.2 Integrate eligible modules in Festival and Event detail pages.
+- [x] 2.3 Integrate eligible Event and Festival modules in Artist detail pages.
+- [x] 2.4 Correct Event structured data for multiple public performers and persisted Festival relation.
 
 ## 3. Measurement and release gate
 

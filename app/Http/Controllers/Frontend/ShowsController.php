@@ -170,6 +170,7 @@ class ShowsController extends Controller
             ->get();
 
         $noticiasRelacionadas = $show->noticias ?? collect();
+        $journey = app(\App\Services\Product\FestivalJourneyService::class)->forEvent($show);
 
         $seo = SeoMetadata::event($show);
         $metaTitle = $seo['title'];
@@ -188,6 +189,7 @@ class ShowsController extends Controller
             'metaDescription',
             'h1',
             'noticiasRelacionadas',
+            'journey',
             'breadcrumbs'
         ));
     }

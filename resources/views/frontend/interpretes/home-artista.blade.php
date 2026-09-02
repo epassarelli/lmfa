@@ -106,6 +106,11 @@
         </div>
       </section>
     @endif
+    @if ($journey['enabled'] && $journey['festivals']->isNotEmpty())
+      <x-content-journey.section title="Festivales relacionados">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">@foreach ($journey['festivals'] as $festival)<x-festival-card :festival="$festival" />@endforeach</div>
+      </x-content-journey.section>
+    @endif
   </div>
 @endsection
 

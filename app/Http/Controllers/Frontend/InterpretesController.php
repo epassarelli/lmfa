@@ -100,6 +100,7 @@ class InterpretesController extends Controller
             ->take(2)
             ->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+        $journey = app(\App\Services\Product\FestivalJourneyService::class)->forArtist($interprete);
 
         $seo = SeoMetadata::artist($interprete);
         $metaTitle = $seo['title'];
@@ -117,6 +118,7 @@ class InterpretesController extends Controller
             'canciones',
             'discos',
             'eventos',
+            'journey',
             'interpretes',
             'metaTitle',
             'metaDescription',
