@@ -806,7 +806,7 @@ function procesarEvergreenMFA_(row, token, etapa) {
 }
 
 function resolverAccionEntidadMFA_(row, nombre) {
-  const accion = normalizarTextoMFA_(row.ACCION_API) || 'crear';
+  const accion = normalizarTextoMFA_(row.ACCION_API);
   if (!['crear', 'actualizar'].includes(accion)) {
     throw crearErrorMFA_(
       'ERROR_VALIDACION',
@@ -834,6 +834,21 @@ function resolverAccionEntidadMFA_(row, nombre) {
   }
 
   return { accion, id };
+}
+
+/**
+ * Evita marcar como exitoso un ACTUALIZAR que no enviaría ningún cambio.
+ * Las celdas vacías se omiten deliberadamente para preservar datos existentes,
+ * por lo que un payload vacío casi siempre indica una fila mal preparada.
+ */
+function exigirCambiosActualizacionMFA_(payload, accion, nombre) {
+  if (accion === 'actualizar' && Object.keys(payload).length === 0) {
+    throw crearErrorMFA_(
+      'ERROR_VALIDACION',
+      422,
+      `${nombre} con ACCION_API=ACTUALIZAR no contiene campos para modificar.`
+    );
+  }
 }
 
 function procesarArtistaMFA_(row, token, etapa) {
@@ -870,6 +885,8 @@ function procesarArtistaMFA_(row, token, etapa) {
     instagram: urlOpcionalMFA_(row.INSTAGRAM_URL),
     youtube: urlOpcionalMFA_(row.YOUTUBE_URL),
   });
+
+  exigirCambiosActualizacionMFA_(payload, accion, 'Artista');
 
   const method = accion === 'actualizar' ? 'put' : 'post';
   const apiPath = accion === 'actualizar' ? `/artists/${id}` : '/artists';
@@ -924,6 +941,8 @@ function procesarRecetaMFA_(row, token, etapa) {
     featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
   });
 
+  exigirCambiosActualizacionMFA_(payload, accion, 'Receta');
+
   const method = accion === 'actualizar' ? 'put' : 'post';
   const apiPath = accion === 'actualizar' ? `/foods/${id}` : '/foods';
 
@@ -977,6 +996,8 @@ function procesarMitoMFA_(row, token, etapa) {
     featured_image_path: row.FEATURED_IMAGE_PATH,
     featured_image_url: urlOpcionalMFA_(row.FEATURED_IMAGE_URL),
   });
+
+  exigirCambiosActualizacionMFA_(payload, accion, 'Mito');
 
   const method = accion === 'actualizar' ? 'put' : 'post';
   const apiPath = accion === 'actualizar' ? `/myths/${id}` : '/myths';

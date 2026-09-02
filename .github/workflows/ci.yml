@@ -48,7 +48,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          package-manager-cache: false
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -130,7 +136,7 @@ jobs:
           fi
 
       - name: Apps Script entity refresh tests
-        run: node automation/apps-script/tests/entity-refresh.test.mjs
+        run: npm run apps-script:test
 
       - name: Compile Blade views
         run: php artisan view:cache
