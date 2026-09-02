@@ -1,59 +1,74 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('penia_profiles', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('legacy_penia_id')->nullable()->unique();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->string('excerpt', 1000)->nullable();
-            $table->longText('body');
-            $table->unsignedInteger('province_id');
-            $table->unsignedBigInteger('locality_id')->nullable();
-            $table->string('city')->nullable();
-            $table->string('address')->nullable();
-            $table->decimal('latitude', 10, 8)->nullable();
-            $table->decimal('longitude', 11, 8)->nullable();
-            $table->string('venue_type', 50);
-            $table->json('opening_hours')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('email')->nullable();
-            $table->string('website')->nullable();
-            $table->string('reservation_url')->nullable();
-            $table->unsignedInteger('capacity')->nullable();
-            $table->text('accessibility_notes')->nullable();
-            $table->text('regular_events_summary')->nullable();
-            $table->text('admission_notes')->nullable();
-            $table->json('source_urls');
-            $table->string('verification_status', 30)->default('pending');
-            $table->timestamp('last_verified_at')->nullable();
-            $table->foreignId('verified_by_user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('verification_method', 50)->nullable();
-            $table->string('editorial_status', 30)->default('draft');
-            $table->timestamp('published_at')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->unsignedBigInteger('featured_image_id')->nullable();
-            $table->string('featured_image_path')->nullable();
-            $table->string('image_alt')->nullable();
-            $table->string('seo_title')->nullable();
-            $table->string('meta_description', 320)->nullable();
-            $table->unsignedInteger('visits')->default(0);
-            $table->timestamps();
-
-            $table->foreign('legacy_penia_id')->references('id')->on('penias')->nullOnDelete();
-            $table->foreign('province_id')->references('id')->on('provincias')->restrictOnDelete();
-            $table->foreign('locality_id')->references('id')->on('localities')->nullOnDelete();
-            $table->index(['editorial_status', 'verification_status', 'published_at'], 'penia_profiles_public_index');
-            $table->index(['province_id', 'locality_id', 'venue_type'], 'penia_profiles_discovery_index');
-            $table->index('last_verified_at', 'penia_profiles_verification_index');
-        });
+        DB::unprepared(<<<'SQL'
+CREATE TABLE `penia_profiles` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `legacy_penia_id` BIGINT UNSIGNED NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `slug` VARCHAR(255) NOT NULL,
+    `excerpt` VARCHAR(1000) NULL,
+    `body` LONGTEXT NOT NULL,
+    `province_id` INT NOT NULL,
+    `locality_id` BIGINT UNSIGNED NULL,
+    `city` VARCHAR(255) NULL,
+    `address` VARCHAR(255) NULL,
+    `latitude` DECIMAL(10,8) NULL,
+    `longitude` DECIMAL(11,8) NULL,
+    `venue_type` VARCHAR(50) NOT NULL,
+    `opening_hours` JSON NULL,
+    `phone` VARCHAR(255) NULL,
+    `email` VARCHAR(255) NULL,
+    `website` VARCHAR(255) NULL,
+    `reservation_url` VARCHAR(255) NULL,
+    `capacity` INT UNSIGNED NULL,
+    `accessibility_notes` TEXT NULL,
+    `regular_events_summary` TEXT NULL,
+    `admission_notes` TEXT NULL,
+    `source_urls` JSON NOT NULL,
+    `verification_status` VARCHAR(30) NOT NULL DEFAULT 'pending',
+    `last_verified_at` TIMESTAMP NULL DEFAULT NULL,
+    `verified_by_user_id` BIGINT UNSIGNED NULL,
+    `verification_method` VARCHAR(50) NULL,
+    `editorial_status` VARCHAR(30) NOT NULL DEFAULT 'draft',
+    `published_at` TIMESTAMP NULL DEFAULT NULL,
+    `created_by` BIGINT UNSIGNED NULL,
+    `featured_image_id` BIGINT UNSIGNED NULL,
+    `featured_image_path` VARCHAR(255) NULL,
+    `image_alt` VARCHAR(255) NULL,
+    `seo_title` VARCHAR(255) NULL,
+    `meta_description` VARCHAR(320) NULL,
+    `visits` INT UNSIGNED NOT NULL DEFAULT 0,
+    `created_at` TIMESTAMP NULL DEFAULT NULL,
+    `updated_at` TIMESTAMP NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `penia_profiles_legacy_penia_id_unique` (`legacy_penia_id`),
+    UNIQUE KEY `penia_profiles_slug_unique` (`slug`),
+    KEY `penia_profiles_verified_by_user_id_foreign` (`verified_by_user_id`),
+    KEY `penia_profiles_created_by_foreign` (`created_by`),
+    KEY `penia_profiles_locality_id_foreign` (`locality_id`),
+    KEY `penia_profiles_public_index` (`editorial_status`, `verification_status`, `published_at`),
+    KEY `penia_profiles_discovery_index` (`province_id`, `locality_id`, `venue_type`),
+    KEY `penia_profiles_verification_index` (`last_verified_at`),
+    CONSTRAINT `penia_profiles_legacy_penia_id_foreign`
+        FOREIGN KEY (`legacy_penia_id`) REFERENCES `penias` (`id`) ON DELETE SET NULL,
+    CONSTRAINT `penia_profiles_province_id_foreign`
+        FOREIGN KEY (`province_id`) REFERENCES `provincias` (`id`) ON DELETE RESTRICT,
+    CONSTRAINT `penia_profiles_locality_id_foreign`
+        FOREIGN KEY (`locality_id`) REFERENCES `localities` (`id`) ON DELETE SET NULL,
+    CONSTRAINT `penia_profiles_verified_by_user_id_foreign`
+        FOREIGN KEY (`verified_by_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+    CONSTRAINT `penia_profiles_created_by_foreign`
+        FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL);
     }
 
     public function down(): void

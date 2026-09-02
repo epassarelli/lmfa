@@ -230,4 +230,9 @@ class Event extends Model
     {
         return $this->belongsToMany(Festival::class, 'event_festival');
     }
+
+    public function peniaProfiles()
+    {
+        return $this->belongsToMany(PeniaProfile::class, 'penia_profile_event')->withTimestamps();
+    }
 }

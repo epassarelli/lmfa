@@ -8,16 +8,16 @@
 
 ## 2. Persistencia y dominio canónicos
 
-- [ ] 2.1 Crear migraciones nuevas y reversibles para la entidad canónica, fuentes, verificación, ubicación y campos específicos de Peña, sin editar migraciones históricas.
-- [ ] 2.2 Crear la relación persistida con Eventos y solo las relaciones editoriales adicionales que estén confirmadas por modelos existentes.
-- [ ] 2.3 Implementar modelos, casts, scopes de visibilidad, relaciones y generación segura de slug.
-- [ ] 2.4 Crear factories y fixtures mínimas para pruebas, con registros publicados, no verificables, archivados y con agenda futura/pasada.
-- [ ] 2.5 Ejecutar `php artisan migrate:status`, presentar la migración y esperar autorización humana antes de cualquier ejecución de migraciones.
+- [x] 2.1 Crear migraciones nuevas y reversibles para la entidad canónica, fuentes, verificación, ubicación y campos específicos de Peña, sin editar migraciones históricas.
+- [x] 2.2 Crear la relación persistida con Eventos y solo las relaciones editoriales adicionales que estén confirmadas por modelos existentes.
+- [x] 2.3 Implementar modelos, casts, scopes de visibilidad, relaciones y generación segura de slug.
+- [x] 2.4 Crear factories y fixtures mínimas para pruebas, con registros publicados, no verificables, archivados y con agenda futura/pasada.
+- [x] 2.5 Ejecutar `php artisan migrate:status`, presentar la migración y esperar autorización humana antes de cualquier ejecución de migraciones.
 
 ## 3. Reglas editoriales, permisos y API
 
 - [ ] 3.1 Implementar requests y servicio de dominio para alta, edición, publicación, archivado y sincronización de relaciones.
-- [ ] 3.2 Implementar policy y registrar autorización siguiendo los patrones existentes de admin y API.
+- [x] 3.2 Implementar policy y registrar autorización siguiendo los patrones existentes de admin y API.
 - [ ] 3.3 Crear endpoints API autenticados para listado, detalle, creación y actualización, con búsqueda, filtros y paginación.
 - [ ] 3.4 Impedir publicación por API cuando falten ubicación, fuentes, verificación u otros campos obligatorios.
 - [ ] 3.5 Definir el contrato de auditoría y dejar la integración de Content Refresh desactivada hasta cumplir el gate de release.

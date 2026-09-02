@@ -62,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
             \App\Models\Comida::class,
             \App\Models\Radio::class,
             \App\Models\Penia::class,
+            \App\Models\PeniaProfile::class,
             \App\Models\Event::class,
         ];
 
