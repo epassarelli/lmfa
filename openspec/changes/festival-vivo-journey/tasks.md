@@ -1,9 +1,9 @@
 ## 1. Query and rollout foundation
 
-- [ ] 1.1 Audit existing Festival, Event, and Artist relations and visibility scopes in read-only mode.
-- [ ] 1.2 Add the feature flag and Festival allowlist configuration, disabled by default.
-- [ ] 1.3 Implement typed journey service output with bounded, visible collections.
-- [ ] 1.4 Add focused tests for visibility, ordering, limits, allowlist, and disabled behavior.
+- [x] 1.1 Audit existing Festival, Event, and Artist relations and visibility scopes in read-only mode.
+- [x] 1.2 Add the feature flag and Festival allowlist configuration, disabled by default.
+- [x] 1.3 Implement typed journey service output with bounded, visible collections.
+- [ ] 1.4 Complete focused tests for ordering, limits, allowlist, and disabled behavior.
 
 ## 2. Public journey surfaces
 
