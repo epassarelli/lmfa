@@ -69,9 +69,12 @@ class AlbumController extends Controller
 
     public function store(AlbumRequest $request)
     {
-        $album = new Album($request->validated());
+        $payload = $request->validated();
+        $album = new Album($payload);
 
-        $album->slug = Str::slug($album->album);
+        $album->slug = filled($payload['slug'] ?? null)
+            ? Str::slug($payload['slug'])
+            : Str::slug($album->album);
         $album->user_id = Auth::id();
         $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
         $album->visitas = 0;
@@ -82,7 +85,10 @@ class AlbumController extends Controller
                 $request->file('foto'),
                 $album,
                 'album',
-                'albunes'
+                'albunes',
+                false,
+                $album->slug,
+                ['alt' => $album->image_alt ?: $album->album]
             );
         }
 
@@ -113,8 +119,11 @@ class AlbumController extends Controller
 
     public function update(AlbumRequest $request, Album $album)
     {
-        $album->fill($request->validated());
-        $album->slug = Str::slug($album->album);
+        $payload = $request->validated();
+        $album->fill($payload);
+        $album->slug = filled($payload['slug'] ?? null)
+            ? Str::slug($payload['slug'])
+            : Str::slug($album->album);
         $album->user_id = Auth::id();
         $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
@@ -124,7 +133,9 @@ class AlbumController extends Controller
                 $album,
                 'album',
                 'albunes',
-                true
+                true,
+                $album->slug,
+                ['alt' => $album->image_alt ?: $album->album]
             );
         }
 
@@ -138,6 +149,13 @@ class AlbumController extends Controller
 
         $album->canciones()->sync($syncData);
         $album->save();
+
+        if (array_key_exists('image_alt', $payload)) {
+            $image = $album->images()->orderBy('sort_order')->first();
+            if ($image) {
+                $image->update(['alt' => $album->image_alt ?: $album->album]);
+            }
+        }
 
         return redirect()->route('backend.discos.index')->with('success', 'Album actualizado exitosamente.');
     }

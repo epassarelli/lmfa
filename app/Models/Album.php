@@ -14,11 +14,24 @@ class Album extends Model
     use CommonMethodsTrait;
     use HasFactory;
     protected $table = 'albunes';
+    protected $casts = [
+        'estado' => 'boolean',
+        'visitas' => 'integer',
+        'release_date' => 'date',
+    ];
+
     protected $fillable = [
         'album',
+        'album_type',
         'slug',
         'anio',
+        'excerpt',
+        'label',
+        'release_date',
+        'seo_title',
+        'meta_description',
         'foto',
+        'image_alt',
         'spotify',
         'visitas',
         'estado',

@@ -150,6 +150,7 @@ jobs:
           php artisan test             tests/Feature/Festivals/FestivalFrontendRestructureTest.php             tests/Feature/Festivals/FestivalApiModernizationTest.php             tests/Feature/Festivals/FestivalAuditCommandTest.php
 
 
+<<<<<<< HEAD
       - name: PHPUnit - Myths
         run: |
           php artisan test             tests/Feature/Myths/MythApiModernizationTest.php             tests/Feature/Myths/MythBackofficeModernizationTest.php             tests/Feature/Myths/MythFrontendModernizationTest.php             tests/Feature/Myths/MythAuditCommandTest.php
@@ -161,3 +162,8 @@ jobs:
       - name: PHPUnit - Artists
         run: |
           php artisan test             tests/Feature/Artists/ArtistApiModernizationTest.php             tests/Feature/Artists/ArtistBackofficeModernizationTest.php             tests/Feature/Artists/ArtistBiographyFrontendTest.php             tests/Feature/Artists/ArtistAuditCommandTest.php
+=======
+      - name: PHPUnit - Music
+        run: |
+          php artisan test             tests/Feature/Music/MusicCatalogModernizationTest.php
+>>>>>>> feature/discography-modernization

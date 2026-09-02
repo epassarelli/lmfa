@@ -15,12 +15,27 @@ class Cancion extends Model
     use CommonMethodsTrait;
     use HasFactory;
     protected $table = 'canciones';
+    protected $casts = [
+        'estado' => 'boolean',
+        'visitas' => 'integer',
+        'is_instrumental' => 'boolean',
+        'publicar' => 'datetime',
+    ];
+
     protected $fillable = [
         'cancion',
         'slug',
         'letra',
+        'excerpt',
+        'composer',
+        'lyricist',
+        'rights_status',
+        'lyrics_source_url',
+        'is_instrumental',
         'youtube',
         'spotify',
+        'seo_title',
+        'meta_description',
         'visitas',
         'publicar',
         'estado',

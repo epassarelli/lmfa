@@ -47,7 +47,7 @@
       </div>
 
 
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="form-group">
           <label for="anio">Año</label>
           <input type="number" name="anio" id="anio" min="1900" max="2100" step="1"
@@ -58,13 +58,31 @@
         </div>
       </div>
 
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="album_type">Tipo</label>
+          <select name="album_type" id="album_type" class="form-control">
+            @foreach (['studio' => 'Estudio', 'live' => 'En vivo', 'compilation' => 'Compilado', 'ep' => 'EP', 'single' => 'Single', 'other' => 'Otro'] as $value => $label)
+              <option value="{{ $value }}" {{ old('album_type', $album->album_type ?? '') === $value ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="release_date">Fecha de lanzamiento</label>
+          <input type="date" name="release_date" id="release_date" class="form-control"
+            value="{{ old('release_date', isset($album?->release_date) ? $album->release_date->format('Y-m-d') : '') }}">
+        </div>
+      </div>
+
 
       <div class="col-md-6">
         <div class="form-group">
           <label for="foto">Foto</label>
-          <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png">
-          <small class="form-text text-muted">La imagen debe ser en formato .jpg, de 400 x 400px y no debe superar los
-            200KB.</small>
+          <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png,image/webp">
+          <small class="form-text text-muted">JPEG, PNG o WebP. Máximo 5 MB.</small>
           @if (isset($album) && $album->images->isNotEmpty())
             <div class="mt-2 text-center">
               <label>Previsualización (Nueva):</label><br>
@@ -85,6 +103,13 @@
 
       <div class="col-md-6">
         <div class="form-group">
+          <label for="label">Sello / edición</label>
+          <input type="text" name="label" id="label" class="form-control" value="{{ old('label', $album->label ?? '') }}">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
           <label for="spotify">Enlace de Spotify</label>
           <input type="text" name="spotify" id="spotify" class="form-control"
             value="{{ old('spotify', $album->spotify ?? '') }}">
@@ -94,6 +119,33 @@
         </div>
       </div>
 
+
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="excerpt">Resumen editorial</label>
+          <textarea name="excerpt" id="excerpt" rows="3" class="form-control">{{ old('excerpt', $album->excerpt ?? '') }}</textarea>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-2"><h5 class="border-bottom pb-2">SEO y metadatos</h5></div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="seo_title">Título SEO</label>
+          <input type="text" name="seo_title" id="seo_title" class="form-control" value="{{ old('seo_title', $album->seo_title ?? '') }}">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="meta_description">Meta description</label>
+          <textarea name="meta_description" id="meta_description" rows="3" class="form-control">{{ old('meta_description', $album->meta_description ?? '') }}</textarea>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="image_alt">Texto alternativo de portada</label>
+          <input type="text" name="image_alt" id="image_alt" class="form-control" value="{{ old('image_alt', $album->image_alt ?? '') }}">
+        </div>
+      </div>
 
     </div>
 

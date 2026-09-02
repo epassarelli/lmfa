@@ -123,8 +123,17 @@ class CancionController extends Controller
 
     public function store(CancionRequest $request)
     {
-        $cancion = new Cancion($request->validated());
-        $cancion->slug = Str::slug($cancion->cancion);
+        $payload = $request->validated();
+        $cancion = new Cancion($payload);
+        $cancion->slug = filled($payload['slug'] ?? null)
+            ? Str::slug($payload['slug'])
+            : Str::slug($cancion->cancion);
+
+        if ($cancion->is_instrumental) {
+            $cancion->letra = null;
+            $cancion->lyricist = null;
+            $cancion->rights_status = $cancion->rights_status ?: 'not_available';
+        }
         $cancion->user_id = Auth::id();
         $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
         $cancion->visitas = 0;
@@ -150,8 +159,17 @@ class CancionController extends Controller
 
     public function update(CancionRequest $request, Cancion $cancion)
     {
-        $cancion->fill($request->validated());
-        $cancion->slug = Str::slug($cancion->cancion);
+        $payload = $request->validated();
+        $cancion->fill($payload);
+        $cancion->slug = filled($payload['slug'] ?? null)
+            ? Str::slug($payload['slug'])
+            : Str::slug($cancion->cancion);
+
+        if ($cancion->is_instrumental) {
+            $cancion->letra = null;
+            $cancion->lyricist = null;
+            $cancion->rights_status = $cancion->rights_status ?: 'not_available';
+        }
         $cancion->user_id = Auth::id();
         $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
         $cancion->save();
@@ -193,7 +211,8 @@ class CancionController extends Controller
         $cancion = new Cancion();
         $cancion->cancion = $request->cancion;
         $cancion->slug = Str::slug($request->cancion);
-        $cancion->letra = 'No disponible aun';
+        $cancion->letra = null;
+        $cancion->rights_status = 'not_available';
         $cancion->youtube = null;
         $cancion->spotify = null;
         $cancion->estado = 1;
