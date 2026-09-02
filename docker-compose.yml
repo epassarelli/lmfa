@@ -3,8 +3,9 @@ services:
 
   app:
     build: ./
-    ports:
-      - 80:80
+    environment:
+      VIRTUAL_HOST: mfa.local
+      VIRTUAL_PORT: 80
     working_dir: /var/www/html
     image: mfa_app
     volumes:
@@ -14,6 +15,7 @@ services:
       - db
     networks:
       - app-network
+      - shared-web
 
   db:
     image: mariadb:10.8
@@ -36,12 +38,14 @@ services:
       PMA_USER: mfa
       PMA_PASSWORD: mfa
       UPLOAD_LIMIT: 64M
-    ports:
-      - 8080:80
+      VIRTUAL_HOST: pma.mfa.local
     networks:
       - app-network
+      - shared-web
     depends_on:
       - db
 
 networks:
   app-network:
+  shared-web:
+    external: true
