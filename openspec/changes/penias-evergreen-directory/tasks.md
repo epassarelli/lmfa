@@ -24,8 +24,8 @@
 
 ## 4. Backoffice y auditor de calidad
 
-- [ ] 4.1 Crear listado administrativo con filtros por estado, territorio, tipo, verificación y faltantes de calidad.
-- [ ] 4.2 Crear formularios de alta y edición con Select2 o equivalente para relaciones extensas y campos de contacto, reservas, accesibilidad, fuentes y SEO.
+- [x] 4.1 Crear listado administrativo con filtros por estado, territorio, tipo, verificación y faltantes de calidad.
+- [x] 4.2 Crear formularios de alta y edición con Select2 o equivalente para relaciones extensas y campos de contacto, reservas, accesibilidad, fuentes y SEO.
 - [ ] 4.3 Incorporar acciones de vista previa, publicar, archivar y despublicar con validaciones y autorización.
 - [ ] 4.4 Implementar auditor de calidad con faltantes, score y priorización editorial, reutilizando patrones existentes cuando sean compatibles.
 

@@ -382,6 +382,11 @@ return [
                     'icon' => 'fas fa-fw fa-map-marked-alt',
                 ],
                 [
+                    'text' => 'Peñas',
+                    'url' => 'admin/penia-profiles',
+                    'icon' => 'fas fa-fw fa-store',
+                ],
+                [
                     'text' => 'Comidas Típicas',
                     'url' => 'admin/comidas',
                     'icon' => 'fas fa-fw fa-utensils',
@@ -395,7 +400,7 @@ return [
         ],
 
         ['header' => 'PASARELA DE CONTENIDOS', 'can' => 'manage user'],
-        
+
         [
             'text' => 'Cuentas Sociales',
             'url' => 'admin/pasarela/social-accounts',
