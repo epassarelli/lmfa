@@ -1,7 +1,7 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-03 (Peñas evergreen cerrado para DEV con datos demo; Festival Vivo mantiene su piloto local controlado)
+> Ultima actualizacion: 2026-09-03 (estabilizacion de `dev`: conflictos versionados corregidos y estado real de Radios/Peñas relevado)
 
 ---
 
@@ -40,7 +40,8 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Producto:** `BL-0022C` recomienda como primer piloto `Festival evergreen -> Evento futuro -> Artista -> repertorio/actualidad`, condicionado a auditoria de cobertura, feature flag, allowlist y aprobacion funcional.
 - **Curacion:** `BL-0021B` tiene 3 de 10 borradores preparados: Gaston Cordero, Los Trovadores de Cuyo y Juan Bautista Bertorello. Todos permanecen con `ENVIAR_API=N`.
 - **Penas:** módulo evergreen cerrado para DEV sobre `penia_profiles`. El legado vacío `penias`, sus rutas, controlador, modelo y vista fueron retirados el 2026-09-03; no hay redirección porque no existían registros ni equivalencias. Incluye API, landing, ficha con el mismo buscador de la home, descubrimiento de Peñas de la misma provincia, ubicación completa, mapa por coordenadas, sitemap, NAV, CRUD, preview noindex, acciones editoriales, auditor read-only `mfa:penias:audit` y 10 fichas demo publicadas con localidad, coordenadas y 10 eventos futuros. Los tests cubren permisos, publicación, filtros/paginación, SEO, agenda visible y datos prácticos de la ficha. La activación en producción sigue requiriendo un lote editorial real con fuentes y derechos verificados.
-- **Radios:** evergreen en desarrollo bajo `radios-evergreen-directory`. La persistencia canónica local para señales, canales, programas y franjas ya está aplicada; el módulo legacy permanece intacto hasta completar backoffice, frontend, demo y release gate.
+- **Radios:** evergreen en desarrollo bajo `radios-evergreen-directory`. Ya incluye persistencia canónica para señales, canales de escucha, programas y franjas; servicio de dominio, policies, API autenticada, backoffice inicial, landing y ficha pública de señales, sitemap, factories, tests y escenario demo. Permanecen abiertos el auditor/export CSV, el directorio y ficha pública de programas, próxima emisión visible, formularios completos, SEO/schema/canonical, Content Refresh, piloto editorial real y release gate. El módulo legacy permanece intacto hasta superar esas validaciones.
+- **Confiabilidad de `dev`:** se eliminaron los conflictos de merge que habían quedado versionados en el workflow de CI, doce acciones Fortify/Jetstream y 72 artefactos distribuidos de CKEditor. El workflow reúne las suites de Festivales, Festival Vivo, Artistas, Recetas, Mitos, Música, Peñas y Radios. El cierre de este saneamiento exige una ejecución verde en GitHub Actions después del push.
 
 ### Festival Vivo - piloto local 2026-09-02
 
@@ -66,6 +67,7 @@ Orden operativo de curacion: prioridad, menor score, mayores visitas dentro del 
 
 | Dimension | Alineacion | Lectura |
 |-----------|------------|---------|
+| Base tecnica confiable | En recuperacion | Los conflictos versionados de CI y autenticacion se corrigieron en `dev`; falta confirmar el workflow completo en GitHub Actions. |
 | Cobertura integral | Alta | MFA articula artistas, discos, letras, noticias, eventos, festivales, Enciclopedia, recetas y mitos. |
 | Autoridad editorial | Media/alta en sistema; baja en inventario legacy | Existen contratos y auditores, pero 1.427 registros siguen P1. |
 | SEO y performance | Alta | Base tecnica disponible; falta medicion continua de impacto. |
@@ -78,12 +80,13 @@ El siguiente salto combina autoridad demostrable con mejores recorridos de usuar
 
 ### Proximos gates comunes
 
-1. Ejecutar los seis casos controlados de Content Refresh con el preflight y runbook de cycle-4.
-2. Validar durante siete dias el piloto local/controlado de `Festival Vivo` antes de ampliar allowlist o evaluar release.
-3. Completar y revisar el lote de 10 Biografias P1; despues continuar con Recetas y Mitos.
-4. Incorporar visitas al auditor de Festivales.
-5. Aprobar la politica de derechos antes de automatizar Discografia/Cancionero.
-6. Validar Pasarela y UGC end-to-end antes de tratarlos como servicios cerrados.
+1. Obtener CI verde para `dev`, incluyendo sintaxis PHP, migraciones, Blade, Apps Script y todas las suites editoriales/productivas.
+2. Ejecutar los seis casos controlados de Content Refresh con el preflight y runbook de cycle-4.
+3. Validar durante siete dias el piloto local/controlado de `Festival Vivo` antes de ampliar allowlist o evaluar release.
+4. Completar y revisar el lote de 10 Biografias P1; despues continuar con Recetas y Mitos.
+5. Incorporar visitas al auditor de Festivales.
+6. Aprobar la politica de derechos antes de automatizar Discografia/Cancionero.
+7. Validar Pasarela y UGC end-to-end antes de tratarlos como servicios cerrados.
 
 ### Gobernanza documental verificada el 2026-08-20
 
@@ -375,7 +378,7 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 ### Modulos diferidos - proxima version
 
 - **Entrevistas**: rutas activas en `web.php`, controller sin metodos `byArtista`/`show`, sin vistas, modelo inexistente.
-- **Radios**: el frontend legacy continúa disponible y no cuenta con backend administrativo propio. Su reemplazo evergreen está en desarrollo y convive sin modificar las rutas legacy hasta superar el release gate.
+- **Radios**: el reemplazo evergreen ya tiene dominio canónico, API, backoffice inicial, frontend de señales, sitemap, fixtures y tests. Convive con el legado y no debe reemplazarlo hasta completar auditor, programas públicos, SEO, formularios, piloto real y release gate.
 - **Peñas**: módulo evergreen cerrado para DEV en `penia_profiles`, con API, frontend, CRUD, auditor y fixtures. El piloto editorial real permanece como gate exclusivo de producción.
 - **Videos**: existe `Frontend/VideosController`, pero referencia un modelo/modulo no consolidado. Debe tratarse como componente incompleto.
 
