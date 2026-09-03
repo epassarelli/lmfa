@@ -1,7 +1,7 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-03 (puntos 1 a 4 cerrados en `dev`: Peñas incorpora lote piloto real, seguro y pendiente de revisión humana)
+> Ultima actualizacion: 2026-09-03 (puntos 1 a 5 cerrados en `dev`: Radios completa backoffice, programas públicos, auditor y SEO; exposición pública aún apagada)
 
 ---
 
@@ -19,7 +19,7 @@
 | 2 | Cerrar permisos editoriales y feature flags de Peñas/Radios | `done` |
 | 3 | Corregir la migración destructiva de Peñas | `done` |
 | 4 | Terminar Peñas y cargar diez perfiles reales | `done` en DEV; carga operativa por comando explícito |
-| 5 | Completar Radios: backoffice, programas públicos, auditor y SEO | `pending` |
+| 5 | Completar Radios: backoffice, programas públicos, auditor y SEO | `done` en DEV; flag público apagado |
 | 6 | Integrar Peñas y Radios con Content Refresh | `pending` |
 | 7 | Ejecutar tests, staging, smoke y recién entonces fusionar | `pending` |
 
@@ -52,8 +52,8 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Producto:** `BL-0022C` recomienda como primer piloto `Festival evergreen -> Evento futuro -> Artista -> repertorio/actualidad`, condicionado a auditoria de cobertura, feature flag, allowlist y aprobacion funcional.
 - **Curacion:** `BL-0021B` tiene 3 de 10 borradores preparados: Gaston Cordero, Los Trovadores de Cuyo y Juan Bautista Bertorello. Todos permanecen con `ENVIAR_API=N`.
 - **Penas:** módulo evergreen cerrado para DEV sobre `penia_profiles`. Las rutas, controlador, modelo y vistas del módulo legacy fueron retirados, pero la tabla `penias` y el puente `penia_profiles.legacy_penia_id` se preservan hasta completar y validar el backfill. La migración destructiva `2026_09_03_010000_retire_legacy_penias_table` ahora es un no-op seguro y `2026_09_03_015000_restore_legacy_penias_bridge` repara de forma idempotente instalaciones donde aquella versión ya hubiera corrido. La auditoría previa confirmó que la tabla estaba vacía, por lo que no existen filas perdidas que reconstruir. Incluye API, landing, ficha con el mismo buscador de la home, descubrimiento de Peñas de la misma provincia, ubicación completa, mapa por coordenadas, sitemap, CRUD, preview noindex, acciones editoriales y auditor read-only `mfa:penias:audit`. `PeniaProfilePilotSeeder` reemplaza el escenario ficticio por 10 fichas reales de la ciudad de Salta basadas en el directorio municipal: La Cautiva, La Panadería del Chuña, Boliche Balderrama, La Casona del Molino, El Antigal, Huayra, Peña del Minero, Casa Grande, La Vieja Estación y Peña del Chaqueño Palavecino. La carga es idempotente, archiva sólo los slugs demo conocidos, conserva cualquier ficha real ya revisada y crea las nuevas como `draft/pending`, sin publicarlas ni adjudicar una verificación. El público permanece apagado por defecto con `FEATURE_PENIA_DIRECTORY=false`: la landing, las fichas, el NAV y sus sitemaps sólo se exponen al habilitar el flag. Colaboradores y prensa pueden crear y editar únicamente sus borradores propios; todo intento de auto-verificar, aprobar o publicar se normaliza a propuesta pendiente y las acciones canónicas quedan reservadas al rol `administrador`. Antes de activar producción, un administrador debe ejecutar la carga explícita, confirmar contacto/datos, revisar derechos de imagen y aprobar cada ficha.
-- **Radios:** evergreen en desarrollo bajo `radios-evergreen-directory`. Ya incluye persistencia canónica para señales, canales de escucha, programas y franjas; servicio de dominio, policies, API autenticada, backoffice inicial, landing y ficha pública de señales, sitemap, factories, tests y escenario demo. La superficie pública permanece apagada por defecto con `FEATURE_RADIO_DIRECTORY=false`, independientemente de Peñas, y no aparece en NAV ni sitemaps mientras esté oscura. Colaboradores y prensa sólo pueden proponer y editar borradores propios; la verificación y publicación son exclusivas de `administrador`. Permanecen abiertos el auditor/export CSV, el directorio y ficha pública de programas, próxima emisión visible, formularios completos, SEO/schema/canonical, Content Refresh, piloto editorial real y release gate. El módulo legacy permanece intacto hasta superar esas validaciones.
-- **Confiabilidad de `dev`:** se eliminaron los conflictos de merge que habían quedado versionados en el workflow de CI, doce acciones Fortify/Jetstream y 72 artefactos distribuidos de CKEditor. El workflow reúne las suites de Festivales, Festival Vivo, Artistas, Recetas, Mitos, Música, Peñas y Radios; agrega gates para los flags independientes, la preservación de datos legacy de Peñas y la carga idempotente del lote piloto real. GitHub Actions quedó verde en el commit `ec19d2d` (run `33780596109`) después de validar migraciones, sintaxis PHP, compilación Blade y todas las suites incorporadas.
+- **Radios:** punto 5 cerrado en DEV sobre el dominio canónico `radio_signals`, `radio_listening_channels`, `radio_programs` y `radio_program_slots`. Incluye API autenticada; backoffice completo de señales, canales, programas y franjas; preview, publicación y despublicación; filtros de calidad/verificación; landing y ficha de emisoras; directorio y ficha pública de programas bajo `/radios-de-folklore-argentino/programas`; próxima emisión calculada por zona horaria; relaciones emisora-programa; sitemap; canonical/noindex; datos estructurados `RadioStation` y `RadioSeries`; y auditor read-only `mfa:radios:audit` con score, prioridades, filtros y export CSV. La visibilidad pública permanece apagada por defecto con `FEATURE_RADIO_DIRECTORY=false`, independientemente de Peñas. Colaboradores y prensa sólo pueden proponer y editar borradores propios; verificar, publicar y despublicar sigue reservado a `administrador`. El módulo legacy permanece intacto. Quedan fuera de este punto la integración con Content Refresh (punto 6), un lote editorial real y el release gate de staging/producción (punto 7).
+- **Confiabilidad de `dev`:** se eliminaron los conflictos de merge que habían quedado versionados en el workflow de CI, doce acciones Fortify/Jetstream y 72 artefactos distribuidos de CKEditor. El workflow reúne las suites de Festivales, Festival Vivo, Artistas, Recetas, Mitos, Música, Peñas y Radios; agrega gates para los flags independientes, la preservación de datos legacy de Peñas y la carga idempotente del lote piloto real. El punto 5 quedó verde en GitHub Actions en el commit remoto `a87411d` (run `33784356373`): las 14 pruebas específicas de Radios sumaron 92 aserciones y el gate global validó además migraciones, sintaxis PHP, compilación Blade y las suites incorporadas.
 
 ### Festival Vivo - piloto local 2026-09-02
 
@@ -216,8 +216,8 @@ El siguiente salto combina autoridad demostrable con mejores recorridos de usuar
 
 | Tabla | Estado |
 |-------|--------|
-| `radios` | Legado conservado: existe modelo y rutas frontend, sin backend administrativo. El reemplazo canónico usa `radio_signals`, `radio_listening_channels`, `radio_programs` y `radio_program_slots`; aún no está listo para producción. |
-| `penias` | Retirada el 2026-09-03 por estar vacia y sin uso funcional. El directorio vigente opera exclusivamente sobre `penia_profiles`. |
+| `radios` | Legado conservado sin cambios. El reemplazo canónico usa `radio_signals`, `radio_listening_channels`, `radio_programs` y `radio_program_slots`; el punto 5 está completo en DEV pero aún faltan Content Refresh y release gate. |
+| `penias` | Legado conservado temporalmente. El directorio vigente opera sobre `penia_profiles`; la tabla y el puente `legacy_penia_id` se preservan hasta validar el backfill y retiro definitivo. |
 | `venues` | Existe en BD por la transformacion a `events`, pero no hay `Venue` model en `app/Models`. Estado funcional incompleto / pendiente de auditoria. |
 
 ### Observacion puntual de inventario local
@@ -389,7 +389,7 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 ### Modulos diferidos - proxima version
 
 - **Entrevistas**: rutas activas en `web.php`, controller sin metodos `byArtista`/`show`, sin vistas, modelo inexistente.
-- **Radios**: el reemplazo evergreen ya tiene dominio canónico, API, backoffice inicial, frontend de señales, sitemap, fixtures y tests. Convive con el legado y no debe reemplazarlo hasta completar auditor, programas públicos, SEO, formularios, piloto real y release gate.
+- **Radios**: el reemplazo evergreen completó en DEV dominio canónico, API, backoffice de señales/programas, canales y franjas, frontend de señales y programas, próxima emisión, auditor CSV, sitemap, SEO/schema/canonical y tests. Convive con el legado y permanece oscuro hasta integrar Content Refresh, ejecutar el piloto editorial y superar el release gate.
 - **Peñas**: módulo evergreen cerrado para DEV en `penia_profiles`, con API, frontend, CRUD, auditor y lote piloto de 10 fichas reales en borrador. La carga, verificación humana, derechos de imagen y publicación permanecen como gate operativo previo a producción.
 - **Videos**: existe `Frontend/VideosController`, pero referencia un modelo/modulo no consolidado. Debe tratarse como componente incompleto.
 
