@@ -250,7 +250,7 @@ No deben documentarse como modulos cerrados:
 
 - `Entrevistas`: rutas activas pero superficie incompleta;
 - `Radios`: frontend y modelo existentes, sin cierre administrativo documentado;
-- `Penias`: frontend y modelo existentes, sin cierre administrativo documentado;
+- `Peñas evergreen`: módulo canónico sobre `penia_profiles`, con directorio, API, backoffice, auditor y datos demo en DEV. El legado `penias` fue retirado el 2026-09-03;
 - `Videos`: componente incompleto y no consolidado.
 
 ---

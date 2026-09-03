@@ -1107,10 +1107,10 @@ Campos:
 - `estado`
 - timestamps
 
-Estado:
+Estado historico:
 
-- Existe modelo y frontend publico.
-- No esta consolidado como modulo administrativo completo.
+- Retirado el 2026-09-03 por autorizacion explicita: la tabla estaba vacia y su modelo, rutas y vistas no tenian uso funcional.
+- El contrato vigente es `penia_profiles` -> `PeniaProfile`; no conserva FK ni dependencia sobre `penias`.
 
 ### `venues`
 

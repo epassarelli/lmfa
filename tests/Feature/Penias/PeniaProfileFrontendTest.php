@@ -69,4 +69,10 @@ class PeniaProfileFrontendTest extends TestCase
             ->assertSee('Peña paginada 13')
             ->assertDontSee('Peña paginada 01');
     }
+
+    public function test_the_retired_legacy_penia_urls_are_not_exposed(): void
+    {
+        $this->get('/penias-folkloricas-de-argentina')->assertNotFound();
+        $this->get('/penias-folkloricas-de-argentina/slug-inexistente')->assertNotFound();
+    }
 }

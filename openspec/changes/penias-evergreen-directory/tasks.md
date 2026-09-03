@@ -36,7 +36,7 @@
 - [x] 5.3 Mostrar únicamente Eventos futuros y publicados vinculados de forma explícita; ocultar el bloque cuando no existan.
 - [ ] 5.4 Incorporar relaciones editoriales y enlaces internos rastreables solo cuando existan asociaciones persistidas.
 - [x] 5.5 Implementar canonical, robots para filtros, breadcrumbs, metadata persistida, JSON-LD apropiado y sitemap condicionado por estado y verificación.
-- [x] 5.6 Mantener la ruta legacy sin cambios hasta contar con equivalencias auditadas; implementar 301 solo para mapeos aprobados.
+- [x] 5.6 Retirar la ruta legacy vacía por autorización explícita, sin 301 al no existir registros ni equivalencias aprobadas.
 
 ## 6. Piloto editorial y release gate
 
@@ -49,7 +49,7 @@
 ## 7. Pruebas, rendimiento y documentación
 
 - [x] 7.1 Crear tests feature con `DatabaseTransactions` para permisos, CRUD, validaciones de publicación, filtros, paginación y visibilidad pública.
-- [ ] 7.2 Crear tests para excluir Eventos vencidos o no públicos, evitar relaciones inferidas y preservar datos legacy antes de la transición.
+- [x] 7.2 Crear tests para excluir Eventos vencidos o no públicos, evitar relaciones inferidas y confirmar que las URLs legacy retiradas no se exponen.
 - [x] 7.3 Crear pruebas SEO para canonical, robots, schema y sitemap, incluyendo la exclusión de perfiles no verificables.
 - [x] 7.4 Revisar rendimiento de listados y detalle para evitar N+1, carga de media innecesaria y URLs de filtros de bajo valor.
 - [x] 7.5 Actualizar la documentación operativa y `project/docs/00_estado_actual.md` solo al completar hitos verificables del módulo.

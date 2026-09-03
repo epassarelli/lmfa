@@ -1,7 +1,7 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-02 (Festival Vivo listo para piloto local controlado; Peñas evergreen cuenta con CRUD y auditor read-only, y ambos release gates siguen pendientes)
+> Ultima actualizacion: 2026-09-03 (Peñas evergreen cerrado para DEV con datos demo; Festival Vivo mantiene su piloto local controlado)
 
 ---
 
@@ -39,7 +39,7 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Content Refresh:** soporta Artista, Receta y Mito con `CREAR/ACTUALIZAR`. Cycle-4 exige `ACCION_API` explicita, bloquea updates vacios y agrega preflight offline de los seis casos. El E2E productivo sigue pendiente.
 - **Producto:** `BL-0022C` recomienda como primer piloto `Festival evergreen -> Evento futuro -> Artista -> repertorio/actualidad`, condicionado a auditoria de cobertura, feature flag, allowlist y aprobacion funcional.
 - **Curacion:** `BL-0021B` tiene 3 de 10 borradores preparados: Gaston Cordero, Los Trovadores de Cuyo y Juan Bautista Bertorello. Todos permanecen con `ENVIAR_API=N`.
-- **Penas:** directorio evergreen en desarrollo sobre `penia_profiles`, separado del legado vacio. Cuenta con migraciones locales aplicadas, perfil verificado por responsable interno, API protegida, landing, ficha, sitemap, NAV, escenario demo local, CRUD administrativo, preview noindex y acciones explícitas de publicación/despublicación/archivado. El auditor read-only `mfa:penias:audit` reporta score/P1-P3/CSV; los tests cubren permisos, publicación, filtros/paginación, SEO y agenda visible, y los listados usan eager loading y paginación. Faltan lote editorial real y gate de release; no se debe activar ni migrar contenido real aun.
+- **Penas:** módulo evergreen cerrado para DEV sobre `penia_profiles`. El legado vacío `penias`, sus rutas, controlador, modelo y vista fueron retirados el 2026-09-03; no hay redirección porque no existían registros ni equivalencias. Incluye API, landing, ficha, sitemap, NAV, CRUD, preview noindex, acciones editoriales, auditor read-only `mfa:penias:audit` y 10 fichas demo publicadas con 10 eventos futuros. Los tests cubren permisos, publicación, filtros/paginación, SEO y agenda visible. La activación en producción sigue requiriendo un lote editorial real con fuentes y derechos verificados.
 - **Radios:** horizonte futuro. Se reconstruira como directorio evergreen con release propio y permanece fuera de cycle-3 y cycle-4.
 
 ### Festival Vivo - piloto local 2026-09-02
@@ -203,7 +203,7 @@ El siguiente salto combina autoridad demostrable con mejores recorridos de usuar
 | Tabla | Estado |
 |-------|--------|
 | `radios` | Existe modelo y rutas frontend. No hay backend administrativo. Requiere auditoria para confirmar alcance real. |
-| `penias` | Legado vacio, sin uso funcional. El directorio nuevo opera sobre `penia_profiles`; su CRUD administrativo inicial ya esta disponible y el auditor de calidad sigue pendiente. |
+| `penias` | Retirada el 2026-09-03 por estar vacia y sin uso funcional. El directorio vigente opera exclusivamente sobre `penia_profiles`. |
 | `venues` | Existe en BD por la transformacion a `events`, pero no hay `Venue` model en `app/Models`. Estado funcional incompleto / pendiente de auditoria. |
 
 ### Observacion puntual de inventario local
@@ -376,7 +376,7 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 
 - **Entrevistas**: rutas activas en `web.php`, controller sin metodos `byArtista`/`show`, sin vistas, modelo inexistente.
 - **Radios**: existen rutas `index` y `show` y controller frontend, pero no estan documentados como modulo cerrado ni cuentan con backend administrativo propio. Requiere auditoria puntual para confirmar alcance real.
-- **Penias**: el legado no es un modulo cerrado. Su reemplazo evergreen en `penia_profiles` cuenta con API, frontend y CRUD administrativo inicial; requiere auditor de calidad y piloto editorial real antes de release.
+- **Peñas**: módulo evergreen cerrado para DEV en `penia_profiles`, con API, frontend, CRUD, auditor y fixtures. El piloto editorial real permanece como gate exclusivo de producción.
 - **Videos**: existe `Frontend/VideosController`, pero referencia un modelo/modulo no consolidado. Debe tratarse como componente incompleto.
 
 ---

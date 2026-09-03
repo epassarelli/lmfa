@@ -15,9 +15,9 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Frontend\BusquedaController;
 use App\Http\Controllers\Frontend\CancionesController;
 use App\Http\Controllers\Frontend\ClassifiedsController;
-use App\Http\Controllers\Frontend\CsrfController;
 use App\Http\Controllers\Frontend\CompartirController;
 use App\Http\Controllers\Frontend\ContactoController;
+use App\Http\Controllers\Frontend\CsrfController;
 use App\Http\Controllers\Frontend\DiscosController;
 use App\Http\Controllers\Frontend\EntrevistasController;
 use App\Http\Controllers\Frontend\FestivalesController;
@@ -27,7 +27,6 @@ use App\Http\Controllers\Frontend\InterpretesController;
 use App\Http\Controllers\Frontend\KnowledgeController;
 use App\Http\Controllers\Frontend\LegalController;
 use App\Http\Controllers\Frontend\MitosController;
-use App\Http\Controllers\Frontend\PeniasController;
 use App\Http\Controllers\Frontend\PeniaProfilesController;
 use App\Http\Controllers\Frontend\RadiosController;
 use App\Http\Controllers\Frontend\RecetasController;
@@ -88,8 +87,6 @@ Route::get('/festivales-y-fiestas-tradicionales/{slug}', [FestivalesController::
 Route::get('/radios-de-folklore-argentino', [RadiosController::class, 'index'])->name('radios.index');
 Route::get('/radios-de-folklore-argentino/{slug}', [RadiosController::class, 'show'])->name('radios.show');
 
-Route::get('/penias-folkloricas-de-argentina', [PeniasController::class, 'index'])->name('penias.index');
-Route::get('/penias-folkloricas-de-argentina/{slug}', [PeniasController::class, 'show'])->name('penias.show');
 Route::get('/penias', [PeniaProfilesController::class, 'index'])->name('penia-profiles.index');
 Route::get('/penias/{slug}', [PeniaProfilesController::class, 'show'])->name('penia-profiles.show');
 

@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
-use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -61,7 +61,6 @@ class AppServiceProvider extends ServiceProvider
             \App\Models\Mito::class,
             \App\Models\Comida::class,
             \App\Models\Radio::class,
-            \App\Models\Penia::class,
             \App\Models\PeniaProfile::class,
             \App\Models\Event::class,
         ];

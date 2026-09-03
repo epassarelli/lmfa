@@ -16,7 +16,7 @@ class PeniaProfile extends Model
     use HasPublicationState;
 
     protected $fillable = [
-        'legacy_penia_id', 'title', 'slug', 'excerpt', 'body', 'province_id', 'locality_id',
+        'title', 'slug', 'excerpt', 'body', 'province_id', 'locality_id',
         'city', 'address', 'latitude', 'longitude', 'venue_type', 'opening_hours', 'phone',
         'email', 'website', 'reservation_url', 'capacity', 'accessibility_notes',
         'regular_events_summary', 'admission_notes', 'source_urls', 'verification_status',

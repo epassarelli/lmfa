@@ -99,6 +99,12 @@ Rollback: deshabilitar la superficie nueva, excluirla de navegación y sitemap, 
 - API y autorizacion reutilizaran el patron de Festivales: lectura con token Sanctum y escritura para `administrador`; backoffice para administrador, prensa y colaborador segun propiedad.
 - Falta aprobacion funcional para el umbral de vigencia de contacto, horarios y reservas antes de crear las reglas de publicacion y la migracion.
 
+## Retiro de legado autorizado - 2026-09-03
+
+- Por autorización explícita, se retiró la tabla vacía `penias`, la FK nullable de `penia_profiles.legacy_penia_id`, el modelo `Penia`, las rutas `/penias-folkloricas-de-argentina*`, su controlador y vista.
+- No se implementó 301: no existían registros, tráfico ni equivalencias canónicas auditables.
+- `PeniaProfile` es la única entidad de Peñas vigente. Se cargaron diez perfiles y diez eventos ficticios, claramente identificados como demo exclusiva de DEV.
+
 ## Open Questions
 
 - ¿La implementación vigente de `Penia` y la tabla `penias` permiten coexistencia con un nuevo modelo o requieren un nombre canónico distinto?
