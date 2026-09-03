@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Festivals;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,7 @@ class FestivalAuditCommandTest extends TestCase
     /** @test */
     public function festival_auditor_is_read_only_and_prioritizes_incomplete_records(): void
     {
+        $author = User::factory()->create();
         DB::table('meses')->insert([
             'id' => 1,
             'nombre' => 'Enero',
@@ -35,7 +37,7 @@ class FestivalAuditCommandTest extends TestCase
             'mes_id' => 1,
             'status' => 'published',
             'published_at' => now()->subDay(),
-            'user_id' => null,
+            'user_id' => $author->id,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),

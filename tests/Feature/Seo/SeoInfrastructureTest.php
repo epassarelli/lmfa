@@ -358,6 +358,7 @@ class SeoInfrastructureTest extends TestCase
     /** @test */
     public function all_general_sitemaps_exclude_storage_files_admin_urls_and_cross_sitemap_duplicates(): void
     {
+        $author = User::factory()->create();
         Carbon::setTestNow(Carbon::parse('2026-08-06 12:00:00'));
 
         $categoriaId = $this->createCategoria('general-duplicates');
@@ -406,7 +407,7 @@ class SeoInfrastructureTest extends TestCase
             'slug' => 'festival-unico',
             'body' => 'Detalle festival',
             'visitas' => 0,
-            'user_id' => null,
+            'user_id' => $author->id,
             'status' => 'published',
             'published_at' => Carbon::now()->subMonth(),
             'created_at' => Carbon::now()->subMonth(),

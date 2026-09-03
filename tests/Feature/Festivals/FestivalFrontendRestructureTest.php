@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Festivals;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -9,6 +10,15 @@ use Tests\TestCase;
 class FestivalFrontendRestructureTest extends TestCase
 {
     use DatabaseTransactions;
+
+    private int $authorId;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->authorId = User::factory()->create()->id;
+    }
 
     /** @test */
     public function province_month_landing_is_noindex_when_it_does_not_reach_the_configured_minimum(): void
@@ -29,7 +39,7 @@ class FestivalFrontendRestructureTest extends TestCase
                 'body' => 'Detalle uno',
                 'status' => 'published',
                 'published_at' => now()->subDay(),
-                'user_id' => null,
+                'user_id' => $this->authorId,
                 'visitas' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -42,7 +52,7 @@ class FestivalFrontendRestructureTest extends TestCase
                 'body' => 'Detalle dos',
                 'status' => 'published',
                 'published_at' => now()->subDay(),
-                'user_id' => null,
+                'user_id' => $this->authorId,
                 'visitas' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -87,7 +97,7 @@ class FestivalFrontendRestructureTest extends TestCase
                 'body' => 'Detalle',
                 'status' => 'published',
                 'published_at' => now()->subDay(),
-                'user_id' => null,
+                'user_id' => $this->authorId,
                 'visitas' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -121,7 +131,7 @@ class FestivalFrontendRestructureTest extends TestCase
             'body' => 'Detalle landing',
             'status' => 'published',
             'published_at' => now()->subDay(),
-            'user_id' => null,
+            'user_id' => $this->authorId,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),
@@ -163,7 +173,7 @@ class FestivalFrontendRestructureTest extends TestCase
             'image_alt' => 'Identidad visual del Festival SEO',
             'status' => 'published',
             'published_at' => now()->subDay(),
-            'user_id' => null,
+            'user_id' => $this->authorId,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),
