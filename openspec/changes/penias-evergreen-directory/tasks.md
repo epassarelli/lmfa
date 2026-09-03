@@ -48,8 +48,8 @@
 
 ## 7. Pruebas, rendimiento y documentación
 
-- [ ] 7.1 Crear tests feature con `DatabaseTransactions` para permisos, CRUD, validaciones de publicación, filtros, paginación y visibilidad pública.
+- [x] 7.1 Crear tests feature con `DatabaseTransactions` para permisos, CRUD, validaciones de publicación, filtros, paginación y visibilidad pública.
 - [ ] 7.2 Crear tests para excluir Eventos vencidos o no públicos, evitar relaciones inferidas y preservar datos legacy antes de la transición.
-- [ ] 7.3 Crear pruebas SEO para canonical, robots, schema y sitemap, incluyendo la exclusión de perfiles no verificables.
-- [ ] 7.4 Revisar rendimiento de listados y detalle para evitar N+1, carga de media innecesaria y URLs de filtros de bajo valor.
-- [ ] 7.5 Actualizar la documentación operativa y `project/docs/00_estado_actual.md` solo al completar hitos verificables del módulo.
+- [x] 7.3 Crear pruebas SEO para canonical, robots, schema y sitemap, incluyendo la exclusión de perfiles no verificables.
+- [x] 7.4 Revisar rendimiento de listados y detalle para evitar N+1, carga de media innecesaria y URLs de filtros de bajo valor.
+- [x] 7.5 Actualizar la documentación operativa y `project/docs/00_estado_actual.md` solo al completar hitos verificables del módulo.
