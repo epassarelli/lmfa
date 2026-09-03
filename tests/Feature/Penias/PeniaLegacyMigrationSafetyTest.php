@@ -3,6 +3,7 @@
 namespace Tests\Feature\Penias;
 
 use App\Models\PeniaProfile;
+use App\Models\Provincia;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -27,7 +28,8 @@ class PeniaLegacyMigrationSafetyTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        $profile = PeniaProfile::factory()->create();
+        $province = Provincia::create(['nombre' => 'Provincia migración '.uniqid()]);
+        $profile = PeniaProfile::factory()->create(['province_id' => $province->id]);
         DB::table('penia_profiles')->where('id', $profile->id)->update(['legacy_penia_id' => $legacyId]);
 
         $migration = require database_path('migrations/2026_09_03_010000_retire_legacy_penias_table.php');
