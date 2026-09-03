@@ -75,6 +75,9 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      - name: Install frontend dependencies
+        run: npm ci --no-audit --no-fund
+
       - name: Prepare application
         run: |
           cp .env.testing .env
@@ -141,6 +144,9 @@ jobs:
       - name: Compile Blade views
         run: php artisan view:cache
 
+      - name: Build frontend assets
+        run: npm run build
+
       - name: PHPUnit - INI-0020
         run: |
           php artisan test             tests/Unit/Services/EditorialImageResolverTest.php             tests/Unit/Support/ApiImageInputTest.php
@@ -193,3 +199,6 @@ jobs:
 
       - name: PHPUnit - Directory release gates
         run: php artisan test tests/Feature/Directories/DirectoryFeatureFlagsTest.php
+
+      - name: PHPUnit - Full release suite
+        run: php artisan test
