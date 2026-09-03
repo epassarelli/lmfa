@@ -20,6 +20,8 @@ use App\Http\Controllers\Backend\NewsletterSubscriberController;
 use App\Http\Controllers\Backend\PeniaProfileController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\PublisherDashboardController;
+use App\Http\Controllers\Backend\RadioProgramController;
+use App\Http\Controllers\Backend\RadioSignalController;
 use App\Http\Controllers\Backend\RoleController;
 // Nuevos controladores alineados con la nomenclatura Events/News
 use App\Http\Controllers\Backend\TagController;
@@ -105,6 +107,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('penia-profiles/{penia_profile}/publish', [PeniaProfileController::class, 'publish'])->name('backend.penia-profiles.publish');
     Route::post('penia-profiles/{penia_profile}/unpublish', [PeniaProfileController::class, 'unpublish'])->name('backend.penia-profiles.unpublish');
     Route::resource('penia-profiles', PeniaProfileController::class)->names('backend.penia-profiles')->parameters(['penia-profiles' => 'penia_profile']);
+    Route::post('radios/signals/{radio_signal}/publish', [RadioSignalController::class, 'publish'])->name('backend.radios.signals.publish');
+    Route::resource('radios/signals', RadioSignalController::class)->names('backend.radios.signals')->parameters(['signals' => 'radio_signal'])->except('show');
+    Route::post('radios/programs/{radio_program}/publish', [RadioProgramController::class, 'publish'])->name('backend.radios.programs.publish');
+    Route::resource('radios/programs', RadioProgramController::class)->names('backend.radios.programs')->parameters(['programs' => 'radio_program'])->except('show');
     Route::resource('discos', AlbumController::class)->names('backend.discos')->parameters(['discos' => 'album']);
     Route::get('canciones/data', [CancionController::class, 'getCanciones'])->name('backend.canciones.get');
     Route::post('canciones/store-ajax', [CancionController::class, 'storeAjax'])->name('backend.canciones.store-ajax');

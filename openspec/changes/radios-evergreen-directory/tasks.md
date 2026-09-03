@@ -10,7 +10,7 @@
 
 - [x] 2.1 Crear migraciones nuevas y reversibles para señales, canales, programas y franjas semanales, sin modificar tablas legacy.
 - [x] 2.2 Implementar modelos, casts, relaciones, slugs, scopes de visibilidad y cálculo de próxima emisión.
-- [ ] 2.3 Implementar requests, servicio de dominio y policies para CRUD, publicación, despublicación, archivo y validaciones por tipo.
+- [x] 2.3 Implementar requests, servicio de dominio y policies para CRUD, publicación, despublicación, archivo y validaciones por tipo.
 - [ ] 2.4 Crear factories y fixtures para FM local, radio web, señal híbrida y programa independiente.
 
 ## 3. Backoffice y API
