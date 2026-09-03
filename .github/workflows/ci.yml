@@ -178,7 +178,8 @@ jobs:
             tests/Feature/Penias/PeniaProfileAuditCommandTest.php \
             tests/Feature/Penias/PeniaProfileBackofficeTest.php \
             tests/Feature/Penias/PeniaProfileDomainTest.php \
-            tests/Feature/Penias/PeniaProfileFrontendTest.php
+            tests/Feature/Penias/PeniaProfileFrontendTest.php \
+            tests/Feature/Penias/PeniaLegacyMigrationSafetyTest.php
 
       - name: PHPUnit - Radios
         run: |
