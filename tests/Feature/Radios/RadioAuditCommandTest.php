@@ -24,6 +24,8 @@ class RadioAuditCommandTest extends TestCase
             'excerpt' => null, 'body' => '<p>Breve.</p>', 'source_urls' => [],
             'seo_title' => null, 'meta_description' => null,
         ]);
+        $signal->refresh();
+        $program->refresh();
         $signalBefore = $signal->getAttributes();
         $programBefore = $program->getAttributes();
         $csvPath = tempnam(sys_get_temp_dir(), 'mfa-radios-audit-');

@@ -7,6 +7,7 @@ use App\Models\RadioListeningChannel;
 use App\Models\RadioProgram;
 use App\Models\RadioSignal;
 use App\Models\User;
+use App\Support\CanonicalUrl;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -51,10 +52,10 @@ class RadioFrontendTest extends TestCase
         $program->slots()->create(['weekday' => 4, 'starts_at' => '20:00', 'ends_at' => '22:00', 'timezone' => 'America/Argentina/Buenos_Aires', 'is_active' => true]);
 
         $this->get(route('radios.index'))->assertOk()->assertSee('Radio Folklore Pública')->assertSee(route('radios.programs.index'), false);
-        $this->get($signal->getUrl())->assertOk()->assertSee('RadioStation')->assertSee('La ronda pública')->assertSee('Próxima emisión')->assertSee($signal->getUrl(), false);
+        $this->get($signal->getUrl())->assertOk()->assertSee('RadioStation')->assertSee('La ronda pública')->assertSee('Próxima emisión')->assertSee(CanonicalUrl::normalize($signal->getUrl()), false);
         $this->get(route('radios.programs.index'))->assertOk()->assertSee('La ronda pública')->assertSee('03/09 20:00');
-        $this->get($program->getUrl())->assertOk()->assertSee('RadioSeries')->assertSee('03/09/2026 20:00')->assertSee('Radio Folklore Pública')->assertSee($program->getUrl(), false);
-        $this->get(route('sitemap.radios'))->assertOk()->assertSee($signal->getUrl(), false)->assertSee($program->getUrl(), false);
+        $this->get($program->getUrl())->assertOk()->assertSee('RadioSeries')->assertSee('03/09/2026 20:00')->assertSee('Radio Folklore Pública')->assertSee(CanonicalUrl::normalize($program->getUrl()), false);
+        $this->get(route('sitemap.radios'))->assertOk()->assertSee(CanonicalUrl::normalize($signal->getUrl()), false)->assertSee(CanonicalUrl::normalize($program->getUrl()), false);
 
         $this->assertSame(1, $signal->fresh()->visits);
         $this->assertSame(1, $program->fresh()->visits);
