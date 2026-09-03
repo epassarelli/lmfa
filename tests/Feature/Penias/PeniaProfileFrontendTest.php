@@ -27,13 +27,18 @@ class PeniaProfileFrontendTest extends TestCase
             'verification_status' => 'verified', 'last_verified_at' => now()->subDays(91), 'verified_by_user_id' => $user->id,
             'verification_method' => 'official_source', 'editorial_status' => 'published', 'published_at' => now()->subDay(),
         ]);
+        $sameProvince = PeniaProfile::factory()->create([
+            'title' => 'Peña vecina', 'slug' => 'penia-vecina', 'province_id' => $province->id,
+            'verification_status' => 'verified', 'last_verified_at' => now(), 'verified_by_user_id' => $user->id,
+            'verification_method' => 'official_source', 'editorial_status' => 'published', 'published_at' => now()->subDay(),
+        ]);
         $future = Event::create(['title' => 'Agenda futura', 'body' => '<p>Futura</p>', 'start_at' => now()->addDay(), 'province_id' => $province->id, 'city' => 'Ciudad', 'status' => 'active', 'editorial_status' => 'published', 'published_at' => now()->subDay(), 'created_by' => $user->id]);
         $past = Event::create(['title' => 'Agenda pasada', 'body' => '<p>Pasada</p>', 'start_at' => now()->subDay(), 'province_id' => $province->id, 'city' => 'Ciudad', 'status' => 'active', 'editorial_status' => 'published', 'published_at' => now()->subDay(), 'created_by' => $user->id]);
         $unpublished = Event::create(['title' => 'Agenda no pública', 'body' => '<p>Oculta</p>', 'start_at' => now()->addDays(2), 'province_id' => $province->id, 'city' => 'Ciudad', 'status' => 'active', 'editorial_status' => 'draft', 'created_by' => $user->id]);
         $profile->events()->attach([$future->id, $past->id, $unpublished->id]);
 
         $this->get('/penias')->assertOk()->assertSee('Peña pública')->assertDontSee('Peña vencida');
-        $this->get('/penias/penia-publica')->assertOk()->assertSee('Agenda futura')->assertDontSee('Agenda pasada')->assertDontSee('Agenda no pública')->assertSee('MusicVenue');
+        $this->get('/penias/penia-publica')->assertOk()->assertSee('Agenda futura')->assertDontSee('Agenda pasada')->assertDontSee('Agenda no pública')->assertSee('MusicVenue')->assertSee('Explorar y buscar Peñas')->assertSee('Peña vecina')->assertDontSee('Peña vencida');
         $this->get('/penias/penia-vencida')->assertNotFound();
         $this->get('/sitemap-penias.xml')->assertOk()->assertSee('/penias/penia-publica', false)->assertDontSee('/penias/penia-vencida', false);
     }

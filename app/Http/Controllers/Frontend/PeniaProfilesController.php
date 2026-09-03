@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Event;
 use App\Models\PeniaProfile;
 use App\Models\Provincia;
 use App\Support\CanonicalUrl;
@@ -52,8 +51,15 @@ class PeniaProfilesController extends Controller
         $penia->increment('visits');
         $canonical = CanonicalUrl::normalize($penia->getUrl());
         $metaDescription = $penia->meta_description ?: ($penia->excerpt ?: SeoMetadata::clean($penia->body));
+        $sameProvince = PeniaProfile::publiclyVisible()
+            ->where('province_id', $penia->province_id)
+            ->whereKeyNot($penia->id)
+            ->with(['provincia', 'images'])
+            ->orderBy('title')
+            ->limit(3)
+            ->get();
 
-        return view('frontend.penia-profiles.show', compact('penia', 'canonical', 'metaDescription') + [
+        return view('frontend.penia-profiles.show', compact('penia', 'canonical', 'metaDescription', 'sameProvince') + [
             'metaTitle' => $penia->seo_title ?: $penia->title,
             'metaRobots' => 'index,follow',
             'breadcrumbs' => [

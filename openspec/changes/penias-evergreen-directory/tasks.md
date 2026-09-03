@@ -34,7 +34,7 @@
 - [x] 5.1 Crear la landing nacional de Peñas con búsqueda, filtros territoriales y por tipo, paginación, eager loading y caché selectiva.
 - [x] 5.2 Crear el detalle público de Peña con información permanente, fuentes, fecha de verificación, contacto y accesibilidad.
 - [x] 5.3 Mostrar únicamente Eventos futuros y publicados vinculados de forma explícita; ocultar el bloque cuando no existan.
-- [ ] 5.4 Incorporar relaciones editoriales y enlaces internos rastreables solo cuando existan asociaciones persistidas.
+- [x] 5.4 Incorporar relaciones editoriales y enlaces internos rastreables solo cuando existan asociaciones persistidas.
 - [x] 5.5 Implementar canonical, robots para filtros, breadcrumbs, metadata persistida, JSON-LD apropiado y sitemap condicionado por estado y verificación.
 - [x] 5.6 Retirar la ruta legacy vacía por autorización explícita, sin 301 al no existir registros ni equivalencias aprobadas.
 
