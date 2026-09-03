@@ -24,7 +24,13 @@ class RadioSignalPolicy
 
     public function update(User $user, RadioSignal $signal): bool
     {
-        return $user->hasRole('administrador') || $signal->created_by === $user->id;
+        return $user->hasRole('administrador')
+            || ($signal->created_by === $user->id && $signal->editorial_status === 'draft');
+    }
+
+    public function publish(User $user, RadioSignal $signal): bool
+    {
+        return $user->hasRole('administrador');
     }
 
     public function delete(User $user, RadioSignal $signal): bool

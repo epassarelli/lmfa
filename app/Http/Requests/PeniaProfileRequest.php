@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\EnforcesEditorialProposalState;
 use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -9,6 +10,7 @@ use Illuminate\Validation\Rule;
 
 class PeniaProfileRequest extends FormRequest
 {
+    use EnforcesEditorialProposalState;
     use NormalizesRichTextFields;
 
     public function authorize(): bool
@@ -18,6 +20,7 @@ class PeniaProfileRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $this->enforceEditorialProposalState();
         $this->normalizeRichTextFields(['body']);
         if (blank($this->input('slug')) && filled($this->input('title'))) {
             $this->merge(['slug' => Str::slug((string) $this->input('title'))]);

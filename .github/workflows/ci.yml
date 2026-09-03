@@ -186,3 +186,6 @@ jobs:
             tests/Feature/Radios/RadioApiTest.php \
             tests/Feature/Radios/RadioBackofficeTest.php \
             tests/Feature/Radios/RadioDirectoryDomainTest.php
+
+      - name: PHPUnit - Directory release gates
+        run: php artisan test tests/Feature/Directories/DirectoryFeatureFlagsTest.php

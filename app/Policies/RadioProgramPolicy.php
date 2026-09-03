@@ -24,7 +24,13 @@ class RadioProgramPolicy
 
     public function update(User $user, RadioProgram $program): bool
     {
-        return $user->hasRole('administrador') || $program->created_by === $user->id;
+        return $user->hasRole('administrador')
+            || ($program->created_by === $user->id && $program->editorial_status === 'draft');
+    }
+
+    public function publish(User $user, RadioProgram $program): bool
+    {
+        return $user->hasRole('administrador');
     }
 
     public function delete(User $user, RadioProgram $program): bool

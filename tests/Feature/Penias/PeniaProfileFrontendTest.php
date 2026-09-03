@@ -14,6 +14,13 @@ class PeniaProfileFrontendTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['features.penia_directory' => true]);
+    }
+
     public function test_the_directory_and_profile_only_expose_currently_verified_content_and_future_events(): void
     {
         $user = User::factory()->create();

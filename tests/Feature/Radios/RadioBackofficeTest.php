@@ -11,14 +11,21 @@ class RadioBackofficeTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Role::findOrCreate('administrador', 'web');
+        Role::findOrCreate('colaborador', 'web');
+    }
+
     public function test_a_guest_cannot_access_the_radio_backoffice(): void
     {
         $this->get(route('backend.radios.signals.index'))->assertRedirect(route('login'));
     }
 
-    public function test_a_collaborator_can_create_a_verified_streaming_signal(): void
+    public function test_a_collaborator_can_propose_but_not_verify_or_publish_a_streaming_signal(): void
     {
-        Role::findOrCreate('colaborador', 'web');
         $user = User::factory()->create();
         $user->assignRole('colaborador');
 
@@ -44,12 +51,20 @@ class RadioBackofficeTest extends TestCase
         ]);
 
         $response->assertRedirect(route('backend.radios.signals.index'));
-        $this->assertDatabaseHas('radio_signals', ['title' => 'Radio de prueba streaming', 'editorial_status' => 'published']);
+        $signal = \App\Models\RadioSignal::where('title', 'Radio de prueba streaming')->firstOrFail();
+        $this->assertSame('draft', $signal->editorial_status);
+        $this->assertSame('pending', $signal->verification_status);
+        $this->assertNull($signal->verified_by_user_id);
+        $this->assertNull($signal->last_verified_at);
+        $this->assertNull($signal->verification_method);
+
+        $this->actingAs($user)
+            ->post(route('backend.radios.signals.publish', $signal))
+            ->assertForbidden();
     }
 
     public function test_a_collaborator_can_create_an_independent_program(): void
     {
-        Role::findOrCreate('colaborador', 'web');
         $user = User::factory()->create();
         $user->assignRole('colaborador');
 
@@ -69,6 +84,13 @@ class RadioBackofficeTest extends TestCase
         ]);
 
         $response->assertRedirect(route('backend.radios.programs.index'));
-        $this->assertDatabaseHas('radio_programs', ['title' => 'Ronda independiente', 'editorial_status' => 'published']);
+        $program = \App\Models\RadioProgram::where('title', 'Ronda independiente')->firstOrFail();
+        $this->assertSame('draft', $program->editorial_status);
+        $this->assertSame('pending', $program->verification_status);
+        $this->assertNull($program->verified_by_user_id);
+
+        $this->actingAs($user)
+            ->post(route('backend.radios.programs.publish', $program))
+            ->assertForbidden();
     }
 }

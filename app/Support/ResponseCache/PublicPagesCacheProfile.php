@@ -31,6 +31,10 @@ class PublicPagesCacheProfile extends CacheAllSuccessfulGetRequests
         'csrf-refresh',
         'buscar*',
         'newsletter/unsubscribe/*',
+        'penias*',
+        'radios-de-folklore-argentino*',
+        'sitemap-penias.xml',
+        'sitemap-radios.xml',
     ];
 
     public function shouldCacheRequest(Request $request): bool

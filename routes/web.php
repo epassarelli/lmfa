@@ -42,8 +42,8 @@ Route::get('/sitemap-noticias.xml', [SitemapController::class, 'news'])->name('s
 Route::get('/sitemap-google-news.xml', [SitemapController::class, 'googleNews'])->name('sitemap.google-news');
 Route::get('/sitemap-eventos.xml', [SitemapController::class, 'events'])->name('sitemap.events');
 Route::get('/sitemap-festivales.xml', [SitemapController::class, 'festivals'])->name('sitemap.festivals');
-Route::get('/sitemap-penias.xml', [SitemapController::class, 'penias'])->name('sitemap.penias');
-Route::get('/sitemap-radios.xml', [SitemapController::class, 'radios'])->name('sitemap.radios');
+Route::get('/sitemap-penias.xml', [SitemapController::class, 'penias'])->middleware('feature:penia_directory')->name('sitemap.penias');
+Route::get('/sitemap-radios.xml', [SitemapController::class, 'radios'])->middleware('feature:radio_directory')->name('sitemap.radios');
 Route::get('/sitemap-discografias.xml', [SitemapController::class, 'discographies'])->name('sitemap.discographies');
 Route::get('/sitemap-letras.xml', [SitemapController::class, 'lyrics'])->name('sitemap.lyrics');
 Route::get('/sitemap-evergreen.xml', [SitemapController::class, 'evergreen'])->name('sitemap.evergreen');
@@ -85,11 +85,15 @@ Route::get('/festivales-y-fiestas-tradicionales/provincia/{provinceSlug}', [Fest
 Route::get('/festivales-y-fiestas-tradicionales/mes/{monthSlug}', [FestivalesController::class, 'month'])->name('festivales.month');
 Route::get('/festivales-y-fiestas-tradicionales/{slug}', [FestivalesController::class, 'show'])->name('festivales.show');
 
-Route::get('/radios-de-folklore-argentino', [RadiosController::class, 'index'])->name('radios.index');
-Route::get('/radios-de-folklore-argentino/{slug}', [RadiosController::class, 'show'])->name('radios.show');
+Route::middleware('feature:radio_directory')->group(function () {
+    Route::get('/radios-de-folklore-argentino', [RadiosController::class, 'index'])->name('radios.index');
+    Route::get('/radios-de-folklore-argentino/{slug}', [RadiosController::class, 'show'])->name('radios.show');
+});
 
-Route::get('/penias', [PeniaProfilesController::class, 'index'])->name('penia-profiles.index');
-Route::get('/penias/{slug}', [PeniaProfilesController::class, 'show'])->name('penia-profiles.show');
+Route::middleware('feature:penia_directory')->group(function () {
+    Route::get('/penias', [PeniaProfilesController::class, 'index'])->name('penia-profiles.index');
+    Route::get('/penias/{slug}', [PeniaProfilesController::class, 'show'])->name('penia-profiles.show');
+});
 
 Route::get('/mitos-y-leyendas-argentinas', [MitosController::class, 'index'])->name('mitos.index');
 Route::get('/mitos-y-leyendas-argentinas/letra/{slug}', [MitosController::class, 'letra'])->name('mitos.letra');

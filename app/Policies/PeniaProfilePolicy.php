@@ -27,7 +27,18 @@ class PeniaProfilePolicy
 
     public function update(User $user, PeniaProfile $profile): bool
     {
-        return $user->hasRole('administrador') || $profile->created_by === $user->id;
+        return $user->hasRole('administrador')
+            || ($profile->created_by === $user->id && $profile->editorial_status === 'draft');
+    }
+
+    public function publish(User $user, PeniaProfile $profile): bool
+    {
+        return $user->hasRole('administrador');
+    }
+
+    public function unpublish(User $user, PeniaProfile $profile): bool
+    {
+        return $user->hasRole('administrador');
     }
 
     public function delete(User $user, PeniaProfile $profile): bool

@@ -133,7 +133,7 @@ class PeniaProfileController extends Controller
 
     public function publish(PeniaProfile $peniaProfile)
     {
-        $this->authorize('update', $peniaProfile);
+        $this->authorize('publish', $peniaProfile);
         $this->profiles->publish($peniaProfile);
 
         return back()->with('success', 'Peña publicada.');
@@ -141,7 +141,7 @@ class PeniaProfileController extends Controller
 
     public function unpublish(PeniaProfile $peniaProfile)
     {
-        $this->authorize('update', $peniaProfile);
+        $this->authorize('unpublish', $peniaProfile);
         $this->profiles->unpublish($peniaProfile);
 
         return back()->with('success', 'Peña despublicada y enviada a borrador.');
@@ -149,6 +149,8 @@ class PeniaProfileController extends Controller
 
     private function formData(PeniaProfile $profile): array
     {
-        return ['profile' => $profile, 'provincias' => Provincia::orderBy('nombre')->get(), 'localities' => Locality::orderBy('name')->get(), 'events' => Event::publiclyVisible()->orderByDesc('start_at')->limit(200)->get(['id', 'title']), 'users' => User::orderBy('name')->limit(200)->get(['id', 'name'])];
+        $canManageEditorialState = Auth::user()->hasRole('administrador');
+
+        return ['profile' => $profile, 'provincias' => Provincia::orderBy('nombre')->get(), 'localities' => Locality::orderBy('name')->get(), 'events' => Event::publiclyVisible()->orderByDesc('start_at')->limit(200)->get(['id', 'title']), 'users' => $canManageEditorialState ? User::orderBy('name')->limit(200)->get(['id', 'name']) : collect(), 'canManageEditorialState' => $canManageEditorialState];
     }
 }

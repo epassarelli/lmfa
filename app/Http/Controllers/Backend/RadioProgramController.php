@@ -65,7 +65,7 @@ class RadioProgramController extends Controller
 
     public function publish(RadioProgram $radioProgram)
     {
-        $this->authorize('update', $radioProgram);
+        $this->authorize('publish', $radioProgram);
         $this->radios->publishProgram($radioProgram);
 
         return back()->with('success', 'Programa publicado.');
@@ -73,6 +73,8 @@ class RadioProgramController extends Controller
 
     private function formData(RadioProgram $program): array
     {
-        return compact('program') + ['signals' => RadioSignal::orderBy('title')->get(['id', 'title']), 'users' => User::orderBy('name')->limit(200)->get(['id', 'name'])];
+        $canManageEditorialState = Auth::user()->hasRole('administrador');
+
+        return compact('program', 'canManageEditorialState') + ['signals' => RadioSignal::orderBy('title')->get(['id', 'title']), 'users' => $canManageEditorialState ? User::orderBy('name')->limit(200)->get(['id', 'name']) : collect()];
     }
 }

@@ -7,4 +7,7 @@ return [
         'intval',
         explode(',', (string) env('FEATURE_FESTIVAL_JOURNEY_ALLOWLIST', ''))
     )),
+    // Directorios en preparación: backoffice disponible, superficie pública oscura.
+    'penia_directory' => env('FEATURE_PENIA_DIRECTORY', false),
+    'radio_directory' => env('FEATURE_RADIO_DIRECTORY', false),
 ];

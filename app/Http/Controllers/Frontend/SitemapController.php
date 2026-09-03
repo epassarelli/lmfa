@@ -126,7 +126,7 @@ class SitemapController extends Controller
 
     protected function sitemapIndexEntries(): Collection
     {
-        return $this->uniqueEntries(collect([
+        $entries = collect([
             $this->sitemapIndexEntry(route('sitemap.static'), $this->staticEntries()),
             $this->sitemapIndexEntry(route('sitemap.artists'), $this->artistHubEntries()),
             $this->sitemapIndexEntry(route('sitemap.biographies'), $this->artistBiographyEntries()),
@@ -134,17 +134,25 @@ class SitemapController extends Controller
             $this->sitemapIndexEntry(route('sitemap.google-news'), $this->googleNewsEntries()),
             $this->sitemapIndexEntry(route('sitemap.events'), $this->eventEntries()),
             $this->sitemapIndexEntry(route('sitemap.festivals'), $this->festivalEntries()),
-            $this->sitemapIndexEntry(route('sitemap.penias'), $this->peniaEntries()),
-            $this->sitemapIndexEntry(route('sitemap.radios'), $this->radioEntries()),
             $this->sitemapIndexEntry(route('sitemap.discographies'), $this->discographyEntries()),
             $this->sitemapIndexEntry(route('sitemap.lyrics'), $this->lyricEntries()),
             $this->sitemapIndexEntry(route('sitemap.evergreen'), $this->evergreenEntries()),
-        ]));
+        ]);
+
+        if (config('features.penia_directory')) {
+            $entries->push($this->sitemapIndexEntry(route('sitemap.penias'), $this->peniaEntries()));
+        }
+
+        if (config('features.radio_directory')) {
+            $entries->push($this->sitemapIndexEntry(route('sitemap.radios'), $this->radioEntries()));
+        }
+
+        return $this->uniqueEntries($entries);
     }
 
     protected function staticEntries(): Collection
     {
-        return $this->uniqueEntries(collect([
+        $entries = collect([
             $this->entry(route('home')),
             $this->entry(route('contacto')),
             $this->entry(route('noticias.index')),
@@ -153,8 +161,6 @@ class SitemapController extends Controller
             $this->entry(route('canciones.index')),
             $this->entry(route('discografias.index')),
             $this->entry(route('festivales.index')),
-            $this->entry(route('penia-profiles.index')),
-            $this->entry(route('radios.index')),
             $this->entry(route('enciclopedia.index')),
             $this->entry(route('mitos.index')),
             $this->entry(route('comidas.index')),
@@ -164,7 +170,17 @@ class SitemapController extends Controller
             $this->entry(route('folklore.cup.groups')),
             $this->entry(route('folklore.cup.bracket')),
             $this->entry(route('folklore.cup.rules')),
-        ])->merge($this->recipeLetterEntries()));
+        ]);
+
+        if (config('features.penia_directory')) {
+            $entries->push($this->entry(route('penia-profiles.index')));
+        }
+
+        if (config('features.radio_directory')) {
+            $entries->push($this->entry(route('radios.index')));
+        }
+
+        return $this->uniqueEntries($entries->merge($this->recipeLetterEntries()));
     }
 
     protected function artistHubEntries(): Collection

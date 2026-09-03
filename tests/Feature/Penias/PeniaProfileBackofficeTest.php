@@ -18,6 +18,7 @@ class PeniaProfileBackofficeTest extends TestCase
         parent::setUp();
 
         Role::findOrCreate('administrador', 'web');
+        Role::findOrCreate('colaborador', 'web');
     }
 
     public function test_an_administrator_can_create_a_verified_penia_from_the_backoffice(): void
@@ -51,6 +52,28 @@ class PeniaProfileBackofficeTest extends TestCase
 
         $this->actingAs($regularUser)
             ->get(route('backend.penia-profiles.create'))
+            ->assertForbidden();
+    }
+
+    public function test_a_collaborator_can_propose_a_penia_but_cannot_verify_or_publish_it(): void
+    {
+        $collaborator = User::factory()->create();
+        $collaborator->assignRole('colaborador');
+        $province = Provincia::create(['nombre' => 'Provincia propuesta '.uniqid()]);
+
+        $this->actingAs($collaborator)
+            ->post(route('backend.penia-profiles.store'), $this->payload($province->id, $collaborator->id))
+            ->assertRedirect(route('backend.penia-profiles.index'));
+
+        $profile = PeniaProfile::where('slug', 'penia-backoffice-verificada')->firstOrFail();
+        $this->assertSame('draft', $profile->editorial_status);
+        $this->assertSame('pending', $profile->verification_status);
+        $this->assertNull($profile->verified_by_user_id);
+        $this->assertNull($profile->last_verified_at);
+        $this->assertNull($profile->verification_method);
+
+        $this->actingAs($collaborator)
+            ->post(route('backend.penia-profiles.publish', $profile))
             ->assertForbidden();
     }
 

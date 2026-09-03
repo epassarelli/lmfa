@@ -65,7 +65,7 @@ class RadioSignalController extends Controller
 
     public function publish(RadioSignal $radioSignal)
     {
-        $this->authorize('update', $radioSignal);
+        $this->authorize('publish', $radioSignal);
         $this->radios->publishSignal($radioSignal);
 
         return back()->with('success', 'Señal publicada.');
@@ -73,6 +73,8 @@ class RadioSignalController extends Controller
 
     private function formData(RadioSignal $signal): array
     {
-        return compact('signal') + ['provincias' => Provincia::orderBy('nombre')->get(), 'users' => User::orderBy('name')->limit(200)->get(['id', 'name'])];
+        $canManageEditorialState = Auth::user()->hasRole('administrador');
+
+        return compact('signal', 'canManageEditorialState') + ['provincias' => Provincia::orderBy('nombre')->get(), 'users' => $canManageEditorialState ? User::orderBy('name')->limit(200)->get(['id', 'name']) : collect()];
     }
 }
