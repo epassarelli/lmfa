@@ -6,11 +6,19 @@ use App\Models\PeniaProfile;
 use App\Models\Provincia;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class PeniaProfileBackofficeTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Role::findOrCreate('administrador', 'web');
+    }
 
     public function test_an_administrator_can_create_a_verified_penia_from_the_backoffice(): void
     {
