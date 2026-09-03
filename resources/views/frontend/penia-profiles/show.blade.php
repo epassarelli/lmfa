@@ -12,6 +12,7 @@
 @endpush
 @section('content')
   <x-breadcrumbs :items="$breadcrumbs" />
+  @if(!empty($isPreview))<div class="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">Vista previa editorial: esta ficha no está indexada ni registra visitas.</div>@endif
   <article class="rounded-2xl bg-white p-6 shadow-sm">
     <h1 class="text-3xl font-bold text-slate-900">{{ $penia->title }}</h1>
     <p class="mt-2 text-slate-600">{{ $penia->venue_type }} · {{ $penia->city }}, {{ $penia->provincia?->nombre }}</p>

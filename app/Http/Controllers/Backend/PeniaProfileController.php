@@ -10,6 +10,8 @@ use App\Models\PeniaProfile;
 use App\Models\Provincia;
 use App\Models\User;
 use App\Services\PeniaProfileService;
+use App\Support\CanonicalUrl;
+use App\Support\SeoMetadata;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -73,6 +75,11 @@ class PeniaProfileController extends Controller
         return view('backend.penia-profiles.edit', $this->formData($peniaProfile->load('events')));
     }
 
+    public function show(PeniaProfile $peniaProfile)
+    {
+        return redirect()->route('backend.penia-profiles.edit', $peniaProfile);
+    }
+
     public function update(PeniaProfileRequest $request, PeniaProfile $peniaProfile)
     {
         DB::transaction(fn () => $this->profiles->save($peniaProfile, $request->validated()));
@@ -82,9 +89,53 @@ class PeniaProfileController extends Controller
 
     public function destroy(PeniaProfile $peniaProfile)
     {
-        $peniaProfile->update(['editorial_status' => 'archived']);
+        $this->profiles->archive($peniaProfile);
 
         return back()->with('success', 'Peña archivada.');
+    }
+
+    public function preview(PeniaProfile $peniaProfile)
+    {
+        $this->authorize('view', $peniaProfile);
+
+        $penia = $peniaProfile->load([
+            'provincia',
+            'locality',
+            'images',
+            'events' => fn ($query) => $query->publiclyVisible()
+                ->where('start_at', '>=', now()->startOfDay())
+                ->with(['interpretes.images', 'images', 'provincia'])
+                ->orderBy('start_at'),
+        ]);
+        $canonical = CanonicalUrl::normalize($penia->getUrl());
+        $metaDescription = $penia->meta_description ?: ($penia->excerpt ?: SeoMetadata::clean($penia->body));
+
+        return view('frontend.penia-profiles.show', compact('penia', 'canonical', 'metaDescription') + [
+            'metaTitle' => $penia->seo_title ?: $penia->title,
+            'metaRobots' => 'noindex,nofollow',
+            'isPreview' => true,
+            'breadcrumbs' => [
+                ['label' => 'Administración', 'url' => route('backend.penia-profiles.index')],
+                ['label' => 'Vista previa'],
+                ['label' => $penia->title],
+            ],
+        ]);
+    }
+
+    public function publish(PeniaProfile $peniaProfile)
+    {
+        $this->authorize('update', $peniaProfile);
+        $this->profiles->publish($peniaProfile);
+
+        return back()->with('success', 'Peña publicada.');
+    }
+
+    public function unpublish(PeniaProfile $peniaProfile)
+    {
+        $this->authorize('update', $peniaProfile);
+        $this->profiles->unpublish($peniaProfile);
+
+        return back()->with('success', 'Peña despublicada y enviada a borrador.');
     }
 
     private function formData(PeniaProfile $profile): array

@@ -101,6 +101,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('mitos', MitoController::class)->names('backend.mitos');
     Route::resource('comidas', ComidaController::class)->names('backend.comidas');
     Route::resource('festivales', FestivalController::class)->names('backend.festivales')->parameters(['festivales' => 'festival']);
+    Route::get('penia-profiles/{penia_profile}/preview', [PeniaProfileController::class, 'preview'])->name('backend.penia-profiles.preview');
+    Route::post('penia-profiles/{penia_profile}/publish', [PeniaProfileController::class, 'publish'])->name('backend.penia-profiles.publish');
+    Route::post('penia-profiles/{penia_profile}/unpublish', [PeniaProfileController::class, 'unpublish'])->name('backend.penia-profiles.unpublish');
     Route::resource('penia-profiles', PeniaProfileController::class)->names('backend.penia-profiles')->parameters(['penia-profiles' => 'penia_profile']);
     Route::resource('discos', AlbumController::class)->names('backend.discos')->parameters(['discos' => 'album']);
     Route::get('canciones/data', [CancionController::class, 'getCanciones'])->name('backend.canciones.get');

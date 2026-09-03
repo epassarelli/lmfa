@@ -34,7 +34,18 @@
                 <td>{{ $profile->verification_status }}<br><small>{{ optional($profile->last_verified_at)->format('d/m/Y') ?? '-' }}</small></td>
                 <td>{{ $profile->editorial_status }}</td>
                 <td>{{ $profile->events_count }}</td>
-                <td class="text-right"><a class="btn btn-warning btn-sm" href="{{ route('backend.penia-profiles.edit', $profile) }}"><i class="fas fa-edit"></i></a></td>
+                <td class="text-right" style="white-space: nowrap;">
+                  @can('view', $profile)<a class="btn btn-info btn-sm" href="{{ route('backend.penia-profiles.preview', $profile) }}" title="Vista previa"><i class="fas fa-eye"></i></a>@endcan
+                  @can('update', $profile)
+                    <a class="btn btn-warning btn-sm" href="{{ route('backend.penia-profiles.edit', $profile) }}" title="Editar"><i class="fas fa-edit"></i></a>
+                    @if($profile->editorial_status === 'published')
+                      <form class="d-inline" method="POST" action="{{ route('backend.penia-profiles.unpublish', $profile) }}">@csrf<button class="btn btn-secondary btn-sm" title="Despublicar"><i class="fas fa-eye-slash"></i></button></form>
+                    @elseif($profile->editorial_status !== 'archived')
+                      <form class="d-inline" method="POST" action="{{ route('backend.penia-profiles.publish', $profile) }}">@csrf<button class="btn btn-success btn-sm" title="Publicar"><i class="fas fa-check"></i></button></form>
+                    @endif
+                  @endcan
+                  @can('delete', $profile)<form class="d-inline" method="POST" action="{{ route('backend.penia-profiles.destroy', $profile) }}">@csrf @method('DELETE')<button class="btn btn-danger btn-sm" title="Archivar" onclick="return confirm('¿Archivar esta Peña?')"><i class="fas fa-archive"></i></button></form>@endcan
+                </td>
               </tr>
             @empty
               <tr><td colspan="6" class="text-center text-muted">No se encontraron Peñas para los filtros seleccionados.</td></tr>

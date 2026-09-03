@@ -10,6 +10,24 @@ use Illuminate\Validation\ValidationException;
 
 class PeniaProfileService
 {
+    public function publish(PeniaProfile $profile): PeniaProfile
+    {
+        return $this->save($profile, ['editorial_status' => 'published']);
+    }
+
+    public function unpublish(PeniaProfile $profile): PeniaProfile
+    {
+        return $this->save($profile, [
+            'editorial_status' => 'draft',
+            'published_at' => null,
+        ]);
+    }
+
+    public function archive(PeniaProfile $profile): PeniaProfile
+    {
+        return $this->save($profile, ['editorial_status' => 'archived']);
+    }
+
     public function save(PeniaProfile $profile, array $data): PeniaProfile
     {
         $payload = $this->normalize($profile, $data);
