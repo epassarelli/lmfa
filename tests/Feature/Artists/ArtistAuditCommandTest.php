@@ -18,7 +18,7 @@ class ArtistAuditCommandTest extends TestCase
             'interprete' => 'Artista Incompleto Auditor',
             'slug' => 'artista-incompleto-auditor',
             'biografia' => '<p>Bio breve.</p>',
-            'user_id' => 1,
+            'user_id' => null,
             'visitas' => 0,
             'estado' => 1,
             'created_at' => now(),

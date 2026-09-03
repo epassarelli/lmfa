@@ -7,12 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Categoria extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
-  protected $fillable = ['nombre'];
+    public $timestamps = false;
 
-  public function noticias()
-  {
-    return $this->hasMany(News::class);
-  }
+    protected $fillable = ['nombre', 'slug', 'foto', 'metetittle', 'metadescription', 'status'];
+
+    protected $attributes = [
+        'metetittle' => '',
+        'metadescription' => '',
+    ];
+
+    public function noticias()
+    {
+        return $this->hasMany(News::class);
+    }
 }

@@ -18,14 +18,18 @@ class MfaAutonomousOrchestratorCommandTest extends TestCase
         parent::setUp();
 
         $this->fixturePath = base_path('project/automation/orchestrator/fixtures/mfa_backlog_snapshot.json');
-        $this->seedPath = base_path('project/automation/orchestrator/fixtures/mfa_backlog_snapshot.seed.json');
+        $this->seedPath = base_path('tests/Fixtures/mfa_backlog_snapshot.seed.json');
         $this->fixtureBackup = file_get_contents($this->seedPath);
+        if (! is_dir(dirname($this->fixturePath))) {
+            mkdir(dirname($this->fixturePath), 0777, true);
+        }
         file_put_contents($this->fixturePath, $this->fixtureBackup);
     }
 
     protected function tearDown(): void
     {
         file_put_contents($this->fixturePath, $this->fixtureBackup);
+        @unlink($this->fixturePath);
 
         parent::tearDown();
     }

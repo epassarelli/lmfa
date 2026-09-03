@@ -43,6 +43,7 @@ class ShowsBugFixTest extends TestCase
             ?? Interprete::create([
                 'interprete' => 'Artista Test ' . uniqid(),
                 'slug'       => 'artista-test-' . uniqid(),
+                'biografia'  => 'Biografia de prueba.',
                 'estado'     => 1,
             ]);
     }

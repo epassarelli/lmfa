@@ -217,6 +217,7 @@ class PublicationTargetTest extends TestCase
         ]);
         $this->makeOrgSocialAccount($portalOrg, 'facebook');
         $this->makeOrgSocialAccount($portalOrg, 'telegram');
+        config(['app.portal_organization_id' => $portalOrg->id]);
 
         $this->actingAs($user);
 
@@ -346,6 +347,7 @@ class PublicationTargetTest extends TestCase
             'organization_id'  => $org->id,
             'title'            => 'Noticia Target ' . uniqid(),
             'slug'             => 'noticia-target-' . uniqid(),
+            'body'             => 'Contenido de prueba para el target.',
             'editorial_status' => 'approved',
         ]);
 

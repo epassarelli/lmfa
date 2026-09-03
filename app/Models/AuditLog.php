@@ -16,22 +16,34 @@ class AuditLog extends Model
         'entity_type',
         'entity_id',
         'action',
-        'old_values',
-        'new_values',
-        'ip_address',
+        'old_values_json',
+        'new_values_json',
+        'meta_json',
+        'ip',
         'user_agent',
         'created_at',
     ];
 
     protected $casts = [
-        'old_values' => 'array',
-        'new_values' => 'array',
+        'old_values_json' => 'array',
+        'new_values_json' => 'array',
+        'meta_json' => 'array',
         'created_at' => 'datetime',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getOldValuesAttribute(): ?array
+    {
+        return $this->old_values_json;
+    }
+
+    public function getNewValuesAttribute(): ?array
+    {
+        return $this->new_values_json;
     }
 
     /**
@@ -49,9 +61,9 @@ class AuditLog extends Model
             'entity_type' => $entityType,
             'entity_id'   => $entityId,
             'action'      => $action,
-            'old_values'  => $oldValues ?: null,
-            'new_values'  => $newValues ?: null,
-            'ip_address'  => request()->ip(),
+            'old_values_json' => $oldValues ?: null,
+            'new_values_json' => $newValues ?: null,
+            'ip' => request()->ip(),
             'user_agent'  => request()->userAgent(),
             'created_at'  => now(),
         ]);

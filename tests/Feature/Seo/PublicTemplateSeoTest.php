@@ -35,7 +35,7 @@ class PublicTemplateSeoTest extends TestCase
             'slug' => 'raul-carnota',
             'biografia' => '<p>Raul Carnota fue un referente del folklore argentino. <strong>Compuso</strong> obras claves y marco una epoca.</p>',
             'estado' => 1,
-            'user_id' => 1,
+            'user_id' => null,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),
@@ -96,6 +96,7 @@ class PublicTemplateSeoTest extends TestCase
     /** @test */
     public function event_and_festival_pages_generate_clean_descriptions_and_mark_helper_ctas_as_no_snippet(): void
     {
+        $author = User::factory()->create();
         $provinciaId = DB::table('provincias')->insertGetId([
             'nombre' => 'Cordoba SEO Test',
             'created_at' => now(),
@@ -111,7 +112,7 @@ class PublicTemplateSeoTest extends TestCase
             'editorial_status' => 'published',
             'published_at' => now()->subDay(),
             'start_at' => now()->addWeek(),
-            'created_by' => 1,
+            'created_by' => $author->id,
             'created_at' => now()->subDay(),
             'updated_at' => now(),
         ]);
@@ -124,7 +125,7 @@ class PublicTemplateSeoTest extends TestCase
             'slug' => 'fiesta-de-la-chaya',
             'body' => '<p>Celebracion popular con musica, comparsas y tradicion riojana.</p>',
             'visitas' => 0,
-            'user_id' => 1,
+            'user_id' => $author->id,
             'status' => 'published',
             'published_at' => now()->subDay(),
             'created_at' => now(),
@@ -147,13 +148,14 @@ class PublicTemplateSeoTest extends TestCase
     /** @test */
     public function evergreen_album_and_lyrics_pages_have_non_empty_h1_and_clean_metadata(): void
     {
+        $author = User::factory()->create();
         DB::table('interpretes')->insert([
             'id' => 5201,
             'interprete' => 'Mercedes Sosa SEO',
             'slug' => 'mercedes-sosa-seo',
             'biografia' => 'Cantante fundamental.',
             'estado' => 1,
-            'user_id' => 1,
+            'user_id' => $author->id,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),
@@ -166,7 +168,7 @@ class PublicTemplateSeoTest extends TestCase
             'slug' => 'mujeres-argentinas-seo',
             'anio' => '1969',
             'visitas' => 0,
-            'user_id' => 1,
+            'user_id' => $author->id,
             'estado' => 1,
             'created_at' => now(),
             'updated_at' => now(),
@@ -179,13 +181,12 @@ class PublicTemplateSeoTest extends TestCase
             'slug' => 'alfonsina-y-el-mar-seo',
             'letra' => "<p>Por la blanda arena que lame el mar<br>su pequeña huella no vuelve mas.</p>",
             'visitas' => 0,
-            'user_id' => 1,
+            'user_id' => $author->id,
             'estado' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $author = User::factory()->create();
         $category = KnowledgeCategory::factory()->create([
             'name' => 'Historia',
             'slug' => 'historia',

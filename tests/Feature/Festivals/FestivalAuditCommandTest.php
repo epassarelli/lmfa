@@ -35,7 +35,7 @@ class FestivalAuditCommandTest extends TestCase
             'mes_id' => 1,
             'status' => 'published',
             'published_at' => now()->subDay(),
-            'user_id' => 1,
+            'user_id' => null,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),

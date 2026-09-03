@@ -1,0 +1,20 @@
+{
+  "header": [
+    "ID", "Proyecto", "Tarea", "Resultado esperado", "Responsable",
+    "Rol de Eduardo", "Proxima accion responsable", "Definicion de terminado",
+    "Impacto", "Urgencia", "Esfuerzo hs", "Estado delegacion",
+    "Dependencia / bloqueo", "Responsable bloqueo", "Puede calendarizar",
+    "Ventana preferida", "Plan fecha", "Prioridad sugerida", "Categoría foco",
+    "Reserva 1", "Estado", "Reserva 2", "Reserva 3", "Reserva 4",
+    "Reserva 5", "Reserva 6", "Reserva 7", "Notas cierre"
+  ],
+  "rows": [
+    [
+      "BL-0011F", "Mi Folklore Argentino", "Inventario tecnico y legacy",
+      "Inventario tecnico consolidado", "IA", "Validar evidencia",
+      "Comprobar archivos", "Archivos requeridos presentes", "Alto", "Alta",
+      "2", "Pendiente", "", "", "No", "", "", "P1", "Tecnica", "",
+      "Pendiente", "", "", "", "", "", "", "IA_AUTONOMA"
+    ]
+  ]
+}

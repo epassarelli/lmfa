@@ -62,7 +62,7 @@ class AdminAutoPublishBackendTest extends TestCase
             'slug' => $slug,
             'biografia' => 'Biografia de prueba para el artista.',
             'estado' => 1,
-            'user_id' => 1,
+            'user_id' => auth()->id(),
         ]);
     }
 
@@ -241,7 +241,7 @@ class AdminAutoPublishBackendTest extends TestCase
         ]);
 
         $response->assertRedirect(route('backend.interpretes.index'));
-        $this->assertSame(1, $interprete->fresh()->estado);
+        $this->assertTrue($interprete->fresh()->estado);
     }
 
     /** @test */

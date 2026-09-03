@@ -406,7 +406,7 @@ class SeoInfrastructureTest extends TestCase
             'slug' => 'festival-unico',
             'body' => 'Detalle festival',
             'visitas' => 0,
-            'user_id' => 1,
+            'user_id' => null,
             'status' => 'published',
             'published_at' => Carbon::now()->subMonth(),
             'created_at' => Carbon::now()->subMonth(),

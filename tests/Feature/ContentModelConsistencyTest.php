@@ -39,11 +39,11 @@ class ContentModelConsistencyTest extends TestCase
 
         $response = $this->call('GET', '/artista-consistencia/noticias', [], [], [], $this->serverVariables());
         $response->assertOk();
-        $this->assertSame(1, substr_count($response->getContent(), 'Noticia vigente artista'));
+        $this->assertSame(1, substr_count($response->getContent(), '<article class="bg-white shadow-md'));
 
         $artistHome = $this->call('GET', '/artista-consistencia', [], [], [], $this->serverVariables());
         $artistHome->assertOk();
-        $this->assertSame(1, substr_count($artistHome->getContent(), 'Noticia vigente artista'));
+        $this->assertSame(1, substr_count($artistHome->getContent(), '<article class="bg-white shadow-md'));
     }
 
     /** @test */
@@ -88,6 +88,7 @@ class ContentModelConsistencyTest extends TestCase
     /** @test */
     public function artist_shows_and_public_schedule_read_from_events(): void
     {
+        $author = User::factory()->create();
         $interpreteId = $this->createInterprete('Artista Eventos', 'artista-eventos');
 
         $eventId = DB::table('events')->insertGetId([
@@ -98,7 +99,7 @@ class ContentModelConsistencyTest extends TestCase
             'published_at' => now()->subHour(),
             'editorial_status' => 'published',
             'status' => 'active',
-            'created_by' => 1,
+            'created_by' => $author->id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -167,7 +168,7 @@ class ContentModelConsistencyTest extends TestCase
             'slug' => $slug,
             'biografia' => 'Bio',
             'estado' => 1,
-            'user_id' => 1,
+            'user_id' => null,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),

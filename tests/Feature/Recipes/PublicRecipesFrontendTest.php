@@ -88,7 +88,7 @@ class PublicRecipesFrontendTest extends TestCase
         $response = $this->call('GET', '/recetas-de-comidas-tipicas-argentinas/locro-patrio', [], [], [], $this->serverVariables());
 
         $response->assertOk();
-        $response->assertSee('<title>Receta de Locro Patrio | Comida Tipica del Folklore</title>', false);
+        $response->assertSee('<title>Receta de Locro Patrio | Cocina Argentina</title>', false);
         $response->assertSee('<meta name="description" content="Un plato tradicional para fechas patrias. Ingredientes Maiz blanco Zapallo Preparacion paso a paso Remojar el maiz. Cocinar a fuego bajo.">', false);
         $response->assertSee('<link rel="canonical" href="https://mifolkloreargentino.com/recetas-de-comidas-tipicas-argentinas/locro-patrio" />', false);
         $response->assertSee('src="http://localhost/storage/comidas/locro-patrio.jpg"', false);

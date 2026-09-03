@@ -68,6 +68,7 @@ class PublicEventVisibilityTest extends TestCase
         $artist = Interprete::create([
             'interprete' => 'Artista visibilidad '.uniqid(),
             'slug' => 'artista-visibilidad-'.uniqid(),
+            'biografia' => 'Biografia de prueba.',
             'estado' => 1,
         ]);
 

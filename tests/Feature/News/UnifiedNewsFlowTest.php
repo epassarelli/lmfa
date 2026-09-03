@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class UnifiedNewsFlowTest extends TestCase
@@ -27,8 +28,13 @@ class UnifiedNewsFlowTest extends TestCase
         Storage::fake('public');
         Storage::fake('local');
 
-        $this->admin = User::factory()->create(['role' => 'administrador']);
-        $this->colaborador = User::factory()->create(['role' => 'colaborador']);
+        Role::findOrCreate('administrador', 'web');
+        Role::findOrCreate('colaborador', 'web');
+
+        $this->admin = User::factory()->create();
+        $this->admin->assignRole('administrador');
+        $this->colaborador = User::factory()->create();
+        $this->colaborador->assignRole('colaborador');
         $this->categoria = Categoria::first() ?: Categoria::create(['nombre' => 'General', 'slug' => 'general']);
     }
 

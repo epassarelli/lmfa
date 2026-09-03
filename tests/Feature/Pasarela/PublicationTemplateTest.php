@@ -202,6 +202,7 @@ class PublicationTemplateTest extends TestCase
         $user = $this->makeUser();
 
         PublicationTemplate::create([
+            'content_type'  => Event::class,
             'provider'      => 'facebook',
             'variant_name'  => 'test_variant',
             'template_text' => 'Hello {title}',
@@ -250,6 +251,7 @@ class PublicationTemplateTest extends TestCase
         $user = $this->makeUser();
 
         $template = PublicationTemplate::create([
+            'content_type'  => Event::class,
             'provider'      => 'telegram',
             'variant_name'  => 'v1',
             'template_text' => 'Old text',
@@ -258,6 +260,7 @@ class PublicationTemplateTest extends TestCase
 
         $this->actingAs($user)
             ->put(route('pasarela.templates.update', $template), [
+                'content_type'  => Event::class,
                 'provider'      => 'telegram',
                 'variant_name'  => 'v1',
                 'template_text' => 'New text: {title}',
@@ -273,6 +276,7 @@ class PublicationTemplateTest extends TestCase
         $user = $this->makeUser();
 
         $template = PublicationTemplate::create([
+            'content_type'  => Event::class,
             'provider'      => 'instagram',
             'variant_name'  => 'deletable',
             'template_text' => 'Delete me',
