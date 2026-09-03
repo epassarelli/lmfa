@@ -1,36 +1,10 @@
 @extends('layouts.app')
-
 @section('metaTitle', $metaTitle)
 @section('metaDescription', $metaDescription)
-
 @section('content')
-
-  <div class="container mx-auto py-8">
-    @if(isset($breadcrumbs))
-      <x-breadcrumbs :items="$breadcrumbs" />
-    @endif
-
-    <h1 class="text-3xl font-bold mb-8">Radios de Folklore Argentino</h1>
-    @foreach ($radios as $radio)
-      <div class="w-full sm:w-1/2 md:w-1/3 p-4">
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-          <a href="{{ route('noticias.show', $radio->slug) }}">
-            @if ($radio->images->isNotEmpty())
-              <x-optimized-image :image="$radio->images->first()" variant="card" class="w-full h-48 object-cover" />
-            @else
-              <img src="{{ asset('storage/radios/' . $radio->foto) }}" alt="{{ $radio->titulo }}"
-                class="w-full h-48 object-cover" loading="lazy" decoding="async">
-            @endif
-            <div class="p-4">
-              <h3 class="font-bold text-xl mb-2">{{ $radio->titulo }}</h3>
-            </div>
-          </a>
-        </div>
-      </div>
-    @endforeach
-  </div>
-
-
-
-
+<main class="container mx-auto py-8">@if(isset($breadcrumbs))<x-breadcrumbs :items="$breadcrumbs" />@endif
+<h1 class="mt-5 text-3xl font-bold">Radios de Folklore Argentino</h1>
+<form class="mt-6 grid gap-3 md:grid-cols-4" method="GET"><input class="rounded border-slate-300" name="q" value="{{ request('q') }}" placeholder="Buscar radio o ciudad"><select class="rounded border-slate-300" name="province_id"><option value="">Todas las provincias</option>@foreach($provincias as $province)<option value="{{ $province->id }}" @selected((int)request('province_id')===$province->id)>{{ $province->nombre }}</option>@endforeach</select><select class="rounded border-slate-300" name="mode"><option value="">Cualquier emisión</option><option value="air" @selected(request('mode')==='air')>Por aire</option><option value="streaming" @selected(request('mode')==='streaming')>Streaming</option><option value="web" @selected(request('mode')==='web')>Web</option></select><button class="rounded bg-amber-700 px-4 py-2 font-semibold text-white">Buscar</button></form>
+<div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">@forelse($signals as $signal)<article class="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"><p class="text-sm text-amber-800">{{ $signal->provincia?->nombre ?? 'Cobertura digital' }}{{ $signal->city ? ' · '.$signal->city : '' }}</p><h2 class="mt-1 text-xl font-bold"><a href="{{ route('radios.show',$signal->slug) }}">{{ $signal->title }}</a></h2><p class="mt-2 text-sm text-slate-600">{{ $signal->excerpt }}</p><p class="mt-4 text-sm">{{ implode(' · ', $signal->transmission_modes ?? []) }}</p></article>@empty<p class="text-slate-600">No encontramos señales con esos filtros.</p>@endforelse</div><div class="mt-8">{{ $signals->links() }}</div>
+@if($programs->isNotEmpty())<section class="mt-12 border-t pt-8"><h2 class="text-2xl font-bold">Programas independientes</h2><div class="mt-4 grid gap-4 md:grid-cols-3">@foreach($programs as $program)<article class="rounded-lg bg-stone-100 p-4"><h3 class="font-bold">{{ $program->title }}</h3><a class="mt-2 inline-block text-amber-800 underline" href="{{ $program->listening_url }}" target="_blank" rel="noopener noreferrer">Escuchar</a></article>@endforeach</div></section>@endif</main>
 @endsection

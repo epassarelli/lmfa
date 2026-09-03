@@ -14,6 +14,7 @@ use App\Models\KnowledgeCategory;
 use App\Models\Mito;
 use App\Models\News;
 use App\Models\PeniaProfile;
+use App\Models\RadioSignal;
 use App\Support\CanonicalUrl;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
@@ -95,6 +96,13 @@ class SitemapController extends Controller
         ]);
     }
 
+    public function radios(): Response
+    {
+        return $this->xmlResponse('sitemap-urlset', [
+            'urls' => $this->radioEntries(),
+        ]);
+    }
+
     public function discographies(): Response
     {
         return $this->xmlResponse('sitemap-urlset', [
@@ -127,6 +135,7 @@ class SitemapController extends Controller
             $this->sitemapIndexEntry(route('sitemap.events'), $this->eventEntries()),
             $this->sitemapIndexEntry(route('sitemap.festivals'), $this->festivalEntries()),
             $this->sitemapIndexEntry(route('sitemap.penias'), $this->peniaEntries()),
+            $this->sitemapIndexEntry(route('sitemap.radios'), $this->radioEntries()),
             $this->sitemapIndexEntry(route('sitemap.discographies'), $this->discographyEntries()),
             $this->sitemapIndexEntry(route('sitemap.lyrics'), $this->lyricEntries()),
             $this->sitemapIndexEntry(route('sitemap.evergreen'), $this->evergreenEntries()),
@@ -145,6 +154,7 @@ class SitemapController extends Controller
             $this->entry(route('discografias.index')),
             $this->entry(route('festivales.index')),
             $this->entry(route('penia-profiles.index')),
+            $this->entry(route('radios.index')),
             $this->entry(route('enciclopedia.index')),
             $this->entry(route('mitos.index')),
             $this->entry(route('comidas.index')),
@@ -302,6 +312,19 @@ class SitemapController extends Controller
             ->map(fn (PeniaProfile $penia) => $this->entry(
                 $penia->getUrl(),
                 $this->bestDate($penia->updated_at, $penia->last_verified_at, $penia->published_at, $penia->created_at)
+            )));
+    }
+
+    protected function radioEntries(): Collection
+    {
+        return $this->uniqueEntries(RadioSignal::query()
+            ->publiclyVisible()
+            ->whereNotNull('slug')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (RadioSignal $signal) => $this->entry(
+                route('radios.show', $signal->slug),
+                $this->bestDate($signal->updated_at, $signal->last_verified_at, $signal->published_at, $signal->created_at)
             )));
     }
 

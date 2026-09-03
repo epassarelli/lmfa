@@ -43,6 +43,7 @@ Route::get('/sitemap-google-news.xml', [SitemapController::class, 'googleNews'])
 Route::get('/sitemap-eventos.xml', [SitemapController::class, 'events'])->name('sitemap.events');
 Route::get('/sitemap-festivales.xml', [SitemapController::class, 'festivals'])->name('sitemap.festivals');
 Route::get('/sitemap-penias.xml', [SitemapController::class, 'penias'])->name('sitemap.penias');
+Route::get('/sitemap-radios.xml', [SitemapController::class, 'radios'])->name('sitemap.radios');
 Route::get('/sitemap-discografias.xml', [SitemapController::class, 'discographies'])->name('sitemap.discographies');
 Route::get('/sitemap-letras.xml', [SitemapController::class, 'lyrics'])->name('sitemap.lyrics');
 Route::get('/sitemap-evergreen.xml', [SitemapController::class, 'evergreen'])->name('sitemap.evergreen');
