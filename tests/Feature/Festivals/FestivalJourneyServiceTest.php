@@ -62,7 +62,7 @@ class FestivalJourneyServiceTest extends TestCase
                 'status' => 'active',
                 'editorial_status' => 'published',
                 'published_at' => now()->subDay(),
-                'created_by' => 1,
+                'created_by' => $festival->user_id,
             ]);
             $festival->events()->attach($event->id);
             $event->interpretes()->attach($artist->id, ['sort_order' => 1]);

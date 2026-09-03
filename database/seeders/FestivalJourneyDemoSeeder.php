@@ -7,12 +7,23 @@ use App\Models\Festival;
 use App\Models\Interprete;
 use App\Models\Mes;
 use App\Models\Provincia;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class FestivalJourneyDemoSeeder extends Seeder
 {
     public function run(): void
     {
+        $user = User::firstOrCreate(
+            ['email' => 'festival-vivo-demo@mifolkloreargentino.com'],
+            [
+                'name' => 'Festival Vivo Demo',
+                'password' => Hash::make(Str::random(40)),
+            ]
+        );
+
         $province = Provincia::firstOrCreate(['nombre' => 'Provincia Demo Festival Vivo']);
         $month = Mes::firstOrCreate(['nombre' => 'Septiembre']);
 
@@ -29,13 +40,13 @@ class FestivalJourneyDemoSeeder extends Seeder
                     'meta_description' => 'Escenario de desarrollo para Festival vivo.',
                     'status' => 'published',
                     'published_at' => now()->subDay(),
-                    'user_id' => 1,
+                    'user_id' => $user->id,
                 ]
             );
 
             $artist = Interprete::updateOrCreate(
                 ['slug' => 'artista-demo-festival-vivo-'.($index + 1)],
-                ['interprete' => 'Artista Demo Festival Vivo '.($index + 1), 'biografia' => str_repeat('Biografia de demostracion. ', 12), 'estado' => 1, 'user_id' => 1]
+                ['interprete' => 'Artista Demo Festival Vivo '.($index + 1), 'biografia' => str_repeat('Biografia de demostracion. ', 12), 'estado' => 1, 'user_id' => $user->id]
             );
 
             $event = Event::updateOrCreate(
@@ -49,7 +60,7 @@ class FestivalJourneyDemoSeeder extends Seeder
                     'status' => 'active',
                     'editorial_status' => 'published',
                     'published_at' => now()->subDay(),
-                    'created_by' => 1,
+                    'created_by' => $user->id,
                 ]
             );
 
