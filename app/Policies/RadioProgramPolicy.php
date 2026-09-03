@@ -33,6 +33,11 @@ class RadioProgramPolicy
         return $user->hasRole('administrador');
     }
 
+    public function unpublish(User $user, RadioProgram $program): bool
+    {
+        return $user->hasRole('administrador');
+    }
+
     public function delete(User $user, RadioProgram $program): bool
     {
         return $user->hasRole('administrador');

@@ -70,4 +70,9 @@ class RadioSignal extends Model
     {
         return $this->verification_status === 'verified' && filled($this->verified_by_user_id) && filled($this->verification_method) && $this->last_verified_at?->betweenIncluded(now()->subDays(90), now());
     }
+
+    public function getUrl(): string
+    {
+        return route('radios.show', $this->slug);
+    }
 }

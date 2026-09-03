@@ -24,9 +24,12 @@ class RadioProgramController extends Controller
         $programs = RadioProgram::query()->with(['signal', 'verifier'])->withCount('slots')
             ->when(! Auth::user()->hasRole('administrador'), fn ($query) => $query->where('created_by', Auth::id()))
             ->when($request->filled('status'), fn ($query) => $query->where('editorial_status', $request->input('status')))
+            ->when($request->filled('verification'), fn ($query) => $query->where('verification_status', $request->input('verification')))
             ->when($request->filled('signal_id'), fn ($query) => $query->where('radio_signal_id', $request->integer('signal_id')))
             ->when($request->filled('platform'), fn ($query) => $query->where('platform', $request->input('platform')))
             ->when($request->filled('search'), fn ($query) => $query->where('title', 'like', '%'.$request->input('search').'%'))
+            ->when($request->input('quality') === 'missing_slots', fn ($query) => $query->whereDoesntHave('slots', fn ($slot) => $slot->where('is_active', true)))
+            ->when($request->input('quality') === 'missing_seo', fn ($query) => $query->where(fn ($missing) => $missing->whereNull('seo_title')->orWhereNull('meta_description')))
             ->latest('updated_at')->paginate(25)->withQueryString();
 
         return view('backend.radios.programs.index', ['programs' => $programs, 'signals' => RadioSignal::orderBy('title')->get(['id', 'title'])]);
@@ -69,6 +72,26 @@ class RadioProgramController extends Controller
         $this->radios->publishProgram($radioProgram);
 
         return back()->with('success', 'Programa publicado.');
+    }
+
+    public function unpublish(RadioProgram $radioProgram)
+    {
+        $this->authorize('unpublish', $radioProgram);
+        $this->radios->unpublishProgram($radioProgram);
+
+        return back()->with('success', 'Programa despublicado y enviado a borrador.');
+    }
+
+    public function preview(RadioProgram $radioProgram)
+    {
+        $this->authorize('view', $radioProgram);
+        $program = $radioProgram->load([
+            'slots' => fn ($query) => $query->where('is_active', true)->orderBy('weekday')->orderBy('starts_at'),
+            'signal.provincia',
+            'signal.listeningChannels' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order'),
+        ]);
+
+        return app(\App\Http\Controllers\Frontend\RadiosController::class)->programView($program, true);
     }
 
     private function formData(RadioProgram $program): array

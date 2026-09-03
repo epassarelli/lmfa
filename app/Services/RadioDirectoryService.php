@@ -19,6 +19,11 @@ class RadioDirectoryService
         return $this->saveSignal($signal, ['editorial_status' => 'published']);
     }
 
+    public function unpublishSignal(RadioSignal $signal): RadioSignal
+    {
+        return $this->saveSignal($signal, ['editorial_status' => 'draft', 'published_at' => null]);
+    }
+
     public function saveSignal(RadioSignal $signal, array $data): RadioSignal
     {
         return DB::transaction(function () use ($signal, $data) {
@@ -44,6 +49,11 @@ class RadioDirectoryService
     public function publishProgram(RadioProgram $program): RadioProgram
     {
         return $this->saveProgram($program, ['editorial_status' => 'published']);
+    }
+
+    public function unpublishProgram(RadioProgram $program): RadioProgram
+    {
+        return $this->saveProgram($program, ['editorial_status' => 'draft', 'published_at' => null]);
     }
 
     public function saveProgram(RadioProgram $program, array $data): RadioProgram
@@ -90,6 +100,7 @@ class RadioDirectoryService
     private function syncChannels(RadioSignal $signal, array $channels): void
     {
         $ids = [];
+        $primaryAssigned = false;
 
         foreach ($channels as $order => $channel) {
             if (blank($channel['label'] ?? null) || blank($channel['channel_type'] ?? null)) {
@@ -100,6 +111,9 @@ class RadioDirectoryService
                 ? $signal->listeningChannels()->findOrFail($channel['id'])
                 : new RadioListeningChannel();
 
+            $isPrimary = ! $primaryAssigned && (bool) ($channel['is_primary'] ?? false);
+            $primaryAssigned = $primaryAssigned || $isPrimary;
+
             $model->fill([
                 'label' => $channel['label'],
                 'channel_type' => $channel['channel_type'],
@@ -107,7 +121,7 @@ class RadioDirectoryService
                 'frequency_band' => $channel['frequency_band'] ?? null,
                 'frequency' => $channel['frequency'] ?? null,
                 'url' => $channel['url'] ?? null,
-                'is_primary' => (bool) ($channel['is_primary'] ?? false),
+                'is_primary' => $isPrimary,
                 'is_active' => (bool) ($channel['is_active'] ?? true),
                 'sort_order' => $order,
             ]);
@@ -116,6 +130,14 @@ class RadioDirectoryService
         }
 
         $signal->listeningChannels()->whereNotIn('id', $ids)->delete();
+
+        if (! $primaryAssigned && $ids) {
+            $signal->listeningChannels()
+                ->whereIn('id', $ids)
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->first()?->update(['is_primary' => true]);
+        }
     }
 
     private function syncSlots(RadioProgram $program, array $slots): void

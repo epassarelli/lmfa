@@ -14,6 +14,7 @@ use App\Models\KnowledgeCategory;
 use App\Models\Mito;
 use App\Models\News;
 use App\Models\PeniaProfile;
+use App\Models\RadioProgram;
 use App\Models\RadioSignal;
 use App\Support\CanonicalUrl;
 use Illuminate\Http\RedirectResponse;
@@ -178,6 +179,7 @@ class SitemapController extends Controller
 
         if (config('features.radio_directory')) {
             $entries->push($this->entry(route('radios.index')));
+            $entries->push($this->entry(route('radios.programs.index')));
         }
 
         return $this->uniqueEntries($entries->merge($this->recipeLetterEntries()));
@@ -333,15 +335,26 @@ class SitemapController extends Controller
 
     protected function radioEntries(): Collection
     {
-        return $this->uniqueEntries(RadioSignal::query()
+        $signals = RadioSignal::query()
             ->publiclyVisible()
             ->whereNotNull('slug')
             ->orderBy('id')
             ->get()
             ->map(fn (RadioSignal $signal) => $this->entry(
-                route('radios.show', $signal->slug),
+                $signal->getUrl(),
                 $this->bestDate($signal->updated_at, $signal->last_verified_at, $signal->published_at, $signal->created_at)
-            )));
+            ));
+        $programs = RadioProgram::query()
+            ->publiclyVisible()
+            ->whereNotNull('slug')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (RadioProgram $program) => $this->entry(
+                $program->getUrl(),
+                $this->bestDate($program->updated_at, $program->last_verified_at, $program->published_at, $program->created_at)
+            ));
+
+        return $this->uniqueEntries($signals->merge($programs));
     }
 
     protected function discographyEntries(): Collection

@@ -7,6 +7,7 @@ use App\Http\Requests\Concerns\NormalizesRichTextFields;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class RadioProgramRequest extends FormRequest
 {
@@ -30,6 +31,10 @@ class RadioProgramRequest extends FormRequest
         if (is_string($this->input('source_urls'))) {
             $this->merge(['source_urls' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $this->input('source_urls')))))]);
         }
+
+        if (is_array($this->input('slots'))) {
+            $this->merge(['slots' => array_values(array_filter($this->input('slots'), fn ($slot) => collect($slot)->except(['id', 'is_active'])->filter(fn ($value) => filled($value))->isNotEmpty()))]);
+        }
     }
 
     public function rules(): array
@@ -43,5 +48,19 @@ class RadioProgramRequest extends FormRequest
             'editorial_status' => ['required', Rule::in(['draft', 'approved', 'published', 'archived'])], 'published_at' => 'nullable|date', 'seo_title' => 'nullable|string|max:255', 'meta_description' => 'nullable|string|max:320',
             'slots' => 'nullable|array', 'slots.*.id' => 'nullable|integer', 'slots.*.weekday' => 'required_with:slots|integer|between:0,6', 'slots.*.starts_at' => 'required_with:slots|date_format:H:i', 'slots.*.ends_at' => 'nullable|date_format:H:i|after:slots.*.starts_at', 'slots.*.timezone' => 'nullable|timezone', 'slots.*.is_active' => 'nullable|boolean',
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            $seen = [];
+            foreach ($this->input('slots', []) as $index => $slot) {
+                $key = ($slot['weekday'] ?? '').'|'.($slot['starts_at'] ?? '');
+                if (isset($seen[$key])) {
+                    $validator->errors()->add("slots.{$index}.starts_at", 'La franja semanal está repetida.');
+                }
+                $seen[$key] = true;
+            }
+        });
     }
 }

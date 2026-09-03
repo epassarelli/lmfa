@@ -88,6 +88,8 @@ Route::get('/festivales-y-fiestas-tradicionales/{slug}', [FestivalesController::
 Route::middleware('feature:radio_directory')->group(function () {
     Route::get('/radios-de-folklore-argentino', [RadiosController::class, 'index'])->name('radios.index');
     Route::get('/radios-de-folklore-argentino/{slug}', [RadiosController::class, 'show'])->name('radios.show');
+    Route::get('/programas-de-radio-folklorica', [RadiosController::class, 'programs'])->name('radios.programs.index');
+    Route::get('/programas-de-radio-folklorica/{slug}', [RadiosController::class, 'program'])->name('radios.programs.show');
 });
 
 Route::middleware('feature:penia_directory')->group(function () {

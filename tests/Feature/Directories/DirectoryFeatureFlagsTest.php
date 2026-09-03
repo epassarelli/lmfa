@@ -18,6 +18,7 @@ class DirectoryFeatureFlagsTest extends TestCase
 
         $this->get('/penias')->assertNotFound();
         $this->get('/radios-de-folklore-argentino')->assertNotFound();
+        $this->get('/programas-de-radio-folklorica')->assertNotFound();
         $this->get('/sitemap-penias.xml')->assertNotFound();
         $this->get('/sitemap-radios.xml')->assertNotFound();
 
@@ -41,6 +42,7 @@ class DirectoryFeatureFlagsTest extends TestCase
 
         $this->get('/penias')->assertOk();
         $this->get('/radios-de-folklore-argentino')->assertNotFound();
+        $this->get('/programas-de-radio-folklorica')->assertNotFound();
         $this->get('/sitemap-penias.xml')->assertOk();
         $this->get('/sitemap-radios.xml')->assertNotFound();
         $this->get('/sitemap.xml')
@@ -55,6 +57,7 @@ class DirectoryFeatureFlagsTest extends TestCase
 
         $this->get('/penias')->assertNotFound();
         $this->get('/radios-de-folklore-argentino')->assertOk();
+        $this->get('/programas-de-radio-folklorica')->assertOk();
         $this->get('/sitemap-penias.xml')->assertNotFound();
         $this->get('/sitemap-radios.xml')->assertOk();
     }

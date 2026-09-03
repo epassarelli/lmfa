@@ -33,6 +33,11 @@ class RadioSignalPolicy
         return $user->hasRole('administrador');
     }
 
+    public function unpublish(User $user, RadioSignal $signal): bool
+    {
+        return $user->hasRole('administrador');
+    }
+
     public function delete(User $user, RadioSignal $signal): bool
     {
         return $user->hasRole('administrador');

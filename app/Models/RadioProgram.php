@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasPublicationState;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -52,11 +53,42 @@ class RadioProgram extends Model
 
     public function scopePubliclyVisible(Builder $query): Builder
     {
-        return $query->publishedVisible()->verificationCurrent();
+        return $query
+            ->publishedVisible()
+            ->verificationCurrent()
+            ->where(function (Builder $listenable): void {
+                $listenable
+                    ->where(function (Builder $independent): void {
+                        $independent->whereNull('radio_signal_id')
+                            ->whereNotNull('platform')
+                            ->whereNotNull('listening_url');
+                    })
+                    ->orWhereHas('signal', fn (Builder $signal) => $signal->publiclyVisible());
+            });
     }
 
     public function hasCurrentVerification(): bool
     {
         return $this->verification_status === 'verified' && filled($this->verified_by_user_id) && filled($this->verification_method) && $this->last_verified_at?->betweenIncluded(now()->subDays(90), now());
+    }
+
+    public function getUrl(): string
+    {
+        return route('radios.programs.show', $this->slug);
+    }
+
+    public function nextBroadcast(?CarbonImmutable $from = null): ?array
+    {
+        $slots = $this->relationLoaded('slots')
+            ? $this->slots->where('is_active', true)
+            : $this->slots()->where('is_active', true)->get();
+
+        return $slots
+            ->map(fn (RadioProgramSlot $slot): array => [
+                'slot' => $slot,
+                'starts_at' => $slot->nextStartsAt($from),
+            ])
+            ->sortBy('starts_at')
+            ->first();
     }
 }

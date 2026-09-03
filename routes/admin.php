@@ -108,8 +108,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('penia-profiles/{penia_profile}/unpublish', [PeniaProfileController::class, 'unpublish'])->name('backend.penia-profiles.unpublish');
     Route::resource('penia-profiles', PeniaProfileController::class)->names('backend.penia-profiles')->parameters(['penia-profiles' => 'penia_profile']);
     Route::post('radios/signals/{radio_signal}/publish', [RadioSignalController::class, 'publish'])->name('backend.radios.signals.publish');
+    Route::post('radios/signals/{radio_signal}/unpublish', [RadioSignalController::class, 'unpublish'])->name('backend.radios.signals.unpublish');
+    Route::get('radios/signals/{radio_signal}/preview', [RadioSignalController::class, 'preview'])->name('backend.radios.signals.preview');
     Route::resource('radios/signals', RadioSignalController::class)->names('backend.radios.signals')->parameters(['signals' => 'radio_signal'])->except('show');
     Route::post('radios/programs/{radio_program}/publish', [RadioProgramController::class, 'publish'])->name('backend.radios.programs.publish');
+    Route::post('radios/programs/{radio_program}/unpublish', [RadioProgramController::class, 'unpublish'])->name('backend.radios.programs.unpublish');
+    Route::get('radios/programs/{radio_program}/preview', [RadioProgramController::class, 'preview'])->name('backend.radios.programs.preview');
     Route::resource('radios/programs', RadioProgramController::class)->names('backend.radios.programs')->parameters(['programs' => 'radio_program'])->except('show');
     Route::resource('discos', AlbumController::class)->names('backend.discos')->parameters(['discos' => 'album']);
     Route::get('canciones/data', [CancionController::class, 'getCanciones'])->name('backend.canciones.get');
