@@ -3,6 +3,7 @@
 namespace Tests\Feature\Penias;
 
 use App\Models\Event;
+use App\Models\Locality;
 use App\Models\PeniaProfile;
 use App\Models\Provincia;
 use App\Models\User;
@@ -17,8 +18,11 @@ class PeniaProfileFrontendTest extends TestCase
     {
         $user = User::factory()->create();
         $province = Provincia::create(['nombre' => 'Provincia pública '.uniqid()]);
+        $locality = Locality::create(['province_id' => $province->id, 'name' => 'Localidad pública '.uniqid()]);
         $profile = PeniaProfile::factory()->create([
             'title' => 'Peña pública', 'slug' => 'penia-publica', 'province_id' => $province->id,
+            'locality_id' => $locality->id, 'city' => 'Ciudad pública', 'address' => 'Calle pública 123', 'phone' => '+54 11 5555-1234',
+            'latitude' => -34.6037, 'longitude' => -58.3816, 'capacity' => 120, 'accessibility_notes' => 'Acceso de prueba',
             'verification_status' => 'verified', 'last_verified_at' => now(), 'verified_by_user_id' => $user->id,
             'verification_method' => 'official_source', 'editorial_status' => 'published', 'published_at' => now()->subDay(),
         ]);
@@ -38,7 +42,7 @@ class PeniaProfileFrontendTest extends TestCase
         $profile->events()->attach([$future->id, $past->id, $unpublished->id]);
 
         $this->get('/penias')->assertOk()->assertSee('Peña pública')->assertDontSee('Peña vencida');
-        $this->get('/penias/penia-publica')->assertOk()->assertSee('Agenda futura')->assertDontSee('Agenda pasada')->assertDontSee('Agenda no pública')->assertSee('MusicVenue')->assertSee('Explorar y buscar Peñas')->assertSee('Peña vecina')->assertDontSee('Peña vencida');
+        $this->get('/penias/penia-publica')->assertOk()->assertSee('Agenda futura')->assertDontSee('Agenda pasada')->assertDontSee('Agenda no pública')->assertSee('MusicVenue')->assertSee('Encontrá otra Peña')->assertSee('Calle pública 123')->assertSee('Localidad pública')->assertSee('+54 11 5555-1234')->assertSee('openstreetmap.org/export/embed.html', false)->assertSee('Peña vecina')->assertDontSee('Peña vencida');
         $this->get('/penias/penia-vencida')->assertNotFound();
         $this->get('/sitemap-penias.xml')->assertOk()->assertSee('/penias/penia-publica', false)->assertDontSee('/penias/penia-vencida', false);
     }

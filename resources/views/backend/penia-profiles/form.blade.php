@@ -35,6 +35,8 @@
   <div class="col-md-4 form-group"><label>Ciudad</label><input class="form-control" name="city" value="{{ old('city', $profile->city) }}"></div>
   <div class="col-md-4 form-group"><label>Dirección</label><input class="form-control" name="address" value="{{ old('address', $profile->address) }}"></div>
   <div class="col-md-4 form-group"><label>Capacidad</label><input type="number" min="1" class="form-control" name="capacity" value="{{ old('capacity', $profile->capacity) }}"></div>
+  <div class="col-md-6 form-group"><label>Latitud</label><input type="number" step="0.00000001" min="-90" max="90" class="form-control" name="latitude" value="{{ old('latitude', $profile->latitude) }}"></div>
+  <div class="col-md-6 form-group"><label>Longitud</label><input type="number" step="0.00000001" min="-180" max="180" class="form-control" name="longitude" value="{{ old('longitude', $profile->longitude) }}"></div>
   <div class="col-md-4 form-group"><label>Teléfono</label><input class="form-control" name="phone" value="{{ old('phone', $profile->phone) }}"></div>
   <div class="col-md-4 form-group"><label>Email</label><input type="email" class="form-control" name="email" value="{{ old('email', $profile->email) }}"></div>
   <div class="col-md-4 form-group"><label>Sitio web</label><input type="url" class="form-control" name="website" value="{{ old('website', $profile->website) }}"></div>

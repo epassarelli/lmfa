@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Event;
+use App\Models\Locality;
 use App\Models\PeniaProfile;
 use App\Models\Provincia;
 use App\Models\User;
@@ -29,6 +30,7 @@ class PeniaProfileDemoSeeder extends Seeder
         foreach ($venues as $index => $venue) {
             $number = $index + 1;
             $province = Provincia::firstOrCreate(['nombre' => $venue['province']]);
+            $locality = Locality::firstOrCreate(['province_id' => $province->id, 'name' => $venue['city']]);
             $slug = "penia-demo-{$number}";
 
             $profile = PeniaProfile::updateOrCreate(
@@ -38,8 +40,11 @@ class PeniaProfileDemoSeeder extends Seeder
                     'excerpt' => 'Espacio ficticio de desarrollo para probar el directorio evergreen de Peñas.',
                     'body' => '<p>Ficha de demostración creada exclusivamente para el entorno de desarrollo. Incluye datos operativos, contacto y agenda ficticios para validar el recorrido editorial completo.</p><p>No representa un establecimiento real ni debe utilizarse fuera de DEV.</p>',
                     'province_id' => $province->id,
+                    'locality_id' => $locality->id,
                     'city' => $venue['city'],
                     'address' => "Calle Demo {$number}00",
+                    'latitude' => -34.6037 + ($index * 0.11),
+                    'longitude' => -58.3816 + ($index * 0.09),
                     'venue_type' => $venue['type'],
                     'phone' => "+54 9 11 5555-10{$number}",
                     'email' => "penia-demo-{$number}@example.test",

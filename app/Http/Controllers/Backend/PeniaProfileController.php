@@ -118,6 +118,8 @@ class PeniaProfileController extends Controller
             ->get();
 
         return view('frontend.penia-profiles.show', compact('penia', 'canonical', 'metaDescription', 'sameProvince') + [
+            'provincias' => Provincia::orderBy('nombre')->get(['id', 'nombre']),
+            'venueTypes' => ['penia' => 'Peña', 'centro_cultural' => 'Centro cultural', 'gastronomico_cultural' => 'Espacio gastronómico-cultural', 'otro' => 'Otro'],
             'metaTitle' => $penia->seo_title ?: $penia->title,
             'metaRobots' => 'noindex,nofollow',
             'isPreview' => true,

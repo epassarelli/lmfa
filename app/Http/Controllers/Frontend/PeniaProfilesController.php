@@ -32,7 +32,7 @@ class PeniaProfilesController extends Controller
         return view('frontend.penia-profiles.index', [
             'penias' => $penias,
             'provincias' => Provincia::orderBy('nombre')->get(['id', 'nombre']),
-            'venueTypes' => ['penia' => 'Peña', 'centro_cultural' => 'Centro cultural', 'gastronomico_cultural' => 'Espacio gastronómico-cultural', 'otro' => 'Otro'],
+            'venueTypes' => $this->venueTypes(),
             'metaTitle' => 'Peñas folklóricas de Argentina',
             'metaDescription' => 'Encontrá peñas y espacios culturales de folklore con ubicación, contacto y verificación editorial vigente.',
             'canonical' => CanonicalUrl::normalize(route('penia-profiles.index')),
@@ -60,6 +60,8 @@ class PeniaProfilesController extends Controller
             ->get();
 
         return view('frontend.penia-profiles.show', compact('penia', 'canonical', 'metaDescription', 'sameProvince') + [
+            'provincias' => Provincia::orderBy('nombre')->get(['id', 'nombre']),
+            'venueTypes' => $this->venueTypes(),
             'metaTitle' => $penia->seo_title ?: $penia->title,
             'metaRobots' => 'index,follow',
             'breadcrumbs' => [
@@ -67,5 +69,10 @@ class PeniaProfilesController extends Controller
                 ['label' => $penia->title],
             ],
         ]);
+    }
+
+    private function venueTypes(): array
+    {
+        return ['penia' => 'Peña', 'centro_cultural' => 'Centro cultural', 'gastronomico_cultural' => 'Espacio gastronómico-cultural', 'otro' => 'Otro'];
     }
 }
