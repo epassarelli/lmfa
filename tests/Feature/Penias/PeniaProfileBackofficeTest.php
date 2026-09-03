@@ -72,7 +72,10 @@ class PeniaProfileBackofficeTest extends TestCase
             'email' => null,
             'website' => null,
         ]);
-        PeniaProfile::factory()->create(['title' => 'Peña excluida '.uniqid()]);
+        PeniaProfile::factory()->create([
+            'title' => 'Peña excluida '.uniqid(),
+            'province_id' => $province->id,
+        ]);
 
         $this->actingAs($admin)
             ->get(route('backend.penia-profiles.index', [
