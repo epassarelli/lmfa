@@ -78,6 +78,6 @@ class RadioFrontendTest extends TestCase
 
         $this->get(route('radios.index', ['q' => 'vencida']))->assertOk()->assertSee('noindex,follow', false)->assertDontSee('Radio vencida');
         $this->get(route('radios.programs.index'))->assertOk()->assertDontSee('Programa no escuchable');
-        $this->get('/programas-de-radio-folklorica/programa-no-escuchable')->assertNotFound();
+        $this->get('/radios-de-folklore-argentino/programas/programa-no-escuchable')->assertNotFound();
     }
 }
