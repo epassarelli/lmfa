@@ -1,7 +1,7 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-03 (puntos 1 y 2 cerrados en `dev`: estabilizacion, permisos editoriales y feature flags de Radios/Peñas con CI verde)
+> Ultima actualizacion: 2026-09-03 (puntos 1, 2 y 3 cerrados en `dev`: CI, gobierno editorial y migración no destructiva de Peñas)
 
 ---
 
@@ -10,6 +10,18 @@
 `dev` - integra el trabajo de producto y los pilotos tecnicos antes de su evaluacion para `main`.
 
 **Flujo vigente:** rama feature -> PR/CI -> revision de Eduardo -> merge a `main` por Eduardo -> pull y deploy en produccion. Los agentes no tocan ni fusionan `main` ni ejecutan despliegues.
+
+### Orden de cierre técnico vigente
+
+| Punto | Alcance | Estado |
+|------:|---------|--------|
+| 1 | Reparar CI y conflictos Fortify/Jetstream | `done` |
+| 2 | Cerrar permisos editoriales y feature flags de Peñas/Radios | `done` |
+| 3 | Corregir la migración destructiva de Peñas | `done` |
+| 4 | Terminar Peñas y cargar diez perfiles reales | `pending` |
+| 5 | Completar Radios: backoffice, programas públicos, auditor y SEO | `pending` |
+| 6 | Integrar Peñas y Radios con Content Refresh | `pending` |
+| 7 | Ejecutar tests, staging, smoke y recién entonces fusionar | `pending` |
 
 ---
 
@@ -39,9 +51,9 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Content Refresh:** soporta Artista, Receta y Mito con `CREAR/ACTUALIZAR`. Cycle-4 exige `ACCION_API` explicita, bloquea updates vacios y agrega preflight offline de los seis casos. El E2E productivo sigue pendiente.
 - **Producto:** `BL-0022C` recomienda como primer piloto `Festival evergreen -> Evento futuro -> Artista -> repertorio/actualidad`, condicionado a auditoria de cobertura, feature flag, allowlist y aprobacion funcional.
 - **Curacion:** `BL-0021B` tiene 3 de 10 borradores preparados: Gaston Cordero, Los Trovadores de Cuyo y Juan Bautista Bertorello. Todos permanecen con `ENVIAR_API=N`.
-- **Penas:** módulo evergreen cerrado para DEV sobre `penia_profiles`. El legado vacío `penias`, sus rutas, controlador, modelo y vista fueron retirados el 2026-09-03; no hay redirección porque no existían registros ni equivalencias. Incluye API, landing, ficha con el mismo buscador de la home, descubrimiento de Peñas de la misma provincia, ubicación completa, mapa por coordenadas, sitemap, CRUD, preview noindex, acciones editoriales, auditor read-only `mfa:penias:audit` y 10 fichas demo publicadas con localidad, coordenadas y 10 eventos futuros. El público permanece apagado por defecto con `FEATURE_PENIA_DIRECTORY=false`: la landing, las fichas, el NAV y sus sitemaps sólo se exponen al habilitar el flag. Colaboradores y prensa pueden crear y editar únicamente sus borradores propios; todo intento de auto-verificar, aprobar o publicar se normaliza a propuesta pendiente y las acciones canónicas quedan reservadas al rol `administrador`. La activación en producción sigue requiriendo un lote editorial real con fuentes y derechos verificados.
+- **Penas:** módulo evergreen cerrado para DEV sobre `penia_profiles`. Las rutas, controlador, modelo y vistas del módulo legacy fueron retirados, pero la tabla `penias` y el puente `penia_profiles.legacy_penia_id` se preservan hasta completar y validar el backfill. La migración destructiva `2026_09_03_010000_retire_legacy_penias_table` ahora es un no-op seguro y `2026_09_03_015000_restore_legacy_penias_bridge` repara de forma idempotente instalaciones donde aquella versión ya hubiera corrido. La auditoría previa confirmó que la tabla estaba vacía, por lo que no existen filas perdidas que reconstruir. Incluye API, landing, ficha con el mismo buscador de la home, descubrimiento de Peñas de la misma provincia, ubicación completa, mapa por coordenadas, sitemap, CRUD, preview noindex, acciones editoriales, auditor read-only `mfa:penias:audit` y 10 fichas demo publicadas con localidad, coordenadas y 10 eventos futuros. El público permanece apagado por defecto con `FEATURE_PENIA_DIRECTORY=false`: la landing, las fichas, el NAV y sus sitemaps sólo se exponen al habilitar el flag. Colaboradores y prensa pueden crear y editar únicamente sus borradores propios; todo intento de auto-verificar, aprobar o publicar se normaliza a propuesta pendiente y las acciones canónicas quedan reservadas al rol `administrador`. La activación en producción sigue requiriendo un lote editorial real con fuentes y derechos verificados.
 - **Radios:** evergreen en desarrollo bajo `radios-evergreen-directory`. Ya incluye persistencia canónica para señales, canales de escucha, programas y franjas; servicio de dominio, policies, API autenticada, backoffice inicial, landing y ficha pública de señales, sitemap, factories, tests y escenario demo. La superficie pública permanece apagada por defecto con `FEATURE_RADIO_DIRECTORY=false`, independientemente de Peñas, y no aparece en NAV ni sitemaps mientras esté oscura. Colaboradores y prensa sólo pueden proponer y editar borradores propios; la verificación y publicación son exclusivas de `administrador`. Permanecen abiertos el auditor/export CSV, el directorio y ficha pública de programas, próxima emisión visible, formularios completos, SEO/schema/canonical, Content Refresh, piloto editorial real y release gate. El módulo legacy permanece intacto hasta superar esas validaciones.
-- **Confiabilidad de `dev`:** se eliminaron los conflictos de merge que habían quedado versionados en el workflow de CI, doce acciones Fortify/Jetstream y 72 artefactos distribuidos de CKEditor. El workflow reúne las suites de Festivales, Festival Vivo, Artistas, Recetas, Mitos, Música, Peñas y Radios, y ahora agrega un gate específico para los flags independientes de directorios. GitHub Actions quedó verde en el commit `a1465a1` (run `33766464010`) después de validar migraciones, sintaxis PHP, compilación Blade y todas las suites incorporadas.
+- **Confiabilidad de `dev`:** se eliminaron los conflictos de merge que habían quedado versionados en el workflow de CI, doce acciones Fortify/Jetstream y 72 artefactos distribuidos de CKEditor. El workflow reúne las suites de Festivales, Festival Vivo, Artistas, Recetas, Mitos, Música, Peñas y Radios; agrega gates para los flags independientes y para la preservación de datos legacy de Peñas. GitHub Actions quedó verde en el commit `12f5ac5` (run `33778486653`) después de validar migraciones, sintaxis PHP, compilación Blade y todas las suites incorporadas.
 
 ### Festival Vivo - piloto local 2026-09-02
 
