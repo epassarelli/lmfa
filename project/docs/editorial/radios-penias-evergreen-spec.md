@@ -122,7 +122,7 @@ Orden recomendado: P1/P2/P3, menor score, mayores visitas y luego ID.
 4. Implementar modelos, requests, policies, servicios y API.
 5. Implementar backoffice y auditor.
 6. Implementar frontend, filtros, canonical, sitemap y schema.
-7. Integrar Content Refresh y pruebas controladas.
+7. Integrar Content Refresh y pruebas controladas. **Completado en DEV:** tipos `Peña`, `Radio` y `ProgramaRadio`, con `CREAR/ACTUALIZAR`, preflight offline y altas forzadas a `draft/pending`.
 8. Migrar un lote piloto y verificar vigencia.
 9. Activar cada directorio como release independiente.
 

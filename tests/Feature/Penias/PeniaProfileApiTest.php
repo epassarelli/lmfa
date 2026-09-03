@@ -62,6 +62,37 @@ class PeniaProfileApiTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_content_refresh_creates_a_draft_and_updates_only_sent_penia_fields(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('administrador');
+        $province = Provincia::create(['nombre' => 'Provincia refresh Peña '.uniqid()]);
+        Sanctum::actingAs($admin);
+
+        $created = $this->postJson('/api/v1/penia-profiles', [
+            'title' => 'Peña Content Refresh',
+            'slug' => 'penia-content-refresh',
+            'body' => '<p>Ficha editorial creada desde la bandeja.</p>',
+            'province_id' => $province->id,
+            'venue_type' => 'penia',
+            'source_urls' => ['https://example.test/penia-refresh'],
+            'verification_status' => 'pending',
+            'editorial_status' => 'draft',
+        ])->assertCreated()
+            ->assertJsonPath('editorial_status', 'draft')
+            ->assertJsonPath('verification_status', 'pending');
+
+        $id = $created->json('id');
+
+        $this->putJson("/api/v1/penia-profiles/{$id}", [
+            'seo_title' => 'Peña Content Refresh actualizada',
+        ])->assertOk()
+            ->assertJsonPath('seo_title', 'Peña Content Refresh actualizada')
+            ->assertJsonPath('editorial_status', 'draft')
+            ->assertJsonPath('verification_status', 'pending')
+            ->assertJsonPath('province_id', $province->id);
+    }
+
     private function payload(int $provinceId, int $userId): array
     {
         return [

@@ -1,10 +1,12 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const csvPath = process.argv[2];
+const args = process.argv.slice(2);
+const csvPath = args.find((argument) => !argument.startsWith('--'));
+const scope = (args.find((argument) => argument.startsWith('--scope=')) || '--scope=core').split('=')[1];
 
 if (!csvPath) {
-  console.error('Uso: npm run apps-script:pilot:check -- <contenidos.csv>');
+  console.error('Uso: npm run apps-script:pilot:check -- <contenidos.csv> [--scope=core|directories]');
   process.exit(2);
 }
 
@@ -64,11 +66,32 @@ const source = fs.readFileSync(new URL('../Código.js', import.meta.url), 'utf8'
 const context = vm.createContext({ console });
 vm.runInContext(source, context, { filename: 'Código.js' });
 
-const entities = {
-  artista: { label: 'Artista', processor: 'procesarArtistaMFA_' },
-  receta: { label: 'Receta', processor: 'procesarRecetaMFA_' },
-  mito: { label: 'Mito', processor: 'procesarMitoMFA_' },
+function normalize(value) {
+  return String(value || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+const scopes = {
+  core: [
+    { key: 'artista', types: ['artista'], label: 'Artista', processor: 'procesarArtistaMFA_' },
+    { key: 'receta', types: ['receta'], label: 'Receta', processor: 'procesarRecetaMFA_' },
+    { key: 'mito', types: ['mito'], label: 'Mito', processor: 'procesarMitoMFA_' },
+  ],
+  directories: [
+    { key: 'penia', types: ['pena', 'penia'], label: 'Peña', processor: 'procesarPeniaMFA_' },
+    { key: 'radio', types: ['radio'], label: 'Radio', processor: 'procesarRadioMFA_' },
+    { key: 'programaradio', types: ['programaradio', 'programa radio', 'programa de radio'], label: 'ProgramaRadio', processor: 'procesarProgramaRadioMFA_' },
+  ],
 };
+
+if (!scopes[scope]) {
+  console.error(`PREFLIGHT ERROR: scope inválido: ${scope}. Use core o directories.`);
+  process.exit(2);
+}
+
+const definitions = scopes[scope];
+const entities = Object.fromEntries(definitions.flatMap((definition) =>
+  definition.types.map((type) => [type, definition])
+));
 
 let records;
 try {
@@ -81,13 +104,13 @@ try {
 const errors = [];
 const observed = new Map();
 const enabled = records.filter(({ values }) =>
-  String(values.ENVIAR_API || '').trim().toLowerCase() === 's'
+  normalize(values.ENVIAR_API) === 's'
 );
 const unsupported = enabled.filter(({ values }) =>
-  !entities[String(values.TIPO || '').trim().toLowerCase()]
+  !entities[normalize(values.TIPO)]
 );
 const candidates = enabled.filter(({ values }) =>
-  entities[String(values.TIPO || '').trim().toLowerCase()]
+  entities[normalize(values.TIPO)]
 );
 
 for (const { csvRow, values } of unsupported) {
@@ -97,10 +120,10 @@ for (const { csvRow, values } of unsupported) {
 }
 
 for (const { csvRow, values } of candidates) {
-  const type = String(values.TIPO || '').trim().toLowerCase();
-  const action = String(values.ACCION_API || '').trim().toLowerCase();
+  const type = normalize(values.TIPO);
+  const action = normalize(values.ACCION_API);
   const definition = entities[type];
-  const key = `${type}:${action}`;
+  const key = `${definition.key}:${action}`;
   observed.set(key, (observed.get(key) || 0) + 1);
 
   let request = null;
@@ -124,11 +147,11 @@ for (const { csvRow, values } of candidates) {
   }
 }
 
-for (const type of Object.keys(entities)) {
+for (const definition of definitions) {
   for (const action of ['crear', 'actualizar']) {
-    const count = observed.get(`${type}:${action}`) || 0;
+    const count = observed.get(`${definition.key}:${action}`) || 0;
     if (count !== 1) {
-      errors.push(`se esperaba exactamente 1 fila ${entities[type].label} ${action.toUpperCase()} con ENVIAR_API=S; encontradas=${count}`);
+      errors.push(`se esperaba exactamente 1 fila ${definition.label} ${action.toUpperCase()} con ENVIAR_API=S; encontradas=${count}`);
     }
   }
 }
@@ -143,4 +166,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('\nPREFLIGHT OK: 6 contratos CREAR/ACTUALIZAR validados sin credenciales ni llamadas HTTP.');
+console.log(`\nPREFLIGHT OK (${scope}): 6 contratos CREAR/ACTUALIZAR validados sin credenciales ni llamadas HTTP.`);

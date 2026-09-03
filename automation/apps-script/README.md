@@ -31,3 +31,11 @@ No ejecutar `apps-script:push` antes de comprobar que el proyecto vinculado es e
 - Enviar Git → Apps Script: `npm run apps-script:push`
 
 Después del primer push controlado podemos agregar una GitHub Action manual con credenciales en Secrets, eliminando la necesidad de entrar al editor para cambios normales.
+
+## Content Refresh
+
+- Piloto Artistas/Recetas/Mitos: `npm run apps-script:pilot:check -- /ruta/Contenidos.csv`.
+- Piloto Peñas/Radios/Programas: `npm run apps-script:directory-pilot:check -- /ruta/Contenidos.csv`.
+- Runbooks: `CONTENT_REFRESH_PILOT.md` y `DIRECTORY_REFRESH_PILOT.md`.
+
+Ambos preflight son offline: no usan token ni realizan escrituras. Las altas de Peñas, Radios y Programas se envían siempre como borradores pendientes y requieren revisión humana en el backoffice.

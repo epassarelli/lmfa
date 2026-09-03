@@ -128,6 +128,91 @@ assert.deepEqual(mythUpdate.request, { method: 'put', path: '/myths/303', payloa
 assert.deepEqual(mythUpdate.stages, ['PROCESANDO_UPDATE']);
 assert.equal(mythUpdate.result.resultado, 'ACTUALIZADO_API');
 
+const peniaCreate = executeProcessor({
+  processor: 'procesarPeniaMFA_', status: 201, responseId: 401,
+  row: {
+    ID_CONTENIDO: 'MFA-PEN-CREATE', ACCION_API: 'CREAR', TITULO: 'Peña La Amistad',
+    SLUG: 'penia-la-amistad', CUERPO: longBody('penia'), PROVINCE_ID: 7,
+    CITY: 'Salta', VENUE_TYPE: 'PENIA', SOURCE_URLS: 'https://example.test/penia;https://example.test/agenda',
+    EVENT_IDS: '10, 11', META_TITLE: 'Peña La Amistad en Salta',
+  },
+});
+assert.deepEqual(peniaCreate.request, {
+  method: 'post', path: '/penia-profiles',
+  payload: {
+    title: 'Peña La Amistad', slug: 'penia-la-amistad', body: peniaCreate.request.payload.body,
+    province_id: 7, city: 'Salta', venue_type: 'penia',
+    source_urls: ['https://example.test/penia', 'https://example.test/agenda'],
+    seo_title: 'Peña La Amistad en Salta', event_ids: [10, 11],
+    verification_status: 'pending', editorial_status: 'draft',
+  },
+});
+assert.deepEqual(peniaCreate.stages, ['PROCESANDO_POST']);
+assert.equal(peniaCreate.result.resultado, 'CREADO_DRAFT');
+assert.equal(peniaCreate.result.id, 401);
+
+const peniaUpdate = executeProcessor({
+  processor: 'procesarPeniaMFA_', status: 200, responseId: 401,
+  row: { ID_CONTENIDO: 'MFA-PEN-UPDATE', ACCION_API: 'ACTUALIZAR', ID_WEB: 401, META_DESCRIPTION: 'Ficha actualizada de la Peña.' },
+});
+assert.deepEqual(peniaUpdate.request, { method: 'put', path: '/penia-profiles/401', payload: { meta_description: 'Ficha actualizada de la Peña.' } });
+assert.deepEqual(peniaUpdate.stages, ['PROCESANDO_UPDATE']);
+
+const radioCreate = executeProcessor({
+  processor: 'procesarRadioMFA_', status: 201, responseId: 501,
+  row: {
+    ID_CONTENIDO: 'MFA-RAD-CREATE', ACCION_API: 'CREAR', TITULO: 'Radio Nacional Folklórica',
+    SLUG: 'radio-nacional-folklorica', CUERPO: longBody('radio'), EDITORIAL_FOCUS: 'FOLKLORE',
+    TRANSMISSION_MODES: 'AIR;STREAMING', COVERAGE_SCOPE: 'NATIONAL', PROVINCE_ID: 2,
+    SOURCE_URLS: 'https://example.test/radio',
+    RADIO_CHANNELS_JSON: '[{"label":"FM 98.7","channel_type":"frequency","frequency_band":"FM","frequency":"98.7","is_primary":true,"is_active":true}]',
+  },
+});
+assert.deepEqual(radioCreate.request, {
+  method: 'post', path: '/radio-signals',
+  payload: {
+    title: 'Radio Nacional Folklórica', slug: 'radio-nacional-folklorica', body: radioCreate.request.payload.body,
+    editorial_focus: 'folklore', transmission_modes: ['air', 'streaming'], province_id: 2,
+    coverage_scope: 'national', source_urls: ['https://example.test/radio'],
+    channels: [{ label: 'FM 98.7', channel_type: 'frequency', frequency_band: 'FM', frequency: '98.7', is_primary: true, is_active: true }],
+    verification_status: 'pending', editorial_status: 'draft',
+  },
+});
+assert.equal(radioCreate.result.id, 501);
+
+const radioUpdate = executeProcessor({
+  processor: 'procesarRadioMFA_', status: 200, responseId: 501,
+  row: { ID_CONTENIDO: 'MFA-RAD-UPDATE', ACCION_API: 'ACTUALIZAR', ID_WEB: 501, COVERAGE_NOTES: 'Cobertura actualizada.' },
+});
+assert.deepEqual(radioUpdate.request, { method: 'put', path: '/radio-signals/501', payload: { coverage_notes: 'Cobertura actualizada.' } });
+
+const programCreate = executeProcessor({
+  processor: 'procesarProgramaRadioMFA_', status: 201, responseId: 601,
+  row: {
+    ID_CONTENIDO: 'MFA-PRG-CREATE', ACCION_API: 'CREAR', TITULO: 'La noche folklórica',
+    SLUG: 'la-noche-folklorica', CUERPO: longBody('programa'), IS_FOLKLORE: 'S', RADIO_SIGNAL_ID: 501,
+    SOURCE_URLS: 'https://example.test/programa',
+    RADIO_SLOTS_JSON: '[{"weekday":1,"starts_at":"20:00","ends_at":"22:00","timezone":"America/Argentina/Buenos_Aires","is_active":true}]',
+  },
+});
+assert.deepEqual(programCreate.request, {
+  method: 'post', path: '/radio-programs',
+  payload: {
+    radio_signal_id: 501, title: 'La noche folklórica', slug: 'la-noche-folklorica',
+    body: programCreate.request.payload.body, is_folklore: true,
+    source_urls: ['https://example.test/programa'],
+    slots: [{ weekday: 1, starts_at: '20:00', ends_at: '22:00', timezone: 'America/Argentina/Buenos_Aires', is_active: true }],
+    verification_status: 'pending', editorial_status: 'draft',
+  },
+});
+assert.equal(programCreate.result.id, 601);
+
+const programUpdate = executeProcessor({
+  processor: 'procesarProgramaRadioMFA_', status: 200, responseId: 601,
+  row: { ID_CONTENIDO: 'MFA-PRG-UPDATE', ACCION_API: 'ACTUALIZAR', ID_WEB: 601, META_TITLE: 'La noche folklórica | Radio' },
+});
+assert.deepEqual(programUpdate.request, { method: 'put', path: '/radio-programs/601', payload: { seo_title: 'La noche folklórica | Radio' } });
+
 const festivalUpdate = executeProcessor({
   processor: 'procesarFestivalMFA_', status: 200,
   row: {
@@ -172,6 +257,9 @@ for (const [processor, type] of [
   ['procesarArtistaMFA_', 'Artista'],
   ['procesarRecetaMFA_', 'Receta'],
   ['procesarMitoMFA_', 'Mito'],
+  ['procesarPeniaMFA_', 'Peña'],
+  ['procesarRadioMFA_', 'Radio'],
+  ['procesarProgramaRadioMFA_', 'ProgramaRadio'],
 ]) {
   assert.throws(
     () => executeProcessor({
@@ -191,7 +279,7 @@ function selectCandidate(rows, types) {
   return vm.runInContext('seleccionarCandidatoMFA_(__rows, __types)', context);
 }
 
-for (const type of ['Artista', 'Receta', 'Mito', 'Festival']) {
+for (const type of ['Artista', 'Receta', 'Mito', 'Festival', 'Peña', 'Radio', 'ProgramaRadio']) {
   const common = { TIPO: type, ESTADO: 'BORRADOR', ENVIAR_API: 'S', PRIORIDAD: 'ALTA' };
   const candidate = selectCandidate([
     { rowNumber: 2, values: { ...common, ACCION_API: 'CREAR', RESULTADO_API: 'CREADO_DRAFT' } },

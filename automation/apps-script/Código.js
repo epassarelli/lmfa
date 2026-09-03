@@ -432,14 +432,18 @@ function configurarCargaContenidosMFA() {
  *   5. un Artista;
  *   6. una Receta;
  *   7. un Mito.
+ *   8. una PeÃ±a;
+ *   9. una Radio;
+ *  10. un ProgramaRadio.
  *
  * IMPORTANTE SOBRE LOS TIPOS:
- * - TIPO puede ser: Noticia, Evento, Evergreen, Festival, Artista, Receta o Mito.
+ * - TIPO puede ser: Noticia, Evento, Evergreen, Festival, Artista, Receta,
+ *   Mito, PeÃ±a, Radio o ProgramaRadio.
  * - "Festivales" sigue siendo una categorÃ­a vÃ¡lida de Noticia cuando la pieza
  *   es cobertura de actualidad. TIPO=Festival se reserva para la ficha evergreen
  *   y estable del festival.
- * - Para Festival, Artista, Receta y Mito, ACCION_API define CREAR (POST)
- *   o ACTUALIZAR (PUT).
+ * - Para Festival, Artista, Receta, Mito, PeÃ±a, Radio y ProgramaRadio,
+ *   ACCION_API define CREAR (POST) o ACTUALIZAR (PUT).
  *
  * IMPORTANTE SOBRE LOS ESTADOS DEL SHEET:
  * - BORRADOR: todavÃ­a no fue recibido correctamente por la API.
@@ -524,6 +528,21 @@ function cargarContenidosMFA() {
         nombre: 'Mito',
         tipos: ['mito'],
         procesar: procesarMitoMFA_,
+      },
+      {
+        nombre: 'PeÃ±a',
+        tipos: ['pena', 'penia'],
+        procesar: procesarPeniaMFA_,
+      },
+      {
+        nombre: 'Radio',
+        tipos: ['radio'],
+        procesar: procesarRadioMFA_,
+      },
+      {
+        nombre: 'ProgramaRadio',
+        tipos: ['programaradio', 'programa radio', 'programa de radio'],
+        procesar: procesarProgramaRadioMFA_,
       },
     ];
 
@@ -1021,6 +1040,213 @@ function procesarMitoMFA_(row, token, etapa) {
   };
 }
 
+function procesarPeniaMFA_(row, token, etapa) {
+  exigirCamposMFA_(row, ['ID_CONTENIDO']);
+  validarLongitudMFA_(row);
+
+  const { accion, id } = resolverAccionEntidadMFA_(row, 'Peña');
+
+  if (accion === 'crear') {
+    exigirCamposMFA_(row, ['TITULO', 'SLUG', 'CUERPO', 'PROVINCE_ID', 'VENUE_TYPE', 'SOURCE_URLS']);
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  } else if (row.CUERPO) {
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  }
+
+  const venueType = normalizarTextoMFA_(row.VENUE_TYPE) || null;
+  if (venueType && !['penia', 'centro_cultural', 'gastronomico_cultural', 'otro'].includes(venueType)) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'VENUE_TYPE inválido para Peña.');
+  }
+
+  const payload = limpiarObjetoMFA_({
+    title: String(row.TITULO || '').trim(),
+    slug: String(row.SLUG || '').trim(),
+    excerpt: limitarTextoMFA_(row.BAJADA, 1000),
+    body: row.CUERPO || null,
+    province_id: enteroOpcionalMFA_(row.PROVINCE_ID),
+    locality_id: enteroOpcionalMFA_(row.LOCALITY_ID),
+    city: limitarTextoMFA_(row.CITY, 255),
+    address: limitarTextoMFA_(row.ADDRESS, 255),
+    latitude: numeroOpcionalMFA_(row.LATITUDE),
+    longitude: numeroOpcionalMFA_(row.LONGITUDE),
+    venue_type: venueType,
+    opening_hours: estructuraJsonOpcionalMFA_(row.OPENING_HOURS_JSON, 'OPENING_HOURS_JSON'),
+    phone: limitarTextoMFA_(row.PHONE, 255),
+    email: limitarTextoMFA_(row.EMAIL, 255),
+    website: urlOpcionalMFA_(row.WEB_URL || row.WEBSITE),
+    reservation_url: urlOpcionalMFA_(row.RESERVATION_URL),
+    capacity: enteroOpcionalMFA_(row.CAPACITY),
+    accessibility_notes: row.ACCESSIBILITY_NOTES,
+    regular_events_summary: row.REGULAR_EVENTS_SUMMARY,
+    admission_notes: row.ADMISSION_NOTES,
+    source_urls: listaUrlsMFA_(row.SOURCE_URLS),
+    featured_image_path: row.FEATURED_IMAGE_PATH,
+    image_alt: limitarTextoMFA_(row.IMAGE_ALT, 255),
+    seo_title: row.META_TITLE,
+    meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    event_ids: listaEnterosMFA_(row.EVENT_IDS),
+    verification_status: accion === 'crear' ? 'pending' : null,
+    editorial_status: accion === 'crear' ? 'draft' : null,
+  });
+
+  exigirCambiosActualizacionMFA_(payload, accion, 'Peña');
+
+  const method = accion === 'actualizar' ? 'put' : 'post';
+  const apiPath = accion === 'actualizar' ? `/penia-profiles/${id}` : '/penia-profiles';
+
+  etapa(accion === 'actualizar' ? 'PROCESANDO_UPDATE' : 'PROCESANDO_POST');
+  const response = apiMFA_(method, apiPath, token, payload);
+  const expected = accion === 'actualizar' ? 200 : 201;
+
+  if (response.status !== expected) throw errorDesdeRespuestaMFA_(response);
+
+  const apiId = extraerIdMFA_(response.json) || id;
+  if (!apiId) throw crearErrorMFA_('ERROR_RESPUESTA', response.status, 'La API de Peñas no devolvió un ID reconocible.');
+
+  return resultadoRefreshMFA_(accion, response.status, apiId);
+}
+
+function procesarRadioMFA_(row, token, etapa) {
+  exigirCamposMFA_(row, ['ID_CONTENIDO']);
+  validarLongitudMFA_(row);
+
+  const { accion, id } = resolverAccionEntidadMFA_(row, 'Radio');
+
+  if (accion === 'crear') {
+    exigirCamposMFA_(row, ['TITULO', 'SLUG', 'CUERPO', 'EDITORIAL_FOCUS', 'TRANSMISSION_MODES', 'COVERAGE_SCOPE', 'SOURCE_URLS']);
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  } else if (row.CUERPO) {
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  }
+
+  const editorialFocus = normalizarTextoMFA_(row.EDITORIAL_FOCUS) || null;
+  if (editorialFocus && !['folklore', 'mixed'].includes(editorialFocus)) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'EDITORIAL_FOCUS inválido para Radio.');
+  }
+
+  const transmissionModes = listaNormalizadaMFA_(row.TRANSMISSION_MODES);
+  if (transmissionModes && transmissionModes.some((mode) => !['air', 'web', 'streaming'].includes(mode))) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'TRANSMISSION_MODES contiene valores inválidos.');
+  }
+
+  const coverageScope = normalizarTextoMFA_(row.COVERAGE_SCOPE) || null;
+  if (coverageScope && !['local', 'provincial', 'regional', 'national', 'global'].includes(coverageScope)) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'COVERAGE_SCOPE inválido para Radio.');
+  }
+
+  const payload = limpiarObjetoMFA_({
+    title: String(row.TITULO || '').trim(),
+    slug: String(row.SLUG || '').trim(),
+    excerpt: limitarTextoMFA_(row.BAJADA, 1000),
+    body: row.CUERPO || null,
+    editorial_focus: editorialFocus,
+    transmission_modes: transmissionModes,
+    province_id: enteroOpcionalMFA_(row.PROVINCE_ID),
+    locality_id: enteroOpcionalMFA_(row.LOCALITY_ID),
+    city: limitarTextoMFA_(row.CITY, 255),
+    address: limitarTextoMFA_(row.ADDRESS, 255),
+    latitude: numeroOpcionalMFA_(row.LATITUDE),
+    longitude: numeroOpcionalMFA_(row.LONGITUDE),
+    coverage_scope: coverageScope,
+    coverage_notes: row.COVERAGE_NOTES,
+    phone: limitarTextoMFA_(row.PHONE, 255),
+    email: limitarTextoMFA_(row.EMAIL, 255),
+    website: urlOpcionalMFA_(row.WEB_URL || row.WEBSITE),
+    source_urls: listaUrlsMFA_(row.SOURCE_URLS),
+    featured_image_path: row.FEATURED_IMAGE_PATH,
+    image_alt: limitarTextoMFA_(row.IMAGE_ALT, 255),
+    seo_title: row.META_TITLE,
+    meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    channels: listaObjetosJsonMFA_(row.RADIO_CHANNELS_JSON, 'RADIO_CHANNELS_JSON'),
+    verification_status: accion === 'crear' ? 'pending' : null,
+    editorial_status: accion === 'crear' ? 'draft' : null,
+  });
+
+  exigirCambiosActualizacionMFA_(payload, accion, 'Radio');
+
+  const method = accion === 'actualizar' ? 'put' : 'post';
+  const apiPath = accion === 'actualizar' ? `/radio-signals/${id}` : '/radio-signals';
+
+  etapa(accion === 'actualizar' ? 'PROCESANDO_UPDATE' : 'PROCESANDO_POST');
+  const response = apiMFA_(method, apiPath, token, payload);
+  const expected = accion === 'actualizar' ? 200 : 201;
+
+  if (response.status !== expected) throw errorDesdeRespuestaMFA_(response);
+
+  const apiId = extraerIdMFA_(response.json) || id;
+  if (!apiId) throw crearErrorMFA_('ERROR_RESPUESTA', response.status, 'La API de Radios no devolvió un ID reconocible.');
+
+  return resultadoRefreshMFA_(accion, response.status, apiId);
+}
+
+function procesarProgramaRadioMFA_(row, token, etapa) {
+  exigirCamposMFA_(row, ['ID_CONTENIDO']);
+  validarLongitudMFA_(row);
+
+  const { accion, id } = resolverAccionEntidadMFA_(row, 'ProgramaRadio');
+
+  if (accion === 'crear') {
+    exigirCamposMFA_(row, ['TITULO', 'SLUG', 'CUERPO', 'IS_FOLKLORE', 'SOURCE_URLS']);
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  } else if (row.CUERPO) {
+    validarContenidoVisibleMFA_(row.CUERPO, 300);
+  }
+
+  const isFolklore = booleanoOpcionalMFA_(row.IS_FOLKLORE);
+  if (row.IS_FOLKLORE !== '' && row.IS_FOLKLORE !== null && row.IS_FOLKLORE !== undefined && isFolklore === null) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'IS_FOLKLORE debe ser S o N.');
+  }
+
+  const platform = normalizarTextoMFA_(row.RADIO_PLATFORM || row.PLATFORM) || null;
+  if (platform && !['sitio_web', 'stream_directo', 'youtube', 'facebook', 'twitch', 'tunein', 'radio_garden', 'spotify', 'otra_oficial'].includes(platform)) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, 'RADIO_PLATFORM inválido para ProgramaRadio.');
+  }
+
+  const payload = limpiarObjetoMFA_({
+    radio_signal_id: enteroOpcionalMFA_(row.RADIO_SIGNAL_ID),
+    title: String(row.TITULO || '').trim(),
+    slug: String(row.SLUG || '').trim(),
+    excerpt: limitarTextoMFA_(row.BAJADA, 1000),
+    body: row.CUERPO || null,
+    is_folklore: isFolklore,
+    platform,
+    listening_url: urlOpcionalMFA_(row.LISTENING_URL),
+    source_urls: listaUrlsMFA_(row.SOURCE_URLS),
+    seo_title: row.META_TITLE,
+    meta_description: limitarTextoMFA_(row.META_DESCRIPTION, 320),
+    slots: listaObjetosJsonMFA_(row.RADIO_SLOTS_JSON, 'RADIO_SLOTS_JSON'),
+    verification_status: accion === 'crear' ? 'pending' : null,
+    editorial_status: accion === 'crear' ? 'draft' : null,
+  });
+
+  exigirCambiosActualizacionMFA_(payload, accion, 'ProgramaRadio');
+
+  const method = accion === 'actualizar' ? 'put' : 'post';
+  const apiPath = accion === 'actualizar' ? `/radio-programs/${id}` : '/radio-programs';
+
+  etapa(accion === 'actualizar' ? 'PROCESANDO_UPDATE' : 'PROCESANDO_POST');
+  const response = apiMFA_(method, apiPath, token, payload);
+  const expected = accion === 'actualizar' ? 200 : 201;
+
+  if (response.status !== expected) throw errorDesdeRespuestaMFA_(response);
+
+  const apiId = extraerIdMFA_(response.json) || id;
+  if (!apiId) throw crearErrorMFA_('ERROR_RESPUESTA', response.status, 'La API de Programas de Radio no devolvió un ID reconocible.');
+
+  return resultadoRefreshMFA_(accion, response.status, apiId);
+}
+
+function resultadoRefreshMFA_(accion, status, id) {
+  return {
+    resultado: accion === 'actualizar' ? 'ACTUALIZADO_API' : 'CREADO_DRAFT',
+    http: status,
+    id,
+    error: '',
+    desautorizar: true,
+    fechaEnvio: new Date(),
+  };
+}
+
 function procesarFestivalMFA_(row, token, etapa) {
   exigirCamposMFA_(row, ['ID_CONTENIDO', 'TITULO', 'SLUG', 'CUERPO', 'PROVINCE_ID', 'MES_ID']);
   validarLongitudMFA_(row);
@@ -1425,9 +1651,10 @@ function leerTablaConEncabezados_(sheet) {
 function seleccionarCandidatoMFA_(rows, tipos) {
   const prioridad = { alta: 3, media: 2, baja: 1 };
   const estadosExcluidos = ['publicado', 'descartado', 'duplicado'];
+  const tiposNormalizados = tipos.map((tipo) => normalizarTextoMFA_(tipo));
 
   return rows
-    .filter((r) => tipos.includes(normalizarTextoMFA_(r.values.TIPO)))
+    .filter((r) => tiposNormalizados.includes(normalizarTextoMFA_(r.values.TIPO)))
     .filter((r) => !estadosExcluidos.includes(normalizarTextoMFA_(r.values.ESTADO)))
     .filter((r) => normalizarTextoMFA_(r.values.ENVIAR_API) === 's')
     .filter((r) => {
@@ -1676,6 +1903,15 @@ function enteroNoNegativoMFA_(value) {
   return Number.isInteger(number) && number >= 0 ? number : null;
 }
 
+function numeroOpcionalMFA_(value) {
+  if (value === '' || value === null || value === undefined) return null;
+  const number = Number(value);
+  if (!Number.isFinite(number)) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, `Número inválido: ${value}`);
+  }
+  return number;
+}
+
 function listaTextoMFA_(value) {
   if (value === '' || value === null || value === undefined) return null;
 
@@ -1710,6 +1946,38 @@ function listaTextoMFA_(value) {
     .filter(Boolean);
 
   return clean.length ? clean : null;
+}
+
+function listaNormalizadaMFA_(value) {
+  const values = listaTextoMFA_(value);
+  return values ? values.map((item) => normalizarTextoMFA_(item)) : null;
+}
+
+function listaUrlsMFA_(value) {
+  const values = listaTextoMFA_(value);
+  return values ? values.map((item) => urlOpcionalMFA_(item)) : null;
+}
+
+function estructuraJsonOpcionalMFA_(value, fieldName) {
+  if (value === '' || value === null || value === undefined) return null;
+  if (Array.isArray(value) || (typeof value === 'object' && value !== null)) return value;
+
+  try {
+    const parsed = JSON.parse(String(value));
+    if (!parsed || typeof parsed !== 'object') throw new Error('debe ser un objeto o array JSON.');
+    return parsed;
+  } catch (error) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, `${fieldName} inválido: ${error.message}`);
+  }
+}
+
+function listaObjetosJsonMFA_(value, fieldName) {
+  const parsed = estructuraJsonOpcionalMFA_(value, fieldName);
+  if (parsed === null) return null;
+  if (!Array.isArray(parsed) || parsed.some((item) => !item || typeof item !== 'object' || Array.isArray(item))) {
+    throw crearErrorMFA_('ERROR_VALIDACION', 422, `${fieldName} debe ser un array JSON de objetos.`);
+  }
+  return parsed;
 }
 
 function listaEnterosMFA_(value) {

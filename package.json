@@ -9,8 +9,9 @@
         "apps-script:status": "npx --yes @google/clasp status",
         "apps-script:pull": "npx --yes @google/clasp pull",
         "apps-script:push": "npx --yes @google/clasp push",
-        "apps-script:test": "node automation/apps-script/tests/entity-refresh.test.mjs && node automation/apps-script/tests/validate-refresh-pilot.test.mjs",
-        "apps-script:pilot:check": "node automation/apps-script/tools/validate-refresh-pilot.mjs"
+        "apps-script:test": "node automation/apps-script/tests/entity-refresh.test.mjs && node automation/apps-script/tests/validate-refresh-pilot.test.mjs && node automation/apps-script/tests/validate-directory-refresh-pilot.test.mjs",
+        "apps-script:pilot:check": "node automation/apps-script/tools/validate-refresh-pilot.mjs",
+        "apps-script:directory-pilot:check": "node automation/apps-script/tools/validate-refresh-pilot.mjs --scope=directories"
     },
     "devDependencies": {
         "@popperjs/core": "^2.11.6",
