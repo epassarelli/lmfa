@@ -39,8 +39,16 @@
                   @can('update', $profile)
                     <a class="btn btn-warning btn-sm" href="{{ route('backend.penia-profiles.edit', $profile) }}" title="Editar"><i class="fas fa-edit"></i></a>
                   @endcan
-                  @can('unpublish', $profile)@if($profile->editorial_status === 'published')<form class="d-inline" method="POST" action="{{ route('backend.penia-profiles.unpublish', $profile) }}">@csrf<button class="btn btn-secondary btn-sm" title="Despublicar"><i class="fas fa-eye-slash"></i></button></form>@endif@endcan
-                  @can('publish', $profile)@if($profile->editorial_status !== 'published' && $profile->editorial_status !== 'archived')<form class="d-inline" method="POST" action="{{ route('backend.penia-profiles.publish', $profile) }}">@csrf<button class="btn btn-success btn-sm" title="Publicar"><i class="fas fa-check"></i></button></form>@endif@endcan
+                  @can('unpublish', $profile)
+                    @if($profile->editorial_status === 'published')
+                      <form class="d-inline" method="POST" action="{{ route('backend.penia-profiles.unpublish', $profile) }}">@csrf<button class="btn btn-secondary btn-sm" title="Despublicar"><i class="fas fa-eye-slash"></i></button></form>
+                    @endif
+                  @endcan
+                  @can('publish', $profile)
+                    @if($profile->editorial_status !== 'published' && $profile->editorial_status !== 'archived')
+                      <form class="d-inline" method="POST" action="{{ route('backend.penia-profiles.publish', $profile) }}">@csrf<button class="btn btn-success btn-sm" title="Publicar"><i class="fas fa-check"></i></button></form>
+                    @endif
+                  @endcan
                   @can('delete', $profile)<form class="d-inline" method="POST" action="{{ route('backend.penia-profiles.destroy', $profile) }}">@csrf @method('DELETE')<button class="btn btn-danger btn-sm" title="Archivar" onclick="return confirm('¿Archivar esta Peña?')"><i class="fas fa-archive"></i></button></form>@endcan
                 </td>
               </tr>
