@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Http\Requests\Concerns\NormalizesRichTextFields;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+
+class RadioProgramRequest extends FormRequest
+{
+    use NormalizesRichTextFields;
+
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->normalizeRichTextFields(['body']);
+
+        if (blank($this->input('slug')) && filled($this->input('title'))) {
+            $this->merge(['slug' => Str::slug((string) $this->input('title'))]);
+        }
+
+        if (is_string($this->input('source_urls'))) {
+            $this->merge(['source_urls' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $this->input('source_urls')))))]);
+        }
+    }
+
+    public function rules(): array
+    {
+        return [
+            'radio_signal_id' => 'nullable|exists:radio_signals,id', 'title' => 'required|string|max:255',
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('radio_programs', 'slug')->ignore($this->route('radio_program')?->id)],
+            'excerpt' => 'nullable|string|max:1000', 'body' => 'required|string', 'is_folklore' => 'required|boolean',
+            'platform' => ['nullable', Rule::in(['sitio_web', 'stream_directo', 'youtube', 'facebook', 'twitch', 'tunein', 'radio_garden', 'spotify', 'otra_oficial'])], 'listening_url' => 'nullable|url|max:2048',
+            'source_urls' => 'required|array|min:1', 'source_urls.*' => 'url|max:2048', 'verification_status' => ['required', Rule::in(['pending', 'verified', 'outdated'])], 'last_verified_at' => 'nullable|date|before_or_equal:now', 'verified_by_user_id' => 'nullable|exists:users,id', 'verification_method' => ['nullable', Rule::in(['official_source', 'direct_confirmation', 'editorial_visit', 'manual'])],
+            'editorial_status' => ['required', Rule::in(['draft', 'approved', 'published', 'archived'])], 'published_at' => 'nullable|date', 'seo_title' => 'nullable|string|max:255', 'meta_description' => 'nullable|string|max:320',
+            'slots' => 'nullable|array', 'slots.*.id' => 'nullable|integer', 'slots.*.weekday' => 'required_with:slots|integer|between:0,6', 'slots.*.starts_at' => 'required_with:slots|date_format:H:i', 'slots.*.ends_at' => 'nullable|date_format:H:i|after:slots.*.starts_at', 'slots.*.timezone' => 'nullable|timezone', 'slots.*.is_active' => 'nullable|boolean',
+        ];
+    }
+}

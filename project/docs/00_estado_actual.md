@@ -40,7 +40,7 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Producto:** `BL-0022C` recomienda como primer piloto `Festival evergreen -> Evento futuro -> Artista -> repertorio/actualidad`, condicionado a auditoria de cobertura, feature flag, allowlist y aprobacion funcional.
 - **Curacion:** `BL-0021B` tiene 3 de 10 borradores preparados: Gaston Cordero, Los Trovadores de Cuyo y Juan Bautista Bertorello. Todos permanecen con `ENVIAR_API=N`.
 - **Penas:** módulo evergreen cerrado para DEV sobre `penia_profiles`. El legado vacío `penias`, sus rutas, controlador, modelo y vista fueron retirados el 2026-09-03; no hay redirección porque no existían registros ni equivalencias. Incluye API, landing, ficha con el mismo buscador de la home, descubrimiento de Peñas de la misma provincia, ubicación completa, mapa por coordenadas, sitemap, NAV, CRUD, preview noindex, acciones editoriales, auditor read-only `mfa:penias:audit` y 10 fichas demo publicadas con localidad, coordenadas y 10 eventos futuros. Los tests cubren permisos, publicación, filtros/paginación, SEO, agenda visible y datos prácticos de la ficha. La activación en producción sigue requiriendo un lote editorial real con fuentes y derechos verificados.
-- **Radios:** horizonte futuro. Se reconstruira como directorio evergreen con release propio y permanece fuera de cycle-3 y cycle-4.
+- **Radios:** evergreen en desarrollo bajo `radios-evergreen-directory`. La persistencia canónica local para señales, canales, programas y franjas ya está aplicada; el módulo legacy permanece intacto hasta completar backoffice, frontend, demo y release gate.
 
 ### Festival Vivo - piloto local 2026-09-02
 
@@ -202,7 +202,7 @@ El siguiente salto combina autoridad demostrable con mejores recorridos de usuar
 
 | Tabla | Estado |
 |-------|--------|
-| `radios` | Existe modelo y rutas frontend. No hay backend administrativo. Requiere auditoria para confirmar alcance real. |
+| `radios` | Legado conservado: existe modelo y rutas frontend, sin backend administrativo. El reemplazo canónico usa `radio_signals`, `radio_listening_channels`, `radio_programs` y `radio_program_slots`; aún no está listo para producción. |
 | `penias` | Retirada el 2026-09-03 por estar vacia y sin uso funcional. El directorio vigente opera exclusivamente sobre `penia_profiles`. |
 | `venues` | Existe en BD por la transformacion a `events`, pero no hay `Venue` model en `app/Models`. Estado funcional incompleto / pendiente de auditoria. |
 
@@ -375,7 +375,7 @@ MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE ... AD
 ### Modulos diferidos - proxima version
 
 - **Entrevistas**: rutas activas en `web.php`, controller sin metodos `byArtista`/`show`, sin vistas, modelo inexistente.
-- **Radios**: existen rutas `index` y `show` y controller frontend, pero no estan documentados como modulo cerrado ni cuentan con backend administrativo propio. Requiere auditoria puntual para confirmar alcance real.
+- **Radios**: el frontend legacy continúa disponible y no cuenta con backend administrativo propio. Su reemplazo evergreen está en desarrollo y convive sin modificar las rutas legacy hasta superar el release gate.
 - **Peñas**: módulo evergreen cerrado para DEV en `penia_profiles`, con API, frontend, CRUD, auditor y fixtures. El piloto editorial real permanece como gate exclusivo de producción.
 - **Videos**: existe `Frontend/VideosController`, pero referencia un modelo/modulo no consolidado. Debe tratarse como componente incompleto.
 

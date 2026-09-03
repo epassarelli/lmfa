@@ -29,6 +29,8 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Mito::class => \App\Policies\MitoPolicy::class,
         \App\Models\Comida::class => \App\Policies\ComidaPolicy::class,
         \App\Models\PeniaProfile::class => \App\Policies\PeniaProfilePolicy::class,
+        \App\Models\RadioSignal::class => \App\Policies\RadioSignalPolicy::class,
+        \App\Models\RadioProgram::class => \App\Policies\RadioProgramPolicy::class,
     ];
 
     /**
