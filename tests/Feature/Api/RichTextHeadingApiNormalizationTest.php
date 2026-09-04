@@ -101,7 +101,6 @@ class RichTextHeadingApiNormalizationTest extends TestCase
             'titulo' => 'Myth api headings',
             'mito' => '<h1>Mito</h1><p>Texto.</p>',
             'foto' => 'myth-api-headings.jpg',
-            'visitas' => 0,
             'estado' => 1,
             'publicar' => now()->toDateTimeString(),
         ])->assertCreated();
@@ -114,7 +113,6 @@ class RichTextHeadingApiNormalizationTest extends TestCase
             'titulo' => 'Food api headings',
             'receta' => '<h1>Receta</h1><p>Texto.</p>',
             'foto' => 'food-api-headings.jpg',
-            'visitas' => 0,
             'estado' => 1,
             'publicar' => now()->toDateTimeString(),
         ])->assertCreated();
