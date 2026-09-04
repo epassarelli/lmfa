@@ -249,8 +249,8 @@ El flujo es funcional a nivel local/documental, con persistencia y trazabilidad,
 No deben documentarse como modulos cerrados:
 
 - `Entrevistas`: rutas activas pero superficie incompleta;
-- `Radios`: frontend y modelo existentes, sin cierre administrativo documentado;
-- `Peñas evergreen`: módulo canónico sobre `penia_profiles`, con directorio, API, backoffice, auditor y datos demo en DEV. El legado `penias` fue retirado el 2026-09-03;
+- `Radios evergreen`: dominio canónico sobre `radio_signals`, canales, programas y franjas; incluye API autenticada, backoffice, frontend, sitemap, auditor y Content Refresh en DEV. Su flag público permanece apagado hasta completar staging HTTPS y piloto editorial;
+- `Peñas evergreen`: módulo canónico sobre `penia_profiles`, con directorio, API, backoffice, auditor y lote piloto en DEV. Su flag público permanece apagado hasta completar staging HTTPS y piloto editorial;
 - `Videos`: componente incompleto y no consolidado.
 
 ---
@@ -259,7 +259,7 @@ No deben documentarse como modulos cerrados:
 
 Brechas funcionales que siguen abiertas segun el estado operativo actual:
 
-1. cerrar el piloto controlado de seis operaciones de Content Refresh;
+1. cerrar en staging HTTPS el piloto controlado de seis operaciones de Content Refresh de Peñas, Radios y ProgramasRadio;
 2. ejecutar lotes pequenos de curacion sobre Biografias, Recetas y Mitos;
 3. incorporar visitas al auditor de Festivales;
 4. validar Pasarela y UGC end-to-end en produccion;

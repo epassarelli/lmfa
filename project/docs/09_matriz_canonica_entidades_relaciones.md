@@ -1,6 +1,6 @@
 # 09 - Matriz Canonica de Entidades y Relaciones
 
-> Vista resumida y operativa alineada al corte del **2026-09-01**.
+> Vista resumida y operativa alineada al corte del **2026-09-04**.
 > No reemplaza `02_modelo_datos.md`; sirve como referencia cruzada rapida.
 
 ---
@@ -25,6 +25,9 @@
 | Publicacion | `publication_requests`, `publication_targets`, `publication_attempts`, `publication_templates` | varios | Activa | circuito Pasarela |
 | Newsletter | `newsletter_subscribers` | `NewsletterSubscriber` | Activa | `User` cuando aplica |
 | Legal | `data_deletion_requests` | `DataDeletionRequest` | Activa | trazabilidad Meta/Facebook |
+| Peñas | `penia_profiles` | `PeniaProfile` | Canónica evergreen en DEV | `Provincia`, `Locality`, `Event`, `User`, media |
+| Señales de radio | `radio_signals` | `RadioSignal` | Canónica evergreen en DEV | `Provincia`, `Locality`, `RadioListeningChannel`, `RadioProgram`, `User` |
+| Programas de radio | `radio_programs` | `RadioProgram` | Canónica evergreen en DEV | `RadioSignal` opcional, `RadioProgramSlot`, `User` |
 
 ---
 
@@ -44,6 +47,7 @@
 - `knowledge_article_provincia`
 - `knowledge_article_related`
 - `classified_tag`
+- `penia_profile_event`
 
 ---
 
@@ -56,6 +60,11 @@
 - `knowledge_categories`
 - `knowledge_articles`
 - `media_assets`
+- `penia_profiles`
+- `radio_signals`
+- `radio_listening_channels`
+- `radio_programs`
+- `radio_program_slots`
 
 ### Canonicas hibridas
 
@@ -91,6 +100,7 @@ Observacion:
 - Festivales, Artistas, Recetas y Mitos ya cuentan con auditorias y linea base editorial al 2026-09-01.
 - Artistas, Recetas y Mitos ya se integran con la bandeja `Contenidos`.
 - Discografia/Cancionero sigue operativa pero su evolucion esta frenada por el gate humano de derechos.
+- Peñas y Radios tienen dominio, backoffice, API, frontend y Content Refresh en DEV; sus flags permanecen apagados hasta completar staging HTTPS y el piloto editorial controlado.
 - La matriz debe leerse junto con `00_estado_actual.md` cuando haya que decidir prioridad o madurez real de una entidad.
 
 ---

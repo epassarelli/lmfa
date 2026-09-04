@@ -21,6 +21,16 @@ El workflow CI debe completar:
 
 ## Staging oscuro
 
+### Evidencia local previa (2026-09-04)
+
+- CI verde: commit `d655139`, run `33866188915`.
+- Docker local: `http://mfa.localhost`, explícitamente separado de producción.
+- Ambos flags efectivos en `false`.
+- Smoke oscuro manual aprobado: home `200`; `/penias`, Radios, Programas y sitemaps de directorios `404`.
+- El commit `2ed7c92` evita que `mfa.localhost` redirija al dominio de producción.
+
+Esta evidencia reduce riesgo local, pero **no satisface** este gate: el script oficial exige una URL HTTPS pública y un staging separado con backup, migraciones y trazabilidad operativa.
+
 1. Desplegar `dev` en un entorno separado de producción.
 2. Mantener ambos flags en `false`.
 3. Ejecutar migraciones y caches.

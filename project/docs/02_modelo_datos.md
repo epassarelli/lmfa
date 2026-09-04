@@ -1071,6 +1071,14 @@ Notas:
 
 ## 3.16 Tablas existentes con uso parcial o no consolidado
 
+### Directorios evergreen: Peñas y Radios
+
+`penia_profiles` es el contrato canónico de Peñas. Conserva territorio, ubicación, contacto, coordenadas, fuentes, verificación editorial, estado de publicación y la relación N:M con eventos mediante `penia_profile_event`. La tabla `penias` se conserva como legado/puente hasta cerrar el release gate y el backfill.
+
+`radio_signals` es el contrato canónico de emisoras. Tiene muchos `radio_listening_channels` y muchos `radio_programs`. Una señal registra modos de emisión (`air`, `web`, `streaming`), territorio/cobertura, fuentes, verificación y estado editorial.
+
+`radio_programs` puede pertenecer opcionalmente a una señal. Los programas independientes requieren plataforma y URL propias. Tiene muchas `radio_program_slots`, con día de semana, inicio, fin opcional, zona horaria e indicador activo; la próxima emisión se calcula sólo desde estas franjas explícitas.
+
 ### `radios` -> `Radio`
 
 Campos:
@@ -1089,8 +1097,8 @@ Campos:
 
 Estado:
 
-- Existe modelo y frontend publico.
-- No esta consolidado como modulo administrativo completo.
+- Legado conservado sin cambios funcionales.
+- El contrato vigente es `radio_signals`/`RadioSignal`; no debe usarse `radios` para desarrollo nuevo.
 
 ### `penias` -> `Penia`
 

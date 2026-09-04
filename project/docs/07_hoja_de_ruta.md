@@ -118,8 +118,8 @@ Dejar de operar como una colección de páginas y consolidar una red cultural na
 
 - Consolidar filtros por fecha, provincia, localidad, artista y tipo.
 - Relacionar festivales permanentes con sus ediciones, noticias y eventos.
-- Desarrollar Peñas como siguiente módulo prioritario por utilidad, SEO territorial y potencial B2B.
-- Mantener Entrevistas como segundo frente diferido y Radios como tercero.
+- Cerrar el release gate de Peñas y Radios, ya implementados como directorios evergreen en DEV, antes de abrir otro módulo de agenda.
+- Mantener Entrevistas como frente diferido hasta validar el uso editorial y territorial de ambos directorios.
 
 ### Criterio de salida
 
@@ -218,7 +218,7 @@ Diversificar ingresos con propuestas compatibles con la identidad cultural y red
 
 - Convertir archivo, agenda y radar en insumos para radios, periodistas y productores.
 - Validar formatos como agendas, efemérides, perfiles, dossiers y especiales.
-- Desarrollar alianzas de distribución y, posteriormente, el directorio de radios folklóricas.
+- Desarrollar alianzas de distribución y curar el directorio de radios folklóricas ya implementado, una vez validado su release gate.
 
 #### Monetización de canales
 

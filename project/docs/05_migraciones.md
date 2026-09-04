@@ -1,5 +1,16 @@
 # 05 - Migraciones
 
+## Actualización 2026-09-04: directorios evergreen
+
+- `2026_09_02_200000_create_penia_profiles_table`: crea el contrato canónico `penia_profiles`.
+- `2026_09_02_200100_create_penia_profile_event_table`: incorpora la relación N:M con eventos.
+- `2026_09_03_010000_retire_legacy_penias_table`: quedó como no-op seguro; no debe destruir legado durante el release.
+- `2026_09_03_015000_restore_legacy_penias_bridge`: restaura de forma idempotente el puente `legacy_penia_id` cuando corresponde.
+- `2026_09_03_020000_create_radio_signals_table`: crea señales de radio canónicas.
+- `2026_09_03_020100_create_radio_programming_tables`: crea canales de escucha, programas y franjas semanales.
+
+En el Docker local estas migraciones canónicas están aplicadas. Existen otras migraciones ajenas pendientes, por lo que el release gate no autoriza ejecutar una migración global sin backup y revisión de staging.
+
 > Estado real de las migraciones versionadas al **2026-08-20**.  
 > Este documento reemplaza la propuesta teórica original y describe qué migraciones existen hoy, qué problema resolvió cada bloque y qué deudas o compatibilidades siguen vigentes.
 

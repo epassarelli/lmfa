@@ -1,7 +1,7 @@
 # 00 - Vision
 
 > Documento vivo de direccion estrategica.
-> Ultima alineacion documental: 2026-09-01.
+> Ultima alineacion documental: 2026-09-04.
 > No es backlog ejecutable.
 
 ---
@@ -63,7 +63,7 @@ La siguiente etapa de crecimiento no debe ser solamente "mas contenido". Debe co
 
 - cartelera por fecha, provincia, localidad, artista y tipo;
 - relacion entre festivales permanentes, noticias y ocurrencias de cartelera;
-- Penias como modulo candidato de alto valor operativo y SEO territorial.
+- Peñas y Radios como directorios evergreen implementados en DEV, aún sujetos a validación de release y curación humana antes de exposición pública.
 
 ### 4. Fabrica editorial multicanal
 
@@ -95,6 +95,7 @@ Antes de acelerar la siguiente fase, siguen abiertos estos gates:
 3. incorporar visitas reales al auditor de Festivales;
 4. validar Pasarela y UGC end-to-end en produccion;
 5. resolver la politica de derechos antes de automatizar Discografia/Cancionero.
+6. completar el release gate HTTPS y los seis casos controlados de Content Refresh para Peñas, Radios y ProgramasRadio antes de habilitar sus flags.
 
 ---
 

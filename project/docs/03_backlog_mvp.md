@@ -74,7 +74,7 @@ Estados validos en este documento:
 | `PS-B1` | Validar Pasarela de Contenidos end-to-end en produccion | `pending` | Alta | Codigo implementado, cierre operativo pendiente |
 | `PS-B2` | Validar UGC mas alla de Noticias en produccion | `pending` | Alta | Mantener moderacion y trazabilidad |
 | `PS-B3` | Definir siguiente release funcional por impacto en descubrimiento y recurrencia | `pending` | Alta | No decidir por disponibilidad de legacy |
-| `PS-B4` | Auditar y priorizar Penias como siguiente modulo candidato | `pending` | Media | Sigue mejor posicionado que Entrevistas y Radios |
+| `PS-B4` | Cerrar release gate de directorios Peñas y Radios | `in_progress` | Alta | Implementados en DEV; CI verde y smoke oscuro local aprobados. Restan staging HTTPS, piloto Apps Script y smoke visible. |
 | `PS-B5` | Diseñar primer formato multicanal repetible | `pending` | Media | Solo despues del gate editorial minimo |
 
 ### C. Derechos y gobernanza

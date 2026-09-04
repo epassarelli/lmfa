@@ -12,7 +12,7 @@ La API actual:
 - vive bajo `/api` y `/api/v1`;
 - usa `auth:sanctum` para lectura y escritura;
 - restringe escritura a `role:administrador`;
-- expone recursos para noticias, enciclopedia, discos, canciones, comidas, festivales, artistas, mitos y eventos.
+- expone recursos para noticias, enciclopedia, discos, canciones, comidas, festivales, artistas, mitos, eventos, Peñas y Radios evergreen.
 
 ---
 
@@ -41,6 +41,9 @@ La API actual:
 | Artistas | `/api/v1/artists` | `interpretes` / `Interprete` | Activo |
 | Mitos | `/api/v1/myths` | `mitos` / `Mito` | Activo |
 | Eventos | `/api/v1/events` | `events` / `Event` | Activo |
+| Peñas | `/api/v1/penia-profiles` | `penia_profiles` / `PeniaProfile` | Activo en DEV; release gate pendiente |
+| Señales de radio | `/api/v1/radio-signals` | `radio_signals` / `RadioSignal` | Activo en DEV; release gate pendiente |
+| Programas de radio | `/api/v1/radio-programs` | `radio_programs` / `RadioProgram` | Activo en DEV; release gate pendiente |
 
 ---
 
@@ -75,6 +78,13 @@ La API actual:
 
 - siguen siendo recursos operativos de alto valor por cobertura y trafico;
 - no deben considerarse habilitados para automatizacion o ampliacion de letras sin gate humano de derechos.
+
+### Peñas y Radios
+
+- la lectura y escritura v1 requieren `auth:sanctum`; la escritura respeta policies y estados editoriales;
+- Peñas usa `penia-profiles`; Radios separa señal, canal de escucha, programa y franja semanal;
+- los listados aceptan filtros de territorio, búsqueda y atributos propios del directorio;
+- Content Refresh crea propuestas en `draft/pending` y preserva campos omitidos en actualizaciones; el piloto real de seis operaciones sigue pendiente en staging HTTPS.
 
 ---
 

@@ -112,6 +112,12 @@ La aplicacion soporta colas, pero el runtime documentable no debe depender de Re
 
 ---
 
+## 5.5 Directorios evergreen
+
+Peñas y Radios siguen la misma arquitectura Laravel clásica: modelos canónicos, servicios de dominio para publicación, policies, requests compartidos por backoffice/API, Blade server-side y feature flags independientes. Radios separa `RadioSignal`, `RadioListeningChannel`, `RadioProgram` y `RadioProgramSlot`; Peñas usa `PeniaProfile` y su pivote de eventos.
+
+Las rutas públicas, navegación y sitemaps se condicionan por `FEATURE_PENIA_DIRECTORY` y `FEATURE_RADIO_DIRECTORY`. Los flags quedan apagados por defecto; el smoke oscuro local verificó que las superficies devuelvan `404`. La habilitación temporal y el smoke visible sólo se consideran válidos en staging HTTPS separado de producción.
+
 ## 6. Integraciones reales
 
 Conectores implementados en el codigo:
