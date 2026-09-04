@@ -9,6 +9,14 @@
 
 `dev` - integra el trabajo de producto y los pilotos tecnicos antes de su evaluacion para `main`.
 
+### Próxima ejecución autónoma
+
+- **Objetivo:** llevar el producto al 99% de preparación operativa sin adelantar despliegues ni decisiones humanas.
+- **Tarea elegible actual:** `PROD-04` — limpiar depuración visible y estandarizar acabado técnico de layouts públicos/admin.
+- **Último cierre autónomo:** `PROD-02` completó `GET /healthz`, diagnóstico restringido a administrador, heartbeat de scheduler y [runbook operativo](releases/operational-health-runbook.md); pruebas: 4 passed, 18 assertions.
+- **Siguientes gates humanos:** `PROD-01` requiere estrategia de actualización de dependencias; `PROD-03` requiere staging HTTPS, backup y Apps Script separado de producción.
+- **Regla de continuidad:** `03_backlog_mvp.md` es la cola local ejecutable; Drive conserva la priorización humana, comercial y editorial.
+
 **Flujo vigente:** rama feature -> PR/CI -> revision de Eduardo -> merge a `main` por Eduardo -> pull y deploy en produccion. Los agentes no tocan ni fusionan `main` ni ejecutan despliegues.
 
 ### Orden de cierre técnico vigente

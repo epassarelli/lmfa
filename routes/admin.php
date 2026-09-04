@@ -26,6 +26,7 @@ use App\Http\Controllers\Backend\RoleController;
 // Nuevos controladores alineados con la nomenclatura Events/News
 use App\Http\Controllers\Backend\TagController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\OperationalHealthController;
 // Controladores de la Pasarela
 use App\Http\Controllers\Pasarela\DashboardAdminController;
 use App\Http\Controllers\Pasarela\DashboardPublicadorController;
@@ -39,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
 
     // --- DASHBOARD PRINCIPAL ---
     Route::get('/', [Dashboard::class, 'index'])->name('dashboard');
+    Route::get('operational-health', [OperationalHealthController::class, 'diagnosis'])->middleware('role:administrador')->name('backend.operational-health');
 
     // --- GESTIÓN DE CONTENIDOS (EVENTOS Y NOTICIAS) ---
     Route::resource('events', EventController::class)->names('backend.events')->parameters(['events' => 'event']);

@@ -1,8 +1,8 @@
 # 03 - Backlog Maestro
 
 > Backlog estructural en Git alineado con `07_hoja_de_ruta.md`.
-> Ultima actualizacion: 2026-09-01.
-> El seguimiento diario activo vive en Google Drive (`Backlog Asistente ChatGPT`, pestana `Backlog`).
+> Ultima actualizacion: 2026-09-04.
+> Google Drive conserva la priorizacion humana; esta es la cola local ejecutable del agente.
 
 ---
 
@@ -15,7 +15,7 @@ Este backlog conserva:
 - dependencias y gates;
 - historial util de frentes ya cerrados.
 
-No reemplaza el seguimiento diario en Drive ni reabre automaticamente tareas ya completadas.
+No reemplaza la priorizacion humana en Drive ni reabre automaticamente tareas ya completadas. Si una tarea incluye autonomía explícita, sí habilita su ejecución ordenada por el agente.
 
 ---
 
@@ -41,8 +41,8 @@ Objetivo:
 
 ## 3. Reglas de estados y autoridad
 
-- Drive manda sobre prioridad diaria y seguimiento corto.
-- Git manda sobre estructura, historial util, dependencias y criterios de cierre.
+- Drive manda sobre prioridades humanas, comerciales y editoriales.
+- Git manda sobre estructura, historial util, dependencias, criterios de cierre y la cola ejecutable del agente.
 - `project/docs/backlog.json` queda como legado historico y no gobierna prioridades.
 
 Estados validos en este documento:
@@ -84,6 +84,19 @@ Estados validos en este documento:
 | `GOV-C1` | Aprobar politica operativa de derechos para Discografia/Cancionero | `blocked` | Critica | Sin esto no debe automatizarse ni ampliarse el cancionero |
 | `GOV-C2` | Corregir el test sintacticamente roto que bloquea `php artisan test` completo | `pending` | Media | Deuda tecnica documentada en estado actual |
 
+### D. Ejecución autónoma hacia producto 99%
+
+| ID | Tarea | Estado | Prioridad | Autonomía | Dependencia / criterio de cierre |
+|---|---|---|---|---|---|
+| `PROD-01` | Remediar vulnerabilidades de dependencias PHP y convertir auditorías en gate CI | `pending` | Crítica | `IA_CON_VALIDACION` | Requiere estrategia de actualización compatible y CI verde; no aplicar upgrades mayores sin spec aprobada. |
+| `PROD-02` | Incorporar healthcheck, diagnóstico de scheduler/cola y runbook operativo mínimo | `done` | Crítica | `IA_AUTONOMA` | `GET /healthz`, diagnóstico admin, heartbeat y runbook; 4 tests/18 assertions. |
+| `PROD-03` | Completar release gate HTTPS de Peñas/Radios | `blocked` | Crítica | `HUMANA` | URL staging, acceso, backup y Apps Script de staging claramente separados de producción. |
+| `PROD-04` | Limpiar depuración visible y estandarizar acabado técnico de layouts públicos/admin | `in_progress` | Alta | `IA_AUTONOMA` | Sin logs de depuración versionados y regresión de vistas cubierta. |
+| `PROD-05` | Diseñar e implementar administración verificada de entidades por usuarios | `pending` | Alta | `IA_CON_VALIDACION` | Requiere modelo de gobernanza, claims y decisión funcional previa. |
+| `PROD-06` | Implementar favoritos, seguimientos y alertas territoriales/editoriales | `pending` | Alta | `IA_CON_VALIDACION` | Requiere definición de canales, frecuencia y consentimiento. |
+| `PROD-07` | Diseñar servicios comerciales y atribución de resultados | `pending` | Media | `HUMANA` | Requiere decisión comercial, pricing, pagos y obligaciones fiscales. |
+| `PROD-08` | Agregar E2E crítico, accesibilidad y presupuestos de calidad al CI | `pending` | Alta | `IA_AUTONOMA` | Herramientas reproducibles y sin credenciales externas. |
+
 ---
 
 ## 5. Historial util conservado
@@ -102,3 +115,7 @@ Una tarea pasa al backlog operativo de Drive cuando:
 2. necesita validacion diaria o accion concreta de Eduardo;
 3. tiene un siguiente paso observable;
 4. conviene monitorearla fuera del historial estructural de Git.
+
+## 7. Continuidad autónoma
+
+Al iniciar una sesión, el agente lee `00_estado_actual.md`, esta cola y la spec puntual. Toma la tarea `pending` de mayor prioridad con `IA_AUTONOMA` y dependencias satisfechas; la mueve a `in_progress`, crea OpenSpec, implementa, valida, documenta evidencia y continúa. Si no hay tarea elegible, deja el bloqueo concreto en `00_estado_actual.md` y solicita únicamente el dato o decisión imprescindible.

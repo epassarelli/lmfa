@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Services\OperationalHealthService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -12,6 +13,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        app(OperationalHealthService::class)->recordSchedulerHeartbeat();
+
         // Newsletter - weekly (Monday 10:00)
         $schedule->command('newsletter:send-weekly')->weeklyOn(1, '10:00');
 

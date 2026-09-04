@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Frontend\NoticiasController;
+use App\Http\Controllers\OperationalHealthController;
 // Controladores del front
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +53,7 @@ Route::get('/sitemap-news.xml', [SitemapController::class, 'legacyGoogleNews'])-
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/healthz', [OperationalHealthController::class, 'public'])->name('healthz');
 
 // Legales / cumplimiento Meta
 Route::get('/privacidad', [LegalController::class, 'privacy'])->name('legal.privacy');
