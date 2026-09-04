@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
@@ -65,8 +66,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Models\Event::class,
         ];
 
-        $clear = function () {
+        $clear = function ($model) {
             \Spatie\ResponseCache\Facades\ResponseCache::clear();
+
+            if ($model instanceof \App\Models\News) {
+                Cache::forget('home:ultimas-noticias');
+                Cache::forget('news:index:sidebar');
+                Cache::forget('festivales:index:related-news');
+            }
         };
 
         foreach ($models as $model) {

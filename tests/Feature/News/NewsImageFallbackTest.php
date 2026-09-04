@@ -6,7 +6,9 @@ use App\Models\Categoria;
 use App\Models\MediaAsset;
 use App\Models\News;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Spatie\ResponseCache\Facades\ResponseCache;
 use Tests\TestCase;
 
 class NewsImageFallbackTest extends TestCase
@@ -18,6 +20,16 @@ class NewsImageFallbackTest extends TestCase
         parent::setUp();
 
         Storage::fake('public');
+        Cache::forget('home:ultimas-noticias');
+        ResponseCache::clear();
+    }
+
+    protected function tearDown(): void
+    {
+        Cache::forget('home:ultimas-noticias');
+        ResponseCache::clear();
+
+        parent::tearDown();
     }
 
     private function category(): Categoria
@@ -33,14 +45,19 @@ class NewsImageFallbackTest extends TestCase
     {
         $category = $this->category();
 
+        Cache::put('home:ultimas-noticias', collect(), now()->addMinutes(10));
+
         $news = News::create([
             'title' => 'News with media asset',
             'slug' => 'news-with-media-asset',
             'body' => 'Contenido de prueba',
             'categoria_id' => $category->id,
             'editorial_status' => 'published',
+            'published_at' => now(),
             'estado' => 1,
         ]);
+
+        $this->assertFalse(Cache::has('home:ultimas-noticias'));
 
         Storage::disk('public')->put('news/2026/06/news-with-media-asset_card_320.webp', 'fake-webp');
 
@@ -77,6 +94,7 @@ class NewsImageFallbackTest extends TestCase
             'body' => 'Contenido de prueba',
             'categoria_id' => $category->id,
             'editorial_status' => 'published',
+            'published_at' => now(),
             'estado' => 1,
         ]);
 
@@ -110,6 +128,7 @@ class NewsImageFallbackTest extends TestCase
             'body' => 'Contenido de prueba',
             'categoria_id' => $category->id,
             'editorial_status' => 'published',
+            'published_at' => now(),
             'estado' => 1,
             'featured_image_path' => 'legacy-cover.jpg',
         ]);
