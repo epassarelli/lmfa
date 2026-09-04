@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Artists;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -13,6 +14,8 @@ class ArtistBiographyFrontendTest extends TestCase
     /** @test */
     public function soloist_biography_uses_person_schema_persisted_seo_and_no_fake_faq_schema(): void
     {
+        $author = User::factory()->create();
+
         DB::table('interpretes')->insert([
             'interprete' => 'Solista Schema',
             'artist_type' => 'soloist',
@@ -22,7 +25,7 @@ class ArtistBiographyFrontendTest extends TestCase
             'seo_title' => 'Solista Schema: biografía oficial',
             'meta_description' => 'Meta description persistida para la biografía.',
             'image_alt' => 'Retrato de Solista Schema',
-            'user_id' => null,
+            'user_id' => $author->id,
             'visitas' => 0,
             'estado' => 1,
             'created_at' => now(),
@@ -41,11 +44,13 @@ class ArtistBiographyFrontendTest extends TestCase
     /** @test */
     public function inactive_artist_hub_and_biography_are_not_publicly_accessible(): void
     {
+        $author = User::factory()->create();
+
         DB::table('interpretes')->insert([
             'interprete' => 'Artista Inactivo',
             'slug' => 'artista-inactivo',
             'biografia' => '<p>Contenido pendiente de revisión editorial.</p>',
-            'user_id' => null,
+            'user_id' => $author->id,
             'visitas' => 0,
             'estado' => 0,
             'created_at' => now(),

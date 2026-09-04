@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Artists;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -14,11 +15,13 @@ class ArtistAuditCommandTest extends TestCase
     /** @test */
     public function artist_auditor_is_read_only_and_prioritizes_poor_biographies(): void
     {
+        $author = User::factory()->create();
+
         DB::table('interpretes')->insert([
             'interprete' => 'Artista Incompleto Auditor',
             'slug' => 'artista-incompleto-auditor',
             'biografia' => '<p>Bio breve.</p>',
-            'user_id' => null,
+            'user_id' => $author->id,
             'visitas' => 0,
             'estado' => 1,
             'created_at' => now(),
