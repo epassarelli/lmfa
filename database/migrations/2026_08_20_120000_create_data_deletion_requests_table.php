@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Some existing environments have this schema from an earlier manual rollout.
+        if (Schema::hasTable('data_deletion_requests')) {
+            return;
+        }
+
         Schema::create('data_deletion_requests', function (Blueprint $table) {
             $table->id();
             $table->string('confirmation_code', 64)->unique();
