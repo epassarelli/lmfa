@@ -27,7 +27,7 @@ services:
       MYSQL_PASSWORD: mfa
       MYSQL_USER: mfa
     volumes:
-      - ./database_local:/var/lib/mysql
+      - lmfa_db_data:/var/lib/mysql
     networks:
       - app-network
 
@@ -49,3 +49,6 @@ networks:
   app-network:
   shared-web:
     external: true
+
+volumes:
+  lmfa_db_data:

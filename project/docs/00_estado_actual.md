@@ -293,6 +293,16 @@ Los modelos `News` y `Event` tienen accessors que mapean nombres de campos viejo
 
 MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE` sobre tablas InnoDB del volumen local, incluidos `ADD UNIQUE` y el indice sobre `penias.user_id` durante migraciones. El 2026-09-04 tambien se reprodujo al preparar `classifieds_slug_unique` desde una prueba. Tras la recuperacion del journal, el historial de `migrations` retrocedio a 40 entradas (hasta marzo de 2026), mientras `data_deletion_requests` permanece como tabla previa; por eso no se debe repetir `migrate` ni la suite completa hasta respaldar y reparar o reemplazar la imagen/volumen local. Como mitigacion puntual, la migracion `2026_08_04_010200_create_knowledge_article_relationship_tables.php` crea pivotes e indices inline con SQL explicito.
 
+### Recuperacion local propuesta
+
+El servicio `db` usa el volumen nombrado `lmfa_db_data`, administrado por
+Docker, para evitar el bind mount de Windows que provocaba los crashes. El
+directorio `database_local` no se elimina ni se monta: conserva el estado
+anterior para una eventual recuperacion manual. Antes de migrar una base nueva,
+verificar `docker compose ps`, `mysqladmin ping` y `php artisan migrate:status`.
+Si el nuevo volumen no fuera estable, restaurar temporalmente el mount anterior
+sin borrar ninguno de los dos almacenamientos.
+
 ---
 
 ## Arquitectura de rutas
