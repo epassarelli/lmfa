@@ -82,7 +82,7 @@ Estados validos en este documento:
 | ID | Tarea | Estado | Prioridad | Nota |
 |---|---|---|---|---|
 | `GOV-C1` | Aprobar politica operativa de derechos para Discografia/Cancionero | `blocked` | Critica | Sin esto no debe automatizarse ni ampliarse el cancionero |
-| `GOV-C2` | Corregir el test sintacticamente roto que bloquea `php artisan test` completo | `pending` | Media | Deuda tecnica documentada en estado actual |
+| `GOV-C2` | Corregir el test sintacticamente roto que bloquea `php artisan test` completo | `done` | Media | La suite Jetstream obsoleta fue retirada en `9b3dc68`; `php artisan test --list-tests` carga sin errores sintacticos. |
 
 ### D. Ejecución autónoma hacia producto 99%
 

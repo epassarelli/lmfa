@@ -523,7 +523,7 @@ Resultados recientes relevantes:
 - Festivales, Biografias, Recetas y Mitos: releases tecnicos integrados por PR/CI y desplegados por oleadas; auditores reales ejecutados en produccion el 2026-09-01
 - Meta legales/data deletion: `10 passed (50 assertions)`
 - Performance public mobile budget + recetas + mitos + festivales: `12 passed (57 assertions)`
-- `php artisan test` completo: bloqueado por un error de sintaxis preexistente en `tests/Feature/TwoFactorAuthenticationSettingsTest.php` (`unexpected token "public"`), ajeno a este cambio
+- `php artisan test --list-tests`: carga correctamente. El antiguo bloqueo sintactico de `TwoFactorAuthenticationSettingsTest.php` fue resuelto al retirar la suite Jetstream obsoleta en `9b3dc68`.
 
 ### Medicion local orientativa de performance
 
@@ -546,7 +546,7 @@ Nota: los `curl` locales no reflejan completamente la mejora de Core Web Vitals 
 5. Verificar si conviene actualizar la imagen de MariaDB del stack local para evitar el bug de DDL observado en WSL/Docker.
 6. Validar en el Apps Script externo que los `422` con `code: BLOQUEADO_CATEGORIA` pasen a estado de correccion y no vuelvan a reintentarse automaticamente.
 7. Ejecutar la migracion `2026_08_20_120000_create_data_deletion_requests_table` en los entornos correspondientes y configurar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`).
-8. Corregir el error de sintaxis preexistente en `tests/Feature/TwoFactorAuthenticationSettingsTest.php` para recuperar la ejecucion completa de `php artisan test`.
+8. Sincronizar el esquema local mediante las migraciones pendientes antes de recuperar la ejecucion completa de `php artisan test`; la primera requerida por las pruebas de noticias es `2026_08_31_170000_add_source_metadata_to_media_assets`.
 
 9. Cerrar en produccion los seis casos controlados de la integracion editorial: CREAR y ACTUALIZAR un Artista, una Receta y un Mito; luego reactivar el flujo automatico con monitoreo de errores.
 10. Ejecutar en staging los seis casos controlados de directorios: CREAR y ACTUALIZAR una Peña, una Radio y un ProgramaRadio; confirmar que las altas continúan `draft/pending` y que los flags públicos permanecen apagados.
