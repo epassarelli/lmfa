@@ -139,31 +139,12 @@
 
     // Ocultar scrollbar cuando se abre el modal
     Livewire.on('hideScrollbar', function() {
-
-      console.log('prueba prueba prueba');
       $('html').addClass('hide-scrollbar');
     });
     // Mostrar scrollbar cuando se cierra el modal
     Livewire.on('showScrollbar', function() {
-
-      console.log('prueba prueba prueba');
       $('html').removeClass('hide-scrollbar');
     });
-
-    // Funcion que refresca los datatables c/ vez que se vuelve a renderizar un componente
-    // document.addEventListener('livewire:load', function() {
-
-    // console.log(mensaje); // Mostrar mensaje en la consola
-    // console.log('Livewire Load Event'); // Mensaje en consola
-
-    // Livewire.on('actualizarDataTable', function() {
-
-    // console.log('Evento actualizarDataTable recibido'); // Mensaje en consola
-    // // Reinicializar DataTable
-    // $('#miTabla').DataTable().destroy(); // Reemplaza 'miTabla' con tu ID de tabla
-    // $('#miTabla').DataTable(); // Vuelve a inicializar DataTable
-    // });
-    // });
 
     // $('#rolesTable').DataTable();
     // $(document).ready(function() {

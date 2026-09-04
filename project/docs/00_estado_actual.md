@@ -12,7 +12,8 @@
 ### Próxima ejecución autónoma
 
 - **Objetivo:** llevar el producto al 99% de preparación operativa sin adelantar despliegues ni decisiones humanas.
-- **Tarea elegible actual:** `PROD-04` — limpiar depuración visible y estandarizar acabado técnico de layouts públicos/admin.
+- **Tarea elegible actual:** `PROD-08` — agregar E2E crítico, accesibilidad y presupuestos de calidad al CI.
+- **Último cierre autónomo:** `PROD-04` retiró logs de depuración de layouts activos; prueba de regresión y Blade cache verdes.
 - **Último cierre autónomo:** `PROD-02` completó `GET /healthz`, diagnóstico restringido a administrador, heartbeat de scheduler y [runbook operativo](releases/operational-health-runbook.md); pruebas: 4 passed, 18 assertions.
 - **Siguientes gates humanos:** `PROD-01` requiere estrategia de actualización de dependencias; `PROD-03` requiere staging HTTPS, backup y Apps Script separado de producción.
 - **Regla de continuidad:** `03_backlog_mvp.md` es la cola local ejecutable; Drive conserva la priorización humana, comercial y editorial.

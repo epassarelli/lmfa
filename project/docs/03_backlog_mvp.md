@@ -91,11 +91,11 @@ Estados validos en este documento:
 | `PROD-01` | Remediar vulnerabilidades de dependencias PHP y convertir auditorías en gate CI | `pending` | Crítica | `IA_CON_VALIDACION` | Requiere estrategia de actualización compatible y CI verde; no aplicar upgrades mayores sin spec aprobada. |
 | `PROD-02` | Incorporar healthcheck, diagnóstico de scheduler/cola y runbook operativo mínimo | `done` | Crítica | `IA_AUTONOMA` | `GET /healthz`, diagnóstico admin, heartbeat y runbook; 4 tests/18 assertions. |
 | `PROD-03` | Completar release gate HTTPS de Peñas/Radios | `blocked` | Crítica | `HUMANA` | URL staging, acceso, backup y Apps Script de staging claramente separados de producción. |
-| `PROD-04` | Limpiar depuración visible y estandarizar acabado técnico de layouts públicos/admin | `in_progress` | Alta | `IA_AUTONOMA` | Sin logs de depuración versionados y regresión de vistas cubierta. |
+| `PROD-04` | Limpiar depuración visible y estandarizar acabado técnico de layouts públicos/admin | `done` | Alta | `IA_AUTONOMA` | Logs retirados de layouts activos; prueba de regresión y Blade cache verde. |
 | `PROD-05` | Diseñar e implementar administración verificada de entidades por usuarios | `pending` | Alta | `IA_CON_VALIDACION` | Requiere modelo de gobernanza, claims y decisión funcional previa. |
 | `PROD-06` | Implementar favoritos, seguimientos y alertas territoriales/editoriales | `pending` | Alta | `IA_CON_VALIDACION` | Requiere definición de canales, frecuencia y consentimiento. |
 | `PROD-07` | Diseñar servicios comerciales y atribución de resultados | `pending` | Media | `HUMANA` | Requiere decisión comercial, pricing, pagos y obligaciones fiscales. |
-| `PROD-08` | Agregar E2E crítico, accesibilidad y presupuestos de calidad al CI | `pending` | Alta | `IA_AUTONOMA` | Herramientas reproducibles y sin credenciales externas. |
+| `PROD-08` | Agregar E2E crítico, accesibilidad y presupuestos de calidad al CI | `in_progress` | Alta | `IA_AUTONOMA` | Herramientas reproducibles y sin credenciales externas. |
 
 ---
 

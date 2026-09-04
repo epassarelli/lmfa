@@ -73,8 +73,6 @@
     var sectionElement = document.getElementById('interprete-container');
     var section = sectionElement ? sectionElement.dataset.section : '';
 
-    console.log("Sección detectada:", section); // Debug: Verificar qué sección está leyendo
-    console.log("Slug seleccionado:", slug); // Debug: Verificar qué slug se está seleccionando
 
     var currentUrl = window.location.pathname; // Obtener la URL actual sin dominio
     var newUrl;
@@ -87,7 +85,6 @@
       newUrl = currentUrl.replace(/\/[^\/]+$/, '/' + slug);
     }
 
-    console.log("Nueva URL generada:", newUrl); // Debug: Verificar qué URL se está generando
 
     window.location.href = newUrl;
   });
