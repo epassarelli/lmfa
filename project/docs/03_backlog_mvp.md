@@ -88,7 +88,7 @@ Estados validos en este documento:
 
 | ID | Tarea | Estado | Prioridad | Autonomía | Dependencia / criterio de cierre |
 |---|---|---|---|---|---|
-| `PROD-01` | Remediar vulnerabilidades de dependencias PHP y convertir auditorías en gate CI | `needs_review` | Crítica | `IA_CON_VALIDACION` | Hardening compatible aplicado a Guzzle: auditoría bajó de 56 a 43 avisos. Las migraciones locales pendientes ya se aplicaron y las pruebas focalizadas de noticias pasan; quedan Laravel/Symfony para un plan coordinado de Laravel 11+. La suite completa espera la estabilización de MariaDB local ante DDL. |
+| `PROD-01` | Remediar vulnerabilidades de dependencias PHP y convertir auditorías en gate CI | `needs_review` | Crítica | `IA_CON_VALIDACION` | Hardening compatible aplicado a Guzzle: auditoría bajó de 56 a 43 avisos. MariaDB local sufrio crashes DDL y el historial recuperado conserva solo 40 migraciones, aunque existe una tabla previa fuera de historial; se requiere backup y reconciliacion segura antes de nuevas migraciones o suite completa. Quedan Laravel/Symfony para un plan coordinado de Laravel 11+. |
 | `PROD-02` | Incorporar healthcheck, diagnóstico de scheduler/cola y runbook operativo mínimo | `done` | Crítica | `IA_AUTONOMA` | `GET /healthz`, diagnóstico admin, heartbeat y runbook; 4 tests/18 assertions. |
 | `PROD-03` | Completar release gate HTTPS de Peñas/Radios | `blocked` | Crítica | `HUMANA` | URL staging, acceso, backup y Apps Script de staging claramente separados de producción. |
 | `PROD-04` | Limpiar depuración visible y estandarizar acabado técnico de layouts públicos/admin | `done` | Alta | `IA_AUTONOMA` | Logs retirados de layouts activos; prueba de regresión y Blade cache verde. |
