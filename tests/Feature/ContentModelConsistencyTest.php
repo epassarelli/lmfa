@@ -163,12 +163,14 @@ class ContentModelConsistencyTest extends TestCase
 
     private function createInterprete(string $name, string $slug): int
     {
+        $author = User::factory()->create();
+
         return DB::table('interpretes')->insertGetId([
             'interprete' => $name,
             'slug' => $slug,
             'biografia' => 'Bio',
             'estado' => 1,
-            'user_id' => null,
+            'user_id' => $author->id,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),

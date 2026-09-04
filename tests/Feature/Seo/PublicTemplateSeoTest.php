@@ -29,13 +29,15 @@ class PublicTemplateSeoTest extends TestCase
     /** @test */
     public function artist_and_biography_pages_generate_clean_metadata_from_biography(): void
     {
+        $author = User::factory()->create();
+
         DB::table('interpretes')->insert([
             'id' => 1201,
             'interprete' => 'Raul Carnota',
             'slug' => 'raul-carnota',
             'biografia' => '<p>Raul Carnota fue un referente del folklore argentino. <strong>Compuso</strong> obras claves y marco una epoca.</p>',
             'estado' => 1,
-            'user_id' => null,
+            'user_id' => $author->id,
             'visitas' => 0,
             'created_at' => now(),
             'updated_at' => now(),

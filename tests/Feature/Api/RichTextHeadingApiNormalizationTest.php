@@ -91,7 +91,6 @@ class RichTextHeadingApiNormalizationTest extends TestCase
         $this->postJson('/api/v1/artists', [
             'interprete' => 'Artist api headings',
             'biografia' => '<h1>Bio</h1><p>Texto.</p>',
-            'user_id' => $admin->id,
         ])->assertCreated();
         $this->assertDatabaseHas('interpretes', [
             'interprete' => 'Artist api headings',

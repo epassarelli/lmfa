@@ -173,7 +173,7 @@ class NewsService
                 return $news;
             });
         } finally {
-            $this->cleanupTemporaryImage($resolvedImage);
+            $this->imageResolver->cleanupTemporary($resolvedImage);
         }
     }
 

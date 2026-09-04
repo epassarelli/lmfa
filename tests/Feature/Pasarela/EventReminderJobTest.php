@@ -152,7 +152,7 @@ class EventReminderJobTest extends TestCase
         $job = new EventReminderJob();
         $job->handle();
 
-        $this->assertDatabaseHas('notifications', [
+        $this->assertDatabaseHas('user_notifications', [
             'user_id' => $user->id,
             'type'    => 'event.reminder',
         ]);

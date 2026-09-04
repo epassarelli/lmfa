@@ -67,8 +67,9 @@ class UnifiedNewsFlowTest extends TestCase
         $this->actingAs($this->admin);
 
         // Mock de la imagen externa
+        $externalImage = UploadedFile::fake()->image('external.jpg');
         Http::fake([
-            'https://externo.com/foto.jpg' => Http::response(file_get_contents(public_path('img/logo-share.jpg')), 200, [
+            'https://externo.com/foto.jpg' => Http::response(file_get_contents($externalImage->getPathname()), 200, [
                 'Content-Type' => 'image/jpeg'
             ]),
         ]);
@@ -85,7 +86,7 @@ class UnifiedNewsFlowTest extends TestCase
             ]
         ]);
 
-        $response = $this->get(route('backend.contributions.admin.approve', $contribution->id));
+        $response = $this->post(route('backend.contributions.approve', $contribution->id));
 
         $response->assertRedirect();
         $this->assertDatabaseHas('news', [
@@ -117,7 +118,7 @@ class UnifiedNewsFlowTest extends TestCase
         ]);
 
         // La aplicación debería manejar la excepción y redirigir con error
-        $response = $this->get(route('backend.contributions.admin.approve', $contribution->id));
+        $response = $this->post(route('backend.contributions.approve', $contribution->id));
         
         // El controlador actual no tiene un catch específico para ImageSecurityException todavía, 
         // pero el test fallará si el resolver no lanza la excepción.
