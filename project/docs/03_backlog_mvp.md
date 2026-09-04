@@ -88,7 +88,7 @@ Estados validos en este documento:
 
 | ID | Tarea | Estado | Prioridad | Autonomía | Dependencia / criterio de cierre |
 |---|---|---|---|---|---|
-| `PROD-01` | Remediar vulnerabilidades de dependencias PHP y convertir auditorías en gate CI | `pending` | Crítica | `IA_CON_VALIDACION` | Requiere estrategia de actualización compatible y CI verde; no aplicar upgrades mayores sin spec aprobada. |
+| `PROD-01` | Remediar vulnerabilidades de dependencias PHP y convertir auditorías en gate CI | `needs_review` | Crítica | `IA_CON_VALIDACION` | Hardening compatible aplicado a Guzzle: auditoría bajó de 56 a 43 avisos. Quedan Laravel/Symfony para un plan coordinado de Laravel 11+; la validación de noticias local requiere correr la migración pendiente `2026_08_31_170000_add_source_metadata_to_media_assets`. |
 | `PROD-02` | Incorporar healthcheck, diagnóstico de scheduler/cola y runbook operativo mínimo | `done` | Crítica | `IA_AUTONOMA` | `GET /healthz`, diagnóstico admin, heartbeat y runbook; 4 tests/18 assertions. |
 | `PROD-03` | Completar release gate HTTPS de Peñas/Radios | `blocked` | Crítica | `HUMANA` | URL staging, acceso, backup y Apps Script de staging claramente separados de producción. |
 | `PROD-04` | Limpiar depuración visible y estandarizar acabado técnico de layouts públicos/admin | `done` | Alta | `IA_AUTONOMA` | Logs retirados de layouts activos; prueba de regresión y Blade cache verde. |
