@@ -200,5 +200,8 @@ jobs:
       - name: PHPUnit - Directory release gates
         run: php artisan test tests/Feature/Directories/DirectoryFeatureFlagsTest.php
 
+      - name: PHPUnit - Public quality gates
+        run: php artisan test tests/Feature/Quality/PublicQualityGateTest.php
+
       - name: PHPUnit - Full release suite
         run: php artisan test

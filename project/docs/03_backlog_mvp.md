@@ -95,7 +95,7 @@ Estados validos en este documento:
 | `PROD-05` | Diseñar e implementar administración verificada de entidades por usuarios | `pending` | Alta | `IA_CON_VALIDACION` | Requiere modelo de gobernanza, claims y decisión funcional previa. |
 | `PROD-06` | Implementar favoritos, seguimientos y alertas territoriales/editoriales | `pending` | Alta | `IA_CON_VALIDACION` | Requiere definición de canales, frecuencia y consentimiento. |
 | `PROD-07` | Diseñar servicios comerciales y atribución de resultados | `pending` | Media | `HUMANA` | Requiere decisión comercial, pricing, pagos y obligaciones fiscales. |
-| `PROD-08` | Agregar E2E crítico, accesibilidad y presupuestos de calidad al CI | `in_progress` | Alta | `IA_AUTONOMA` | Herramientas reproducibles y sin credenciales externas. |
+| `PROD-08` | Agregar E2E crítico, accesibilidad y presupuestos de calidad al CI | `done` | Alta | `IA_AUTONOMA` | Suite publica con 2 pruebas y 50 aserciones incorporada a CI; valida landings, estructura accesible y presupuesto HTML. |
 
 ---
 

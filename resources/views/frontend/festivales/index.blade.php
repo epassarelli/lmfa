@@ -10,6 +10,11 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold text-slate-900">{{ $h1 }}</h1>
+    <p class="mt-2 text-slate-600">{{ $introText }}</p>
+  </header>
+
   @include('frontend.festivales._filters')
 
   <section class="mb-8">

@@ -1,6 +1,6 @@
 <div>
   <!-- Life is available only in the present moment. - Thich Nhat Hanh -->
-  <nav class="bg-gray-900 text-white shadow sticky top-0 z-50">
+  <nav aria-label="Navegacion principal" class="bg-gray-900 text-white shadow sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between flex-wrap">
 
       <!-- Redes sociales y Login (solo en desktop) -->
@@ -22,7 +22,7 @@
       </a>
 
       <!-- Botón hamburguesa -->
-      <button type="button" data-mobile-menu-toggle aria-expanded="false" aria-controls="site-mobile-menu" class="lg:hidden text-[#ff661f] focus:outline-none ml-2">
+      <button type="button" data-mobile-menu-toggle aria-label="Abrir menu principal" aria-expanded="false" aria-controls="site-mobile-menu" class="lg:hidden text-[#ff661f] focus:outline-none ml-2">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 6h16M4 12h16M4 18h16" />
