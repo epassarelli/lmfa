@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\DataDeletionRequest;
-use App\Models\SocialAccount;
 use App\Models\User;
+use App\Models\SocialAccount;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -252,9 +252,14 @@ class MetaDataDeletionFlowTest extends TestCase
     /** @test */
     public function status_page_is_public_hides_personal_data_and_returns_404_for_unknown_code(): void
     {
+        $user = User::factory()->create([
+            'id' => 987654,
+        ]);
+
         $request = DataDeletionRequest::query()->create([
             'confirmation_code' => str_repeat('a', 64),
             'provider' => 'facebook',
+            'user_id' => $user->id,
             'status' => DataDeletionRequest::STATUS_COMPLETED,
             'requested_at' => now()->subMinutes(5),
             'completed_at' => now(),
@@ -267,7 +272,8 @@ class MetaDataDeletionFlowTest extends TestCase
         $ok->assertSee($request->confirmation_code);
         $ok->assertSee('Completada');
         $ok->assertDontSee('hidden-user');
-        $ok->assertDontSee('@');
+        $ok->assertDontSee($request->external_user_hash);
+        $ok->assertDontSee((string) $user->id);
 
         $notFound = $this->call('GET', '/deleteuserdata/status/'.str_repeat('b', 64), [], [], [], $this->serverVariables());
         $notFound->assertNotFound();

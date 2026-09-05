@@ -1,7 +1,7 @@
 # 00 - Estado Actual del Proyecto
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-04 (CI de `dev` verde; el historial de migraciones local es inconsistente tras crashes de MariaDB y bloquea nueva validacion con base; staging HTTPS, piloto Apps Script y validacion visible pendientes; exposición pública aún apagada)
+> Ultima actualizacion: 2026-09-04 (CI de `dev` verde; base local reconstruida en volumen Docker con 81 migraciones y suite completa verde: 335 passed, 2 skipped, 1769 assertions; staging HTTPS, piloto Apps Script y validacion visible pendientes; exposición pública aún apagada)
 
 ---
 
@@ -12,11 +12,11 @@
 ### Próxima ejecución autónoma
 
 - **Objetivo:** llevar el producto al 99% de preparación operativa sin adelantar despliegues ni decisiones humanas.
-- **Tarea elegible actual:** no hay tareas `IA_AUTONOMA` pendientes. `PROD-01` queda en revision: se actualizaron Guzzle y sus dependencias compatibles, pero la validacion local con base queda bloqueada. Tras los crashes, el historial conserva solo 40 migraciones hasta `2026_03_21_172708_create_contributions_table`, aunque existe la tabla previa `data_deletion_requests`; no se debe ejecutar el resto hasta reparar el volumen. El remanente de Laravel/Symfony requiere una estrategia coordinada para Laravel 11+.
+- **Tarea elegible actual:** no hay tareas `IA_AUTONOMA` pendientes. `PROD-01` queda en revision: se actualizaron Guzzle y sus dependencias compatibles; el nuevo volumen local registra las 81 migraciones y la suite completa pasa. El remanente de Laravel/Symfony requiere una estrategia coordinada para Laravel 11+.
 - **Último cierre autónomo:** `PROD-08` incorporó la suite publica de calidad a CI: 2 pruebas y 50 aserciones sobre las landings criticas, estructura semantica accesible y presupuesto HTML de 350 KB. Tambien corrigio el `h1` ausente de la landing de Festivales.
 - **Cierre anterior:** `PROD-04` retiró logs de depuración de layouts activos; prueba de regresión y Blade cache verdes.
 - **Último cierre autónomo:** `PROD-02` completó `GET /healthz`, diagnóstico restringido a administrador, heartbeat de scheduler y [runbook operativo](releases/operational-health-runbook.md); pruebas: 4 passed, 18 assertions.
-- **Siguientes gates humanos:** `PROD-01` redujo Composer audit de 56 a 43 avisos, sin pendientes de Guzzle; el remanente requiere una estrategia coordinada para Laravel 11+. `PROD-03` requiere staging HTTPS, backup y Apps Script separado de producción. La estabilidad del volumen de MariaDB local debe resolverse antes de repetir migraciones o la suite completa.
+- **Siguientes gates humanos:** `PROD-01` redujo Composer audit de 56 a 43 avisos, sin pendientes de Guzzle; el remanente requiere una estrategia coordinada para Laravel 11+. `PROD-03` requiere staging HTTPS, backup y Apps Script separado de producción.
 - **Regla de continuidad:** `03_backlog_mvp.md` es la cola local ejecutable; Drive conserva la priorización humana, comercial y editorial.
 
 **Flujo vigente:** rama feature -> PR/CI -> revision de Eduardo -> merge a `main` por Eduardo -> pull y deploy en produccion. Los agentes no tocan ni fusionan `main` ni ejecutan despliegues.
@@ -291,7 +291,7 @@ Los modelos `News` y `Event` tienen accessors que mapean nombres de campos viejo
 
 ### Nota tecnica - DDL en entorno local
 
-MariaDB 10.8.8 en este entorno Docker/WSL se cae con ciertos `ALTER TABLE` sobre tablas InnoDB del volumen local, incluidos `ADD UNIQUE` y el indice sobre `penias.user_id` durante migraciones. El 2026-09-04 tambien se reprodujo al preparar `classifieds_slug_unique` desde una prueba. Tras la recuperacion del journal, el historial de `migrations` retrocedio a 40 entradas (hasta marzo de 2026), mientras `data_deletion_requests` permanece como tabla previa; por eso no se debe repetir `migrate` ni la suite completa hasta respaldar y reparar o reemplazar la imagen/volumen local. Como mitigacion puntual, la migracion `2026_08_04_010200_create_knowledge_article_relationship_tables.php` crea pivotes e indices inline con SQL explicito.
+MariaDB 10.8.8 sobre el bind mount anterior de Windows/WSL se caia con ciertos `ALTER TABLE` sobre tablas InnoDB. El 2026-09-04 se reprodujo con indices de `penias` y `classifieds`, y el historial recuperado retrocedio a 40 entradas. El servicio fue reconstruido en el volumen Docker `lmfa_db_data`, conservando `database_local` sin borrar; el nuevo entorno completo las 81 migraciones y `php artisan test` pasa con 335 pruebas, 2 skipped y 1769 aserciones. Mantener vigilancia sobre DDL local, pero el entorno ya no esta bloqueado.
 
 ### Recuperacion local propuesta
 
@@ -403,7 +403,7 @@ sin borrar ninguno de los dos almacenamientos.
 
 - **Pasarela de Contenidos** (`/admin/pasarela`): dashboards, social accounts, publication requests, notifications y templates. Codigo completo, nunca probado end-to-end en produccion.
 - **Colaboraciones UGC** (`/admin/contribuir`): flujo unificado para contribuciones. Noticias verificadas end-to-end; el resto del flujo todavia requiere validacion operativa completa en produccion.
-- **Legales + Meta/Facebook**: paginas publicas en `/privacidad`, `/condiciones`, `/eliminacion-de-datos`, compatibilidad historica en `GET /deleteuserdata`, callback `POST /deleteuserdata` con `signed_request` firmado, persistencia `data_deletion_requests` y estado publico en `/deleteuserdata/status/{confirmationCode}`. Validado localmente con suite dedicada; la tabla existe en el volumen actual, pero su migracion no figura en el historial recuperado. La creacion se hizo idempotente para este caso. Resta estabilizar local, aplicarla fuera de local y configurar las URLs en Meta.
+- **Legales + Meta/Facebook**: paginas publicas en `/privacidad`, `/condiciones`, `/eliminacion-de-datos`, compatibilidad historica en `GET /deleteuserdata`, callback `POST /deleteuserdata` con `signed_request` firmado, persistencia `data_deletion_requests` y estado publico en `/deleteuserdata/status/{confirmationCode}`. Validado localmente con suite dedicada; en el volumen Docker nuevo su migracion figura en el historial. La creacion sigue siendo idempotente para instalaciones con esquema previo. Resta aplicarla fuera de local y configurar las URLs en Meta.
 - **Inventario tecnico y legacy**: auditoria dedicada consolidada en `project/docs/08_inventario_tecnico_legacy.md`, con evidencia de rutas, tablas, modelos, jobs, integraciones, modulos parciales y estado local de `news` / `events` / `noticias` / `shows` / Pasarela.
 
 ### Modulos diferidos - proxima version
@@ -553,10 +553,10 @@ Nota: los `curl` locales no reflejan completamente la mejora de Core Web Vitals 
 2. Volver a medir en PageSpeed Insights mobile y desktop sobre produccion para cuantificar el impacto real de las tres tandas de performance.
 3. Extender el criterio del bundle publico liviano y del render diferido a otras plantillas publicas que aun queden pesadas.
 4. Evaluar limpieza de tablas legacy (`noticias`, `shows`, `images`) despues de confirmar que no exista informacion unica.
-5. Respaldar y estabilizar o reemplazar la imagen/volumen de MariaDB del stack local: el bug DDL de WSL/Docker se reprodujo el 2026-09-04 durante migraciones y pruebas, y el historial recuperado retrocedio a 40 migraciones. Impide repetir `migrate` o la suite completa con confianza.
+5. Mantener vigilancia sobre MariaDB local: el volumen Docker `lmfa_db_data` reemplazo el bind mount que fallaba y supero 81 migraciones y la suite completa; conservar `database_local` como respaldo hasta varias sesiones estables.
 6. Validar en el Apps Script externo que los `422` con `code: BLOQUEADO_CATEGORIA` pasen a estado de correccion y no vuelvan a reintentarse automaticamente.
-7. Tras estabilizar el volumen local, reconciliar y ejecutar de forma segura las migraciones pendientes, incluida `2026_08_20_120000_create_data_deletion_requests_table`; luego aplicarla en los entornos no locales y configurar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`).
-8. Repetir `php artisan test` completo solo despues de reconciliar las migraciones y estabilizar MariaDB local. La corrida focalizada previa alcanzo 8 pruebas y 64 aserciones, pero no es evidencia durable mientras el historial siga inconsistente.
+7. Ejecutar `2026_08_20_120000_create_data_deletion_requests_table` en los entornos no locales y configurar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`).
+8. Cargar y revisar los seeders de demo necesarios para las interfaces locales; la base reconstruida se validó vacia con las migraciones y pruebas completas.
 
 9. Cerrar en produccion los seis casos controlados de la integracion editorial: CREAR y ACTUALIZAR un Artista, una Receta y un Mito; luego reactivar el flujo automatico con monitoreo de errores.
 10. Ejecutar en staging los seis casos controlados de directorios: CREAR y ACTUALIZAR una Peña, una Radio y un ProgramaRadio; confirmar que las altas continúan `draft/pending` y que los flags públicos permanecen apagados.
