@@ -303,6 +303,14 @@ verificar `docker compose ps`, `mysqladmin ping` y `php artisan migrate:status`.
 Si el nuevo volumen no fuera estable, restaurar temporalmente el mount anterior
 sin borrar ninguno de los dos almacenamientos.
 
+El volumen reconstruido cuenta con un escenario demo idempotente: 24 provincias,
+2 festivales, 2 eventos y 2 interpretes de Festival Vivo; 10 Peñas piloto en
+`draft/pending`; y 5 radios con 10 programas publicados. Se creo el usuario
+local `admin.local@mifolkloreargentino.test` con rol `administrador` para operar
+los seeders y el backoffice. En modo oscuro, con ambos flags en `false`, la home
+responde `200` y las superficies publicas de Peñas, Radios y Programas
+responden `404`.
+
 ---
 
 ## Arquitectura de rutas
@@ -556,7 +564,7 @@ Nota: los `curl` locales no reflejan completamente la mejora de Core Web Vitals 
 5. Mantener vigilancia sobre MariaDB local: el volumen Docker `lmfa_db_data` reemplazo el bind mount que fallaba y supero 81 migraciones y la suite completa; conservar `database_local` como respaldo hasta varias sesiones estables.
 6. Validar en el Apps Script externo que los `422` con `code: BLOQUEADO_CATEGORIA` pasen a estado de correccion y no vuelvan a reintentarse automaticamente.
 7. Ejecutar `2026_08_20_120000_create_data_deletion_requests_table` en los entornos no locales y configurar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`).
-8. Cargar y revisar los seeders de demo necesarios para las interfaces locales; la base reconstruida se validó vacia con las migraciones y pruebas completas.
+8. Mantener los seeders demo idempotentes y no usarlos como evidencia editorial o de staging: el lote local ya fue cargado y verificado.
 
 9. Cerrar en produccion los seis casos controlados de la integracion editorial: CREAR y ACTUALIZAR un Artista, una Receta y un Mito; luego reactivar el flujo automatico con monitoreo de errores.
 10. Ejecutar en staging los seis casos controlados de directorios: CREAR y ACTUALIZAR una Peña, una Radio y un ProgramaRadio; confirmar que las altas continúan `draft/pending` y que los flags públicos permanecen apagados.
