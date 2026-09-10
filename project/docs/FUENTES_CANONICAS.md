@@ -1,7 +1,7 @@
 # FUENTES_CANONICAS
 
 > Indice operativo para humanos y agentes.
-> Ultima actualizacion: 2026-09-01.
+> Ultima revisión: 2026-09-08. La jerarquía de fuentes no cambió; se auditó después del despliegue productivo de directorios.
 
 ---
 

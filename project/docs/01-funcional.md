@@ -1,6 +1,6 @@
 # 01 - Funcional
 
-> Estado funcional consolidado al **2026-09-01**.
+> Estado funcional consolidado al **2026-09-08**.
 > Este documento describe el comportamiento funcional vigente del portal y distingue entre modulos activos, modulos activos con validacion operativa pendiente y piezas diferidas o parciales.
 > Conserva al final un resumen historico del alcance MVP original de la Pasarela para no perder contexto util.
 
@@ -157,7 +157,7 @@ Estado funcional al 2026-09-01:
 
 - modernizacion tecnica y Content Refresh en condiciones productivas;
 - auditor y cola editorial activos;
-- sigue pendiente incorporar visitas reales al criterio del auditor para dejar de usar desempate provisional.
+- el auditor incorpora visitas reales y desempata registros equivalentes por mayor demanda, con ID como cierre estable.
 
 ### 5.8 Discografia y Cancionero
 
@@ -249,8 +249,8 @@ El flujo es funcional a nivel local/documental, con persistencia y trazabilidad,
 No deben documentarse como modulos cerrados:
 
 - `Entrevistas`: rutas activas pero superficie incompleta;
-- `Radios evergreen`: dominio canónico sobre `radio_signals`, canales, programas y franjas; incluye API autenticada, backoffice, frontend, sitemap, auditor y Content Refresh en DEV. Su flag público permanece apagado hasta completar staging HTTPS y piloto editorial;
-- `Peñas evergreen`: módulo canónico sobre `penia_profiles`, con directorio, API, backoffice, auditor y lote piloto en DEV. Su flag público permanece apagado hasta completar staging HTTPS y piloto editorial;
+- `Radios evergreen`: dominio canónico sobre `radio_signals`, canales, programas y franjas; API, backoffice, frontend, sitemap, auditor, Content Refresh y migraciones están desplegados. La visibilidad depende de `FEATURE_RADIO_DIRECTORY`; falta confirmar su aparición en NAV y rutas públicas;
+- `Peñas evergreen`: módulo canónico sobre `penia_profiles`, con directorio, API, backoffice, auditor y lote piloto. Código y migraciones están desplegados. La visibilidad depende de `FEATURE_PENIA_DIRECTORY`; falta confirmar su aparición en NAV y rutas públicas;
 - `Videos`: componente incompleto y no consolidado.
 
 ---
@@ -259,9 +259,9 @@ No deben documentarse como modulos cerrados:
 
 Brechas funcionales que siguen abiertas segun el estado operativo actual:
 
-1. cerrar en staging HTTPS el piloto controlado de seis operaciones de Content Refresh de Peñas, Radios y ProgramasRadio;
+1. confirmar la activación pública de Peñas y Radios en producción y ejecutar un piloto controlado antes de automatizar cargas de volumen;
 2. ejecutar lotes pequenos de curacion sobre Biografias, Recetas y Mitos;
-3. incorporar visitas al auditor de Festivales;
+3. sostener la línea base recurrente de Festivales usando score y visitas;
 4. validar Pasarela y UGC end-to-end en produccion;
 5. definir el siguiente release funcional por impacto en descubrimiento y recurrencia;
 6. aprobar politica de derechos antes de automatizar Discografia/Cancionero.

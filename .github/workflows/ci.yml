@@ -147,6 +147,19 @@ jobs:
       - name: Build frontend assets
         run: npm run build
 
+      - name: Test and verify frontend deploy artifact
+        run: |
+          npm run test:build-artifact
+          npm run build:verify
+
+      - name: Upload frontend deploy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vite-build-${{ github.sha }}
+          path: public/build/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: PHPUnit - INI-0020
         run: |
           php artisan test             tests/Unit/Services/EditorialImageResolverTest.php             tests/Unit/Support/ApiImageInputTest.php

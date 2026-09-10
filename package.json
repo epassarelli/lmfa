@@ -4,6 +4,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
+        "build:verify": "node scripts/verify-vite-build.mjs",
+        "test:build-artifact": "node --test tests/Build/ViteBuildArtifactTest.mjs",
         "apps-script:link": "node automation/apps-script/tools/link.mjs",
         "apps-script:bootstrap": "node automation/apps-script/tools/bootstrap.mjs",
         "apps-script:status": "npx --yes @google/clasp status",

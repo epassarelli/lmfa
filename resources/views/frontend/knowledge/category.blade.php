@@ -50,9 +50,7 @@
     @endforelse
   </section>
 
-  <div class="mt-6">
-    {{ $articles->links() }}
-  </div>
+  <x-public-pagination :paginator="$articles" />
 @endsection
 
 @section('sidebar')

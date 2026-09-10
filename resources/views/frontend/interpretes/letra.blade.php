@@ -34,9 +34,7 @@
       @endif
     </div>
 
-    <div class="mt-8 mb-8">
-      {{ $interpretes->links() }}
-    </div>
+    <x-public-pagination :paginator="$interpretes" />
 
     <x-alpha-filter
       class="mt-16"

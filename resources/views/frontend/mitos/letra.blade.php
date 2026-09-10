@@ -26,9 +26,7 @@
         @endforeach
       </div>
 
-      <div class="mt-8">
-        {{ $mitos->links() }}
-      </div>
+      <x-public-pagination :paginator="$mitos" />
     </section>
 
     <x-alpha-filter

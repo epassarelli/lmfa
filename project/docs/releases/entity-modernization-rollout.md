@@ -61,7 +61,7 @@ Todavia no debe considerarse completamente cerrada en terminos operativos mientr
 
 1. piloto controlado de seis operaciones de Content Refresh;
 2. lotes editoriales iniciales con medicion antes/despues;
-3. incorporacion de visitas al auditor de Festivales;
+3. seguimiento recurrente del auditor de Festivales, que ya incorpora visitas;
 4. definicion de derechos para musica y letras.
 
 ---

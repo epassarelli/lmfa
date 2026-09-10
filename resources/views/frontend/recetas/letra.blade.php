@@ -26,9 +26,7 @@
         @endforeach
       </div>
 
-      <div class="mt-8">
-        {{ $comidas->links() }}
-      </div>
+      <x-public-pagination :paginator="$comidas" />
     </section>
 
     <section class="mt-16">

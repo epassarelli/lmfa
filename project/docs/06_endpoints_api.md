@@ -1,6 +1,6 @@
 # 06 - Endpoints API
 
-> Estado real de la API versionada al **2026-09-01**.
+> Estado real de la API versionada al **2026-09-08**.
 > Describe la superficie vigente y sus restricciones, alineada con `00_estado_actual.md`.
 
 ---
@@ -41,9 +41,9 @@ La API actual:
 | Artistas | `/api/v1/artists` | `interpretes` / `Interprete` | Activo |
 | Mitos | `/api/v1/myths` | `mitos` / `Mito` | Activo |
 | Eventos | `/api/v1/events` | `events` / `Event` | Activo |
-| Peñas | `/api/v1/penia-profiles` | `penia_profiles` / `PeniaProfile` | Activo en DEV; release gate pendiente |
-| Señales de radio | `/api/v1/radio-signals` | `radio_signals` / `RadioSignal` | Activo en DEV; release gate pendiente |
-| Programas de radio | `/api/v1/radio-programs` | `radio_programs` / `RadioProgram` | Activo en DEV; release gate pendiente |
+| Peñas | `/api/v1/penia-profiles` | `penia_profiles` / `PeniaProfile` | Desplegado; validación operativa pendiente |
+| Señales de radio | `/api/v1/radio-signals` | `radio_signals` / `RadioSignal` | Desplegado; validación operativa pendiente |
+| Programas de radio | `/api/v1/radio-programs` | `radio_programs` / `RadioProgram` | Desplegado; validación operativa pendiente |
 
 ---
 
@@ -84,7 +84,7 @@ La API actual:
 - la lectura y escritura v1 requieren `auth:sanctum`; la escritura respeta policies y estados editoriales;
 - Peñas usa `penia-profiles`; Radios separa señal, canal de escucha, programa y franja semanal;
 - los listados aceptan filtros de territorio, búsqueda y atributos propios del directorio;
-- Content Refresh crea propuestas en `draft/pending` y preserva campos omitidos en actualizaciones; el piloto real de seis operaciones sigue pendiente en staging HTTPS.
+- Content Refresh crea propuestas en `draft/pending` y preserva campos omitidos en actualizaciones; el piloto real sigue pendiente antes de automatizar volumen.
 
 ---
 

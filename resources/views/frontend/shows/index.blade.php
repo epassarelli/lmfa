@@ -193,9 +193,7 @@
     @endforeach
   </section>
 
-  <div class="mt-8">
-    {{ $shows->links() }}
-  </div>
+  <x-public-pagination :paginator="$shows" />
 
   <section class="mt-10 bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
     <h2 class="text-xl font-bold text-slate-900 mb-4">Explorar por provincia</h2>

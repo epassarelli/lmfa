@@ -6,7 +6,6 @@ use App\Models\Festival;
 use App\Services\EditorialImageResolver;
 use App\Support\SeoMetadata;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
 
 class AuditFestivals extends Command
 {
@@ -70,7 +69,10 @@ class AuditFestivals extends Command
             }
         });
 
-        usort($rows, fn (array $a, array $b): int => $a['score'] <=> $b['score']);
+        usort($rows, fn (array $a, array $b): int => strcmp($a['priority'], $b['priority'])
+            ?: ($a['score'] <=> $b['score'])
+            ?: ($b['visits'] <=> $a['visits'])
+            ?: ($a['id'] <=> $b['id']));
 
         $this->table(
             ['Total', 'P1', 'P2', 'P3', 'Sin provincia', 'Sin localidad', 'Sin mes', 'Sin SEO title', 'Sin meta', 'Fallback', 'Sin relaciones'],
@@ -96,12 +98,13 @@ class AuditFestivals extends Command
         $this->info('Festivales con mayor deuda editorial');
 
         $this->table(
-            ['ID', 'Festival', 'Score', 'Prioridad', 'Palabras', 'Imagen', 'Faltantes'],
+            ['ID', 'Festival', 'Score', 'Prioridad', 'Visitas', 'Palabras', 'Imagen', 'Faltantes'],
             array_map(fn (array $row): array => [
                 $row['id'],
                 $row['title'],
                 $row['score'],
                 $row['priority'],
+                $row['visits'],
                 $row['words'],
                 $row['image_source'],
                 implode(', ', $row['missing']),
@@ -123,6 +126,7 @@ class AuditFestivals extends Command
                 'slug',
                 'score',
                 'priority',
+                'visits',
                 'words',
                 'province',
                 'locality',
@@ -144,6 +148,7 @@ class AuditFestivals extends Command
                     $row['slug'],
                     $row['score'],
                     $row['priority'],
+                    $row['visits'],
                     $row['words'],
                     $row['province'],
                     $row['locality'],
@@ -269,6 +274,7 @@ class AuditFestivals extends Command
             'slug' => $festival->slug,
             'score' => $score,
             'priority' => $priority,
+            'visits' => (int) $festival->visitas,
             'words' => $words,
             'province' => $festival->provincia?->nombre,
             'locality' => $festival->locality?->name,

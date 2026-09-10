@@ -14,9 +14,7 @@
     @endforeach
   </div>
 
-  <div class="my-6">
-    {{ $interpretes->links() }}
-  </div>
+  <x-public-pagination :paginator="$interpretes" />
 
   <section class="bg-white p-2 rounded shadow-sm mt-4 mb-4">
     <h1 class="text-xl font-semibold mb-4 border-b-2 border-[#ff661f]">Biografías de artistas folklóricos más visitadas</h1>

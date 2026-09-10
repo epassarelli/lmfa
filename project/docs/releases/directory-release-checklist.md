@@ -1,5 +1,35 @@
 # Release gate — Peñas y Radios
 
+> Actualización 2026-09-08: el código y las migraciones ya fueron desplegados directamente en producción. Este documento conserva el gate exhaustivo como referencia, pero la activación práctica se considera reversible mediante flags y no exige repetir staging para mantener el release técnico.
+
+## Estado productivo confirmado
+
+- `main` desplegado y migraciones aplicadas.
+- Home y `GET /healthz` responden `200`.
+- El servidor no tiene NPM; el bundle Vite fue compilado fuera del servidor y `public/build` se subió completo después de una primera carga sin estilos.
+- Los módulos permanecen protegidos por flags independientes.
+- Falta confirmar que los flags sean efectivos y que Peñas/Radios aparezcan en NAV y respondan en sus rutas públicas.
+
+## Activación mínima vigente
+
+1. Definir `FEATURE_PENIA_DIRECTORY=true` y/o `FEATURE_RADIO_DIRECTORY=true` en `.env`.
+2. Ejecutar `php artisan config:clear && php artisan config:cache`.
+3. Confirmar con Tinker que `config('features.penia_directory')` y `config('features.radio_directory')` devuelvan `true`.
+4. Ejecutar `php artisan responsecache:clear` y `php artisan view:clear` porque el NAV puede seguir servido desde la caché de página completa.
+5. Verificar NAV, `/penias`, `/radios-de-folklore-argentino`, sitemaps y ausencia de errores en logs.
+6. Ante una falla, apagar únicamente el flag afectado, regenerar config y limpiar response cache.
+
+## Build sin Node en producción
+
+El procedimiento canónico está en [Deploy de assets Vite sin Node](frontend-assets-deploy.md).
+
+```bash
+npm ci
+npm run build
+```
+
+Estos comandos se ejecutan localmente o en CI. El deploy debe incluir juntos `public/build/manifest.json` y todos los archivos de `public/build/assets/`; subir solamente el manifiesto rompe CSS/JS por los hashes de Vite.
+
 ## Estado previo
 
 - Trabajar desde `dev`; Eduardo decide y ejecuta la fusión a `main`.
@@ -29,7 +59,7 @@ El workflow CI debe completar:
 - Smoke oscuro manual aprobado: home `200`; `/penias`, Radios, Programas y sitemaps de directorios `404`.
 - El commit `2ed7c92` evita que `mfa.localhost` redirija al dominio de producción.
 
-Esta evidencia reduce riesgo local, pero **no satisface** este gate: el script oficial exige una URL HTTPS pública y un staging separado con backup, migraciones y trazabilidad operativa.
+Esta sección describe el gate originalmente previsto. El despliegue productivo del 2026-09-08 lo reemplazó como condición previa; sus pasos quedan disponibles para regresiones y futuros releases de mayor riesgo.
 
 1. Desplegar `dev` en un entorno separado de producción.
 2. Mantener ambos flags en `false`.
@@ -74,4 +104,4 @@ bash scripts/smoke-directories.sh
 
 ## Criterio para fusionar
 
-Sólo queda apto para la decisión de merge cuando CI, preflight, seis operaciones controladas y ambos smoke sean verdes, sin pérdida legacy. El despliegue productivo debe comenzar oscuro; la activación pública de cada directorio es una decisión posterior e independiente.
+Para futuros releases planificados, CI, preflight y smoke siguen siendo evidencia recomendable. Para el release ya desplegado, el cierre pendiente se limita a confirmar flags, NAV/rutas, contenido inicial y rollback por flag; el piloto Content Refresh es gate de automatización editorial, no del código ya instalado.

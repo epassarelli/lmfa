@@ -89,9 +89,7 @@
             </div>
         </div>
         
-        <div class="mt-6">
-            {{ $avisos->links() }}
-        </div>
+        <x-public-pagination :paginator="$avisos" />
     @endif
 </div>
 @endsection

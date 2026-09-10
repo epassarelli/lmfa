@@ -122,9 +122,9 @@ Orden recomendado: P1/P2/P3, menor score, mayores visitas y luego ID.
 4. Implementar modelos, requests, policies, servicios y API.
 5. Implementar backoffice y auditor.
 6. Implementar frontend, filtros, canonical, sitemap y schema.
-7. Integrar Content Refresh y pruebas controladas. **Completado en DEV:** tipos `Peña`, `Radio` y `ProgramaRadio`, con `CREAR/ACTUALIZAR`, preflight offline y altas forzadas a `draft/pending`. **Pendiente de release:** ejecutar los seis casos contra staging HTTPS, registrar `ID_WEB`, confirmar updates parciales y dejar los flags apagados al finalizar.
+7. Integrar Content Refresh y pruebas controladas. **Desplegado técnicamente:** tipos `Peña`, `Radio` y `ProgramaRadio`, con `CREAR/ACTUALIZAR`, preflight offline y altas forzadas a `draft/pending`. **Pendiente operativo:** ejecutar casos controlados, registrar `ID_WEB` y confirmar updates parciales antes de automatizar volumen; no es requisito para conservar el código desplegado con flags reversibles.
 8. Migrar un lote piloto y verificar vigencia.
-9. Activar cada directorio como release independiente.
+9. Activar cada directorio mediante su flag independiente, limpiar config y response cache, y validar NAV, ruta pública y contenido inicial.
 
 ## Gate de publicación
 

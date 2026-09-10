@@ -100,7 +100,7 @@ Observacion:
 - Festivales, Artistas, Recetas y Mitos ya cuentan con auditorias y linea base editorial al 2026-09-01.
 - Artistas, Recetas y Mitos ya se integran con la bandeja `Contenidos`.
 - Discografia/Cancionero sigue operativa pero su evolucion esta frenada por el gate humano de derechos.
-- Peñas y Radios tienen dominio, backoffice, API, frontend y Content Refresh en DEV; sus flags permanecen apagados hasta completar staging HTTPS y el piloto editorial controlado.
+- Peñas y Radios tienen dominio, backoffice, API, frontend, Content Refresh y migraciones desplegados en producción; falta confirmar flags efectivos, NAV/rutas públicas y el piloto editorial previo a automatizar volumen.
 - La matriz debe leerse junto con `00_estado_actual.md` cuando haya que decidir prioridad o madurez real de una entidad.
 
 ---

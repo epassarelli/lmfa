@@ -15,9 +15,7 @@
       @endforeach
     </div>
 
-    <div class="my-6">
-      {{ $ultimas->links() }}
-    </div>
+    <x-public-pagination :paginator="$ultimas" />
   </section>
 
   <section class="bg-white p-2 rounded shadow-sm mb-4 cv-auto">

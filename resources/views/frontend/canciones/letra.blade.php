@@ -25,9 +25,7 @@
       </div>
     </div>
 
-    <div class="mt-8 mb-8">
-      {{ $canciones->links() }}
-    </div>
+    <x-public-pagination :paginator="$canciones" />
 
     {{-- Navegación alfabética --}}
     <div class="mt-16 bg-white p-4 rounded shadow-sm">

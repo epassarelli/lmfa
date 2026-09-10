@@ -1,7 +1,7 @@
 # 03 - Backlog Maestro
 
 > Backlog estructural en Git alineado con `07_hoja_de_ruta.md`.
-> Ultima actualizacion: 2026-09-04.
+> Ultima actualizacion: 2026-09-08.
 > Google Drive conserva la priorizacion humana; esta es la cola local ejecutable del agente.
 
 ---
@@ -64,7 +64,7 @@ Estados validos en este documento:
 | `ED-A1` | Cerrar piloto controlado de seis operaciones Content Refresh para Artista, Receta y Mito | `pending` | Critica | Gate previo a escala automatizada |
 | `ED-A2` | Ejecutar primer lote P1 de Biografias y medir score antes/despues | `pending` | Critica | Lote pequeno y auditable |
 | `ED-A3` | Ejecutar lotes equivalentes de Recetas y Mitos | `pending` | Critica | No habilitar updates masivos |
-| `ED-A4` | Incorporar visitas reales al auditor de Festivales | `pending` | Alta | El desempate actual sigue siendo provisional |
+| `ED-A4` | Incorporar visitas reales al auditor de Festivales | `done` | Alta | Ordena por prioridad, score, visitas descendentes e ID; consola y CSV incluyen visitas. Prueba feature: 1 passed, 9 assertions. |
 | `ED-A5` | Consolidar auditoria mensual y linea base editorial recurrente | `in_progress` | Alta | Ya existe matriz inicial 2026-09-01 |
 
 ### B. Producto y servicios
@@ -74,7 +74,7 @@ Estados validos en este documento:
 | `PS-B1` | Validar Pasarela de Contenidos end-to-end en produccion | `pending` | Alta | Codigo implementado, cierre operativo pendiente |
 | `PS-B2` | Validar UGC mas alla de Noticias en produccion | `pending` | Alta | Mantener moderacion y trazabilidad |
 | `PS-B3` | Definir siguiente release funcional por impacto en descubrimiento y recurrencia | `pending` | Alta | No decidir por disponibilidad de legacy |
-| `PS-B4` | Cerrar release gate de directorios Peñas y Radios | `in_progress` | Alta | Implementados en DEV; CI verde y smoke oscuro local aprobados. Restan staging HTTPS, piloto Apps Script y smoke visible. |
+| `PS-B4` | Cerrar activación de directorios Peñas y Radios | `in_progress` | Alta | Código, assets y migraciones desplegados en producción; home y `/healthz` responden `200`. Falta confirmar flags efectivos, NAV/rutas públicas y contenido inicial. |
 | `PS-B5` | Diseñar primer formato multicanal repetible | `pending` | Media | Solo despues del gate editorial minimo |
 
 ### C. Derechos y gobernanza
@@ -90,16 +90,27 @@ Estados validos en este documento:
 |---|---|---|---|---|---|
 | `PROD-01` | Remediar vulnerabilidades de dependencias PHP y convertir auditorías en gate CI | `needs_review` | Crítica | `IA_CON_VALIDACION` | Hardening compatible aplicado a Guzzle: auditoría bajó de 56 a 43 avisos. El volumen Docker local reemplazo el bind mount inestable, registra las 81 migraciones y la suite completa pasa (335 pruebas, 2 skipped, 1769 aserciones). Quedan Laravel/Symfony para un plan coordinado de Laravel 11+. |
 | `PROD-02` | Incorporar healthcheck, diagnóstico de scheduler/cola y runbook operativo mínimo | `done` | Crítica | `IA_AUTONOMA` | `GET /healthz`, diagnóstico admin, heartbeat y runbook; 4 tests/18 assertions. |
-| `PROD-03` | Completar release gate HTTPS de Peñas/Radios | `blocked` | Crítica | `HUMANA` | URL staging, acceso, backup y Apps Script de staging claramente separados de producción. |
+| `PROD-03` | Completar release técnico HTTPS de Peñas/Radios | `needs_review` | Crítica | `HUMANA` | Despliegue y migraciones ejecutados; assets Vite recuperados tras compilarlos fuera del servidor. Falta validación visible de NAV/rutas y decidir el piloto editorial. |
 | `PROD-04` | Limpiar depuración visible y estandarizar acabado técnico de layouts públicos/admin | `done` | Alta | `IA_AUTONOMA` | Logs retirados de layouts activos; prueba de regresión y Blade cache verde. |
 | `PROD-05` | Diseñar e implementar administración verificada de entidades por usuarios | `pending` | Alta | `IA_CON_VALIDACION` | Requiere modelo de gobernanza, claims y decisión funcional previa. |
 | `PROD-06` | Implementar favoritos, seguimientos y alertas territoriales/editoriales | `pending` | Alta | `IA_CON_VALIDACION` | Requiere definición de canales, frecuencia y consentimiento. |
 | `PROD-07` | Diseñar servicios comerciales y atribución de resultados | `pending` | Media | `HUMANA` | Requiere decisión comercial, pricing, pagos y obligaciones fiscales. |
 | `PROD-08` | Agregar E2E crítico, accesibilidad y presupuestos de calidad al CI | `done` | Alta | `IA_AUTONOMA` | Suite publica con 2 pruebas y 50 aserciones incorporada a CI; valida landings, estructura accesible y presupuesto HTML. |
+| `PROD-09` | Empaquetar y verificar assets Vite para deploy sin Node en servidor | `done` | Crítica | `IA_AUTONOMA` | Validador y 5 pruebas Node, verificación de 13 assets reales, artefacto CI `vite-build-<SHA>` con retención de 14 días y runbook sin Node. OpenSpec estricto válido. |
+
+## 5. Auditoría de pendientes — 2026-09-08
+
+La revisión contra el código y el despliegue confirmó:
+
+- no quedan migraciones por ejecutar en producción según la confirmación operativa del usuario;
+- `PS-B4`/`PROD-03` no están bloqueados por staging: resta únicamente validar flags efectivos, NAV/rutas públicas y contenido inicial de Peñas/Radios;
+- `PROD-09` cerró el faltante técnico de assets con validación automática, artefacto CI y runbook;
+- siguen abiertos y no deben darse por realizados sin evidencia: piloto Content Refresh core, primer lote editorial P1, Pasarela E2E, UGC ampliado, política de derechos, administración verificada, favoritos/alertas y definición comercial;
+- después de cerrar `PROD-09`, no queda ninguna tarea `pending` marcada `IA_AUTONOMA`; los siguientes frentes requieren validación o decisión humana.
 
 ---
 
-## 5. Historial util conservado
+## 6. Historial util conservado
 
 - El backlog tecnico original `PC-*` permanece cerrado en `project/docs/backlog.json`.
 - La estabilizacion tecnica base, las modernizaciones de Festivales, Biografias, Recetas y Mitos y la integracion editorial asociada ya no deben figurar como frentes "por iniciar".
@@ -107,7 +118,7 @@ Estados validos en este documento:
 
 ---
 
-## 6. Criterio de paso a Drive
+## 7. Criterio de paso a Drive
 
 Una tarea pasa al backlog operativo de Drive cuando:
 
@@ -116,6 +127,6 @@ Una tarea pasa al backlog operativo de Drive cuando:
 3. tiene un siguiente paso observable;
 4. conviene monitorearla fuera del historial estructural de Git.
 
-## 7. Continuidad autónoma
+## 8. Continuidad autónoma
 
 Al iniciar una sesión, el agente lee `00_estado_actual.md`, esta cola y la spec puntual. Toma la tarea `pending` de mayor prioridad con `IA_AUTONOMA` y dependencias satisfechas; la mueve a `in_progress`, crea OpenSpec, implementa, valida, documenta evidencia y continúa. Si no hay tarea elegible, deja el bloqueo concreto en `00_estado_actual.md` y solicita únicamente el dato o decisión imprescindible.

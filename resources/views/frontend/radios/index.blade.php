@@ -31,7 +31,7 @@
       <p class="md:col-span-2 xl:col-span-3 rounded-xl bg-white p-6 text-slate-600">No encontramos señales verificadas con esos filtros.</p>
     @endforelse
   </section>
-  <div class="mt-8">{{ $signals->links() }}</div>
+  <x-public-pagination :paginator="$signals" />
 
   @if($programs->isNotEmpty())
     <section class="mt-12 border-t border-slate-200 pt-8">

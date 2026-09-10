@@ -25,9 +25,7 @@
           <x-festival-card :festival="$festival" />
         @endforeach
       </div>
-      <div class="mt-6">
-        {{ $results->links() }}
-      </div>
+      <x-public-pagination :paginator="$results" />
     @else
       <div class="bg-white rounded-xl shadow-sm p-6 text-slate-600">
         No se encontraron festivales para esta combinacion de filtros.

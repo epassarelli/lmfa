@@ -44,9 +44,7 @@
       @endforeach
     </div>
     
-    <div class="my-6">
-      {{ $canciones->links() }}
-    </div>
+    <x-public-pagination :paginator="$canciones" />
 
     <!-- Índice alfabético -->
     <section class="mb-12 mt-12 bg-white p-4 rounded shadow-sm">

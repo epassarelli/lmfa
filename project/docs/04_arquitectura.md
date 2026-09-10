@@ -1,6 +1,6 @@
 # 04 - Arquitectura Tecnica
 
-> Estado real consolidado al **2026-09-01**.
+> Estado real consolidado al **2026-09-08**.
 > Describe la arquitectura vigente y distingue entre componentes operativos, componentes parciales y gates pendientes.
 
 ---
@@ -89,7 +89,7 @@ La aplicacion soporta colas, pero el runtime documentable no debe depender de Re
 
 - modernizacion tecnica desplegada;
 - frontend, backoffice, API y auditor operativos;
-- pendiente incorporar visitas reales al criterio del auditor.
+- el auditor incorpora visitas reales como desempate de demanda y las exporta en CSV.
 
 ### 5.2 Biografias, Recetas y Mitos
 
@@ -116,7 +116,9 @@ La aplicacion soporta colas, pero el runtime documentable no debe depender de Re
 
 Peñas y Radios siguen la misma arquitectura Laravel clásica: modelos canónicos, servicios de dominio para publicación, policies, requests compartidos por backoffice/API, Blade server-side y feature flags independientes. Radios separa `RadioSignal`, `RadioListeningChannel`, `RadioProgram` y `RadioProgramSlot`; Peñas usa `PeniaProfile` y su pivote de eventos.
 
-Las rutas públicas, navegación y sitemaps se condicionan por `FEATURE_PENIA_DIRECTORY` y `FEATURE_RADIO_DIRECTORY`. Los flags quedan apagados por defecto; el smoke oscuro local verificó que las superficies devuelvan `404`. La habilitación temporal y el smoke visible sólo se consideran válidos en staging HTTPS separado de producción.
+Las rutas públicas, navegación y sitemaps se condicionan por `FEATURE_PENIA_DIRECTORY` y `FEATURE_RADIO_DIRECTORY`. Los flags quedan apagados por defecto cuando no existen en `.env`. El código y las migraciones están desplegados en producción; al 2026-09-08 falta confirmar que los flags configurados sean efectivos y que NAV/rutas públicas reflejen la activación. La home usa caché de respuesta completa, por lo que un cambio de flag también requiere limpiar `responsecache`.
+
+Vite es una dependencia de build, no de runtime. El servidor productivo actual no dispone de NPM: `npm ci && npm run build` debe ejecutarse localmente o en CI y el deploy debe incluir completos `public/build/manifest.json` y `public/build/assets/*`. No subir `public/build` deja las vistas sin CSS/JS.
 
 ## 6. Integraciones reales
 

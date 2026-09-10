@@ -19,5 +19,5 @@
       <p class="md:col-span-3 rounded-xl bg-white p-6 text-slate-600">No hay Peñas verificadas para estos filtros.</p>
     @endforelse
   </section>
-  <div class="mt-6">{{ $penias->links() }}</div>
+  <x-public-pagination :paginator="$penias" />
 @endsection

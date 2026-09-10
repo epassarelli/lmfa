@@ -127,9 +127,7 @@
             </div>
             @endforeach
         </div>
-        <div class="mt-6">
-            {{ $classifieds->links() }}
-        </div>
+        <x-public-pagination :paginator="$classifieds" />
     @endif
 </div>
 @endsection

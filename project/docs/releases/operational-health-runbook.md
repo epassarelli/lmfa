@@ -1,5 +1,7 @@
 # Runbook — salud operativa
 
+> Última verificación informada: 2026-09-08, después del deploy de `main`; home y `/healthz` respondieron `200` y las migraciones quedaron aplicadas.
+
 ## Superficies
 
 - `GET /healthz`: disponibilidad mínima pública. Devuelve `200` con aplicación/base disponibles o `503` sin detalles internos.
@@ -18,6 +20,19 @@
 2. Como administrador, consultar `/admin/operational-health`.
 3. Ejecutar `php artisan schedule:run` desde el entorno autorizado y confirmar que el latido de scheduler vuelve a `ok`.
 4. Nunca incluir secretos, payloads, tokens o trazas en tickets o capturas.
+
+## Assets del frontend
+
+El servidor productivo actual no dispone de NPM. Seguir el [procedimiento de deploy de assets Vite](frontend-assets-deploy.md): compilar localmente o descargar el artefacto de CI y subir completa la carpeta `public/build`. Si el sitio queda sin estilos, verificar `public/build/manifest.json`, los assets con hash referenciados y que no exista `public/hot`; después limpiar vistas y cachés.
+
+Al cambiar feature flags que afectan el NAV, limpiar también la caché de páginas completas:
+
+```bash
+php artisan config:clear
+php artisan config:cache
+php artisan responsecache:clear
+php artisan view:clear
+```
 
 ## Límites
 

@@ -1,6 +1,6 @@
 # 05 - Migraciones
 
-## Actualización 2026-09-04: directorios evergreen
+## Actualización 2026-09-08: directorios evergreen desplegados
 
 - `2026_09_02_200000_create_penia_profiles_table`: crea el contrato canónico `penia_profiles`.
 - `2026_09_02_200100_create_penia_profile_event_table`: incorpora la relación N:M con eventos.
@@ -9,9 +9,9 @@
 - `2026_09_03_020000_create_radio_signals_table`: crea señales de radio canónicas.
 - `2026_09_03_020100_create_radio_programming_tables`: crea canales de escucha, programas y franjas semanales.
 
-En el Docker local estas migraciones canónicas están aplicadas. Existen otras migraciones ajenas pendientes, por lo que el release gate no autoriza ejecutar una migración global sin backup y revisión de staging.
+Estas migraciones canónicas están aplicadas tanto en el Docker local como en producción, según la verificación operativa del deploy del 2026-09-08. La aplicación se mantuvo disponible y `/healthz` respondió `200`. Para futuros releases sigue siendo obligatorio revisar `php artisan migrate:status` y contar con backup antes de ejecutar `php artisan migrate --force`.
 
-> Estado real de las migraciones versionadas al **2026-08-20**.  
+> Estado real de las migraciones versionadas al **2026-09-08**.
 > Este documento reemplaza la propuesta teórica original y describe qué migraciones existen hoy, qué problema resolvió cada bloque y qué deudas o compatibilidades siguen vigentes.
 
 ---

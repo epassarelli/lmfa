@@ -1,22 +1,31 @@
 # 00 - Estado Actual del Proyecto
 
+### Cambio local 2026-09-08: paginados públicos
+
+- Pedido explícito del usuario: estética compartida y textos españoles en todos los controles públicos. OpenSpec: `openspec/changes/unify-public-pagination-spanish`.
+- Se sustituyeron 17 puntos de paginación por el componente Tailwind `public-pagination`, con espaciado uniforme, navegación accesible y preservación de filtros. El backend conserva Bootstrap. Sin cambios de BD, consultas, rutas ni despliegue.
+- Validación: 7 pruebas Feature / 41 aserciones correctas; Vite compilado y 13 assets verificados. QA visual pendiente: Browser sin conexiones y Docker local apagado.
+- Inventario por entidad y checklist: `openspec/changes/unify-public-pagination-spanish/implementation-notes.md`.
+- Auditoría simple de campos SEO solicitada antes de este cambio: `project/docs/releases/seo-fields-audit-2026-09-08.md`. Los campos principales existen en las 12 entidades editoriales revisadas; quedan brechas de edición/uso, especialmente Noticias/Eventos y Clasificados. No se verificó completitud en BD ni producción.
+
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-04 (CI de `dev` verde; base local reconstruida en volumen Docker con 81 migraciones y suite completa verde: 335 passed, 2 skipped, 1769 assertions; staging HTTPS, piloto Apps Script y validacion visible pendientes; exposición pública aún apagada)
+> Ultima actualizacion: 2026-09-08 (código de `main` desplegado en producción; assets Vite compilados fuera del servidor y subidos, migraciones aplicadas, home y `/healthz` en `200`; activación visible de Peñas/Radios pendiente de confirmar)
 
 ---
 
 ## Rama activa
 
-`dev` - integra el trabajo de producto y los pilotos tecnicos antes de su evaluacion para `main`.
+`main` - rama activa y desplegada en producción al 2026-09-08.
 
 ### Próxima ejecución autónoma
 
 - **Objetivo:** llevar el producto al 99% de preparación operativa sin adelantar despliegues ni decisiones humanas.
-- **Tarea elegible actual:** no hay tareas `IA_AUTONOMA` pendientes. `PROD-01` queda en revision: se actualizaron Guzzle y sus dependencias compatibles; el nuevo volumen local registra las 81 migraciones y la suite completa pasa. El remanente de Laravel/Symfony requiere una estrategia coordinada para Laravel 11+.
+- **Tarea elegible actual:** no hay tareas `IA_AUTONOMA` pendientes. `PROD-09` cerró el empaquetado seguro de Vite para producción sin Node; `PROD-01` queda en revisión porque el remanente de Laravel/Symfony requiere una estrategia coordinada para Laravel 11+.
+- **Último cierre autónomo:** `PROD-09` agregó validación integral del manifiesto y assets Vite, 5 pruebas Node, artefacto CI descargable `vite-build-<SHA>` y runbook de transferencia/rollback. Evidencia local: build correcto y 13 assets declarados presentes.
 - **Último cierre autónomo:** `PROD-08` incorporó la suite publica de calidad a CI: 2 pruebas y 50 aserciones sobre las landings criticas, estructura semantica accesible y presupuesto HTML de 350 KB. Tambien corrigio el `h1` ausente de la landing de Festivales.
 - **Cierre anterior:** `PROD-04` retiró logs de depuración de layouts activos; prueba de regresión y Blade cache verdes.
 - **Último cierre autónomo:** `PROD-02` completó `GET /healthz`, diagnóstico restringido a administrador, heartbeat de scheduler y [runbook operativo](releases/operational-health-runbook.md); pruebas: 4 passed, 18 assertions.
-- **Siguientes gates humanos:** `PROD-01` redujo Composer audit de 56 a 43 avisos, sin pendientes de Guzzle; el remanente requiere una estrategia coordinada para Laravel 11+. `PROD-03` requiere staging HTTPS, backup y Apps Script separado de producción.
+- **Siguientes gates humanos:** `PROD-01` redujo Composer audit de 56 a 43 avisos, sin pendientes de Guzzle; el remanente requiere una estrategia coordinada para Laravel 11+. Para Peñas/Radios resta confirmar la activación visible, cargar/revisar contenido real y validar Content Refresh antes de automatizar volumen.
 - **Regla de continuidad:** `03_backlog_mvp.md` es la cola local ejecutable; Drive conserva la priorización humana, comercial y editorial.
 
 **Flujo vigente:** rama feature -> PR/CI -> revision de Eduardo -> merge a `main` por Eduardo -> pull y deploy en produccion. Los agentes no tocan ni fusionan `main` ni ejecutan despliegues.
@@ -28,10 +37,10 @@
 | 1 | Reparar CI y conflictos Fortify/Jetstream | `done` |
 | 2 | Cerrar permisos editoriales y feature flags de Peñas/Radios | `done` |
 | 3 | Corregir la migración destructiva de Peñas | `done` |
-| 4 | Terminar Peñas y cargar diez perfiles reales | `done` en DEV; carga operativa por comando explícito |
-| 5 | Completar Radios: backoffice, programas públicos, auditor y SEO | `done` en DEV; flag público apagado |
-| 6 | Integrar Peñas y Radios con Content Refresh | `done` en DEV; piloto real reservado al punto 7 |
-| 7 | Ejecutar tests, staging, smoke y recién entonces fusionar | `in progress`: CI verde en `d655139` (run `33866188915`) y smoke oscuro local aprobado; staging HTTPS real y piloto editorial pendientes |
+| 4 | Terminar Peñas y cargar diez perfiles reales | `done` técnicamente; carga/revisión editorial pendiente |
+| 5 | Completar Radios: backoffice, programas públicos, auditor y SEO | `done` técnicamente; carga/revisión editorial pendiente |
+| 6 | Integrar Peñas y Radios con Content Refresh | `done` técnicamente; piloto real pendiente antes de automatizar volumen |
+| 7 | Desplegar y validar base técnica | `done`: `main` desplegado, assets Vite presentes, migraciones aplicadas y home/`healthz` en `200`; resta validar activación visible |
 
 ---
 
@@ -52,9 +61,11 @@ Se realizo auditoria completa del codigo el 2026-04-26. Ver seccion de bugs corr
 
 Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asistente ChatGPT` en Drive; `project/docs/backlog.json` es referencia legacy y no gobierna prioridades.
 
-### Corte tecnico y operativo 2026-09-01
+### Corte histórico técnico y operativo 2026-09-01
 
-- **Festivales:** modernizacion tecnica y Content Refresh en condiciones productivas; auditor y cola editorial operativos. Falta incorporar visitas al auditor.
+> Esta fotografía conserva el estado previo al deploy del 2026-09-08. El estado vigente del release se resume al inicio del documento y en “Confiabilidad del release”.
+
+- **Festivales:** modernizacion técnica y Content Refresh en condiciones productivas; auditor y cola editorial operativos. Desde `ED-A4`, el auditor incorpora visitas en consola/CSV y desempata por mayor demanda.
 - **Biografias / Artistas:** modelo, migraciones legacy, backoffice, API, frontend, SEO/schema y auditor modernizados en produccion.
 - **Recetas:** contrato editorial, campos estructurados, backoffice, API, frontend/schema y auditor disponibles en produccion; recuperacion masiva pendiente.
 - **Mitos y Leyendas:** contrato cultural, region/tipo, SEO, media, backoffice/API/frontend y auditor modernizados; recuperacion masiva pendiente.
@@ -63,7 +74,7 @@ Ningun programa reemplaza al otro. El backlog oficial sigue siendo `Backlog Asis
 - **Curacion:** `BL-0021B` tiene 3 de 10 borradores preparados: Gaston Cordero, Los Trovadores de Cuyo y Juan Bautista Bertorello. Todos permanecen con `ENVIAR_API=N`.
 - **Penas:** módulo evergreen cerrado para DEV sobre `penia_profiles`. Las rutas, controlador, modelo y vistas del módulo legacy fueron retirados, pero la tabla `penias` y el puente `penia_profiles.legacy_penia_id` se preservan hasta completar y validar el backfill. La migración destructiva `2026_09_03_010000_retire_legacy_penias_table` ahora es un no-op seguro y `2026_09_03_015000_restore_legacy_penias_bridge` repara de forma idempotente instalaciones donde aquella versión ya hubiera corrido. La auditoría previa confirmó que la tabla estaba vacía, por lo que no existen filas perdidas que reconstruir. Incluye API, landing, ficha con el mismo buscador de la home, descubrimiento de Peñas de la misma provincia, ubicación completa, mapa por coordenadas, sitemap, CRUD, preview noindex, acciones editoriales, auditor read-only `mfa:penias:audit` y Content Refresh `CREAR/ACTUALIZAR` con updates parciales. `PeniaProfilePilotSeeder` reemplaza el escenario ficticio por 10 fichas reales de la ciudad de Salta basadas en el directorio municipal: La Cautiva, La Panadería del Chuña, Boliche Balderrama, La Casona del Molino, El Antigal, Huayra, Peña del Minero, Casa Grande, La Vieja Estación y Peña del Chaqueño Palavecino. La carga es idempotente, archiva sólo los slugs demo conocidos, conserva cualquier ficha real ya revisada y crea las nuevas como `draft/pending`, sin publicarlas ni adjudicar una verificación. El público permanece apagado por defecto con `FEATURE_PENIA_DIRECTORY=false`: la landing, las fichas, el NAV y sus sitemaps sólo se exponen al habilitar el flag. Colaboradores y prensa pueden crear y editar únicamente sus borradores propios; todo intento de auto-verificar, aprobar o publicar se normaliza a propuesta pendiente y las acciones canónicas quedan reservadas al rol `administrador`. Antes de activar producción, un administrador debe ejecutar la carga explícita, confirmar contacto/datos, revisar derechos de imagen y aprobar cada ficha.
 - **Radios:** punto 5 cerrado en DEV sobre el dominio canónico `radio_signals`, `radio_listening_channels`, `radio_programs` y `radio_program_slots`. Incluye API autenticada; backoffice completo de señales, canales, programas y franjas; preview, publicación y despublicación; filtros de calidad/verificación; landing y ficha de emisoras; directorio y ficha pública de programas bajo `/radios-de-folklore-argentino/programas`; próxima emisión calculada por zona horaria; relaciones emisora-programa; sitemap; canonical/noindex; datos estructurados `RadioStation` y `RadioSeries`; auditor read-only `mfa:radios:audit`; y Content Refresh para señales y programas con updates parciales, canales/franjas estructurados y altas `draft/pending`. La visibilidad pública permanece apagada por defecto con `FEATURE_RADIO_DIRECTORY=false`, independientemente de Peñas. Colaboradores y prensa sólo pueden proponer y editar borradores propios; verificar, publicar y despublicar sigue reservado a `administrador`. El módulo legacy permanece intacto. Quedan pendientes un lote editorial real y el release gate de staging/producción (punto 7).
-- **Confiabilidad de `dev`:** el gate automatizado del punto 7 quedó verde en GitHub Actions sobre `d655139` (run `33866188915`). El entorno Docker local `http://mfa.localhost` fue verificado en modo oscuro con ambos flags en `false`: home `200`; Peñas, Radios, Programas y ambos sitemaps `404`. El ajuste `2ed7c92` incorpora `mfa.localhost` al bypass local de canonicalización para impedir redirecciones a producción. Esta evidencia no reemplaza el workflow `Directory staging smoke`: aún falta desplegar `dev` y ejecutar `scripts/smoke-directories.sh` contra un staging HTTPS real, además del piloto Apps Script.
+- **Confiabilidad del release:** el gate automatizado quedó verde en GitHub Actions sobre `d655139` (run `33866188915`). El 2026-09-08 se confirmó el despliegue de `main`, las migraciones y respuestas `200` de home y `/healthz`. Como el servidor no dispone de NPM, Vite debe compilarse fuera del servidor y subirse completo como `public/build`; una primera subida sin ese artefacto dejó el sitio sin estilos y se recuperó al subirlo. Peñas y Radios siguen condicionados por flags y su presencia en el NAV aún no quedó confirmada.
 
 ### Festival Vivo - piloto local 2026-09-02
 
@@ -89,7 +100,7 @@ Orden operativo de curacion: prioridad, menor score, mayores visitas dentro del 
 
 | Dimension | Alineacion | Lectura |
 |-----------|------------|---------|
-| Base tecnica confiable | Alta en `dev` | No quedan marcadores de conflicto y el workflow completo pasó migraciones, sintaxis, Blade, Apps Script y todas las suites incorporadas. |
+| Base tecnica confiable | Alta y desplegada | `main` está en producción, las migraciones fueron aplicadas y home/`healthz` responden `200`; falta cerrar la comprobación visible de Peñas/Radios. |
 | Cobertura integral | Alta | MFA articula artistas, discos, letras, noticias, eventos, festivales, Enciclopedia, recetas y mitos. |
 | Autoridad editorial | Media/alta en sistema; baja en inventario legacy | Existen contratos y auditores, pero 1.427 registros siguen P1. |
 | SEO y performance | Alta | Base tecnica disponible; falta medicion continua de impacto. |
@@ -105,7 +116,7 @@ El siguiente salto combina autoridad demostrable con mejores recorridos de usuar
 1. Ejecutar los seis casos core y los seis casos de directorios de Content Refresh con sus preflight y runbooks, una fila por vez.
 2. Validar durante siete dias el piloto local/controlado de `Festival Vivo` antes de ampliar allowlist o evaluar release.
 3. Completar y revisar el lote de 10 Biografias P1; despues continuar con Recetas y Mitos.
-4. Incorporar visitas al auditor de Festivales.
+4. Mantener la medición de visitas del auditor de Festivales dentro de la línea base editorial recurrente.
 5. Aprobar la politica de derechos antes de automatizar Discografia/Cancionero.
 6. Validar Pasarela y UGC end-to-end antes de tratarlos como servicios cerrados.
 
@@ -226,7 +237,7 @@ El siguiente salto combina autoridad demostrable con mejores recorridos de usuar
 
 | Tabla | Estado |
 |-------|--------|
-| `radios` | Legado conservado sin cambios. El reemplazo canónico usa `radio_signals`, `radio_listening_channels`, `radio_programs` y `radio_program_slots`; los puntos 5 y 6 están completos en DEV y sólo resta el release gate de staging. |
+| `radios` | Legado conservado sin cambios. El reemplazo canónico usa `radio_signals`, `radio_listening_channels`, `radio_programs` y `radio_program_slots`; está desplegado y resta validación pública/editorial. |
 | `penias` | Legado conservado temporalmente. El directorio vigente opera sobre `penia_profiles`; la tabla y el puente `legacy_penia_id` se preservan hasta validar el backfill y retiro definitivo. |
 | `venues` | Existe en BD por la transformacion a `events`, pero no hay `Venue` model en `app/Models`. Estado funcional incompleto / pendiente de auditoria. |
 
@@ -411,14 +422,14 @@ responden `404`.
 
 - **Pasarela de Contenidos** (`/admin/pasarela`): dashboards, social accounts, publication requests, notifications y templates. Codigo completo, nunca probado end-to-end en produccion.
 - **Colaboraciones UGC** (`/admin/contribuir`): flujo unificado para contribuciones. Noticias verificadas end-to-end; el resto del flujo todavia requiere validacion operativa completa en produccion.
-- **Legales + Meta/Facebook**: paginas publicas en `/privacidad`, `/condiciones`, `/eliminacion-de-datos`, compatibilidad historica en `GET /deleteuserdata`, callback `POST /deleteuserdata` con `signed_request` firmado, persistencia `data_deletion_requests` y estado publico en `/deleteuserdata/status/{confirmationCode}`. Validado localmente con suite dedicada; en el volumen Docker nuevo su migracion figura en el historial. La creacion sigue siendo idempotente para instalaciones con esquema previo. Resta aplicarla fuera de local y configurar las URLs en Meta.
+- **Legales + Meta/Facebook**: paginas publicas en `/privacidad`, `/condiciones`, `/eliminacion-de-datos`, compatibilidad historica en `GET /deleteuserdata`, callback `POST /deleteuserdata` con `signed_request` firmado, persistencia `data_deletion_requests` y estado publico en `/deleteuserdata/status/{confirmationCode}`. La migración ya fue aplicada en producción; resta confirmar las URLs en Meta y probar el callback real.
 - **Inventario tecnico y legacy**: auditoria dedicada consolidada en `project/docs/08_inventario_tecnico_legacy.md`, con evidencia de rutas, tablas, modelos, jobs, integraciones, modulos parciales y estado local de `news` / `events` / `noticias` / `shows` / Pasarela.
 
 ### Modulos diferidos - proxima version
 
 - **Entrevistas**: rutas activas en `web.php`, controller sin metodos `byArtista`/`show`, sin vistas, modelo inexistente.
-- **Radios**: el reemplazo evergreen completó en DEV dominio canónico, API, backoffice de señales/programas, canales y franjas, frontend de señales y programas, próxima emisión, auditor CSV, sitemap, SEO/schema/canonical, Content Refresh y tests. Convive con el legado y permanece oscuro hasta ejecutar el piloto editorial y superar el release gate.
-- **Peñas**: módulo evergreen cerrado para DEV en `penia_profiles`, con API, frontend, CRUD, auditor y lote piloto de 10 fichas reales en borrador. La carga, verificación humana, derechos de imagen y publicación permanecen como gate operativo previo a producción.
+- **Radios**: el reemplazo evergreen está desplegado en producción con dominio canónico, API, backoffice, frontend, auditor, sitemap, SEO/schema, Content Refresh y tests. Convive con el legado; falta confirmar activación visible y contenido inicial.
+- **Peñas**: módulo evergreen desplegado en producción en `penia_profiles`, con API, frontend, CRUD, auditor y lote piloto disponible. La carga, verificación humana y derechos de imagen siguen pendientes antes de automatizar o publicar en volumen.
 - **Videos**: existe `Frontend/VideosController`, pero referencia un modelo/modulo no consolidado. Debe tratarse como componente incompleto.
 
 ---
@@ -563,12 +574,47 @@ Nota: los `curl` locales no reflejan completamente la mejora de Core Web Vitals 
 4. Evaluar limpieza de tablas legacy (`noticias`, `shows`, `images`) despues de confirmar que no exista informacion unica.
 5. Mantener vigilancia sobre MariaDB local: el volumen Docker `lmfa_db_data` reemplazo el bind mount que fallaba y supero 81 migraciones y la suite completa; conservar `database_local` como respaldo hasta varias sesiones estables.
 6. Validar en el Apps Script externo que los `422` con `code: BLOQUEADO_CATEGORIA` pasen a estado de correccion y no vuelvan a reintentarse automaticamente.
-7. Ejecutar `2026_08_20_120000_create_data_deletion_requests_table` en los entornos no locales y configurar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`).
+7. Confirmar en Meta las URLs canonicas nuevas (`/privacidad`, `/condiciones`, `/deleteuserdata`, `/auth/facebook/callback`) y probar el callback real; la migración productiva ya fue aplicada.
 8. Mantener los seeders demo idempotentes y no usarlos como evidencia editorial o de staging: el lote local ya fue cargado y verificado.
 
 9. Cerrar en produccion los seis casos controlados de la integracion editorial: CREAR y ACTUALIZAR un Artista, una Receta y un Mito; luego reactivar el flujo automatico con monitoreo de errores.
-10. Ejecutar en staging los seis casos controlados de directorios: CREAR y ACTUALIZAR una Peña, una Radio y un ProgramaRadio; confirmar que las altas continúan `draft/pending` y que los flags públicos permanecen apagados.
+10. Confirmar en producción la lectura efectiva de los flags, limpiar config/response cache y verificar NAV y rutas de Peñas/Radios; luego ejecutar casos controlados antes de automatizar volumen.
 
-10. Completar los primeros lotes de curacion de Biografias, Recetas y Mitos, registrando score antes/despues y evitando actualizaciones masivas sin revision.
+11. Completar los primeros lotes de curacion de Biografias, Recetas y Mitos, registrando score antes/despues y evitando actualizaciones masivas sin revision.
 
-11. La auditoría de `BL-0018A` mapeó 4.608 canciones activas y 397 discos activos con rutas, pivots y señales de tráfico locales. Las letras completas carecen de campos de fuente, licencia, autoría o autorización: no se debe automatizar ni ampliar su publicación hasta que exista una decisión humana de derechos y una spec aprobada que distinga obra, versión/grabación y créditos.
+12. La auditoría de `BL-0018A` mapeó 4.608 canciones activas y 397 discos activos con rutas, pivots y señales de tráfico locales. Las letras completas carecen de campos de fuente, licencia, autoría o autorización: no se debe automatizar ni ampliar su publicación hasta que exista una decisión humana de derechos y una spec aprobada que distinga obra, versión/grabación y créditos.
+
+### Reparacion operativa local 2026-09-09: permisos de vistas
+
+- Pedido del usuario: recuperar el sitio local ante `file_put_contents(...storage/framework/views/...): Permission denied`.
+- Causa comprobada: vista compilada propiedad de `root:root` con modo `644`; Apache ejecuta como `www-data`.
+- Se corrigio exclusivamente la propiedad de archivos/directorios de root en `storage/framework/views`, `storage/framework/cache`, `storage/framework/sessions`, `storage/logs` y `bootstrap/cache` dentro de `lmfa-app-1` a `www-data:www-data`.
+- Validacion: archivo escribible por www-data y home `http://mfa.localhost` con HTTP 200 en dos solicitudes; primer TTFB 0.768 s. Sin cambios de codigo, BD ni produccion.
+- Prevencion: ejecutar comandos Artisan que generan caches con `docker compose exec --user www-data app php artisan ...`, para evitar recrear archivos como root.
+### Build versionado 2026-09-09
+
+- Aprobacion explicita del usuario y spec `openspec/specs/version-local-vite-build.md`: distribuir `public/build` completo mediante Git.
+- Se retiro `/public/build` de `.gitignore`; node_modules y public/hot siguen ignorados. Runbook actualizado.
+- Validacion: `npm run build` correcto y `npm run build:verify` confirma 13 assets; Git detecta todos los archivos generados. Mismos assets y hashes que antes: sin costo adicional de runtime; mayor historial Git.
+- Pendiente del usuario: incluir codigo y build en el commit, push e integracion en main antes del pull productivo. No se realizo commit ni despliegue.
+### Incidente de datos locales 2026-09-09
+
+- Auditoria de solo lectura: volumen activo `lmfa_lmfa_db_data`, creado 2026-09-04 23:44:35 UTC. Commit `9108865` sustituyo `./database_local` por volumen nombrado; tablas actuales creadas alrededor de 23:59 UTC y 81 migraciones en batch 1.
+- Conteos exactos: news/comidas/mitos/albunes/canciones = 0; events/interpretes/festivales = 2 cada una. Coinciden con reconstruccion y escenario demo documentados; no evidencian restauracion de los datos editoriales anteriores.
+- El archivo `storage/app/local-backups/mfa-pre-named-volume-20260904-2355.sql` tiene 0 bytes: NO es un respaldo utilizable. `database_local` aun existe pero su recuperabilidad no fue comprobada. No montar ni modificar el original para intentar recuperar.
+- Riesgo adicional: .env.testing apunta a mfa en db, igual que .env, y tres tests de autenticacion usaban RefreshDatabase. Se reemplazo por DatabaseTransactions segun AGENTS.md, con spec `openspec/specs/prevent-local-auth-tests-database-reset.md`; sintaxis PHP correcta. No se ejecuto la suite ni SQL modificatorio. No hay impacto en runtime/performance del sitio.
+- general_log y log_bin estan OFF: no se puede atribuir el borrado a una ejecucion concreta con esa evidencia. Proximo paso: localizar respaldo valido o evaluar recuperacion sobre copia aislada del almacenamiento anterior, con autorizacion antes de restaurar o crear otra BD.
+### Revision de respaldos locales 2026-09-09
+
+- Busqueda de dumps y archivos de backup en proyecto, Downloads, Documents y Desktop: no se encontro otro respaldo SQL de MFA utilizable. El dump previo al volumen sigue en 0 bytes.
+- Inspeccion binaria de solo lectura: los .ibd antiguos de interpretes, canciones, albunes, comidas, mitos, festivales, noticias y shows contienen exclusivamente bytes cero. Esos archivos no proporcionan datos para restaurar esas entidades; no se hizo recuperacion forense de ibdata1/redo ni se afirma recuperabilidad de esos otros archivos.
+- No se arranco MariaDB sobre el almacenamiento anterior, no se modificaron datos y no se importo nada. Siguiente via acordada: recibir backup de produccion solo de datos, verificar tablas/columnas/conflictos y preservar base local antes de una importacion autorizada.
+### Recuperacion local aplicada 2026-09-09
+
+- Usuario autorizo explicitamente reemplazar la BDD local desde `u376128922_mifolkarg.sql`. Spec: `openspec/specs/restore-local-production-data-20260909.md`.
+- Restaurados: 445 interpretes, 4608 canciones, 411 discos, 808 recetas, 284 mitos, 364 noticias, 309 eventos, 47 festivales, 40 articulos de enciclopedia y 434 usuarios, con pivots/catalogos del respaldo. Datos demo reemplazados; Penias y Radios quedan vacias porque el backup no contiene registros de esos modulos.
+- Esquema local conservado y 81 migraciones sin cambios. Se omitieron noticias legacy inexistente localmente y columnas adicionales de shows; shows.detalle NULL se adapto a texto vacio. El dump original completo permanece disponible.
+- Sesiones, tokens de acceso/recuperacion, cuentas sociales y colas excluidos; remember_token y secretos 2FA no importados. Sin cambios productivos ni ejecucion de migraciones.
+- Respaldo previo valido: `storage/app/local-backups/mfa-before-production-data-import-20260909.sql` (155947 bytes). Resultados: `import-check.json` e `import-result.json` en la misma carpeta ignorada por Git.
+- Validacion: ensayo transaccional revertido y luego importacion confirmada; conteos exactos y 87 relaciones FK sin huerfanos; sintaxis del runner PHP valida. No se ejecuto suite de tests sobre los datos recuperados.
+- QA HTTP: home, login, noticias, recetas y festivales 200. Home con cache caliente TTFB 0.490 s; primeras respuestas 1.95-5.54 s en Docker local. Cache de aplicacion limpiada. No se verifico autenticacion interactiva ni disponibilidad de todas las imagenes; el SQL no incluye archivos multimedia.

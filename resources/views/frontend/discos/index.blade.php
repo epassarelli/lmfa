@@ -25,9 +25,7 @@
     @endforeach
   </div>
 
-  <div class="my-6 border-t pt-4">
-    {{ $discos->links() }}
-  </div>
+  <x-public-pagination :paginator="$discos" />
 
   <div class="bg-white p-2 rounded shadow-sm my-4 ">
     <h1 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-[#ff661f]">Discografías del Folklore Argentino
