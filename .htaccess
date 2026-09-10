@@ -27,8 +27,12 @@
     RewriteRule ^ %1 [L,R=301]
 
     # 3. REDIRECCIONES DE LEGADO (SEO)
+    # Excluir rutas de filtro alfabético de biografías
+    RewriteRule ^biografias-de-artistas-folkloricos/letra/(.*)$ /biografias-de-artistas-folkloricos/letra/$1 [L]
     RewriteRule ^biografias-de-artistas-folkloricos/(.*)$ /$1/biografia [R=301,L]
     RewriteRule ^discografias-del-folklore-argentino/(.*)$ /$1/discografia [R=301,L]
+    # Excluir rutas de filtro alfabético de letras de canciones
+    RewriteRule ^letras-de-canciones-folkloricas/letra/(.*)$ /letras-de-canciones-folkloricas/letra/$1 [L]
     RewriteRule ^letras-de-canciones-folkloricas/interprete-(.*)$ /$1/letras [R=301,L]
     RewriteRule ^letras-de-canciones-folkloricas/([^/]+)/([^/]+)$ /$1/letras/$2 [R=301,L]
     RewriteRule ^biografia-de-(.*)$ /$1/biografia [R=301,L]
