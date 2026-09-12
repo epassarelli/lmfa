@@ -46,7 +46,8 @@
 
 
       <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{{ $heading }}</h1>
-      <p class="text-lg text-gray-700 mb-8">{{ $introText }}</p>
+      <p class="text-lg text-gray-700 mb-2">{{ $introText }}</p>
+      <p class="text-sm text-slate-500 mb-8"><strong>{{ $shows->total() }}</strong> shows confirmados{{ $filters['provincia'] ? ' en '.$filters['provincia']->nombre : '' }}.</p>
 
 
   <section class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 md:p-5 mb-8">
