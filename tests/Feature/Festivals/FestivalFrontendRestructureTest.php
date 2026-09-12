@@ -191,7 +191,7 @@ class FestivalFrontendRestructureTest extends TestCase
         $response->assertOk();
         $response->assertSee('<title>Festival SEO personalizado | Folklore Argentino</title>', false);
         $response->assertSee('content="Descripcion SEO personalizada del festival."', false);
-        $response->assertSee('/img/fallbacks/festival-default.webp', false);
+        $response->assertSee('/img/fallbacks/festival-default-v2.webp', false);
         $response->assertSee('Identidad visual del Festival SEO', false);
     }
 

@@ -148,6 +148,6 @@ class EditorialImageResolverTest extends TestCase
 
         $this->assertTrue($resolved->isFallback());
         $this->assertSame('fallback', $resolved->sourceType);
-        $this->assertStringContainsString('img/fallbacks/news-actualidad.webp', $resolved->url);
+        $this->assertStringContainsString('img/fallbacks/news-actualidad-v2.webp', $resolved->url);
     }
 }
