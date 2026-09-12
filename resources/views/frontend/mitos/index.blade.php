@@ -10,7 +10,8 @@
       <x-breadcrumbs :items="$breadcrumbs" />
     @endif
 
-    <h1 class="text-3xl font-bold mb-8">Mitos y leyendas argentinas</h1>
+    <h1 class="text-3xl font-bold mb-2">Mitos y leyendas argentinas</h1>
+    <p class="text-base text-gray-600 mb-8">Ya reunimos <strong>{{ $totalMitos }}</strong> mitos y leyendas en el portal.</p>
 
     <section class="mb-16">
       <h2 class="text-2xl font-semibold mb-2">Leyendas urbanas más visitadas</h2>

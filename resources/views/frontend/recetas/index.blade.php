@@ -9,7 +9,8 @@
       <x-breadcrumbs :items="$breadcrumbs" />
     @endif
 
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Recetas de comidas típicas argentinas</h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Recetas de comidas típicas argentinas</h1>
+    <p class="text-base text-gray-600 mb-6">Ya reunimos <strong>{{ $totalRecetas }}</strong> recetas tradicionales en el portal.</p>
 
     <div class="mb-12">
       <h2 class="text-2xl font-semibold text-gray-800 mb-2">Recetas de comidas más visitadas</h2>

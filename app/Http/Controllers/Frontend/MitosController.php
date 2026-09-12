@@ -37,6 +37,7 @@ class MitosController extends Controller
                 ->get();
         });
         $alphabet = range('a', 'z');
+        $totalMitos = Cache::remember('mitos:index:total', 600, fn () => Mito::where('estado', 1)->count());
 
         $metaTitle = 'Mitos y Leyendas del Folklore Argentino: Historias y Tradiciones';
         $metaDescription = 'Explora los mitos y leyendas mas fascinantes del folklore argentino. Conoce historias y tradiciones que han pasado de generacion en generacion.';
@@ -44,7 +45,7 @@ class MitosController extends Controller
             ['label' => 'Mitos', 'url' => route('mitos.index')]
         ];
 
-        return view('frontend.mitos.index', compact('ultimos', 'visitados', 'metaTitle', 'metaDescription', 'breadcrumbs', 'alphabet'));
+        return view('frontend.mitos.index', compact('ultimos', 'visitados', 'totalMitos', 'metaTitle', 'metaDescription', 'breadcrumbs', 'alphabet'));
     }
 
     public function show($slug)

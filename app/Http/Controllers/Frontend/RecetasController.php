@@ -38,6 +38,7 @@ class RecetasController extends Controller
                 ->get();
         });
         $alphabet = range('a', 'z');
+        $totalRecetas = Cache::remember('comidas:index:total', 600, fn () => Comida::where('estado', 1)->count());
 
         $metaTitle = 'Recetas de Comidas Tipicas del Folklore Argentino: Sabores Tradicionales';
         $metaDescription = 'Descubre las recetas de comidas tipicas del folklore argentino. Aprende a preparar platos tradicionales con nuestras instrucciones faciles de seguir.';
@@ -46,7 +47,7 @@ class RecetasController extends Controller
             ['label' => 'Comidas', 'url' => route('comidas.index')]
         ];
 
-        return view('frontend.recetas.index', compact('ultimas', 'visitadas', 'metaTitle', 'metaDescription', 'breadcrumbs', 'alphabet'));
+        return view('frontend.recetas.index', compact('ultimas', 'visitadas', 'totalRecetas', 'metaTitle', 'metaDescription', 'breadcrumbs', 'alphabet'));
     }
 
     public function show($slug)
