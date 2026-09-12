@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->get('/user', [\App\Http\Controllers\Api\AuthController::class, 'user']);
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 
@@ -33,7 +30,9 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::apiResource('artists', \App\Http\Controllers\Api\ArtistController::class)->only(['index', 'show']);
     Route::apiResource('myths', \App\Http\Controllers\Api\MythController::class)->only(['index', 'show']);
     Route::apiResource('events', \App\Http\Controllers\Api\EventController::class)->only(['index', 'show']);
-    Route::apiResource('penia-profiles', \App\Http\Controllers\Api\PeniaProfileController::class)->only(['index', 'show']);
+    Route::apiResource('penia-profiles', \App\Http\Controllers\Api\PeniaProfileController::class)
+        ->only(['index', 'show'])
+        ->names(['index' => 'api.penia-profiles.index', 'show' => 'api.penia-profiles.show']);
     Route::apiResource('radio-signals', \App\Http\Controllers\Api\RadioSignalController::class)->only(['index', 'show']);
     Route::apiResource('radio-programs', \App\Http\Controllers\Api\RadioProgramController::class)->only(['index', 'show']);
 
