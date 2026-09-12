@@ -8,34 +8,44 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
-  <h1 class="text-3xl font-bold mb-4 text-gray-900">Letras de Canciones Folklóricas</h1>
-  <p class="text-lg text-gray-700 mb-8">Bienvenidos a nuestra sección de letras de canciones folklóricas</p>
+  <h1 class="text-3xl font-bold mb-2 text-gray-900">Letras de Canciones Folklóricas</h1>
+  <p class="text-lg text-gray-700 mb-8">Ya reunimos <strong>{{ $totalCanciones }}</strong> letras en el cancionero popular.</p>
 
-  {{-- Canciones más visitadas --}}
+  @if ($masVisitadas->isNotEmpty())
+    <section class="mb-16">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-2">Canciones folklóricas con más visitas</h2>
+      <p class="text-gray-700 mb-6">
+        Las letras que más consultaron nuestros visitantes, desde clásicos inolvidables hasta nuevos éxitos.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach ($masVisitadas as $letra)
+          <x-letra-card :letra="$letra" />
+        @endforeach
+      </div>
+    </section>
+  @endif
+
+  @if ($ultimasAgregadas->isNotEmpty())
+    <section class="mb-16">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-2">Últimas letras agregadas</h2>
+      <p class="text-gray-700 mb-6">
+        Las incorporaciones más recientes a nuestra colección de letras del folklore argentino.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach ($ultimasAgregadas as $letra)
+          <x-letra-card :letra="$letra" />
+        @endforeach
+      </div>
+    </section>
+  @endif
+
+  {{-- Todas las letras, orden alfabético --}}
   <section class="mb-16">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Canciones folklóricas con más visitas</h2>
+    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Todas las letras (A-Z)</h2>
     <p class="text-gray-700 mb-6">
-      Descubre las letras de canciones folklóricas más visitadas por nuestros usuarios. Explora las canciones que han
-      capturado los corazones de los amantes del folklore argentino, desde clásicos inolvidables hasta nuevos éxitos.
-      Sumérgete en las palabras que reflejan la rica tradición cultural de nuestra música y conecta con los temas más
-      populares de la escena folklórica.
-    </p>
-
-    {{-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      @foreach ($visitadas as $letra)
-        <x-letra-card :letra="$letra" />
-      @endforeach
-    </div> --}}
-  </section>
-
-  {{-- Últimas letras agregadas --}}
-  <section class="mb-16">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Últimas letras de canciones agregadas</h2>
-    <p class="text-gray-700 mb-6">
-      Mantente al día con las últimas letras de canciones folklóricas agregadas a nuestro portal. Descubre nuevas
-      incorporaciones a nuestra colección y disfruta de lo más reciente del folklore argentino. Desde lanzamientos
-      recientes hasta joyas redescubiertas, encuentra las palabras y melodías que están enriqueciendo la tradición de
-      nuestra música popular.
+      Explorá el cancionero completo del folklore argentino en orden alfabético.
     </p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -43,7 +53,7 @@
         <x-letra-card :letra="$letra" />
       @endforeach
     </div>
-    
+
     <x-public-pagination :paginator="$canciones" />
 
     <!-- Índice alfabético -->
@@ -95,9 +105,6 @@
 
   <x-sidebar.newsletter-form />
   <x-sidebar.social-links />
-  {{-- <x-sidebar.top-news :noticias="$noticiasMasLeidas" /> --}}
-  {{-- <x-sidebar.upcoming-shows :eventos="$eventosSidebar" /> --}}
-  {{-- <x-sidebar.artist-of-the-month :artista="$artistaDelMes" /> --}}
   <x-sidebar.advertisement />
   <x-sidebar.invite-to-publish />
 

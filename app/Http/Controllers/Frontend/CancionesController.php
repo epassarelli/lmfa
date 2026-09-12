@@ -31,6 +31,22 @@ class CancionesController extends Controller
             ->orderBy('cancion', 'asc')
             ->simplePaginate(18);
 
+        $cardRelations = [
+            'interprete:id,interprete,slug,foto',
+            'albunes:id,album,slug,interprete_id',
+            'albunes.interprete:id,interprete,slug',
+        ];
+
+        $masVisitadas = Cache::remember('canciones:index:mas-visitadas', now()->addHours(1), function () use ($cardRelations) {
+            return Cancion::where('estado', 1)->with($cardRelations)->orderByDesc('visitas')->take(6)->get();
+        });
+
+        $ultimasAgregadas = Cache::remember('canciones:index:ultimas', now()->addHours(1), function () use ($cardRelations) {
+            return Cancion::where('estado', 1)->with($cardRelations)->orderByDesc('created_at')->take(6)->get();
+        });
+
+        $totalCanciones = Cache::remember('canciones:index:total', now()->addHours(1), fn () => Cancion::where('estado', 1)->count());
+
         $metaTitle = 'Letras de Canciones del Folklore Argentino | Cancionero Popular';
         $metaDescription = 'Encuentra letras de canciones del folklore argentino y explora un cancionero popular pensado para consulta y descubrimiento.';
 
@@ -38,7 +54,7 @@ class CancionesController extends Controller
             ['label' => 'Cancionero', 'url' => route('canciones.index')],
         ];
 
-        return view('frontend.canciones.index', compact('canciones', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.canciones.index', compact('canciones', 'masVisitadas', 'ultimasAgregadas', 'totalCanciones', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function letra($letra)
