@@ -19,14 +19,42 @@ class InterpretesController extends Controller
         $this->linkService = $linkService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim((string) $request->input('q'));
+
         $interpretes = Interprete::query()
             ->where('estado', 1)
-            ->select(['id', 'interprete', 'slug', 'foto', 'biografia', 'visitas'])
+            ->select(['id', 'interprete', 'slug', 'foto', 'biografia', 'visitas', 'created_at'])
             ->with('images')
+            ->when($search !== '', fn ($query) => $query->where('interprete', 'LIKE', '%'.$search.'%'))
             ->orderBy('interprete', 'asc')
-            ->simplePaginate(12);
+            ->simplePaginate(12)
+            ->withQueryString();
+
+        $masLeidos = collect();
+        $recientes = collect();
+        $total = Cache::remember('interpretes:index:total', now()->addHours(1), fn () => Interprete::where('estado', 1)->count());
+
+        if ($search === '') {
+            $masLeidos = Cache::remember('interpretes:index:mas-leidos', now()->addHours(1), function () {
+                return Interprete::where('estado', 1)
+                    ->select(['id', 'interprete', 'slug', 'foto', 'biografia', 'visitas', 'created_at'])
+                    ->with('images')
+                    ->orderByDesc('visitas')
+                    ->take(4)
+                    ->get();
+            });
+
+            $recientes = Cache::remember('interpretes:index:recientes', now()->addHours(1), function () {
+                return Interprete::where('estado', 1)
+                    ->select(['id', 'interprete', 'slug', 'foto', 'biografia', 'visitas', 'created_at'])
+                    ->with('images')
+                    ->orderByDesc('created_at')
+                    ->take(4)
+                    ->get();
+            });
+        }
 
         $alphabet = range('a', 'z');
         $metaTitle = 'Biografias de Artistas del Folklore Argentino: Historia y Trayectoria';
@@ -36,7 +64,17 @@ class InterpretesController extends Controller
             ['label' => 'Artistas', 'url' => route('interpretes.index')],
         ];
 
-        return view('frontend.interpretes.index', compact('interpretes', 'metaTitle', 'metaDescription', 'breadcrumbs', 'alphabet'));
+        return view('frontend.interpretes.index', compact(
+            'interpretes',
+            'masLeidos',
+            'recientes',
+            'total',
+            'search',
+            'metaTitle',
+            'metaDescription',
+            'breadcrumbs',
+            'alphabet'
+        ));
     }
 
     public function biografia($slug)
