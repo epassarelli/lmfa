@@ -5,6 +5,15 @@
 
 @section('content')
   <section>
+    <section class="mb-6 rounded bg-white p-2 shadow-sm">
+      <h1 class="mb-4 border-b-2 border-[#ff661f] text-xl font-semibold text-gray-900">{{ $h1 }}</h1>
+      <p class="text-base text-gray-700">
+        Ya reunimos <strong>{{ $totales['noticias'] }}</strong> noticias, <strong>{{ $totales['artistas'] }}</strong> artistas,
+        <strong>{{ $totales['discos'] }}</strong> discos, <strong>{{ $totales['festivales'] }}</strong> festivales y
+        <strong>{{ $totales['recetas'] }}</strong> recetas del folklore argentino.
+      </p>
+    </section>
+
     @php
       $bloques = [
         'El portal del folklore argentino' => $ultimasNoticias,
@@ -26,8 +35,27 @@
       </div>
     @endforeach
 
+    @if (array_filter($destacados))
+      <section class="mb-8">
+        <h2 class="mb-3 text-lg font-semibold text-gray-800">Destacados del catálogo</h2>
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+          @if ($destacados['artista'])
+            <x-biografia-card :interprete="$destacados['artista']" />
+          @endif
+          @if ($destacados['disco'])
+            <x-disco-card :disco="$destacados['disco']" />
+          @endif
+          @if ($destacados['festival'])
+            <x-festival-card :festival="$destacados['festival']" />
+          @endif
+          @if ($destacados['receta'])
+            <x-receta-card :receta="$destacados['receta']" />
+          @endif
+        </div>
+      </section>
+    @endif
+
     <section class="mb-4 rounded bg-white p-2 shadow-sm cv-auto">
-      <h1 class="mb-4 border-b-2 border-[#ff661f] text-xl font-semibold text-gray-900">{{ $h1 }}</h1>
       <p class="text-lg text-gray-700">{{ $metaDescription }}</p>
     </section>
   </section>
