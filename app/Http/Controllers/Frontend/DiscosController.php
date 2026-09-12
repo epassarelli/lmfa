@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Album;
 use App\Models\Interprete;
+use App\Models\News;
 use App\Support\SeoMetadata;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -23,6 +24,21 @@ class DiscosController extends Controller
             ->orderByDesc('created_at')
             ->simplePaginate(12);
 
+        $masEscuchados = Cache::remember('discos:index:mas-escuchados', now()->addHours(1), function () {
+            return Album::query()
+                ->where('estado', 1)
+                ->with(['interprete:id,interprete,slug', 'interprete.images', 'images'])
+                ->orderByDesc('visitas')
+                ->take(4)
+                ->get();
+        });
+
+        $totalDiscos = Cache::remember('discos:index:total', now()->addHours(1), fn () => Album::where('estado', 1)->count());
+
+        $noticiasMasLeidas = Cache::remember('discos:index:noticias-mas-leidas', now()->addHours(1), function () {
+            return News::publishedVisible()->orderByDesc('visitas')->take(5)->get(['id', 'title', 'slug']);
+        });
+
         $metaTitle = 'Discografias de Folklore Argentino: Albumes y Obras Destacadas';
         $metaDescription = 'Explora las discografias completas del folklore argentino. Encuentra albumes y canciones clasicas de artistas destacados.';
 
@@ -30,7 +46,7 @@ class DiscosController extends Controller
             ['label' => 'Discos', 'url' => route('discografias.index')],
         ];
 
-        return view('frontend.discos.index', compact('discos', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.discos.index', compact('discos', 'masEscuchados', 'totalDiscos', 'noticiasMasLeidas', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function byArtista($slug)

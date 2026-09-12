@@ -8,29 +8,36 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
-  <div class="bg-white p-2 rounded shadow-sm mb-4 ">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-[#ff661f]">Discos folklóricos Más Visitados</h2>
-    <p class="text-gray-700 mb-6 leading-relaxed">
-      Descubre los discos folklóricos más visitados y populares del folklore argentino. Estos álbumes han capturado la
-      atención y el corazón de los amantes de la música folklórica, destacándose por su calidad y autenticidad.
-      Explora los trabajos más escuchados de los artistas más influyentes en el folklore argentino y sumérgete en las
-      melodías que definen nuestra rica herencia cultural.
+  <div class="bg-white p-2 rounded shadow-sm mb-4">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">Discografías del Folklore Argentino</h1>
+    <p class="text-gray-700">
+      Álbumes y obras de los artistas del folklore argentino. Ya sumamos <strong>{{ $totalDiscos }}</strong> discos en el catálogo.
     </p>
   </div>
 
-  {{-- Aquí van tus discos --}}
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-    @foreach ($discos as $disco)
-      <x-disco-card :disco="$disco" />
-    @endforeach
-  </div>
+  @if ($masEscuchados->isNotEmpty())
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Más escuchados</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        @foreach ($masEscuchados as $disco)
+          <x-disco-card :disco="$disco" />
+        @endforeach
+      </div>
+    </section>
+  @endif
 
-  <x-public-pagination :paginator="$discos" />
+  <section class="mb-8">
+    <h2 class="text-lg font-semibold mb-3 text-gray-800">Últimos discos agregados</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      @foreach ($discos as $disco)
+        <x-disco-card :disco="$disco" />
+      @endforeach
+    </div>
 
-  <div class="bg-white p-2 rounded shadow-sm my-4 ">
-    <h1 class="text-2xl font-semibold text-gray-900 mb-4 border-b-2 border-[#ff661f]">Discografías del Folklore Argentino
-    </h1>
+    <x-public-pagination :paginator="$discos" />
+  </section>
 
+  <div class="bg-white p-2 rounded shadow-sm my-4">
     {{-- Texto final --}}
     <div class="space-y-4 text-gray-700 leading-relaxed text-lg">
       <p>
@@ -61,19 +68,14 @@
     </div>
   </div>
 
-  </div>
-
 @endsection
 
 @section('sidebar')
 
-  {{-- @include('layouts.partials.interpretes-header', ['interprete' => $interprete]) --}}
   <x-sidebar.newsletter-form />
   <x-sidebar.social-links />
-  {{-- <x-sidebar.top-news :noticias="$noticiasMasLeidas" /> --}}
-  {{-- <x-sidebar.upcoming-shows :eventos="$eventosSidebar" /> --}}
-  {{-- <x-sidebar.artist-of-the-month :artista="$artistaDelMes" /> --}}
-  {{-- <x-sidebar.advertisement /> --}}
-  {{-- <x-sidebar.invite-to-publish /> --}}
+  @if ($noticiasMasLeidas->isNotEmpty())
+    <x-sidebar.top-news :noticias="$noticiasMasLeidas" />
+  @endif
 
 @endsection

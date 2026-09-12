@@ -5,7 +5,7 @@
     <ul class="text-sm text-gray-700 space-y-2">
       @foreach ($noticias as $noticia)
         <li>
-          <a href="{{ route('noticia.show', [$noticia->categoria->slug, $noticia->slug]) }}"
+          <a href="{{ route('noticias.show', ['slug' => $noticia->slug]) }}"
             class="hover:text-[#ff661f] transition-colors block">
             {{ Str::limit($noticia->titulo, 60) }}
           </a>
