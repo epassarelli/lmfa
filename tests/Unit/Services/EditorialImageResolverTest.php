@@ -150,4 +150,20 @@ class EditorialImageResolverTest extends TestCase
         $this->assertSame('fallback', $resolved->sourceType);
         $this->assertStringContainsString('img/fallbacks/news-actualidad-v2.webp', $resolved->url);
     }
+
+    public function test_album_fallback_alt_uses_artist_name_not_a_dumped_model(): void
+    {
+        // Regresion: Album::interprete() es una relacion belongsTo, asi que
+        // $entity->interprete resuelve al modelo Interprete, no a un string.
+        // El alt de fallback debia extraer el nombre, no volcar el modelo entero.
+        $artist = new Interprete(['interprete' => 'Los Huayra']);
+        $album = new Album(['album' => 'Sin imagen propia']);
+        $album->setRelation('interprete', $artist);
+        $album->setRelation('images', new Collection());
+
+        $resolved = app(EditorialImageResolver::class)->resolve($album);
+
+        $this->assertTrue($resolved->isFallback());
+        $this->assertSame('Los Huayra', $resolved->alt);
+    }
 }

@@ -183,11 +183,22 @@ class EditorialImageResolver
 
     private function entityAlt(Model $entity): string
     {
+        // OJO: 'interprete' es tanto una columna (Interprete::interprete) como una
+        // relacion belongsTo en varios modelos (Album, Cancion, etc.). Acceder a
+        // $entity->interprete en esos casos devuelve el modelo relacionado, no un
+        // string, y su __toString() volcaria el registro entero como JSON.
+        if ($entity instanceof Interprete) {
+            $interpreteName = $entity->interprete;
+        } else {
+            $relatedInterprete = method_exists($entity, 'interprete') ? $entity->interprete : null;
+            $interpreteName = $relatedInterprete instanceof Interprete ? $relatedInterprete->interprete : null;
+        }
+
         return trim((string) (
             $entity->image_alt
             ?? $entity->title
             ?? $entity->titulo
-            ?? $entity->interprete
+            ?? $interpreteName
             ?? $entity->album
             ?? $entity->name
             ?? 'Mi Folklore Argentino'
