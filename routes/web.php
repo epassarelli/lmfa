@@ -68,6 +68,7 @@ Route::get('/deleteuserdata/status/{confirmationCode}', [LegalController::class,
 
 // Secciones generales (con slugs largos ya posicionados)
 Route::get('/noticias-del-folklore-argentino', [NoticiasController::class, 'index'])->name('noticias.index');
+Route::get('/noticias-del-folklore-argentino/categoria/{slug}', [NoticiasController::class, 'byCategoria'])->name('noticias.byCategoria');
 Route::get('/noticias-del-folklore-argentino/{slug}', [NoticiasController::class, 'show'])->name('noticias.show');
 
 Route::get('/cartelera-de-eventos-folkloricos', [ShowsController::class, 'index'])->name('cartelera.index');

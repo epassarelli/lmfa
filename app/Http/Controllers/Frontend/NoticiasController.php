@@ -45,6 +45,16 @@ class NoticiasController extends Controller
 
         $categorias = Cache::remember('news:index:categorias', now()->addHours(1), fn () => Categoria::get());
 
+        $masLeidas = Cache::remember('news:index:mas-leidas', now()->addHours(1), function () {
+            return News::publishedVisible()
+                ->with(['categoria:id,nombre', 'interprete:id,interprete,slug', 'interprete.images', 'images'])
+                ->orderByDesc('visitas')
+                ->take(4)
+                ->get();
+        });
+
+        $totalNoticias = Cache::remember('news:index:total', now()->addHours(1), fn () => News::publishedVisible()->count());
+
         $metaTitle = 'Noticias de Folklore Argentino: Novedades y Eventos Recientes';
         $metaDescription = 'Descubre las ultimas noticias del folklore argentino. Mantente al tanto de eventos, festivales y novedades culturales relevantes.';
 
@@ -52,7 +62,7 @@ class NoticiasController extends Controller
             ['label' => 'Noticias', 'url' => route('noticias.index')],
         ];
 
-        return view('frontend.noticias.index', compact('ultimas', 'categorias', 'ultimasSidebar', 'metaTitle', 'metaDescription', 'breadcrumbs'));
+        return view('frontend.noticias.index', compact('ultimas', 'categorias', 'ultimasSidebar', 'masLeidas', 'totalNoticias', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     public function noticias(Interprete $interprete)
