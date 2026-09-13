@@ -70,9 +70,10 @@ return [
 
     'recipe' => [
         'variants' => [
+            // card: tarjeta a ancho completo en grillas (antes pensada para thumbnail de 50px)
             'card' => [
                 'ratio' => [4, 3],
-                'sizes' => [80, 160],
+                'sizes' => [160, 320, 480, 640],
             ],
             'main' => [
                 'ratio' => [4, 3],
@@ -103,9 +104,10 @@ return [
 
     'mito' => [
         'variants' => [
+            // card: tarjeta a ancho completo en grillas (antes pensada para thumbnail de 50px)
             'card' => [
                 'ratio' => [4, 3],
-                'sizes' => [160, 320],
+                'sizes' => [160, 320, 480, 640],
             ],
             'main' => [
                 'ratio' => [4, 3],
