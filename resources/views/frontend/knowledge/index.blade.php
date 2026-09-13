@@ -8,14 +8,11 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
-  <section class="bg-white rounded-xl shadow-sm p-6 mb-8">
-    <div class="max-w-4xl">
-      <p class="text-sm font-semibold tracking-[0.18em] text-orange-600 uppercase mb-3">Nuevo silo editorial</p>
-      <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Enciclopedia del folklore argentino</h1>
-      <p class="text-lg text-slate-700 mb-4">
-        Un espacio de consulta permanente para entender ritmos, danzas, instrumentos, regiones, canciones, historia y tradiciones del folklore argentino desde una mirada editorial y navegable.
-      </p>
-    </div>
+  <section class="bg-white p-2 rounded shadow-sm mb-4">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">Enciclopedia del folklore argentino</h1>
+    <p class="text-base text-gray-700">
+      Ritmos, danzas, instrumentos, regiones, historia y tradiciones del folklore argentino explicados de forma clara, organizados por categoría para consulta permanente.
+    </p>
   </section>
 
   <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-10">
@@ -36,7 +33,7 @@
 
   <section class="bg-white rounded-xl shadow-sm p-6 cv-auto">
     <div class="flex items-center justify-between gap-4 mb-5">
-      <h2 class="text-2xl font-semibold text-slate-900">Artículos publicados</h2>
+      <h2 class="text-lg font-semibold text-gray-800">Artículos publicados</h2>
       <span class="text-sm text-slate-500">{{ $featuredArticles->count() }} resultados recientes</span>
     </div>
 

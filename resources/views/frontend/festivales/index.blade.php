@@ -10,16 +10,17 @@
     <x-breadcrumbs :items="$breadcrumbs" />
   @endif
 
-  <header class="mb-6">
-    <h1 class="text-3xl font-bold text-slate-900">{{ $h1 }}</h1>
-    <p class="mt-2 text-slate-600">{{ $introText }}</p>
-    <p class="mt-1 text-sm text-slate-500"><strong>{{ $results->total() }}</strong> festivales relevados en todo el país.</p>
-  </header>
+  <section class="bg-white p-2 rounded shadow-sm mb-4">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">{{ $h1 }}</h1>
+    <p class="text-base text-gray-700">
+      {{ $introText }} Ya relevamos <strong>{{ $results->total() }}</strong> festivales en todo el país.
+    </p>
+  </section>
 
   @include('frontend.festivales._filters')
 
   <section class="mb-8">
-    <h2 class="text-2xl font-semibold text-slate-900 mb-4">Festivales encontrados</h2>
+    <h2 class="text-lg font-semibold mb-3 text-gray-800">Festivales encontrados</h2>
     @if ($results->count())
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         @foreach ($results as $festival)
@@ -36,7 +37,7 @@
 
   @if ($featured->isNotEmpty())
     <section class="mb-8 cv-auto">
-      <h2 class="text-2xl font-semibold text-slate-900 mb-4">Festivales destacados</h2>
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Festivales destacados</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         @foreach ($featured as $festival)
           <x-festival-card :festival="$festival" />
@@ -47,7 +48,7 @@
 
   @if ($currentMonthFestivals->isNotEmpty())
     <section class="mb-8 cv-auto">
-      <h2 class="text-2xl font-semibold text-slate-900 mb-4">Festivales del mes actual</h2>
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Festivales del mes actual</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         @foreach ($currentMonthFestivals as $festival)
           <x-festival-card :festival="$festival" />
@@ -58,7 +59,7 @@
 
   @if ($provinceLinks->isNotEmpty())
     <section class="bg-white rounded-xl shadow-sm p-6 mb-8 cv-auto">
-      <h2 class="text-2xl font-semibold text-slate-900 mb-4">Explorar por provincia</h2>
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Explorar por provincia</h2>
       <div class="flex flex-wrap gap-2">
         @foreach ($provinceLinks as $province)
           @if ($province->enabled)
@@ -77,7 +78,7 @@
 
   @if ($monthLinks->isNotEmpty())
     <section class="bg-white rounded-xl shadow-sm p-6 mb-8 cv-auto">
-      <h2 class="text-2xl font-semibold text-slate-900 mb-4">Explorar por mes</h2>
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Explorar por mes</h2>
       <div class="flex flex-wrap gap-2">
         @foreach ($monthLinks as $month)
           @if ($month->enabled)
@@ -96,7 +97,7 @@
 
   @if ($relatedNews->isNotEmpty())
     <section class="bg-white rounded-xl shadow-sm p-6 mb-8 cv-auto">
-      <h2 class="text-2xl font-semibold text-slate-900 mb-4">Ultimas noticias relacionadas</h2>
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Ultimas noticias relacionadas</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @foreach ($relatedNews as $item)
           <article class="border border-slate-200 rounded-xl p-4">
@@ -112,7 +113,7 @@
 
   @if ($relatedEvents->isNotEmpty())
     <section class="bg-white rounded-xl shadow-sm p-6 mb-8 cv-auto">
-      <h2 class="text-2xl font-semibold text-slate-900 mb-4">Proximos eventos relacionados</h2>
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Proximos eventos relacionados</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @foreach ($relatedEvents as $event)
           <article class="border border-slate-200 rounded-xl p-4">
@@ -129,9 +130,9 @@
   @endif
 
   <section class="bg-white rounded-xl shadow-sm p-6 cv-auto">
-    <h2 class="text-2xl font-semibold text-slate-900 mb-4">Sobre esta seccion</h2>
-    <p class="text-slate-700">
-      Festivales funciona como un silo evergreen para navegar fiestas y celebraciones folkloricas por provincia, mes y relaciones editoriales, sin confundir cada ficha permanente con una edicion puntual, una noticia o un evento de cartelera.
+    <h2 class="text-lg font-semibold mb-3 text-gray-800">Sobre esta sección</h2>
+    <p class="text-base text-gray-700">
+      Acá reunimos las fiestas y festivales tradicionales de folklore de todo el país, con su historia, ubicación y fecha habitual, para que puedas planificar tu próximo viaje o descubrir la celebración más cercana a tu zona. Para la agenda con fechas confirmadas de esta edición, visitá la <a href="{{ route('cartelera.index') }}" class="text-[#ff661f] hover:underline">cartelera de eventos</a>.
     </p>
   </section>
 @endsection

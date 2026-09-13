@@ -1,6 +1,8 @@
 <section class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 md:p-5 mb-8">
-  <h2 class="text-3xl font-bold text-slate-900 mb-4">{{ $filtersHeading ?? $h1 }}</h2>
-  <p class="text-slate-700 mb-6">{{ $filtersIntro ?? $introText }}</p>
+  <h2 class="text-lg font-semibold mb-3 text-gray-800">{{ $filtersHeading ?? 'Buscar festivales' }}</h2>
+  @if ($filtersIntro ?? null)
+    <p class="text-base text-gray-700 mb-6">{{ $filtersIntro }}</p>
+  @endif
 
   <form method="GET" action="{{ route('festivales.index') }}" class="space-y-3">
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">

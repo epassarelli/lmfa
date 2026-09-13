@@ -9,9 +9,9 @@
   @endif
 
   <section class="bg-white p-2 rounded shadow-sm mb-4">
-    <h1 class="text-xl font-semibold mb-2 border-b-2 border-[#ff661f] pb-2">Biografías de artistas del folklore argentino</h1>
+    <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">Biografías de artistas del folklore argentino</h1>
     <p class="text-base text-gray-700">
-      Ya reunimos <strong>{{ $total }}</strong> artistas del folklore argentino en el portal.
+      Biografía, discografía y trayectoria de cantantes, dúos y conjuntos del folklore argentino. Ya reunimos <strong>{{ $total }}</strong> artistas en el portal.
     </p>
   </section>
 

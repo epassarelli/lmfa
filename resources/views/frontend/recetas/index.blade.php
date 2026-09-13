@@ -4,64 +4,46 @@
 @section('metaDescription', $metaDescription)
 
 @section('content')
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    @if(isset($breadcrumbs))
-      <x-breadcrumbs :items="$breadcrumbs" />
-    @endif
+  @if(isset($breadcrumbs))
+    <x-breadcrumbs :items="$breadcrumbs" />
+  @endif
 
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">Recetas de comidas típicas argentinas</h1>
-    <p class="text-base text-gray-600 mb-6">Ya reunimos <strong>{{ $totalRecetas }}</strong> recetas tradicionales en el portal.</p>
+  <section class="bg-white p-2 rounded shadow-sm mb-4">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">Recetas de comidas típicas argentinas</h1>
+    <p class="text-base text-gray-700">
+      Recetas paso a paso de la cocina tradicional argentina, con ingredientes e instrucciones claras para cocinar en casa. Ya reunimos <strong>{{ $totalRecetas }}</strong> recetas en el portal.
+    </p>
+  </section>
 
-    <div class="mb-12">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-2">Recetas de comidas más visitadas</h2>
-      <p class="text-lg text-gray-700 mb-6">
-        Descubre las recetas de comidas típicas argentinas que más interés han despertado entre nuestros visitantes.
-      </p>
-
+  @if ($visitadas->isNotEmpty())
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Recetas más visitadas</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($visitadas as $receta)
           <x-receta-card :receta="$receta" />
         @endforeach
       </div>
-    </div>
+    </section>
+  @endif
 
-    <p class="text-lg text-gray-700 mb-10">
-      Sumérgete en el sabor auténtico de la cocina argentina con nuestras recetas de comidas típicas...
-    </p>
-
-    <x-alpha-filter
-      class="mb-12"
-      title="Buscar por Orden Alfabético"
-      description="Encuentra fácilmente tus recetas favoritas utilizando nuestro índice alfabético."
-      route-name="comidas.letra"
-      :letters="$alphabet"
-    />
-
-    <div class="mb-12">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-2">Últimas recetas de comidas típicas agregadas</h2>
-      <p class="text-lg text-gray-700 mb-6">
-        Mantente al día con las novedades culinarias de nuestra cocina argentina...
-      </p>
-
+  @if ($ultimas->isNotEmpty())
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Últimas recetas agregadas</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($ultimas as $receta)
           <x-receta-card :receta="$receta" />
         @endforeach
       </div>
-    </div>
+    </section>
+  @endif
 
-    <div class="space-y-4">
-      <p class="text-lg text-gray-700">
-        Bienvenidos a nuestra sección de recetas de comidas típicas, donde te invitamos a descubrir...
-      </p>
-      <p class="text-lg text-gray-700">
-        Cada receta está cuidadosamente detallada con ingredientes, pasos de preparación...
-      </p>
-      <p class="text-lg text-gray-700">
-        Nuestra sección de recetas de comidas típicas es tu guía culinaria para experimentar...
-      </p>
-    </div>
-  </div>
+  <x-alpha-filter
+    class="mb-4"
+    title="Buscar por orden alfabético"
+    description="Encontrá fácilmente tus recetas favoritas utilizando nuestro índice alfabético."
+    route-name="comidas.letra"
+    :letters="$alphabet"
+  />
 @endsection
 
 @section('sidebar')

@@ -9,9 +9,9 @@
   @endif
 
   <section class="bg-white p-2 rounded shadow-sm mb-4">
-    <h1 class="text-2xl font-semibold mb-2 border-b-2 border-[#ff661f] pb-2">Noticias del Folklore Argentino</h1>
+    <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">Noticias del Folklore Argentino</h1>
     <p class="text-base text-gray-700">
-      Actualidad, lanzamientos y agenda del folklore argentino. Ya publicamos <strong>{{ $totalNoticias }}</strong> noticias en el portal.
+      Lanzamientos, giras y agenda de festivales del folklore argentino, actualizados a diario. Ya publicamos <strong>{{ $totalNoticias }}</strong> noticias en el portal.
     </p>
   </section>
 
@@ -46,26 +46,6 @@
     </div>
 
     <x-public-pagination :paginator="$ultimas" />
-  </section>
-
-  <section class="bg-white p-2 rounded shadow-sm mb-4 cv-auto">
-    <p class="text-base mb-2">
-      Mantente al día con las últimas noticias del folklore argentino en nuestra sección dedicada a mantenerte informado
-      sobre todo lo relacionado con la música folklórica de nuestro país.
-      Aquí encontrarás las actualizaciones más recientes, incluyendo lanzamientos de nuevos álbumes, giras de conciertos y
-      eventos especiales que destacan lo mejor del folklore argentino.
-    </p>
-    <p class="text-base mb-2">
-      Descubre entrevistas exclusivas con tus artistas y cantantes favoritos, reportajes en profundidad sobre tendencias y
-      movimientos dentro de la escena folklórica, y análisis detallados sobre la evolución de este género musical.
-      Nuestra cobertura incluye tanto a los grandes íconos del folklore como a los nuevos talentos emergentes que están
-      dando forma al futuro de la música tradicional argentina.
-    </p>
-    <p class="text-base mb-2">
-      No te pierdas ninguna novedad del mundo del folklore argentino. Desde festivales y shows hasta proyectos
-      colaborativos y homenajes, nuestra sección de noticias te mantendrá conectado con todo lo que está ocurriendo en el
-      vibrante panorama de la música folklórica argentina.
-    </p>
   </section>
 
 @endsection
