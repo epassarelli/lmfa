@@ -24,3 +24,9 @@
   <section class="mt-8 grid gap-6 lg:grid-cols-2"><div class="rounded-2xl bg-stone-100 p-6"><h2 class="text-xl font-bold">Grilla semanal</h2>@forelse($program->slots as $slot)<p class="mt-3"><strong>{{ ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][$slot->weekday] }}</strong> · {{ substr($slot->starts_at, 0, 5) }}@if($slot->ends_at)–{{ substr($slot->ends_at, 0, 5) }}@endif h</p>@empty<p class="mt-3 text-slate-600">La grilla todavía no fue informada.</p>@endforelse</div><div class="rounded-2xl bg-white p-6 shadow-sm"><h2 class="text-xl font-bold">Dónde escuchar</h2>@if($program->listening_url)<a class="mt-4 inline-block rounded-lg bg-amber-700 px-4 py-2 font-semibold text-white" href="{{ $program->listening_url }}" target="_blank" rel="nofollow noopener noreferrer">Escuchar en {{ ucfirst(str_replace('_', ' ', $program->platform ?? 'línea')) }}</a>@endif @if($program->signal)@foreach($program->signal->listeningChannels as $channel)<div class="mt-4"><strong>{{ $channel->label }}</strong>@if($channel->frequency)<p>{{ $channel->frequency_band }} {{ $channel->frequency }}</p>@endif @if($channel->url)<a class="text-amber-800 underline" href="{{ $channel->url }}" target="_blank" rel="nofollow noopener noreferrer">Abrir canal oficial</a>@endif</div>@endforeach @endif @if($program->last_verified_at)<p class="mt-5 text-sm text-slate-500">Datos verificados el {{ $program->last_verified_at->format('d/m/Y') }}.</p>@endif</div></section>
   @if($relatedPrograms->isNotEmpty())<section class="mt-8"><h2 class="text-2xl font-bold">Otros programas relacionados</h2><div class="mt-4 grid gap-4 md:grid-cols-3">@foreach($relatedPrograms as $related)<a class="rounded-lg bg-white p-4 shadow-sm" href="{{ $related->getUrl() }}"><h3 class="font-bold">{{ $related->title }}</h3></a>@endforeach</div></section>@endif
 @endsection
+
+@section('sidebar')
+  <x-sidebar.newsletter-form />
+  <x-sidebar.social-links />
+  <x-sidebar.donate />
+@endsection

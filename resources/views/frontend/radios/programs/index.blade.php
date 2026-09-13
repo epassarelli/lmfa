@@ -25,3 +25,9 @@
   <section class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">@forelse($programs as $program)@php($next = $program->nextBroadcast())<a href="{{ $program->getUrl() }}" class="rounded-xl bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"><p class="text-sm font-semibold text-amber-800">{{ $program->signal?->title ?? ucfirst(str_replace('_', ' ', $program->platform ?? 'Stream independiente')) }}</p><h2 class="mt-1 text-xl font-bold">{{ $program->title }}</h2>@if($program->excerpt)<p class="mt-2 text-sm text-slate-600">{{ $program->excerpt }}</p>@endif @if($next)<p class="mt-4 text-sm font-semibold text-slate-700">Próxima: {{ $next['starts_at']->format('d/m H:i') }} h</p>@endif</a>@empty<p class="md:col-span-2 xl:col-span-3 rounded-xl bg-white p-6 text-slate-600">No encontramos programas verificados con esos filtros.</p>@endforelse</section>
   <x-public-pagination :paginator="$programs" />
 @endsection
+
+@section('sidebar')
+  <x-sidebar.newsletter-form />
+  <x-sidebar.social-links />
+  <x-sidebar.donate />
+@endsection

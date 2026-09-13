@@ -37,3 +37,9 @@
 
   @if($signal->programs->isNotEmpty())<section class="mt-8"><div class="flex flex-wrap items-center justify-between gap-3"><h2 class="text-2xl font-bold">Programación de folklore</h2><a class="font-semibold text-amber-800" href="{{ route('radios.programs.index', ['signal_id' => $signal->id]) }}">Ver grilla</a></div><div class="mt-4 grid gap-4 md:grid-cols-2">@foreach($signal->programs as $program)@php($next = $program->nextBroadcast())<a class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm" href="{{ $program->getUrl() }}"><h3 class="font-bold">{{ $program->title }}</h3>@if($next)<p class="mt-2 text-sm text-slate-600">Próxima emisión: {{ $next['starts_at']->format('d/m H:i') }} h</p>@endif</a>@endforeach</div></section>@endif
 @endsection
+
+@section('sidebar')
+  <x-sidebar.newsletter-form />
+  <x-sidebar.social-links />
+  <x-sidebar.donate />
+@endsection

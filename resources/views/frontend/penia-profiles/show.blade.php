@@ -55,3 +55,9 @@
   @if($penia->events->isNotEmpty())<section class="mt-8"><h2 class="mb-4 text-2xl font-semibold">Próximos eventos</h2><div class="grid gap-5 md:grid-cols-3">@foreach($penia->events as $event)<x-show-card :show="$event" />@endforeach</div></section>@endif
   @if($sameProvince->isNotEmpty())<section class="mt-8"><div class="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 class="text-2xl font-semibold text-slate-900">Más Peñas en {{ $penia->provincia?->nombre }}</h2><a class="text-sm font-semibold text-orange-700 hover:text-orange-900" href="{{ route('penia-profiles.index', ['province_id' => $penia->province_id]) }}">Ver todas</a></div><div class="grid gap-5 md:grid-cols-3">@foreach($sameProvince as $item)<a href="{{ $item->getUrl() }}" class="rounded-xl bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"><h3 class="text-lg font-semibold text-slate-900">{{ $item->title }}</h3><p class="mt-2 text-sm text-slate-600">{{ $item->city ?: $item->provincia?->nombre }}</p><span class="mt-3 inline-block text-sm font-semibold text-orange-700">Ver ficha</span></a>@endforeach</div></section>@endif
 @endsection
+
+@section('sidebar')
+  <x-sidebar.newsletter-form />
+  <x-sidebar.social-links />
+  <x-sidebar.donate />
+@endsection
