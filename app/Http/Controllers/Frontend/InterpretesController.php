@@ -85,6 +85,7 @@ class InterpretesController extends Controller
             ->with('images')
             ->firstOrFail();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+        $masLeidosSidebar = $this->masLeidosSidebar($interprete->id);
         $section = 'biografias';
 
         $interprete->increment('visitas');
@@ -115,7 +116,7 @@ class InterpretesController extends Controller
             ['label' => 'Biografia'],
         ];
 
-        return view('frontend.interpretes.show', compact('interprete', 'interpretes', 'section', 'recursos', 'metaTitle', 'metaDescription', 'h1', 'breadcrumbs'));
+        return view('frontend.interpretes.show', compact('interprete', 'interpretes', 'masLeidosSidebar', 'section', 'recursos', 'metaTitle', 'metaDescription', 'h1', 'breadcrumbs'));
     }
 
     public function show(Interprete $interprete)
@@ -138,6 +139,7 @@ class InterpretesController extends Controller
             ->take(2)
             ->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
+        $masLeidosSidebar = $this->masLeidosSidebar($interprete->id);
         $journey = app(\App\Services\Product\FestivalJourneyService::class)->forArtist($interprete);
 
         $seo = SeoMetadata::artist($interprete);
@@ -158,11 +160,31 @@ class InterpretesController extends Controller
             'eventos',
             'journey',
             'interpretes',
+            'masLeidosSidebar',
             'metaTitle',
             'metaDescription',
             'h1',
             'breadcrumbs'
         ));
+    }
+
+    /**
+     * Top 5 artistas mas visitados, excluyendo al actual, para el widget de
+     * sidebar "Artistas mas leidos". Se cachea el top 6 global (no por
+     * artista) para no multiplicar cache keys, y se descarta el actual en
+     * PHP si aparece en el listado.
+     */
+    private function masLeidosSidebar(int $excludingId)
+    {
+        $top = Cache::remember('interpretes:sidebar:mas-leidos', now()->addHours(1), function () {
+            return Interprete::where('estado', 1)
+                ->select(['id', 'interprete', 'slug'])
+                ->orderByDesc('visitas')
+                ->take(6)
+                ->get();
+        });
+
+        return $top->reject(fn ($interprete) => $interprete->id === $excludingId)->take(5)->values();
     }
 
     public function busqueda(Request $request)

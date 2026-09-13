@@ -64,5 +64,8 @@
   </div>
   @include('layouts.partials.interpretes-header', ['interprete' => $interprete])
   <br>
+  @if ($masLeidosSidebar->isNotEmpty())
+    <x-sidebar.top-interpretes :interpretes="$masLeidosSidebar" />
+  @endif
   <x-sidebar.social-links />
 @endsection
