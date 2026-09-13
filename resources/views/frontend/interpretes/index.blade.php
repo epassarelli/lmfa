@@ -16,7 +16,7 @@
   </section>
 
   <section class="bg-white p-4 rounded shadow-sm mb-6">
-    <form method="GET" action="{{ route('interpretes.index') }}" class="flex flex-col sm:flex-row gap-3 sm:items-end mb-4">
+    <form method="GET" action="{{ route('interpretes.index') }}" class="flex flex-col sm:flex-row gap-3 sm:items-end">
       <div class="flex-1">
         <label for="q" class="block text-sm font-medium text-gray-700 mb-1">Buscar artista por nombre</label>
         <input id="q" type="search" name="q" value="{{ $search }}"
@@ -30,32 +30,25 @@
         @endif
       </div>
     </form>
-
-    <x-alpha-filter
-      title="O buscá por orden alfabético"
-      description="Encontrá fácilmente a tu intérprete favorito de folklore argentino."
-      route-name="interpretes.letra"
-      :letters="$alphabet"
-    />
   </section>
 
   @if ($search === '')
-    @if ($masLeidos->isNotEmpty())
+    @if ($recientes->isNotEmpty())
       <section class="mb-8">
-        <h2 class="text-lg font-semibold mb-3 text-gray-800">Los más leídos</h2>
+        <h2 class="text-lg font-semibold mb-3 text-gray-800">Agregados recientemente</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          @foreach ($masLeidos as $interprete)
+          @foreach ($recientes as $interprete)
             <x-biografia-card :interprete="$interprete" />
           @endforeach
         </div>
       </section>
     @endif
 
-    @if ($recientes->isNotEmpty())
+    @if ($masLeidos->isNotEmpty())
       <section class="mb-8">
-        <h2 class="text-lg font-semibold mb-3 text-gray-800">Agregados recientemente</h2>
+        <h2 class="text-lg font-semibold mb-3 text-gray-800">Los más leídos</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          @foreach ($recientes as $interprete)
+          @foreach ($masLeidos as $interprete)
             <x-biografia-card :interprete="$interprete" />
           @endforeach
         </div>
@@ -84,6 +77,14 @@
       <x-public-pagination :paginator="$interpretes" />
     @endif
   </section>
+
+  <x-alpha-filter
+    class="mb-4"
+    title="Buscar por orden alfabético"
+    description="Encontrá fácilmente a tu intérprete favorito de folklore argentino."
+    route-name="interpretes.letra"
+    :letters="$alphabet"
+  />
 
 @endsection
 

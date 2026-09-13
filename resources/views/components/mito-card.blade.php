@@ -17,9 +17,6 @@
       <div class="flex-1">
         <h3 class="text-lg font-semibold text-gray-800 hover:text-[#ff661f] transition-colors duration-300">
           {{ $mito->titulo }}
-          @if ($mito->created_at && $mito->created_at->gt(now()->subDays(14)))
-            <span class="ml-1 align-middle bg-[#ff661f] text-white text-xs font-semibold px-2 py-0.5 rounded-full">Nuevo</span>
-          @endif
         </h3>
         <p class="text-sm text-gray-500 mt-1">{{ number_format($mito->visitas, 0, '', '.') }} visitas</p>
       </div>

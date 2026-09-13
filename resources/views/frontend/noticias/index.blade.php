@@ -26,18 +26,7 @@
     </section>
   @endif
 
-  @if ($masLeidas->isNotEmpty())
-    <section class="mb-8">
-      <h2 class="text-lg font-semibold mb-3 text-gray-800">Más leídas</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        @foreach ($masLeidas as $noticia)
-          <x-noticia-card :noticia="$noticia" />
-        @endforeach
-      </div>
-    </section>
-  @endif
-
-  <section class="mb-12">
+  <section class="mb-8">
     <h2 class="text-lg font-semibold mb-3 text-gray-800">Últimas noticias</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
       @foreach ($ultimas as $noticia)
@@ -47,6 +36,17 @@
 
     <x-public-pagination :paginator="$ultimas" />
   </section>
+
+  @if ($masLeidas->isNotEmpty())
+    <section class="mb-12">
+      <h2 class="text-lg font-semibold mb-3 text-gray-800">Más leídas</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        @foreach ($masLeidas as $noticia)
+          <x-noticia-card :noticia="$noticia" />
+        @endforeach
+      </div>
+    </section>
+  @endif
 
 @endsection
 
