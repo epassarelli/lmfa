@@ -1,42 +1,46 @@
 @extends('layouts.app')
-@section('title', 'Avisos Clasificados del Folklore Argentino')
-@section('meta_description', 'Comprá, vendé y encontrá servicios del mundo del folklore argentino. Instrumentos, indumentaria, clases de danza y más.')
+
+@section('metaTitle', $metaTitle)
+@section('metaDescription', $metaDescription)
 
 @section('content')
-<div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    @if(isset($breadcrumbs))
+      <x-breadcrumbs :items="$breadcrumbs" />
+    @endif
 
-    {{-- Header --}}
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+    <section class="bg-white p-2 rounded shadow-sm mb-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-3xl md:text-4xl font-bold text-[#8B4513] mb-2">
-                🎶 Clasificados del Folklore
-            </h1>
-            <p class="text-gray-600">Comprá, vendé y conectá con el mundo del folklore argentino.</p>
+          <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">Clasificados del Folklore</h1>
+          <p class="text-base text-gray-700">Comprá, vendé y conectá con instrumentos, indumentaria y servicios del mundo del folklore argentino.</p>
         </div>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-2">
             @auth
-                <a href="{{ route('classifieds.create') }}" class="bg-[#ff661f] hover:bg-orange-600 text-white font-bold py-2 px-6 rounded shadow-sm transition">
-                    + Publicar Aviso Gratis
+                <a href="{{ route('classifieds.create') }}" class="inline-flex items-center justify-center rounded-lg bg-[#ff661f] px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 transition">
+                    + Publicar aviso gratis
                 </a>
-                <a href="{{ route('classifieds.mis-avisos') }}" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2 px-6 rounded shadow-sm transition">
-                    Mis Avisos
+                <a href="{{ route('classifieds.mis-avisos') }}" class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 hover:border-gray-400 transition">
+                    Mis avisos
                 </a>
             @else
-                <a href="{{ route('login') }}" class="bg-[#ff661f] hover:bg-orange-600 text-white font-bold py-2 px-6 rounded shadow-sm transition">
-                    + Publicar Aviso Gratis
+                <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-lg bg-[#ff661f] px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 transition">
+                    + Publicar aviso gratis
                 </a>
             @endauth
         </div>
-    </div>
+      </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto">
 
     {{-- Filtros --}}
-    <form method="GET" action="{{ route('classifieds.index') }}" class="bg-white p-4 rounded-lg shadow-sm mb-8 border border-gray-200">
+    <form method="GET" action="{{ route('classifieds.index') }}" class="bg-white p-4 rounded shadow-sm mb-4">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div class="md:col-span-4">
-                <input type="text" name="q" class="w-full border-gray-300 rounded-md shadow-sm focus:border-[#ff661f] focus:ring focus:ring-orange-200 focus:ring-opacity-50 py-2 px-3" placeholder="Buscar avisos..." value="{{ request('q') }}">
+                <input type="text" name="q" class="w-full rounded-lg border-gray-300 focus:border-[#ff661f] focus:ring-[#ff661f]" placeholder="Buscar avisos..." value="{{ request('q') }}">
             </div>
             <div class="md:col-span-3">
-                <select name="categoria" class="w-full border-gray-300 rounded-md shadow-sm focus:border-[#ff661f] focus:ring focus:ring-orange-200 focus:ring-opacity-50 py-2 px-3 text-gray-700 bg-white">
+                <select name="categoria" class="w-full rounded-lg border-gray-300 focus:border-[#ff661f] focus:ring-[#ff661f] text-gray-700 bg-white">
                     <option value="">Todas las categorías</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->slug }}" {{ request('categoria') == $cat->slug ? 'selected' : '' }}>
@@ -47,22 +51,22 @@
                 </select>
             </div>
             <div class="md:col-span-3">
-                <input type="text" name="provincia" class="w-full border-gray-300 rounded-md shadow-sm focus:border-[#ff661f] focus:ring focus:ring-orange-200 focus:ring-opacity-50 py-2 px-3" placeholder="Provincia / Ciudad" value="{{ request('provincia') }}">
+                <input type="text" name="provincia" class="w-full rounded-lg border-gray-300 focus:border-[#ff661f] focus:ring-[#ff661f]" placeholder="Provincia / Ciudad" value="{{ request('provincia') }}">
             </div>
             <div class="md:col-span-2">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition">Buscar</button>
+                <button type="submit" class="w-full inline-flex items-center justify-center rounded-lg bg-[#ff661f] hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2.5 transition">Buscar</button>
             </div>
         </div>
     </form>
 
     {{-- Categorías rápidas --}}
-    <div class="flex flex-wrap gap-2 mb-8">
-        <a href="{{ route('classifieds.index') }}" class="px-4 py-1.5 rounded-full text-sm font-medium transition {{ !$selectedCategory ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+    <div class="flex flex-wrap gap-2 mb-4">
+        <a href="{{ route('classifieds.index') }}" class="px-4 py-1.5 rounded-full text-sm font-medium transition {{ !$selectedCategory ? 'bg-[#ff661f] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
             Todos
         </a>
         @foreach($categories as $cat)
             <a href="{{ route('classifieds.index', ['categoria' => $cat->slug]) }}"
-               class="px-4 py-1.5 rounded-full text-sm font-medium transition {{ $selectedCategory == $cat->slug ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+               class="px-4 py-1.5 rounded-full text-sm font-medium transition {{ $selectedCategory == $cat->slug ? 'bg-[#ff661f] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                 {{ $cat->icon ?? '' }} {{ $cat->name }}
             </a>
         @endforeach

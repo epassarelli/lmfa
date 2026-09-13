@@ -53,7 +53,14 @@ class ClassifiedsController extends Controller
 
         $selectedCategory = $request->categoria;
 
-        return view('frontend.classifieds.index', compact('classifieds', 'categories', 'selectedCategory'));
+        $metaTitle = 'Avisos Clasificados del Folklore Argentino';
+        $metaDescription = 'Comprá, vendé y encontrá servicios del mundo del folklore argentino: instrumentos, indumentaria, clases de danza y más.';
+
+        $breadcrumbs = [
+            ['label' => 'Clasificados', 'url' => route('classifieds.index')],
+        ];
+
+        return view('frontend.classifieds.index', compact('classifieds', 'categories', 'selectedCategory', 'metaTitle', 'metaDescription', 'breadcrumbs'));
     }
 
     /**
