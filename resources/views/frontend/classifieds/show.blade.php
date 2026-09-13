@@ -202,3 +202,9 @@
     </div>
 </div>
 @endsection
+
+@section('sidebar')
+  <x-sidebar.newsletter-form />
+  <x-sidebar.social-links />
+  <x-sidebar.advertisement />
+@endsection
