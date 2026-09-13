@@ -29,7 +29,7 @@ class CancionesController extends Controller
                 'albunes.interprete:id,interprete,slug',
             ])
             ->orderBy('cancion', 'asc')
-            ->simplePaginate(18);
+            ->paginate(18);
 
         $cardRelations = [
             'interprete:id,interprete,slug,foto',
@@ -68,7 +68,7 @@ class CancionesController extends Controller
             ])
             ->where('cancion', 'LIKE', $letra.'%')
             ->orderBy('cancion', 'asc')
-            ->simplePaginate(18);
+            ->paginate(18);
 
         $metaTitle = "Letras de Canciones folkloricas de Argentina que comienzan con {$letra}";
         $metaDescription = "Letras de Canciones folkloricas de Argentina que comienzan con {$letra}";

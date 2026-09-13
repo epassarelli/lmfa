@@ -112,7 +112,7 @@ class MitosController extends Controller
             ->where('titulo', 'LIKE', $letra . '%')
             ->with('images')
             ->orderBy('titulo')
-            ->simplePaginate(12);
+            ->paginate(12);
         $alphabet = range('a', 'z');
 
         $metaTitle = "Mitos y leyendas urbanas argentinas que comienzan con {$letra}";

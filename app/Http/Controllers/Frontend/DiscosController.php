@@ -22,7 +22,7 @@ class DiscosController extends Controller
                 'images',
             ])
             ->orderByDesc('created_at')
-            ->simplePaginate(12);
+            ->paginate(12);
 
         $masEscuchados = Cache::remember('discos:index:mas-escuchados', now()->addHours(1), function () {
             return Album::query()

@@ -113,7 +113,7 @@ class RecetasController extends Controller
             ->where('titulo', 'LIKE', $letra . '%')
             ->with('images')
             ->orderBy('titulo')
-            ->simplePaginate(12);
+            ->paginate(12);
         $alphabet = range('a', 'z');
 
         $metaTitle = "Recetas de comidas tipicas de Argentina que comienzan con {$letra}";

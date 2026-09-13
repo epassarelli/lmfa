@@ -29,7 +29,7 @@ class InterpretesController extends Controller
             ->with('images')
             ->when($search !== '', fn ($query) => $query->where('interprete', 'LIKE', '%'.$search.'%'))
             ->orderBy('interprete', 'asc')
-            ->simplePaginate(12)
+            ->paginate(12)
             ->withQueryString();
 
         $masLeidos = collect();
@@ -194,7 +194,7 @@ class InterpretesController extends Controller
             ->with('images')
             ->whereRaw('LOWER(interprete) LIKE ?', [$letra.'%'])
             ->orderBy('interprete', 'asc')
-            ->simplePaginate(12);
+            ->paginate(12);
 
         $alphabet = range('a', 'z');
         $metaTitle = "Biografias de interpretes folkloricos de Argentina que comienzan con {$letra}";
