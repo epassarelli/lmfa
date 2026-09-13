@@ -24,9 +24,9 @@
           placeholder="Ej: Los Chalchaleros">
       </div>
       <div class="flex gap-2">
-        <button type="submit" class="inline-flex items-center justify-center rounded-full bg-[#ff661f] px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 transition">Buscar</button>
+        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[#ff661f] px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 transition">Buscar</button>
         @if ($search !== '')
-          <a href="{{ route('interpretes.index') }}" class="inline-flex items-center justify-center rounded-full border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 hover:border-gray-400 transition">Limpiar</a>
+          <a href="{{ route('interpretes.index') }}" class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 hover:border-gray-400 transition">Limpiar</a>
         @endif
       </div>
     </form>

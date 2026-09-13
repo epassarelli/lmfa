@@ -105,10 +105,10 @@
         </div>
 
         <div class="flex flex-wrap gap-3 xl:justify-end">
-          <button type="submit" class="inline-flex items-center justify-center rounded-full bg-[#ff661f] px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 transition">
+          <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[#ff661f] px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 transition">
             Buscar eventos
           </button>
-          <a href="{{ route('cartelera.index') }}" class="inline-flex items-center justify-center rounded-full border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-700 hover:border-slate-400 hover:text-slate-900 transition">
+          <a href="{{ route('cartelera.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-700 hover:border-slate-400 hover:text-slate-900 transition">
             Limpiar filtros
           </a>
         </div>
@@ -177,16 +177,16 @@
             <p class="mt-4 text-slate-600 leading-7">{{ \Illuminate\Support\Str::limit(strip_tags($show->detalle), 180) }}</p>
 
             <div class="mt-5 flex flex-wrap gap-3 text-sm">
-              <a href="{{ route('cartelera.show', $show->slug) }}" class="inline-flex items-center rounded-full bg-slate-900 px-5 py-2.5 font-semibold text-white hover:bg-slate-800 transition">
+              <a href="{{ route('cartelera.show', $show->slug) }}" class="inline-flex items-center rounded-lg bg-slate-900 px-5 py-2.5 font-semibold text-white hover:bg-slate-800 transition">
                 Ver detalle
               </a>
               @if($principal)
-                <a href="{{ route('artista.show', $principal->slug) }}" class="inline-flex items-center rounded-full border border-orange-200 px-5 py-2.5 font-semibold text-orange-700 hover:border-orange-300 hover:text-orange-800 transition">
+                <a href="{{ route('artista.show', $principal->slug) }}" class="inline-flex items-center rounded-lg border border-orange-200 px-5 py-2.5 font-semibold text-orange-700 hover:border-orange-300 hover:text-orange-800 transition">
                   Más sobre {{ $principal->interprete }}
                 </a>
               @endif
               @if($provinceUrl)
-                <a href="{{ $provinceUrl }}" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-2.5 font-semibold text-slate-700 hover:border-slate-300 hover:text-slate-900 transition">
+                <a href="{{ $provinceUrl }}" class="inline-flex items-center rounded-lg border border-slate-200 px-5 py-2.5 font-semibold text-slate-700 hover:border-slate-300 hover:text-slate-900 transition">
                   Otros eventos en {{ $show->provincia->nombre }}
                 </a>
               @endif

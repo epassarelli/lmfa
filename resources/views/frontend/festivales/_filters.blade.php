@@ -48,10 +48,10 @@
       </div>
 
       <div class="flex flex-wrap gap-3 xl:justify-end">
-        <button type="submit" class="inline-flex items-center justify-center rounded-full bg-orange-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-700 transition">
+        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-orange-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-700 transition">
           Buscar festivales
         </button>
-        <a href="{{ route('festivales.index') }}" class="inline-flex items-center justify-center rounded-full border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-700 hover:border-slate-400 hover:text-slate-900 transition">
+        <a href="{{ route('festivales.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-700 hover:border-slate-400 hover:text-slate-900 transition">
           Limpiar filtros
         </a>
       </div>
