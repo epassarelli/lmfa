@@ -1,5 +1,16 @@
 # 00 - Estado Actual del Proyecto
 
+### Cambio local 2026-09-13: performance, contenido y sidebars
+
+- **Performance real**: root cause del LCP `loading="lazy"` que nunca funcionaba: 10 clases de componente Blade con constructor vacío (`app/View/Components/*`) tapaban los componentes anónimos reales y descartaban en silencio cualquier prop no declarado en el constructor (`imageLoading`, `imageFetchpriority`, etc.). Se eliminaron las 10 clases muertas más 8 análogas en `app/View/Components/Sidebar/`. También se corrigió un closure y una colisión de nombres de ruta que bloqueaban `route:cache`, y un bug real donde `EditorialImageResolver` volcaba un modelo Eloquent completo como JSON en el `alt` de una imagen de fallback (Album/Cancion, por la relación `interprete()` homónima a la columna).
+- **Imágenes**: los 11 fallbacks editoriales se redujeron de ~230 KiB a ~55 KiB c/u y se renombraron con sufijo `-v2` (el cache `immutable` de `public/.htaccess` no invalida por contenido, solo por URL). Nueva guía `project/docs/editorial/image-upload-guide.md` con tamaño mínimo y ratio recomendado por entidad.
+- **Contenido y SEO**: unificado el copy, contenedor (`bg-white p-2 rounded shadow-sm`) y tipografía de H1 en las 8 homes de sección (antes 3 tratamientos distintos conviviendo). Se activaron rutas/bloques que existían en código pero nunca se conectaron (filtro de categorías en Noticias, "más visitas" en Canciones). Buscador por nombre nuevo en Artistas (no existía ninguno funcional). Contadores de volumen de catálogo en Home y en las secciones principales.
+- **Paginación**: las 8 secciones que usaban `simplePaginate()` pasan a `paginate()` para mostrar total y números de página (antes solo Festivales lo tenía; mismo componente compartido en todo el sitio, no eran componentes distintos).
+- **Sidebars**: auditoría completa de los 17 componentes — 9 sin usar, 7 de esos rotos (rutas/campos de antes del refactor de modelos). Se borraron los 8 verdaderamente muertos y se dejó un criterio explícito por sección: publicidad en Noticias/Recetas/Mitos, invitación a publicar en Festivales/Cartelera, sidebar propio (sin default heredado) en Clasificados/Peñas/Radios, widget nuevo "Artistas más leídos" en la ficha de artista.
+- **Íconos sociales**: colores reales de marca (Facebook, Instagram, X) como insignias cuadradas `rounded-lg`, consistente con los botones del sitio.
+- Peñas y Radios se activaron localmente vía `.env` (`FEATURE_PENIA_DIRECTORY`, `FEATURE_RADIO_DIRECTORY`) para poder revisarlas — confirmar si corresponde promoverlas a producción.
+- Pendiente, fuera de alcance por decisión explícita: bloque editorial "Un día como hoy" (requiere contenido curado a mano, no generado).
+
 ### Cambio local 2026-09-08: paginados públicos
 
 - Pedido explícito del usuario: estética compartida y textos españoles en todos los controles públicos. OpenSpec: `openspec/changes/unify-public-pagination-spanish`.
@@ -9,7 +20,7 @@
 - Auditoría simple de campos SEO solicitada antes de este cambio: `project/docs/releases/seo-fields-audit-2026-09-08.md`. Los campos principales existen en las 12 entidades editoriales revisadas; quedan brechas de edición/uso, especialmente Noticias/Eventos y Clasificados. No se verificó completitud en BD ni producción.
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-08 (código de `main` desplegado en producción; assets Vite compilados fuera del servidor y subidos, migraciones aplicadas, home y `/healthz` en `200`; activación visible de Peñas/Radios pendiente de confirmar)
+> Ultima actualizacion: 2026-09-13 (sesión de performance/contenido/sidebars cerrada y commiteada en `main` local, 30 commits; pendiente `git push` + deploy en Hostinger con `composer dump-autoload`, `view:clear`, `config:cache`, `route:cache`, `view:cache` en ese orden — el deploy borra clases PHP, necesita dump-autoload antes de cachear)
 
 ---
 

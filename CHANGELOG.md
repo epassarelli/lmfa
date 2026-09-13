@@ -7,8 +7,17 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [2.2.0] — 2026-09-13
+
 ### Agregado
 
+- **Buscador de artistas**: buscador por nombre en Artistas (no existía ninguno funcional; dos métodos previos del controller no tenían ruta asignada), con "Agregados recientemente" y "Los más leídos" arriba del listado alfabético.
+- **Contadores de volumen**: cifras reales de catálogo ("Ya reunimos X artistas/recetas/discos...") en la Home y en las 8 homes de sección principales.
+- **Números de página en toda la paginación**: las secciones que usaban `simplePaginate()` (Noticias, Discos, Artistas, Canciones, Mitos, Recetas) pasan a `paginate()` para mostrar total de resultados y saltar a cualquier página — mismo componente compartido que ya usaba Festivales, no eran componentes distintos.
+- **Widget "Artistas más leídos"**: nuevo componente de sidebar para la ficha de artista, la única página de detalle del sitio sin ningún tipo de descubrimiento de más contenido.
+- **Guía de imágenes por entidad**: `project/docs/editorial/image-upload-guide.md` con tamaño mínimo y ratio recomendado de subida para cada tipo de contenido, basado en los perfiles reales de `config/image_profiles.php`.
+- **Sidebars con criterio explícito por sección**: publicidad en Noticias/Recetas/Mitos, invitación a publicar en Festivales/Cartelera, sidebar propio (ya no heredado del default sin decisión) en Clasificados/Peñas/Radios.
+- **Íconos de redes sociales** con los colores reales de marca (Facebook, Instagram, X) como insignias cuadradas, en vez del naranja de marca del sitio aplicado por igual a los tres.
 - **Directorio evergreen de Peñas**: propuesta OpenSpec completa para un módulo de espacios culturales permanentes, separado de Eventos y de los datos legacy. Define el contrato editorial, piloto verificable, auditoría, API, SEO y migración segura antes de implementar.
 - **Piloto controlado de Content Refresh**: runbook, preflight local y pruebas para las seis operaciones obligatorias de crear y actualizar un Artista, una Receta y un Mito.
 - **Recorrido Festival vivo**: especificación de un recorrido transversal desde Festival evergreen hacia un Evento futuro y Artista relacionado, condicionado por cobertura auditada y feature flag.
@@ -16,9 +25,23 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Cambiado
 
+- **Copy y tipografía unificados**: mismo contenedor, tamaño de H1 y un solo párrafo corto de intro (en vez de bloques largos de relleno genérico, varios con texto sin terminar) en las 8 homes de sección más Peñas/Radios.
+- **Tarjetas de Mitos y Recetas** rediseñadas con el mismo patrón visual que Artistas/Discos (imagen completa arriba, título y extracto abajo) en vez del formato horizontal heredado de Canciones.
+- **Orden de bloques**: en Noticias, "Últimas" pasa a ir antes que "Más leídas"; en Artistas, "Agregados recientemente" sube antes que "Los más leídos" y el índice alfabético baja al final de la página.
+- **Botones de buscador** unificados a `rounded-lg` (el mismo redondeado del nav y de "Suscribirme") en Artistas, Cartelera, Festivales, Peñas y Radios — antes varios usaban `rounded-full` o colores fuera de la paleta de marca (azul, ámbar).
+- **Relacionados abajo, no al costado**: Mitos y Recetas mostraban su bloque de "relacionados" en una columna lateral propia; ahora es una sección de ancho completo debajo del contenido, igual que el resto del sitio.
 - **Gobernanza documental**: `00_estado_actual.md` consolidado sin marcadores de conflicto y actualizado con los gates operativos y la propuesta de Peñas.
 - **Automatización editorial**: la validación del piloto exige `ACCION_API` explícita y evita actualizaciones vacías antes de cualquier automatización de volumen.
 - **CI de Apps Script**: el pipeline incorpora la validación del preflight de Content Refresh.
+
+### Corregido
+
+- **Bug real de performance**: 10 clases de componente Blade con constructor vacío (`app/View/Components/*NoticiaCard, DiscoCard, FestivalCard...`) tapaban los componentes anónimos reales y descartaban en silencio props como `imageLoading`/`imageFetchpriority` — por esto la carga `eager` del LCP de la home nunca funcionó pese a estar en el código desde antes. Se eliminaron esas 10 clases más 8 análogas en `app/View/Components/Sidebar/` (rutas y campos ya inexistentes desde el refactor de modelos: `interprete.show`, `festival.show`, `$cancion->titulo`, etc.), sin uso en ningún lado del sitio.
+- **Bug real de imágenes**: `EditorialImageResolver` volcaba un modelo Eloquent completo como JSON en el `alt` de una imagen de fallback para Álbumes/Canciones, por la relación `interprete()` con el mismo nombre que la columna del modelo `Interprete`.
+- **Bug de SEO en Clasificados**: el título y la meta description nunca se aplicaban (`@section('title')`/`@section('meta_description')` en vez de los nombres reales que lee el layout); nunca tuvo metadatos propios en producción.
+- **Rutas que bloqueaban `route:cache`**: un closure en `/api/user` y una colisión de nombres entre `penia-profiles.index` (API y frontend).
+- **Cache de imágenes fallback**: se redujeron ~75% de peso y se renombraron con sufijo `-v2` porque el cache `immutable` del servidor no invalida por contenido, solo por URL.
+- **Badge "Nuevo" poco confiable**: se sacó de Artistas/Discos/Mitos/Recetas porque `created_at` en estos catálogos migrados en bloque no refleja alta real de contenido.
 
 ## [2.1.0] — 2026-05-02
 
