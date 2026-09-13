@@ -7,10 +7,14 @@
 
 @section('content')
   <x-breadcrumbs :items="$breadcrumbs" />
-  <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-    <h1 class="text-3xl font-bold text-slate-900">Peñas folklóricas de Argentina</h1>
-    <p class="mt-3 text-slate-700">Espacios culturales con información editorial verificada para planificar una salida y descubrir agenda folklórica.</p>
-    @include('frontend.penia-profiles._filters')
+  <section class="bg-white p-2 rounded shadow-sm mb-4">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">Peñas folklóricas de Argentina</h1>
+    <p class="text-base text-gray-700">
+      Espacios culturales con información editorial verificada para planificar una salida y descubrir agenda folklórica. Ya reunimos <strong>{{ $penias->total() }}</strong> peñas en el portal.
+    </p>
+  </section>
+  <section class="bg-white p-4 rounded shadow-sm mb-6">
+    @include('frontend.penia-profiles._filters', ['filterFormClass' => 'grid gap-3 md:grid-cols-4'])
   </section>
   <section class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
     @forelse($penias as $penia)

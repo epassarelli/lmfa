@@ -7,16 +7,20 @@
 
 @section('content')
   <x-breadcrumbs :items="$breadcrumbs" />
-  <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-    <h1 class="text-3xl font-bold text-slate-900">Radios de folklore argentino</h1>
-    <p class="mt-3 text-slate-700">Señales verificadas con frecuencias y enlaces oficiales para escuchar folklore por aire o en línea.</p>
-    <form class="mt-6 grid gap-3 md:grid-cols-4" method="GET">
-      <input class="rounded border-slate-300" name="q" value="{{ request('q') }}" placeholder="Buscar radio o ciudad">
-      <select class="rounded border-slate-300" name="province_id"><option value="">Todas las provincias</option>@foreach($provincias as $province)<option value="{{ $province->id }}" @selected((int) request('province_id') === $province->id)>{{ $province->nombre }}</option>@endforeach</select>
-      <select class="rounded border-slate-300" name="mode"><option value="">Cualquier emisión</option><option value="air" @selected(request('mode') === 'air')>Por aire</option><option value="streaming" @selected(request('mode') === 'streaming')>Streaming</option><option value="web" @selected(request('mode') === 'web')>Web</option></select>
+  <section class="bg-white p-2 rounded shadow-sm mb-4">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-2 border-b-2 border-[#ff661f] pb-2">Radios de folklore argentino</h1>
+    <p class="text-base text-gray-700">
+      Señales verificadas con frecuencias y enlaces oficiales para escuchar folklore por aire o en línea. Ya reunimos <strong>{{ $signals->total() }}</strong> señales en el portal.
+    </p>
+  </section>
+  <section class="bg-white p-4 rounded shadow-sm mb-6">
+    <form class="grid gap-3 md:grid-cols-4" method="GET">
+      <input class="rounded-lg border-gray-300 focus:border-[#ff661f] focus:ring-[#ff661f]" name="q" value="{{ request('q') }}" placeholder="Buscar radio o ciudad">
+      <select class="rounded-lg border-gray-300 focus:border-[#ff661f] focus:ring-[#ff661f]" name="province_id"><option value="">Todas las provincias</option>@foreach($provincias as $province)<option value="{{ $province->id }}" @selected((int) request('province_id') === $province->id)>{{ $province->nombre }}</option>@endforeach</select>
+      <select class="rounded-lg border-gray-300 focus:border-[#ff661f] focus:ring-[#ff661f]" name="mode"><option value="">Cualquier emisión</option><option value="air" @selected(request('mode') === 'air')>Por aire</option><option value="streaming" @selected(request('mode') === 'streaming')>Streaming</option><option value="web" @selected(request('mode') === 'web')>Web</option></select>
       <button class="rounded-lg bg-[#ff661f] px-4 py-2 font-semibold text-white hover:bg-orange-600">Buscar</button>
     </form>
-    <a class="mt-4 inline-block font-semibold text-amber-800 hover:text-amber-950" href="{{ route('radios.programs.index') }}">Explorar programas de folklore →</a>
+    <a class="mt-3 inline-block text-sm font-semibold text-[#ff661f] hover:underline" href="{{ route('radios.programs.index') }}">Explorar programas de folklore →</a>
   </section>
 
   <section class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">

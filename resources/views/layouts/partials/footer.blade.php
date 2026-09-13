@@ -15,18 +15,6 @@
         <p class="text-lg font-semibold text-white mb-2">Otras secciones</p>
         <ul class="space-y-1 text-gray-400">
           <li>
-            <a href="{{ route('mitos.index') }}"
-              class="hover:text-white transition-colors {{ request()->segment(1) == 'mitos-y-leyendas-argentinas' ? 'text-white font-semibold' : '' }}">
-              Mitos y Leyendas
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('comidas.index') }}"
-              class="hover:text-white transition-colors {{ request()->segment(1) == 'recetas-de-comidas-tipicas-argentinas' ? 'text-white font-semibold' : '' }}">
-              Comidas
-            </a>
-          </li>
-          <li>
             <a href="{{ route('legal.privacy') }}"
               class="hover:text-white transition-colors {{ request()->routeIs('legal.privacy') ? 'text-white font-semibold' : '' }}">
               Politica de privacidad
