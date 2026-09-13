@@ -74,4 +74,5 @@
 @section('sidebar')
   <x-sidebar.newsletter-form />
   <x-sidebar.social-links />
+  <x-sidebar.invite-to-publish />
 @endsection
