@@ -14,7 +14,7 @@
       <input class="rounded border-slate-300" name="q" value="{{ request('q') }}" placeholder="Buscar radio o ciudad">
       <select class="rounded border-slate-300" name="province_id"><option value="">Todas las provincias</option>@foreach($provincias as $province)<option value="{{ $province->id }}" @selected((int) request('province_id') === $province->id)>{{ $province->nombre }}</option>@endforeach</select>
       <select class="rounded border-slate-300" name="mode"><option value="">Cualquier emisión</option><option value="air" @selected(request('mode') === 'air')>Por aire</option><option value="streaming" @selected(request('mode') === 'streaming')>Streaming</option><option value="web" @selected(request('mode') === 'web')>Web</option></select>
-      <button class="rounded bg-amber-700 px-4 py-2 font-semibold text-white">Buscar</button>
+      <button class="rounded-lg bg-[#ff661f] px-4 py-2 font-semibold text-white hover:bg-orange-600">Buscar</button>
     </form>
     <a class="mt-4 inline-block font-semibold text-amber-800 hover:text-amber-950" href="{{ route('radios.programs.index') }}">Explorar programas de folklore →</a>
   </section>
