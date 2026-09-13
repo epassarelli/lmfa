@@ -123,4 +123,5 @@
 
   <x-sidebar.social-links />
   <x-sidebar.donate />
+  <x-sidebar.advertisement />
 @endsection

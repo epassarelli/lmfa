@@ -62,4 +62,6 @@
 
   <x-sidebar.donate />
 
+  <x-sidebar.advertisement />
+
 @endsection
