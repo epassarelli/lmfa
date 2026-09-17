@@ -1,5 +1,18 @@
 # 00 - Estado Actual del Proyecto
 
+### Bug fix 2026-09-16: recuperación de contraseña
+
+- **Error 500 en `/password/email`**: se agregó el trait `CanResetPassword` al modelo User (`app/Models/User.php`). El flujo de password reset requería este trait para proporcionar el método `sendPasswordResetNotification()`. Sin él, cualquier intento de recuperar la contraseña devolvía error 500.
+- **Tests agregados**: `tests/Feature/Auth/PasswordResetTest.php` con 3 casos: verificación del trait, envío de email a usuario válido, y creación de token en BD.
+- **Cierre de versión**: v2.2.1 (patch), CHANGELOG.md actualizado.
+
+### Ejecución de backlog Drive 2026-09-14: mapa de intención SEO
+
+- `BL-0010O` cerrada como análisis autónomo: [mapa SEO de consultas e intención](releases/seo-keyword-intent-map-2026-09-14.md) cubre artistas, biografías, letras, discos, noticias, eventos, festivales y Evergreen con destino existente, riesgo de canibalización y acción segura.
+- Evidencia cuantitativa disponible: línea base GSC de 28 días registrada el 2026-08-10 (189 clics, 26.767 impresiones, CTR 0,71 %) y cuatro consultas de Letras con oportunidad de CTR. El documento separa esos datos comprobados de clústeres propuestos.
+- Sin crear URLs, modificar contenido, canonicals, indexación, producción, despliegues ni commits. Queda pendiente un export GSC/GA4 vigente consulta–página para validar volumen y canibalización real; ese insumo alimenta `BL-0010V`.
+- `BL-0010V` queda **Parcial**: se documentó la [especificación del tablero SEO](releases/seo-monitoring-dashboard-spec-2026-09-14.md) con fuentes, segmentos, KPIs ponderados, vistas, cadencia y gates. Falta el export verificable GSC/GA4 para cargar datos y obtener comparaciones temporales reproducibles.
+
 ### Cambio local 2026-09-13: performance, contenido y sidebars
 
 - **Performance real**: root cause del LCP `loading="lazy"` que nunca funcionaba: 10 clases de componente Blade con constructor vacío (`app/View/Components/*`) tapaban los componentes anónimos reales y descartaban en silencio cualquier prop no declarado en el constructor (`imageLoading`, `imageFetchpriority`, etc.). Se eliminaron las 10 clases muertas más 8 análogas en `app/View/Components/Sidebar/`. También se corrigió un closure y una colisión de nombres de ruta que bloqueaban `route:cache`, y un bug real donde `EditorialImageResolver` volcaba un modelo Eloquent completo como JSON en el `alt` de una imagen de fallback (Album/Cancion, por la relación `interprete()` homónima a la columna).
@@ -20,7 +33,7 @@
 - Auditoría simple de campos SEO solicitada antes de este cambio: `project/docs/releases/seo-fields-audit-2026-09-08.md`. Los campos principales existen en las 12 entidades editoriales revisadas; quedan brechas de edición/uso, especialmente Noticias/Eventos y Clasificados. No se verificó completitud en BD ni producción.
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-13 (sesión de performance/contenido/sidebars cerrada y commiteada en `main` local, 30 commits; pendiente `git push` + deploy en Hostinger con `composer dump-autoload`, `view:clear`, `config:cache`, `route:cache`, `view:cache` en ese orden — el deploy borra clases PHP, necesita dump-autoload antes de cachear)
+> Ultima actualizacion: 2026-09-16 (bug fix v2.2.1: recuperación de contraseña; tests verdes; estado actual y CHANGELOG actualizados)
 
 ---
 
