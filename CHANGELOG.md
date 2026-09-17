@@ -7,12 +7,6 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
-## [2.2.1] — 2026-09-16
-
-### Corregido
-
-- **Error 500 en recuperación de contraseña**: se agregó el trait `CanResetPassword` al modelo User, que proporciona el método `sendPasswordResetNotification()` necesario para el flujo de password reset de Laravel. Sin este trait, la ruta POST `/password/email` devolvía error 500.
-
 ## [2.2.0] — 2026-09-13
 
 ### Agregado

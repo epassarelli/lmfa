@@ -1,10 +1,12 @@
 # 00 - Estado Actual del Proyecto
 
-### Bug fix 2026-09-16: recuperación de contraseña
+### Incidente 2026-09-16/17: recuperación de contraseña y pérdida de datos locales
 
-- **Error 500 en `/password/email`**: se agregó el trait `CanResetPassword` al modelo User (`app/Models/User.php`). El flujo de password reset requería este trait para proporcionar el método `sendPasswordResetNotification()`. Sin él, cualquier intento de recuperar la contraseña devolvía error 500.
-- **Tests agregados**: `tests/Feature/Auth/PasswordResetTest.php` con 3 casos: verificación del trait, envío de email a usuario válido, y creación de token en BD.
-- **Cierre de versión**: v2.2.1 (patch), CHANGELOG.md actualizado.
+- **Causa real del error 500 en `/password/email`**: credencial SMTP rechazada por Hostinger (`535 5.7.8 authentication failed`). El `.env` de producción tenía `MAIL_PASSWORD=1208Gina#` sin comillas, y en un `.env` el `#` abre un comentario: dotenv entregaba `1208Gina`, sin el último carácter. Verificado con `Dotenv::parse`. Con `QUEUE_CONNECTION=sync` el envío ocurre dentro del request, así que la excepción de transporte se convierte en un 500 visible. **No era un bug de código.** Corrección: comillas alrededor del valor. Esa contraseña quedó expuesta en un canal de chat y debe rotarse.
+- **Diagnóstico equivocado, commiteado y luego revertido**: los commits `bb16d31` y `8ceb65b` afirmaban que la causa era la falta del trait `CanResetPassword` en el modelo User. Es falso: `Illuminate\Foundation\Auth\User` ya lo incluye. El test que acompañaba el cambio (`method_exists`) pasaba con o sin él, así que no verificaba nada. Ambos cambios fueron revertidos; el tag `v2.2.1` se eliminó y nunca llegó al remoto.
+- **Pérdida de datos en la BD local**: el test agregado usaba `RefreshDatabase` y `.env.testing` apunta a `DB_DATABASE=mfa`, la misma base de desarrollo. Al ejecutarlo se corrió `migrate:fresh` y se vaciaron todas las tablas, perdiendo los datos restaurados el 2026-09-09. **Producción no fue afectada.** El dump `storage/app/local-backups/u376128922_mifolkarg.sql` y el runner `import-local.php` siguen disponibles para rehacer la restauración. Refuerza la regla ya vigente: en este repositorio nunca se usa `RefreshDatabase`, sólo `DatabaseTransactions`.
+- **Deploy**: `php artisan about` en producción reporta `Config NOT CACHED` pese a haber corrido el ciclo de cachés; `Routes` y `Views` sí quedan cacheadas. Pendiente de revisar. `scripts/post-deploy.sh` no incluye `composer dump-autoload` ni `responsecache:clear`, ambos necesarios según esta misma documentación.
+- **Abierto**: tras el reset de contraseña el login no completa sesión y no muestra error. En investigación; hipótesis principales son sesión que no persiste al redirigir a `/admin` y el 301 de `EnforceCanonicalDomain`, que se aplica también sobre POST y convertiría el envío del formulario en GET.
 
 ### Ejecución de backlog Drive 2026-09-14: mapa de intención SEO
 
@@ -33,7 +35,7 @@
 - Auditoría simple de campos SEO solicitada antes de este cambio: `project/docs/releases/seo-fields-audit-2026-09-08.md`. Los campos principales existen en las 12 entidades editoriales revisadas; quedan brechas de edición/uso, especialmente Noticias/Eventos y Clasificados. No se verificó completitud en BD ni producción.
 
 > **Fuente de verdad operativa.** Actualizar al cerrar cada sesion de trabajo.
-> Ultima actualizacion: 2026-09-16 (bug fix v2.2.1: recuperación de contraseña; tests verdes; estado actual y CHANGELOG actualizados)
+> Ultima actualizacion: 2026-09-17 (correccion del diagnostico de recuperacion de contrasena: causa real SMTP, no codigo; revertidos los commits y el tag v2.2.1; BD local vaciada por RefreshDatabase y pendiente de restaurar; login sin sesion en investigacion)
 
 ---
 
