@@ -7,6 +7,12 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [2.3.1] — 2026-09-18
+
+### Corregido
+
+- **Loop de login en `/admin`**: tras un login exitoso, `/admin` volvía a redirigir a `/login` en vez de mostrar el panel. Causa: `Spatie\ResponseCache\Middlewares\CacheResponse` corre en el stack global, antes de `StartSession` (ver `App\Http\Kernel`), así que `request()->user()` es siempre `null` cuando `PublicPagesCacheProfile::shouldCacheRequest()` decide si cachear — la regla "nunca cachear si hay usuario logueado" nunca se disparaba. Como el paquete trata los redirects como cacheables (`CacheAllSuccessfulGetRequests::hasCacheableResponseCode`), un solo `GET /admin` sin sesión (bot, o el primer visitante del día) dejaba cacheado el 302 a `/login`, y ese redirect viejo se le servía después a cualquiera — logueado o no — sin llegar a evaluar la sesión real. Se agregaron `admin*`, `avisos-clasificados/publicar` y `avisos-clasificados/mis-avisos` (las otras rutas GET protegidas con `auth` fuera de `/admin`) a `excludedPatterns` en `App\Support\ResponseCache\PublicPagesCacheProfile`. Requiere desplegar y correr `artisan responsecache:clear` (ya incluido en `scripts/post-deploy.sh`) para purgar el redirect ya cacheado en producción.
+
 ## [2.3.0] — 2026-09-17
 
 ### Agregado
