@@ -7,6 +7,24 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [2.3.0] — 2026-09-17
+
+### Agregado
+
+- **Mensajes de autenticación y validación en español**: `config/app.php` ya declaraba `locale => 'es'`, pero `resources/lang` sólo tenía la carpeta `en`, así que todo caía al fallback inglés. Se agregaron `resources/lang/es/{auth,passwords,validation,pagination}.php` y `resources/lang/es.json`. Cubre los mensajes de login y registro, los cinco de recuperación de contraseña, las 101 reglas de validación con nombres de campo legibles, y el cuerpo completo de los correos transaccionales de recuperación y verificación. Los textos de los formularios ya estaban en español porque los aporta AdminLTE.
+
+### Cambiado
+
+- **`scripts/post-deploy.sh`**: el script regeneraba las cachés sin actualizar antes el mapa de clases. Ahora corre composer primero (`install --no-dev --optimize-autoloader` si cambió `composer.lock`, detectado por hash; `dump-autoload -o` en caso contrario), suma el `responsecache:clear` que faltaba pese a tener instalado `spatie/laravel-responsecache`, permite forzar el binario de PHP en hosts con varias versiones, y avisa que con la config cacheada los cambios en `.env` dejan de tener efecto.
+
+### Corregido
+
+- **Error 500 en `/password/email`**: la causa era de configuración, no de código. El SMTP de Hostinger rechazaba la autenticación porque `MAIL_PASSWORD` estaba sin comillas en el `.env` de producción y el carácter `#` abre un comentario, truncando la contraseña. Con `QUEUE_CONNECTION=sync` el envío ocurre dentro del request, así que la excepción de transporte se convertía en un 500 visible.
+
+### Revertido
+
+- El diagnóstico previo de ese mismo error, que atribuía el 500 a la falta del trait `CanResetPassword` en el modelo User. `Illuminate\Foundation\Auth\User` ya lo incluye, y el test que acompañaba el cambio no verificaba nada. La versión 2.2.1 que lo documentaba fue retirada y su tag nunca llegó al remoto.
+
 ## [2.2.0] — 2026-09-13
 
 ### Agregado
