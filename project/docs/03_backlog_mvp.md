@@ -1,7 +1,7 @@
 # 03 - Backlog Maestro
 
 > Backlog estructural en Git alineado con `07_hoja_de_ruta.md`.
-> Ultima actualizacion: 2026-09-08.
+> Ultima actualizacion: 2026-09-21.
 > Google Drive conserva la priorizacion humana; esta es la cola local ejecutable del agente.
 
 ---
@@ -39,6 +39,16 @@ Objetivo:
 
 ---
 
+## 2.1. Decision operativa 2026-09-21
+
+- El gate productivo de autenticacion queda cerrado: Eduardo verifico en produccion que el login y el recupero de contrasena funcionan.
+- La automatizacion editorial recurrente se concentra exclusivamente en descubrir, preparar y enviar contenidos nuevos.
+- Content Refresh deja de formar parte de las corridas automaticas: se ejecuta manualmente, por entidad y en lotes pequenos seleccionados.
+- Las auditorias e inventarios pueden seguir con cadencia automatica, pero no habilitan por si solos actualizaciones de contenido.
+- La ingesta de nuevos contenidos y el refresh del inventario existente se tratan como carriles separados, con estados, metricas y criterios de cierre propios.
+
+---
+
 ## 3. Reglas de estados y autoridad
 
 - Drive manda sobre prioridades humanas, comerciales y editoriales.
@@ -61,16 +71,17 @@ Estados validos en este documento:
 
 | ID | Tarea | Estado | Prioridad | Nota |
 |---|---|---|---|---|
-| `ED-A1` | Cerrar piloto controlado de seis operaciones Content Refresh para Artista, Receta y Mito | `pending` | Critica | Gate previo a escala automatizada |
-| `ED-A2` | Ejecutar primer lote P1 de Biografias y medir score antes/despues | `pending` | Critica | Lote pequeno y auditable |
-| `ED-A3` | Ejecutar lotes equivalentes de Recetas y Mitos | `pending` | Critica | No habilitar updates masivos |
+| `ED-A1` | Cerrar piloto controlado de seis operaciones Content Refresh para Artista, Receta y Mito | `pending` | Critica | Ejecucion manual; gate para validar el flujo, no para habilitar corridas masivas |
+| `ED-A2` | Ejecutar primer lote P1 de Biografias y medir score antes/despues | `pending` | Critica | Refresh manual, lote pequeno y auditable |
+| `ED-A3` | Ejecutar lotes equivalentes de Recetas y Mitos | `pending` | Critica | Refresh manual; no habilitar updates masivos |
 | `ED-A4` | Incorporar visitas reales al auditor de Festivales | `done` | Alta | Ordena por prioridad, score, visitas descendentes e ID; consola y CSV incluyen visitas. Prueba feature: 1 passed, 9 assertions. |
-| `ED-A5` | Consolidar auditoria mensual y linea base editorial recurrente | `in_progress` | Alta | Ya existe matriz inicial 2026-09-01 |
+| `ED-A5` | Consolidar auditoria mensual y linea base editorial recurrente | `in_progress` | Alta | Puede automatizar diagnostico e inventario; no dispara refresh automatico |
 
 ### B. Producto y servicios
 
 | ID | Tarea | Estado | Prioridad | Nota |
 |---|---|---|---|---|
+| `PS-B0` | Cerrar incidente productivo de login y recuperacion de contrasena | `done` | Critica | Verificado por Eduardo en produccion el 2026-09-21 |
 | `PS-B1` | Validar Pasarela de Contenidos end-to-end en produccion | `pending` | Alta | Codigo implementado, cierre operativo pendiente |
 | `PS-B2` | Validar UGC mas alla de Noticias en produccion | `pending` | Alta | Mantener moderacion y trazabilidad |
 | `PS-B3` | Definir siguiente release funcional por impacto en descubrimiento y recurrencia | `pending` | Alta | No decidir por disponibilidad de legacy |
