@@ -116,8 +116,8 @@ La revisión contra el código y el despliegue confirmó:
 - no quedan migraciones por ejecutar en producción según la confirmación operativa del usuario;
 - `PS-B4`/`PROD-03` no están bloqueados por staging: resta únicamente validar flags efectivos, NAV/rutas públicas y contenido inicial de Peñas/Radios;
 - `PROD-09` cerró el faltante técnico de assets con validación automática, artefacto CI y runbook;
-- siguen abiertos y no deben darse por realizados sin evidencia: piloto Content Refresh core, primer lote editorial P1, Pasarela E2E, UGC ampliado, política de derechos, administración verificada, favoritos/alertas y definición comercial;
-- después de cerrar `PROD-09`, no queda ninguna tarea `pending` marcada `IA_AUTONOMA`; los siguientes frentes requieren validación o decisión humana.
+- el gate productivo de autenticacion fue validado por Eduardo el 2026-09-21; siguen abiertos y no deben darse por realizados sin evidencia: piloto manual de Content Refresh core, primer lote editorial P1, Pasarela E2E, UGC ampliado, politica de derechos, administracion verificada, favoritos/alertas y definicion comercial;
+- despues de cerrar `PROD-09`, no queda ninguna tarea estructural `pending` marcada `IA_AUTONOMA`; la ingesta recurrente de contenidos nuevos opera como automatizacion editorial separada, mientras que los siguientes frentes de producto y todo Content Refresh requieren validacion o decision humana.
 
 ---
 
