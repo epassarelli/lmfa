@@ -59,6 +59,8 @@ class EventService
 
             $this->syncInterpretes($event, $data);
 
+            $this->syncEditorialRelations($event, $data);
+
             $this->processImage($event, $image, false);
 
             return $event;
@@ -106,6 +108,8 @@ class EventService
 
             $this->syncInterpretes($event, $data);
 
+            $this->syncEditorialRelations($event, $data);
+
             $this->processImage($event, $image, true);
 
             return $event;
@@ -143,6 +147,23 @@ class EventService
             ])->save();
         } finally {
             $this->imageResolver->cleanupTemporary($resolved);
+        }
+    }
+
+    /**
+     * Sincroniza los pivots existentes solo si el payload trae la clave: la API y los
+     * formularios que no exponen estas relaciones no las tocan.
+     */
+    protected function syncEditorialRelations(Event $event, array $data): void
+    {
+        foreach ([
+            'festival_ids' => 'festivales',
+            'knowledge_article_ids' => 'knowledgeArticles',
+            'penia_profile_ids' => 'peniaProfiles',
+        ] as $key => $relation) {
+            if (array_key_exists($key, $data)) {
+                $event->{$relation}()->sync(array_values(array_unique(array_map('intval', array_filter($data[$key] ?? [])))));
+            }
         }
     }
 

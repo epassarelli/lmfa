@@ -4,6 +4,7 @@ namespace Tests\Feature\Recipes;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PublicRecipesFrontendTest extends TestCase
@@ -84,6 +85,10 @@ class PublicRecipesFrontendTest extends TestCase
             'created_at' => now()->subDays(4),
             'updated_at' => now()->subDay(),
         ]);
+
+        // El resolver de imágenes usa el fallback si el archivo no existe en disco.
+        Storage::fake('public', ['url' => config('filesystems.disks.public.url')]);
+        Storage::disk('public')->put('comidas/locro-patrio.jpg', 'img');
 
         $response = $this->call('GET', '/recetas-de-comidas-tipicas-argentinas/locro-patrio', [], [], [], $this->serverVariables());
 

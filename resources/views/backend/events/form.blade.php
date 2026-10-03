@@ -47,6 +47,21 @@
     </div>
   </div>
 
+  <!-- Fecha y hora de fin (end_at) -->
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="end_at">Fecha y hora de fin</label>
+      <input type="datetime-local" name="end_at" id="end_at" class="form-control"
+        value="{{ old('end_at', isset($event) && $event->end_at ? \Carbon\Carbon::parse($event->end_at)->format('Y-m-d\TH:i') : '') }}">
+      <small class="form-text text-muted">Opcional. Para eventos de varios días o con horario de cierre.</small>
+      @error('end_at')
+        <small class="text-danger">{{ $message }}</small>
+      @enderror
+    </div>
+  </div>
+</div>
+
+<div class="row">
   @if(Auth::user()->canPublish())
   <!-- Publicar el (published_at) -->
   <div class="col-md-4">
@@ -168,6 +183,45 @@
       <label class="custom-control-label" for="is_free">Es gratuito</label>
     </div>
   </div>
+</div>
+
+<!-- Relaciones editoriales (pivots event_festival, event_knowledge_article, penia_profile_event) -->
+@php
+  $relationSelects = [
+    ['name' => 'festival_ids', 'label' => 'Festivales', 'placeholder' => 'Seleccionar festivales', 'options' => $festivalOptions ?? collect(), 'selected' => $event->relationLoaded('festivales') ? $event->festivales->pluck('id')->all() : []],
+    ['name' => 'knowledge_article_ids', 'label' => 'Artículos de enciclopedia', 'placeholder' => 'Seleccionar artículos', 'options' => $knowledgeArticleOptions ?? collect(), 'selected' => $event->relationLoaded('knowledgeArticles') ? $event->knowledgeArticles->pluck('id')->all() : []],
+    ['name' => 'penia_profile_ids', 'label' => 'Peñas', 'placeholder' => 'Seleccionar peñas', 'options' => $peniaOptions ?? collect(), 'selected' => $event->relationLoaded('peniaProfiles') ? $event->peniaProfiles->pluck('id')->all() : []],
+  ];
+@endphp
+<div class="row">
+  @foreach ($relationSelects as $relationSelect)
+    @php $selectedIds = array_map('intval', array_filter((array) old($relationSelect['name'], $relationSelect['selected']))); @endphp
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="{{ $relationSelect['name'] }}">{{ $relationSelect['label'] }}</label>
+        {{-- El hidden vacío permite desvincular todo: sin él, un select múltiple vacío no se envía. --}}
+        <input type="hidden" name="{{ $relationSelect['name'] }}[]" value="">
+        <select name="{{ $relationSelect['name'] }}[]" id="{{ $relationSelect['name'] }}" class="form-control select2" multiple data-placeholder="{{ $relationSelect['placeholder'] }}">
+          @foreach ($relationSelect['options'] as $option)
+            <option value="{{ $option->id }}" @selected(in_array((int) $option->id, $selectedIds, true))>{{ $option->title }}@if ($option->status !== 'published') ({{ $option->status }})@endif</option>
+          @endforeach
+        </select>
+        @error($relationSelect['name'].'.*')
+          <small class="text-danger">{{ $message }}</small>
+        @enderror
+      </div>
+    </div>
+  @endforeach
+</div>
+<small class="form-text text-muted mb-3">En la ficha pública solo se muestran los vínculos publicados. Las peñas se muestran si el directorio está habilitado.</small>
+
+<!-- Resumen (excerpt) -->
+<div class="form-group">
+  <label for="excerpt">Resumen</label>
+  <textarea name="excerpt" id="excerpt" class="form-control" rows="2" maxlength="500" placeholder="Una o dos frases que resuman el evento.">{{ old('excerpt', $event->excerpt ?? '') }}</textarea>
+  @error('excerpt')
+    <small class="text-danger">{{ $message }}</small>
+  @enderror
 </div>
 
 <!-- Detalle (body) -->

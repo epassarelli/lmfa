@@ -7,6 +7,25 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Agregado
+
+- **Contenidos vinculados en festivales**: las fichas publicadas muestran próximas fechas, artistas activos, noticias y artículos evergreen relacionados sin depender del piloto Festival Vivo. Los bloques vacíos se ocultan y se mantienen los tres relacionados por provincia y por mes. Las próximas fechas se paginan de tres en tres, con título y hora de cada jornada y acceso a todas las noches cargadas.
+- **Ficha de evento con navegación y continuidad** (`/cartelera-de-eventos-folkloricos/{slug}`): ficha técnica arriba del cuerpo (fecha y hora, lugar, dirección, provincia enlazada, precio o "Gratis", botón de entradas y "Cómo llegar"), que solo muestra datos cargados. Aviso "Este evento ya se realizó" en eventos pasados, que siguen indexables. Breadcrumb `Cartelera > Provincia > Evento`. Bloques "Más de {artista}" (próximas fechas o, si no hay, hasta 3 presentaciones anteriores, con enlace a la biografía), "Próximos eventos en {provincia}" y "Artistas en escena", visibles sin depender del piloto Festival Vivo. El buscador del índice de la cartelera se reutiliza en la ficha.
+- **Relaciones del evento**: bloques "Forma parte de" (festivales), "Historia y contexto" (enciclopedia), "Peñas" (con `FEATURE_PENIA_DIRECTORY`) y "Noticias relacionadas", derivadas del festival y de los artistas del evento. Solo se muestran si tienen contenido publicado y registran el recorrido con módulos `event_related_*`. Nueva relación `Event::knowledgeArticles()` sobre el pivot existente.
+- **Backend de eventos**: selectores Select2 para vincular festivales, artículos de enciclopedia y peñas, y campos `end_at` y `excerpt`. Sincroniza solo los pivots existentes; sin migraciones.
+
+### Cambiado
+
+- **Consultas y SEO de la ficha de festival**: se eliminan las cargas completas y duplicadas de relaciones, con colecciones acotadas y fallback de imagen preservado. La paginación conserva la URL canónica de la ficha y usa `noindex,follow` en páginas posteriores. Sin nuevas dependencias, scripts globales ni migraciones.
+- **"Explorar por provincia"** en la cartelera muestra solo provincias con eventos futuros publicados y su cantidad (antes, las 8 primeras en orden alfabético).
+- **JSON-LD `Event` de la ficha**: agrega `eventStatus`, `eventAttendanceMode`, `endDate`, dirección estructurada (`PostalAddress`), `offers` solo con datos cargados, `organizer` y `superEvent`.
+- **Performance de la cartelera**: provincias, resolución de provincia por slug e intérpretes del buscador quedan en caché; se eliminaron consultas sin uso en la ficha. Las consultas de continuidad tienen `limit` en SQL y eager loading.
+
+### Corregido
+
+- **Imágenes rotas cuando el archivo no existe**: `EditorialImageResolver` verifica en el disco local que exista la imagen propia, la legacy o la del artista relacionado y, si falta, usa el fallback editorial de la entidad. Aplica a todas las secciones. `optimized-image` toma el primer grupo de variantes no vacío.
+- **Ficha de evento a ancho completo**: se quitaron el contenedor anidado y la columna `lg:w-2/3`, que dejaban el contenido en la mitad del ancho disponible.
+
 ## [2.3.1] — 2026-09-18
 
 ### Corregido

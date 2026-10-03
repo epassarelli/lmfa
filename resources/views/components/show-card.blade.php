@@ -34,7 +34,7 @@
       <div class="text-sm text-gray-700 mt-2">
         <span class="font-medium text-[#ff661f]">
           {{ \Carbon\Carbon::parse($show->fecha)->format('d M Y') }}
-          @if ($eventTitle && $show->start_at)
+          @if ($eventTitle && $show->start_at && $show->start_at->format('H:i') !== '00:00')
             · {{ $show->start_at->format('H:i') }} h
           @endif
         </span>

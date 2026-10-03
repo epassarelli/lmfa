@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Public explicit festival relationships
-The festival detail SHALL render public explicitly linked Events, active Artists, visible evergreen Articles and published News irrespective of the Festival Vivo flag and allowlist. Empty modules SHALL remain hidden. Event and Artist detail rollout gates SHALL remain unchanged.
+The festival detail SHALL render public explicitly linked Events, active Artists, visible evergreen Articles and published News irrespective of the Festival Vivo flag and allowlist. Empty modules SHALL remain hidden. Integration SHALL preserve public Event relations introduced by `event-detail-navigation-and-relations`, and Artist detail rollout gates SHALL remain unchanged.
 
 #### Scenario: Festival outside the pilot
 - **GIVEN** a published Festival with eligible explicit relationships

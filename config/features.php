@@ -1,7 +1,7 @@
 <?php
 
 return [
-    // Event/Artist continuations remain gated; Festival detail relations are public.
+    // Legacy journey continuations remain gated; Festival/Event detail relations are public.
     'festival_journey' => env('FEATURE_FESTIVAL_JOURNEY', false),
     'festival_journey_allowlist' => array_filter(array_map(
         'intval',
