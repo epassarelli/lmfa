@@ -1,7 +1,7 @@
 <?php
 
 return [
-    // The journey remains dark until the editorial pilot is explicitly enabled.
+    // Legacy journey continuations remain gated; Festival/Event detail relations are public.
     'festival_journey' => env('FEATURE_FESTIVAL_JOURNEY', false),
     'festival_journey_allowlist' => array_filter(array_map(
         'intval',

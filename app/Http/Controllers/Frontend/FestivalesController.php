@@ -290,7 +290,7 @@ class FestivalesController extends Controller
         ]);
     }
 
-    public function show(string $slug): View
+    public function show(Request $request, string $slug): View
     {
         $festival = $this->publishedFestivalQuery()
             ->with([
@@ -298,26 +298,17 @@ class FestivalesController extends Controller
                 'provincia',
                 'locality',
                 'mes',
-                'noticias' => fn ($query) => $query
-                    ->publishedVisible()
-                    ->with(['categoria', 'images', 'interprete.images'])
-                    ->latest('published_at'),
-                'events' => fn ($query) => $query
-                    ->publishedVisible()
-                    ->where('start_at', '>=', now())
-                    ->with(['interpretes.images', 'images', 'provincia'])
-                    ->orderBy('start_at'),
-                'interpretes' => fn ($query) => $query
-                    ->where('estado', 1)
-                    ->with('images')
-                    ->orderBy('interprete'),
-                'knowledgeArticles' => fn ($query) => $query
-                    ->visible()
-                    ->with(['category', 'images'])
-                    ->latest('published_at'),
             ])
             ->where('slug', $slug)
             ->firstOrFail();
+
+        $eventPage = max(1, $request->integer('eventos_page', 1));
+        $journey = app(\App\Services\Product\FestivalJourneyService::class)->forFestival($festival, $eventPage);
+        $journey->eventPagination?->withPath(route('festivales.show', $festival->slug))->fragment('proximas-fechas');
+
+        // Preserve editorial-image fallbacks using the already bounded collections.
+        $festival->setRelation('interpretes', $journey->artists);
+        $festival->setRelation('events', $journey->upcomingEvents);
 
         $festival->increment('visitas');
 
@@ -336,7 +327,6 @@ class FestivalesController extends Controller
             ->get();
 
         $seo = SeoMetadata::festival($festival);
-        $journey = app(\App\Services\Product\FestivalJourneyService::class)->forFestival($festival);
 
         return view('frontend.festivales.show', [
             'festival' => $festival,
@@ -349,7 +339,7 @@ class FestivalesController extends Controller
             'availableLocalities' => Locality::orderBy('name')->get(),
             'metaTitle' => $seo['title'],
             'metaDescription' => $seo['description'],
-            'metaRobots' => 'index,follow',
+            'metaRobots' => $eventPage > 1 ? 'noindex,follow' : 'index,follow',
             'canonical' => route('festivales.show', $festival->slug),
             'h1' => $seo['h1'],
             'filtersHeading' => 'Festivales y fiestas tradicionales del folklore argentino',

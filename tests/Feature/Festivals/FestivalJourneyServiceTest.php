@@ -14,21 +14,28 @@ class FestivalJourneyServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function test_it_keeps_the_journey_hidden_when_the_flag_is_disabled(): void
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config()->set('responsecache.enabled', false);
+        config()->set('responsecache.cache_store', 'array');
+    }
+
+    public function test_festival_relations_are_visible_when_the_flag_is_disabled(): void
     {
         $this->seed(FestivalJourneyDemoSeeder::class);
         $festival = Festival::where('slug', 'encuentro-demo-del-litoral')->firstOrFail();
 
         config()->set('features.festival_journey', false);
-        config()->set('features.festival_journey_allowlist', [$festival->id]);
+        config()->set('features.festival_journey_allowlist', []);
 
         $journey = app(FestivalJourneyService::class)->forFestival($festival);
 
-        $this->assertFalse($journey->enabled);
-        $this->assertCount(0, $journey->upcomingEvents);
+        $this->assertTrue($journey->enabled);
+        $this->assertCount(1, $journey->upcomingEvents);
     }
 
-    public function test_it_returns_only_allowlisted_visible_related_content(): void
+    public function test_it_returns_visible_related_content(): void
     {
         $this->seed(FestivalJourneyDemoSeeder::class);
         $festival = Festival::where('slug', 'encuentro-demo-del-litoral')->firstOrFail();

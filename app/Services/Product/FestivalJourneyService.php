@@ -9,21 +9,23 @@ use Illuminate\Support\Collection;
 
 final class FestivalJourneyService
 {
-    public function forFestival(Festival $festival): FestivalJourney
+    public function forFestival(Festival $festival, int $eventPage = 1): FestivalJourney
     {
-        if (! $this->isEnabledFor($festival)) {
+        if ($festival->status !== 'published' || $festival->published_at?->isFuture()) {
             return FestivalJourney::disabled();
         }
 
+        $events = $festival->events()
+            ->publiclyVisible()
+            ->where('start_at', '>=', now()->startOfDay())
+            ->with(['images', 'provincia', 'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')->orderBy('interprete')])
+            ->orderBy('start_at')
+            ->orderBy('events.id')
+            ->paginate(3, ['events.*'], 'eventos_page', max(1, $eventPage));
+
         return new FestivalJourney(
             true,
-            $festival->events()
-                ->publiclyVisible()
-                ->where('start_at', '>=', now()->startOfDay())
-                ->with(['images', 'provincia', 'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')->orderBy('interprete')])
-                ->orderBy('start_at')
-                ->limit(3)
-                ->get(),
+            $events->getCollection(),
             $festival->interpretes()
                 ->where('estado', 1)
                 ->with('images')
@@ -42,13 +44,8 @@ final class FestivalJourneyService
                 ->latest('published_at')
                 ->limit(3)
                 ->get(),
+            $events,
         );
-    }
-
-    private function isEnabledFor(Festival $festival): bool
-    {
-        return config('features.festival_journey', false)
-            && in_array((int) $festival->getKey(), config('features.festival_journey_allowlist', []), true);
     }
 
     public function forEvent(Event $event): array
