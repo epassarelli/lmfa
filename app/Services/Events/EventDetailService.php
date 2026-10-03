@@ -29,6 +29,14 @@ final class EventDetailService
         return Cache::remember(self::PROVINCES_CACHE_KEY, now()->addDay(), fn () => Provincia::orderBy('nombre')->get());
     }
 
+    /**
+     * Intérpretes activos para el datalist del buscador de la cartelera, cacheados.
+     */
+    public function interpretes(): Collection
+    {
+        return Cache::remember('shows:index:interpretes', now()->addHour(), fn () => Interprete::active()->get());
+    }
+
     public function findProvinciaBySlug(string $slug): ?Provincia
     {
         $normalized = \Illuminate\Support\Str::slug($slug);

@@ -53,7 +53,7 @@
   </section>
 
 
-  @include('frontend.shows._filters', ['variant' => 'full'])
+  @include('frontend.shows._filters')
 
   @if ($sinResultados)
     <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-5 mb-8">
@@ -145,22 +145,4 @@
   <x-sidebar.newsletter-form />
   <x-sidebar.social-links />
   <x-sidebar.invite-to-publish />
-@endsection
-
-@section('scripts')
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const interpreteInput = document.getElementById('interprete');
-    const interpreteIdInput = document.getElementById('interprete_id');
-    const options = Array.from(document.querySelectorAll('#interpretes-list option'));
-
-    const syncInterpreteId = () => {
-      const match = options.find((option) => option.value === interpreteInput.value);
-      interpreteIdInput.value = match ? match.dataset.id : '';
-    };
-
-    interpreteInput.addEventListener('input', syncInterpreteId);
-    syncInterpreteId();
-  });
-</script>
 @endsection

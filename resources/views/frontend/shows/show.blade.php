@@ -22,7 +22,7 @@
 @section('content')
   <x-breadcrumbs :items="$breadcrumbs" />
 
-  @include('frontend.shows._filters', ['variant' => 'compact'])
+  @include('frontend.shows._filters')
 
   <article class="bg-white rounded-xl shadow-sm p-6 mb-6">
     @if ($eventStatus === 'past')

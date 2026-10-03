@@ -78,19 +78,18 @@ class EventDetailTest extends TestCase
     }
 
     /** CA3 */
-    public function test_detail_has_a_compact_search_that_targets_the_listing(): void
+    public function test_detail_reuses_the_listing_search_form(): void
     {
         $provincia = $this->makeProvincia();
         $event = $this->makeEvent('Evento con buscador');
 
-        $this->get(route('cartelera.show', $event->slug))
-            ->assertOk()
-            ->assertSee('action="'.route('cartelera.index').'"', false)
-            ->assertSee('name="province_id"', false)
-            ->assertSee('name="mes"', false)
-            ->assertSee('name="q"', false)
-            ->assertDontSee('interpretes-list', false)
-            ->assertDontSee('name="fecha"', false);
+        $detailForm = $this->searchForm($this->get(route('cartelera.show', $event->slug))->assertOk());
+        $indexForm = $this->searchForm($this->get(route('cartelera.index'))->assertOk());
+
+        $this->assertSame($indexForm, $detailForm, 'La ficha debe mostrar el mismo buscador que el índice.');
+        foreach (['action="'.route('cartelera.index').'"', 'name="province_id"', 'name="mes"', 'name="interprete"', 'interpretes-list', 'name="fecha"', 'name="q"'] as $needle) {
+            $this->assertStringContainsString($needle, $detailForm);
+        }
 
         $listing = $this->get(route('cartelera.index', ['province_id' => $provincia->id]));
 
@@ -483,6 +482,13 @@ class EventDetailTest extends TestCase
         $this->assertNotFalse($start, 'Falta el bloque Explorar por provincia.');
 
         return substr($html, $start, strpos($html, '</section>', $start) - $start);
+    }
+
+    private function searchForm(TestResponse $response): string
+    {
+        $this->assertSame(1, preg_match('#<form[^>]+id="cartelera-filters".*?</form>#s', $response->getContent(), $matches));
+
+        return $matches[0];
     }
 
     private function metaRobots(TestResponse $response): string

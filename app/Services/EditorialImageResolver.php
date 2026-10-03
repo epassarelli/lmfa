@@ -72,11 +72,46 @@ class EditorialImageResolver
         $images = $entity->getRelation('images');
 
         if ($images instanceof Collection) {
-            return $images->first();
+            return $images->first(fn ($media) => $media instanceof MediaAsset && $this->mediaFileExists($media));
         }
 
         return null;
     }
+
+    /**
+     * Un media es utilizable si existe en disco al menos su original o una variante.
+     * La base puede referenciar archivos que no están en el servidor.
+     */
+    private function mediaFileExists(MediaAsset $media): bool
+    {
+        $variants = json_decode((string) ($media->getRawOriginal('variants_json') ?? $media->getAttributes()['variants_json'] ?? '[]'), true) ?: [];
+        $paths = collect($variants)->flatten()->push($media->getAttributes()['original_path'] ?? null);
+
+        return $paths->filter(fn ($path) => is_string($path) && $path !== '')
+            ->contains(fn (string $path) => $this->storageFileExists($media->disk ?: 'public', $path));
+    }
+
+    /**
+     * Solo verifica discos locales (stat barato, memorizado por request). URLs absolutas
+     * y discos remotos se asumen válidos para no agregar llamadas de red.
+     */
+    private function storageFileExists(string $disk, string $path): bool
+    {
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return true;
+        }
+
+        if (config("filesystems.disks.{$disk}.driver") !== 'local') {
+            return true;
+        }
+
+        $path = ltrim((string) preg_replace('#^/?storage/#', '', $path), '/');
+
+        return $this->existence[$disk.':'.$path] ??= Storage::disk($disk)->exists($path);
+    }
+
+    /** @var array<string, bool> */
+    private array $existence = [];
 
     private function relatedEntity(Model $entity): ?Model
     {
@@ -130,34 +165,36 @@ class EditorialImageResolver
             return $entity->legacy_featured_image_url;
         }
 
-        if ($entity instanceof Interprete && filled($entity->foto)) {
-            return Storage::disk('public')->url('interpretes/'.ltrim($entity->foto, '/'));
-        }
+        $folders = [
+            Interprete::class => 'interpretes',
+            Album::class => 'albunes',
+            Comida::class => 'comidas',
+            Mito::class => 'mitos',
+        ];
 
-        if ($entity instanceof Album && filled($entity->foto)) {
-            return Storage::disk('public')->url('albunes/'.ltrim($entity->foto, '/'));
-        }
-
-        if ($entity instanceof Comida && filled($entity->foto)) {
-            return Storage::disk('public')->url('comidas/'.ltrim($entity->foto, '/'));
-        }
-
-        if ($entity instanceof Mito && filled($entity->foto)) {
-            return Storage::disk('public')->url('mitos/'.ltrim($entity->foto, '/'));
+        foreach ($folders as $class => $folder) {
+            if ($entity instanceof $class && filled($entity->foto)) {
+                return $this->publicStorageUrl($folder.'/'.ltrim($entity->foto, '/'));
+            }
         }
 
         if (($entity instanceof Event || $entity instanceof Festival || $entity instanceof KnowledgeArticle)
             && filled($entity->featured_image_path)) {
-            $path = preg_replace('#^/?storage/#', '', trim((string) $entity->featured_image_path));
-
             if (filter_var($entity->featured_image_path, FILTER_VALIDATE_URL)) {
                 return $entity->featured_image_path;
             }
 
-            return filled($path) ? Storage::disk('public')->url($path) : null;
+            $path = preg_replace('#^/?storage/#', '', trim((string) $entity->featured_image_path));
+
+            return filled($path) ? $this->publicStorageUrl($path) : null;
         }
 
         return null;
+    }
+
+    private function publicStorageUrl(string $path): ?string
+    {
+        return $this->storageFileExists('public', $path) ? Storage::disk('public')->url($path) : null;
     }
 
     private function fallbackPath(Model $entity): string

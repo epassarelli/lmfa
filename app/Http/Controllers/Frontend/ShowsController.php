@@ -116,7 +116,7 @@ class ShowsController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        $interpretes = Cache::remember('shows:index:interpretes', now()->addHours(1), fn () => Interprete::active()->get());
+        $interpretes = $this->eventDetail->interpretes();
         $provincias = $this->eventDetail->provincias();
         $sinResultados = $shows->count() === 0;
 
@@ -210,6 +210,7 @@ class ShowsController extends Controller
             'provinceUpcoming' => $this->eventDetail->upcomingInProvince($show, $excludeIds),
             'provinceLinks' => $this->eventDetail->provincesWithUpcomingEvents(),
             'provincias' => $this->eventDetail->provincias(),
+            'interpretes' => $this->eventDetail->interpretes(),
             'monthOptions' => $this->buildMonthOptions(),
             'ticketUrl' => EventSchema::validUrl($show->ticket_url),
             'canonicalUrl' => CanonicalUrl::current(),

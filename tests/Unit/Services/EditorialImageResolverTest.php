@@ -13,14 +13,97 @@ use App\Models\Mito;
 use App\Models\News;
 use App\Services\EditorialImageResolver;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class EditorialImageResolverTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('public');
+    }
+
+    private function storedMedia(string $alt): MediaAsset
+    {
+        $path = 'tests/'.uniqid().'_card_480.webp';
+        Storage::disk('public')->put($path, 'img');
+
+        return new MediaAsset([
+            'alt' => $alt,
+            'disk' => 'public',
+            'original_path' => $path,
+            'variants_json' => ['card' => [480 => $path]],
+        ]);
+    }
+
+    public function test_media_whose_files_are_missing_on_disk_falls_back(): void
+    {
+        $event = new Event(['title' => 'Evento con media rota']);
+        $event->setRelation('images', new Collection([new MediaAsset([
+            'alt' => 'Rota',
+            'disk' => 'public',
+            'original_path' => 'events/no-existe_original.png',
+            'variants_json' => ['card' => [480 => 'events/no-existe_card_480.webp']],
+        ])]));
+
+        $resolved = app(EditorialImageResolver::class)->resolve($event);
+
+        $this->assertTrue($resolved->isFallback());
+        $this->assertStringContainsString(config('editorial_images.fallbacks.event'), $resolved->url);
+    }
+
+    public function test_media_with_an_empty_variant_group_is_valid_if_another_group_exists(): void
+    {
+        Storage::disk('public')->put('events/sidebar_120.webp', 'img');
+        $event = new Event(['title' => 'Evento con variantes parciales']);
+        $media = new MediaAsset([
+            'disk' => 'public',
+            'original_path' => 'events/no-existe_original.png',
+            'variants_json' => ['card' => [], 'sidebar' => [120 => 'events/sidebar_120.webp']],
+        ]);
+        $event->setRelation('images', new Collection([$media]));
+
+        $this->assertSame($media, app(EditorialImageResolver::class)->resolve($event)->media);
+    }
+
+    public function test_legacy_paths_missing_on_disk_fall_back_and_event_skips_a_broken_artist_photo(): void
+    {
+        $artist = new Interprete(['interprete' => 'Artista sin archivo', 'foto' => 'no-existe.jpg']);
+        $artist->setRelation('images', new Collection());
+
+        $event = new Event(['title' => 'Evento sin imagen', 'featured_image_path' => 'events/tampoco-existe.jpg']);
+        $event->setRelation('images', new Collection());
+        $event->setRelation('interpretes', new Collection([$artist]));
+
+        $resolver = app(EditorialImageResolver::class);
+
+        $this->assertTrue($resolver->resolve($artist)->isFallback());
+        $this->assertStringContainsString(config('editorial_images.fallbacks.artist'), $resolver->resolve($artist)->url);
+        $this->assertTrue($resolver->resolve($event)->isFallback());
+        $this->assertStringContainsString(config('editorial_images.fallbacks.event'), $resolver->resolve($event)->url);
+    }
+
+    public function test_existing_artist_photo_is_used_and_external_urls_are_trusted(): void
+    {
+        Storage::disk('public')->put('interpretes/existe.jpg', 'img');
+        $artist = new Interprete(['interprete' => 'Artista con foto', 'foto' => 'existe.jpg']);
+        $artist->setRelation('images', new Collection());
+
+        $event = new Event(['title' => 'Evento externo', 'featured_image_path' => 'https://cdn.example.test/evento.jpg']);
+        $event->setRelation('images', new Collection());
+
+        $resolver = app(EditorialImageResolver::class);
+
+        $this->assertStringContainsString('storage/interpretes/existe.jpg', $resolver->resolve($artist)->url);
+        $this->assertSame('https://cdn.example.test/evento.jpg', $resolver->resolve($event)->url);
+    }
+
     public function test_it_prefers_own_media_asset(): void
     {
         $news = new News(['title' => 'Noticia con imagen', 'categoria_id' => 1]);
-        $media = new MediaAsset(['alt' => 'Alt propio']);
+        $media = $this->storedMedia('Alt propio');
         $news->setRelation('images', new Collection([$media]));
 
         $resolved = app(EditorialImageResolver::class)->resolve($news);
@@ -37,7 +120,7 @@ class EditorialImageResolverTest extends TestCase
         $news->setRelation('images', new Collection());
 
         $artist = new Interprete(['interprete' => 'Artista relacionado']);
-        $media = new MediaAsset(['alt' => 'Foto del artista']);
+        $media = $this->storedMedia('Foto del artista');
         $artist->setRelation('images', new Collection([$media]));
 
         $news->setRelation('interprete', $artist);
@@ -56,7 +139,7 @@ class EditorialImageResolverTest extends TestCase
         $event->setRelation('images', new Collection());
 
         $artist = new Interprete(['interprete' => 'Artista del evento']);
-        $media = new MediaAsset(['alt' => 'Foto artista']);
+        $media = $this->storedMedia('Foto artista');
         $artist->setRelation('images', new Collection([$media]));
 
         $event->setRelation('interpretes', new Collection([$artist]));
@@ -74,11 +157,11 @@ class EditorialImageResolverTest extends TestCase
         $festival->setRelation('images', new Collection());
 
         $artist = new Interprete(['interprete' => 'Artista de festival']);
-        $artistMedia = new MediaAsset(['alt' => 'Artista']);
+        $artistMedia = $this->storedMedia('Artista');
         $artist->setRelation('images', new Collection([$artistMedia]));
 
         $event = new Event(['title' => 'Evento relacionado']);
-        $eventMedia = new MediaAsset(['alt' => 'Evento']);
+        $eventMedia = $this->storedMedia('Evento');
         $event->setRelation('images', new Collection([$eventMedia]));
 
         $festival->setRelation('interpretes', new Collection([$artist]));
@@ -96,7 +179,7 @@ class EditorialImageResolverTest extends TestCase
         $article->setRelation('images', new Collection());
 
         $festival = new Festival(['title' => 'Festival relacionado']);
-        $media = new MediaAsset(['alt' => 'Festival']);
+        $media = $this->storedMedia('Festival');
         $festival->setRelation('images', new Collection([$media]));
 
         $article->setRelation('interpretes', new Collection());
@@ -118,6 +201,10 @@ class EditorialImageResolverTest extends TestCase
 
         $myth = new Mito(['titulo' => 'Leyenda', 'foto' => 'leyenda.jpg']);
         $myth->setRelation('images', new Collection());
+
+        foreach (['albunes/cover.jpg', 'comidas/locro.jpg', 'mitos/leyenda.jpg'] as $path) {
+            Storage::disk('public')->put($path, 'img');
+        }
 
         $resolver = app(EditorialImageResolver::class);
 
