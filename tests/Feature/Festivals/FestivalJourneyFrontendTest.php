@@ -13,18 +13,25 @@ class FestivalJourneyFrontendTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function test_the_festival_page_keeps_journey_modules_hidden_when_disabled(): void
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config()->set('responsecache.enabled', false);
+        config()->set('responsecache.cache_store', 'array');
+    }
+
+    public function test_the_festival_page_renders_relations_outside_the_pilot(): void
     {
         $this->seed(FestivalJourneyDemoSeeder::class);
         $festival = Festival::where('slug', 'encuentro-demo-del-litoral')->firstOrFail();
 
         config()->set('features.festival_journey', false);
-        config()->set('features.festival_journey_allowlist', [$festival->id]);
+        config()->set('features.festival_journey_allowlist', []);
 
         $this->get(route('festivales.show', $festival->slug))
             ->assertOk()
-            ->assertDontSee('Próximas fechas')
-            ->assertDontSee('data-journey-list', false);
+            ->assertSee('Próximas fechas')
+            ->assertSee('data-journey-list', false);
     }
 
     public function test_the_enabled_festival_page_renders_canonical_journey_links_and_metadata(): void
@@ -37,7 +44,7 @@ class FestivalJourneyFrontendTest extends TestCase
 
         $this->get(route('festivales.show', $festival->slug))
             ->assertOk()
-            ->assertSee('Proximas fechas')
+            ->assertSee('Próximas fechas')
             ->assertSee('data-journey-list', false)
             ->assertSee('data-journey-link', false)
             ->assertSee('data-module="upcoming_events"', false)

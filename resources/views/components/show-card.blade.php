@@ -1,5 +1,5 @@
 <div>
-  @props(['show', 'journey' => null])
+  @props(['show', 'journey' => null, 'eventTitle' => false])
 
   @php $interprete = $show->interprete; @endphp
 
@@ -26,7 +26,7 @@
 
     <div class="p-4 flex flex-col justify-between flex-grow">
       <h3 class="text-lg font-semibold text-gray-800 mb-1 line-clamp-2">
-        {{ $interprete->interprete ?? $show->titulo }}
+        {{ $eventTitle ? $show->title : ($interprete->interprete ?? $show->titulo) }}
       </h3>
 
       <p class="text-sm text-gray-500">{{ $show->lugar }}</p>
@@ -34,6 +34,9 @@
       <div class="text-sm text-gray-700 mt-2">
         <span class="font-medium text-[#ff661f]">
           {{ \Carbon\Carbon::parse($show->fecha)->format('d M Y') }}
+          @if ($eventTitle && $show->start_at)
+            · {{ $show->start_at->format('H:i') }} h
+          @endif
         </span>
       </div>
 

@@ -3,6 +3,7 @@
 namespace App\Services\Product;
 
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 final class FestivalJourney
 {
@@ -12,6 +13,7 @@ final class FestivalJourney
         public readonly Collection $artists,
         public readonly Collection $knowledgeArticles,
         public readonly Collection $news,
+        public readonly ?LengthAwarePaginator $eventPagination = null,
     ) {
     }
 

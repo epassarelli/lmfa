@@ -1,5 +1,14 @@
 # 00 - Estado Actual del Proyecto
 
+### Implementado y validado localmente 2026-10-03: contenidos vinculados de festivales
+
+- **Rama desde dev:** `codex/festival-related-content`. Spec aprobada por el usuario: `openspec/changes/festival-public-related-content/`. Checkout aislado en `storage/app/worktrees/festival-public-related-content` porque otra tarea cambió la rama del checkout principal durante la ejecución.
+- **Comportamiento:** las fichas de festivales publicados muestran eventos públicos activos desde el comienzo del día, artistas activos, evergreen visible y noticias publicadas, sin flag ni allowlist. Bloques vacíos ocultos; recomendaciones de tres festivales por provincia y mes conservadas. El piloto sigue condicionando las continuaciones en las fichas Evento/Artista.
+- **Programación:** próximas fechas paginadas de tres en tres mediante `eventos_page`, con título y hora de cada jornada y orden estable por fecha/ID. Canonical de ficha preservado; páginas posteriores `noindex,follow`. No se interpreta Festival–Artista como confirmación de grilla.
+- **Performance y SEO:** se eliminan las cargas completas y duplicadas de relaciones en el detalle, preservando el fallback de imagen con las colecciones acotadas. Prueba de consultas constantes al crecer de una a nueve relaciones, sin lazy loading durante el render y HTML menor a 350 KB. No hay nuevos scripts, dependencias, migraciones ni cambios de URLs.
+- **Validación:** 18 pruebas Feature, 111 aserciones, todas pasan (relaciones públicas, filtros, paginación, metadata, sitemap y landings). `openspec validate festival-public-related-content` y `git diff --check` pasan. Tests con `DatabaseTransactions` sobre la base local `mfa`, response cache desactivado y caché en memoria; sin DDL ni resets.
+- **Pendiente operativo:** no integrado ni desplegado. Al desplegar, invalidar response cache con el flujo habitual. Jesús María local continúa sin relaciones cargadas; el cambio no crea contenido ni vínculos.
+
 ### Incidente 2026-09-16/17: recuperación de contraseña y pérdida de datos locales
 
 - **Causa real del error 500 en `/password/email`**: credencial SMTP rechazada por Hostinger (`535 5.7.8 authentication failed`). El `.env` de producción tenía `MAIL_PASSWORD=1208Gina#` sin comillas, y en un `.env` el `#` abre un comentario: dotenv entregaba `1208Gina`, sin el último carácter. Verificado con `Dotenv::parse`. Con `QUEUE_CONNECTION=sync` el envío ocurre dentro del request, así que la excepción de transporte se convierte en un 500 visible. **No era un bug de código.** Corrección: comillas alrededor del valor. Esa contraseña quedó expuesta en un canal de chat y debe rotarse.

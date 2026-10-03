@@ -82,14 +82,19 @@
   </article>
 
   @if ($journey->enabled)
-    @if ($journey->upcomingEvents->isNotEmpty())
-      <x-content-journey.section title="Proximas fechas" module="upcoming_events" source-type="festival" :source-id="$festival->id" :items="$journey->upcomingEvents">
+    @if ($journey->upcomingEvents->isNotEmpty() || $journey->eventPagination?->total())
+      <div id="proximas-fechas">
+      <x-content-journey.section title="Próximas fechas" module="upcoming_events" source-type="festival" :source-id="$festival->id" :items="$journey->upcomingEvents">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           @foreach ($journey->upcomingEvents as $event)
-            <x-show-card :show="$event" :journey="['sourceType' => 'festival', 'sourceId' => $festival->id, 'module' => 'upcoming_events', 'position' => $loop->iteration]" />
+            <x-show-card :show="$event" :event-title="true" :journey="['sourceType' => 'festival', 'sourceId' => $festival->id, 'module' => 'upcoming_events', 'position' => (($journey->eventPagination?->currentPage() ?? 1) - 1) * 3 + $loop->iteration]" />
           @endforeach
         </div>
       </x-content-journey.section>
+      @if ($journey->eventPagination?->hasPages())
+        <x-public-pagination :paginator="$journey->eventPagination" />
+      @endif
+      </div>
     @endif
 
     @if ($journey->artists->isNotEmpty())
