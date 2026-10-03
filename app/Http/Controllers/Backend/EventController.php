@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\Festival;
 use App\Models\Interprete;
+use App\Models\KnowledgeArticle;
+use App\Models\PeniaProfile;
 use App\Http\Requests\ShowRequest; // Mantengo el Request name por ahora para tocar lo mínimo de validación
 use App\Models\Provincia;
 use Illuminate\Support\Facades\Auth;
@@ -67,7 +70,7 @@ class EventController extends Controller
         $provincias = Provincia::all();
         $action = 'create';
 
-        return view('backend.events.create', compact('event', 'interpretes', 'provincias', 'action'));
+        return view('backend.events.create', array_merge(compact('event', 'interpretes', 'provincias', 'action'), $this->relationOptions()));
     }
 
     public function store(ShowRequest $request)
@@ -82,12 +85,12 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        $event->load('interpretes');
+        $event->load(['interpretes', 'festivales:id', 'knowledgeArticles:id', 'peniaProfiles:id']);
         $interpretes = Interprete::active()->get();
         $provincias = Provincia::all();
         $action = 'edit';
 
-        return view('backend.events.edit', compact('event', 'provincias', 'interpretes', 'action'));
+        return view('backend.events.edit', array_merge(compact('event', 'provincias', 'interpretes', 'action'), $this->relationOptions()));
     }
 
     public function update(ShowRequest $request, Event $event)
@@ -110,6 +113,19 @@ class EventController extends Controller
 
         Alert::success('Evento eliminado', 'El evento ha sido eliminado con éxito.');
         return redirect()->route('backend.events.index');
+    }
+
+    /**
+     * Opciones de los selects de relaciones editoriales (Select2). Se exponen todos los
+     * estados para poder vincular de antemano; la ficha pública filtra lo no publicado.
+     */
+    private function relationOptions(): array
+    {
+        return [
+            'festivalOptions' => Festival::query()->orderBy('title')->get(['id', 'title', 'status']),
+            'knowledgeArticleOptions' => KnowledgeArticle::query()->orderBy('title')->get(['id', 'title', 'editorial_status as status']),
+            'peniaOptions' => PeniaProfile::query()->orderBy('title')->get(['id', 'title', 'editorial_status as status']),
+        ];
     }
 
     private function sendNotification(Event $event)

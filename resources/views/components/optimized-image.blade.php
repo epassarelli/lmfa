@@ -15,7 +15,8 @@
     if (! empty($allVariants[$variant])) {
         $variants = $allVariants[$variant];
     } elseif (! empty($allVariants)) {
-        $variants = reset($allVariants);
+        // Primer grupo con archivos: un grupo vacío (p. ej. "card": []) dejaba el src en blanco.
+        $variants = collect($allVariants)->first(fn ($group) => ! empty($group)) ?? [];
     } else {
         $variants = [];
     }

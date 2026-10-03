@@ -50,6 +50,7 @@
 @stop
 
 @section('js')
+    @include('backend.partials.scripts._select2')
     <script>
         $(document).ready(function () {
             $('.custom-file-input').on('change', function() {

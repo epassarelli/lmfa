@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Interprete;
 use App\Models\Provincia;
+use App\Services\Events\EventDetailService;
+use App\Services\Events\EventRelatedContentService;
+use App\Support\CanonicalUrl;
+use App\Support\EventSchema;
 use App\Support\SeoMetadata;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,6 +33,12 @@ class ShowsController extends Controller
         11 => 'noviembre',
         12 => 'diciembre',
     ];
+
+    public function __construct(
+        private readonly EventDetailService $eventDetail,
+        private readonly EventRelatedContentService $relatedContent,
+    ) {
+    }
 
     public function resolve(Request $request, string $provinceOrSlug, ?string $period = null)
     {
@@ -106,14 +116,14 @@ class ShowsController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        $interpretes = Cache::remember('shows:index:interpretes', now()->addHours(1), fn () => Interprete::active()->get());
-        $provincias = Cache::remember('shows:index:provincias', now()->addHours(1), fn () => Provincia::orderBy('nombre')->get());
+        $interpretes = $this->eventDetail->interpretes();
+        $provincias = $this->eventDetail->provincias();
         $sinResultados = $shows->count() === 0;
 
         [$heading, $metaTitle, $metaDescription, $introText] = $this->buildSeoContent($filters);
         [$canonicalUrl, $metaRobots] = $this->buildCanonicalAndRobots($filters);
         $breadcrumbs = $this->buildBreadcrumbs($filters);
-        $relatedProvinceLinks = Cache::remember('shows:index:related-provinces', now()->addHours(1), fn () => Provincia::orderBy('nombre')->take(8)->get());
+        $relatedProvinceLinks = $this->eventDetail->provincesWithUpcomingEvents();
 
         return view('frontend.shows.index', [
             'shows' => $shows,
@@ -159,39 +169,52 @@ class ShowsController extends Controller
     public function show($slug)
     {
         $show = Event::publiclyVisible()
-            ->with(['interpretes.images', 'provincia', 'images'])
+            ->with([
+                'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')->orderBy('event_interprete.sort_order'),
+                'provincia',
+                'images',
+            ])
             ->where('slug', $slug)
             ->firstOrFail();
 
-        $ultimos_shows = Event::publiclyVisible()
-            ->where('id', '<>', $show->id)
-            ->orderByDesc('created_at')
-            ->take(10)
-            ->get();
-
-        $noticiasRelacionadas = $show->noticias ?? collect();
-        $journey = app(\App\Services\Product\FestivalJourneyService::class)->forEvent($show);
+        // Venue y organización casi no tienen cobertura: solo se consultan si el evento los tiene.
+        $show->loadMissing(array_values(array_filter([
+            $show->venue_id ? 'venue' : null,
+            $show->organization_id ? 'organization' : null,
+        ])));
 
         $seo = SeoMetadata::event($show);
-        $metaTitle = $seo['title'];
-        $metaDescription = $seo['description'];
-        $h1 = $seo['h1'];
 
-        $breadcrumbs = [
-            ['label' => 'Cartelera', 'url' => route('cartelera.index')],
-            ['label' => $show->titulo],
-        ];
+        $artistContinuity = $this->eventDetail->artistContinuity($show);
+        $excludeIds = $artistContinuity['mode'] === 'upcoming' ? $artistContinuity['events']->modelKeys() : [];
 
-        return view('frontend.shows.show', compact(
-            'show',
-            'ultimos_shows',
-            'metaTitle',
-            'metaDescription',
-            'h1',
-            'noticiasRelacionadas',
-            'journey',
-            'breadcrumbs'
-        ));
+        $breadcrumbs = [['label' => 'Cartelera', 'url' => route('cartelera.index')]];
+        if ($show->provincia) {
+            $breadcrumbs[] = [
+                'label' => $show->provincia->nombre,
+                'url' => url('/cartelera-de-eventos-folkloricos/'.$show->provincia->slug),
+            ];
+        }
+        $breadcrumbs[] = ['label' => $show->title];
+
+        return view('frontend.shows.show', [
+            'show' => $show,
+            'metaTitle' => $seo['title'],
+            'metaDescription' => $seo['description'],
+            'h1' => $seo['h1'],
+            'breadcrumbs' => $breadcrumbs,
+            'eventStatus' => $this->eventDetail->status($show),
+            'artists' => $show->interpretes->take(6),
+            'artistContinuity' => $artistContinuity,
+            'relatedContent' => $this->relatedContent->forEvent($show),
+            'provinceUpcoming' => $this->eventDetail->upcomingInProvince($show, $excludeIds),
+            'provinceLinks' => $this->eventDetail->provincesWithUpcomingEvents(),
+            'provincias' => $this->eventDetail->provincias(),
+            'interpretes' => $this->eventDetail->interpretes(),
+            'monthOptions' => $this->buildMonthOptions(),
+            'ticketUrl' => EventSchema::validUrl($show->ticket_url),
+            'canonicalUrl' => CanonicalUrl::current(),
+        ]);
     }
 
     private function resolveFilters(Request $request): array
@@ -205,7 +228,7 @@ class ShowsController extends Controller
         }
 
         if (! $provincia && $provinceId) {
-            $provincia = Provincia::find($provinceId);
+            $provincia = $this->eventDetail->findProvinciaById($provinceId);
         }
 
         $interprete = null;
@@ -372,8 +395,6 @@ class ShowsController extends Controller
 
     private function findProvinciaBySlug(string $slug): ?Provincia
     {
-        return Provincia::all()->first(function (Provincia $provincia) use ($slug) {
-            return $provincia->slug === Str::slug($slug);
-        });
+        return $this->eventDetail->findProvinciaBySlug($slug);
     }
 }
