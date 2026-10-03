@@ -3,8 +3,16 @@
 namespace Tests\Feature\Events;
 
 use App\Models\Event;
+use App\Models\Festival;
 use App\Models\Interprete;
+use App\Models\KnowledgeArticle;
+use App\Models\KnowledgeCategory;
+use App\Models\Mes;
+use App\Models\News;
+use App\Models\PeniaProfile;
 use App\Models\Provincia;
+use App\Models\User;
+use App\Services\Events\EventRelatedContentService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
@@ -18,7 +26,8 @@ class EventDetailTest extends TestCase
     {
         parent::setUp();
 
-        config(['features.festival_journey' => false, 'features.festival_journey_allowlist' => []]);
+        // Sin response cache: algunos tests piden la misma URL dos veces con distinta configuración.
+        config(['responsecache.enabled' => false, 'features.festival_journey' => false, 'features.festival_journey_allowlist' => []]);
     }
 
     /** CA1 */
@@ -302,7 +311,142 @@ class EventDetailTest extends TestCase
         $this->assertStringNotContainsString('<iframe', $html);
     }
 
+    /** CA8 */
+    public function test_detail_shows_festival_context_and_derived_news_blocks(): void
+    {
+        $artist = $this->makeArtist('Artista con noticias');
+        $event = $this->makeEvent('Evento vinculado');
+        $event->interpretes()->attach($artist->id, ['sort_order' => 1]);
+        $festival = $this->makeFestival('Festival vinculado');
+        $event->festivales()->attach($festival->id);
+        $article = $this->makeArticle('Historia del chamamé', ['editorial_status' => 'published', 'published_at' => now()->subDay()]);
+        $event->knowledgeArticles()->attach($article->id);
+
+        $artistNews = $this->makeNews('Noticia del artista', ['interprete_id' => $artist->id, 'published_at' => now()->subDays(2)]);
+        $festivalNews = $this->makeNews('Noticia del festival', ['published_at' => now()->subDay()]);
+        $festivalNews->festivales()->attach($festival->id);
+
+        $response = $this->get(route('cartelera.show', $event->slug))->assertOk();
+
+        $response->assertSee('Forma parte de')
+            ->assertSee('data-module="event_related_festivals"', false)
+            ->assertSee($festival->title)
+            ->assertSee('Historia y contexto')
+            ->assertSee('data-module="event_related_knowledge"', false)
+            ->assertSee($article->title)
+            ->assertSee('Noticias relacionadas')
+            ->assertSee('data-module="event_related_news"', false)
+            ->assertSeeInOrder([$festivalNews->title, $artistNews->title])
+            ->assertSee(route('artista.noticia', [$artist->slug, $artistNews->slug]), false);
+
+        $schema = $this->eventSchema($response);
+        $this->assertSame($festival->title, $schema['superEvent']['name']);
+    }
+
+    /** CA9 */
+    public function test_unpublished_related_content_is_not_listed(): void
+    {
+        $artist = $this->makeArtist('Artista con borradores');
+        $event = $this->makeEvent('Evento con borradores');
+        $event->interpretes()->attach($artist->id, ['sort_order' => 1]);
+        $event->festivales()->attach($this->makeFestival('Festival borrador', ['status' => 'draft'])->id);
+        $event->knowledgeArticles()->attach($this->makeArticle('Artículo borrador')->id);
+        $this->makeNews('Noticia borrador', ['interprete_id' => $artist->id, 'editorial_status' => 'draft']);
+        $this->makeNews('Noticia programada', ['interprete_id' => $artist->id, 'published_at' => now()->addDay()]);
+
+        $this->get(route('cartelera.show', $event->slug))
+            ->assertOk()
+            ->assertDontSee('Forma parte de')
+            ->assertDontSee('Historia y contexto')
+            ->assertDontSee('Noticias relacionadas')
+            ->assertDontSee('Noticia borrador')
+            ->assertDontSee('Noticia programada');
+    }
+
+    public function test_penias_respect_the_directory_flag_and_public_verification(): void
+    {
+        $event = $this->makeEvent('Evento en peña');
+        $visible = PeniaProfile::factory()->create([
+            'title' => 'Peña verificada '.uniqid(),
+            'editorial_status' => 'published',
+            'published_at' => now()->subDay(),
+            'verification_status' => 'verified',
+            'verified_by_user_id' => User::factory()->create()->id,
+            'verification_method' => 'phone',
+            'last_verified_at' => now()->subDays(5),
+        ]);
+        $unverified = PeniaProfile::factory()->create(['title' => 'Peña sin verificar '.uniqid(), 'editorial_status' => 'published', 'published_at' => now()->subDay()]);
+        $event->peniaProfiles()->attach([$visible->id, $unverified->id]);
+
+        config(['features.penia_directory' => false]);
+        $this->get(route('cartelera.show', $event->slug))->assertOk()->assertDontSee($visible->title);
+
+        config(['features.penia_directory' => true]);
+        $this->get(route('cartelera.show', $event->slug))
+            ->assertOk()
+            ->assertSee('data-module="event_related_penias"', false)
+            ->assertSee($visible->title)
+            ->assertDontSee($unverified->title);
+    }
+
+    public function test_derived_news_are_limited_to_three_without_duplicates(): void
+    {
+        $artist = $this->makeArtist('Artista prolífico');
+        $event = $this->makeEvent('Evento con muchas noticias');
+        $event->interpretes()->attach($artist->id, ['sort_order' => 1]);
+
+        foreach (range(1, 4) as $i) {
+            $news = $this->makeNews("Nota prolífica {$i}", ['interprete_id' => $artist->id, 'published_at' => now()->subDays($i)]);
+            $news->interpretes()->attach($artist->id);
+        }
+
+        $related = app(EventRelatedContentService::class)->forEvent($event->load('interpretes'));
+
+        $this->assertCount(3, $related['news']);
+        $this->assertSame($related['news']->modelKeys(), array_unique($related['news']->modelKeys()));
+        $this->assertStringStartsWith('Nota prolífica 1', $related['news']->first()->title);
+    }
+
     // ------------------------------------------------------------------
+
+    private function makeFestival(string $title, array $attributes = []): Festival
+    {
+        return Festival::create(array_merge([
+            'title' => $title.' '.uniqid(),
+            'slug' => Str::slug($title).'-'.uniqid(),
+            'body' => '<p>Festival de prueba.</p>',
+            'province_id' => $this->makeProvincia()->id,
+            'mes_id' => Mes::firstOrCreate(['nombre' => 'Febrero'])->id,
+            'user_id' => User::factory()->create()->id,
+            'status' => 'published',
+            'published_at' => now()->subDay(),
+            'visitas' => 0,
+        ], $attributes));
+    }
+
+    private function makeArticle(string $title, array $attributes = []): KnowledgeArticle
+    {
+        $category = KnowledgeCategory::factory()->create(['slug' => 'categoria-test-'.uniqid()]);
+
+        return KnowledgeArticle::factory()->create(array_merge([
+            'knowledge_category_id' => $category->id,
+            'title' => $title.' '.uniqid(),
+            'slug' => Str::slug($title).'-'.uniqid(),
+        ], $attributes));
+    }
+
+    private function makeNews(string $title, array $attributes = []): News
+    {
+        $title .= ' '.uniqid();
+
+        return News::create(array_merge([
+            'title' => $title,
+            'slug' => Str::slug($title),
+            'body' => '<p>Noticia de prueba.</p>',
+            'editorial_status' => 'published',
+            'published_at' => now()->subDay(),
+        ], $attributes));
+    }
 
     protected function makeEvent(string $title, array $attributes = []): Event
     {

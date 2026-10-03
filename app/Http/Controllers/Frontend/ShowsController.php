@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Interprete;
 use App\Models\Provincia;
 use App\Services\Events\EventDetailService;
+use App\Services\Events\EventRelatedContentService;
 use App\Support\CanonicalUrl;
 use App\Support\EventSchema;
 use App\Support\SeoMetadata;
@@ -33,8 +34,10 @@ class ShowsController extends Controller
         12 => 'diciembre',
     ];
 
-    public function __construct(private readonly EventDetailService $eventDetail)
-    {
+    public function __construct(
+        private readonly EventDetailService $eventDetail,
+        private readonly EventRelatedContentService $relatedContent,
+    ) {
     }
 
     public function resolve(Request $request, string $provinceOrSlug, ?string $period = null)
@@ -203,6 +206,7 @@ class ShowsController extends Controller
             'eventStatus' => $this->eventDetail->status($show),
             'artists' => $show->interpretes->take(6),
             'artistContinuity' => $artistContinuity,
+            'relatedContent' => $this->relatedContent->forEvent($show),
             'provinceUpcoming' => $this->eventDetail->upcomingInProvince($show, $excludeIds),
             'provinceLinks' => $this->eventDetail->provincesWithUpcomingEvents(),
             'provincias' => $this->eventDetail->provincias(),

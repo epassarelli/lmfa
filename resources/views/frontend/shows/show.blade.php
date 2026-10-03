@@ -7,7 +7,7 @@
   $metaImage = $resolvedEditorialImage->isMedia()
     ? $resolvedEditorialImage->media->original_path
     : $resolvedEditorialImage->url;
-  $eventSchema = \App\Support\EventSchema::forEvent($show, $canonicalUrl, $metaImage, $metaDescription);
+  $eventSchema = \App\Support\EventSchema::forEvent($show, $canonicalUrl, $metaImage, $metaDescription, $relatedContent['festivals']->first());
   $journeyItem = fn (string $module, int $position) => ['sourceType' => 'event', 'sourceId' => $show->id, 'module' => $module, 'position' => $position];
   $continuityArtist = $artistContinuity['artist'];
 @endphp
@@ -80,6 +80,17 @@
     </a>
   </article>
 
+  @if ($relatedContent['festivals']->isNotEmpty())
+    @php $festivalsModule = 'event_related_festivals'; @endphp
+    <x-content-journey.section title="Forma parte de" :module="$festivalsModule" source-type="event" :source-id="$show->id" :items="$relatedContent['festivals']">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        @foreach ($relatedContent['festivals'] as $festival)
+          <x-festival-card :festival="$festival" :journey="$journeyItem($festivalsModule, $loop->iteration)" />
+        @endforeach
+      </div>
+    </x-content-journey.section>
+  @endif
+
   @if ($continuityArtist && $artistContinuity['events']->isNotEmpty())
     @php $artistModule = 'event_related_artist_events'; @endphp
     <x-content-journey.section :title="'Más de '.$continuityArtist->interprete" :module="$artistModule" source-type="event" :source-id="$show->id" :items="$artistContinuity['events']">
@@ -119,6 +130,33 @@
       </div>
     </x-content-journey.section>
   @endif
+
+  @include('frontend.shows._related_links', [
+    'items' => $relatedContent['knowledgeArticles'],
+    'title' => 'Historia y contexto',
+    'module' => 'event_related_knowledge',
+    'destinationType' => 'knowledge_article',
+    'url' => fn ($article) => $article->getUrl(),
+    'label' => 'Artículo',
+  ])
+
+  @include('frontend.shows._related_links', [
+    'items' => $relatedContent['penias'],
+    'title' => 'Peñas',
+    'module' => 'event_related_penias',
+    'destinationType' => 'penia_profile',
+    'url' => fn ($penia) => $penia->getUrl(),
+    'label' => 'Peña',
+  ])
+
+  @include('frontend.shows._related_links', [
+    'items' => $relatedContent['news'],
+    'title' => 'Noticias relacionadas',
+    'module' => 'event_related_news',
+    'destinationType' => 'news',
+    'url' => fn ($news) => $news->interprete ? route('artista.noticia', [$news->interprete->slug, $news->slug]) : route('noticias.show', ['slug' => $news->slug]),
+    'label' => 'Noticia',
+  ])
 
   @include('frontend.shows._province_links')
 @endsection
