@@ -1,0 +1,5 @@
+- [x] Inventariar y clasificar todos los listados backend/pasarela por patron actual: paginado server-side, filtrado parcial o legacy con `get()`.
+- [x] Implementar buscador y orden seguro en la primera tanda de listados ya paginados (`news`, `events`, `festivales`, `interpretes`, `users`, `newsletter`, `knowledge_articles` y pasarela paginada).
+- [x] Adaptar las vistas index de esa primera tanda con controles GET de busqueda, orden, direccion y limpieza manteniendo el estado en paginacion.
+- [x] Convertir los listados legacy priorizados a server-side antes de sumar discovery consistente, empezando por los que hoy cargan colecciones completas.
+- [x] Agregar/ajustar tests feature para los indices criticos y documentar cualquier limitacion de performance o indices recomendados.

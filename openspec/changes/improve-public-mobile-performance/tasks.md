@@ -1,0 +1,5 @@
+- [x] Formalizar la capability `public-mobile-performance-budget` para homes y listados publicos de alto trafico.
+- [x] Reducir la carga inicial server-side en home, noticias, discos, canciones, interpretes y festivales.
+- [x] Acotar bloques secundarios de comidas y mitos para no penalizar mobile mientras se conserva su frontend legacy.
+- [x] Validar el impacto funcional con tests feature focalizados.
+- [x] Documentar el criterio aplicado en `project/docs/00_estado_actual.md`.

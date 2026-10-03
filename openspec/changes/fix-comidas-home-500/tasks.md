@@ -1,0 +1,3 @@
+- [x] Corregir las claves de caché de la home pública de comidas en `RecetasController@index`.
+- [x] Agregar un test feature para `GET /recetas-de-comidas-tipicas-argentinas`.
+- [x] Ejecutar la suite de tests de recetas y validar el resultado.

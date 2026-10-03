@@ -1,0 +1,3 @@
+- [ ] Formalizar la capability `backend-server-side-listing-standard` con requerimientos obligatorios para nuevos ABMs y migraciones futuras.
+- [ ] Dejar documentada la arquitectura objetivo de listados server-side reutilizables para backend y pasarela.
+- [ ] Actualizar `project/specs/_global_rules.md` para exigir este estandar en proximos desarrollos de listados administrativos.

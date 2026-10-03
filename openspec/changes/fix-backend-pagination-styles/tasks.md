@@ -1,0 +1,3 @@
+- [x] Crear y conectar un bundle CSS especifico para AdminLTE/backend sin `@tailwind base`.
+- [x] Configurar la paginacion global de Laravel para usar vistas Bootstrap compatibles con AdminLTE.
+- [x] Validar el fix sobre multiples listados backend paginados y registrar el resultado.
