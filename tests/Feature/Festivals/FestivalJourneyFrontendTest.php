@@ -54,10 +54,10 @@ class FestivalJourneyFrontendTest extends TestCase
         config()->set('features.festival_journey', true);
         config()->set('features.festival_journey_allowlist', [$festival->id]);
 
+        // La ficha de evento ya no depende del piloto: sus bloques se cubren en Events\EventDetailTest.
         $this->get(route('cartelera.show', $event->slug))
             ->assertOk()
-            ->assertSee('Este evento forma parte de')
-            ->assertSee('data-module="event_festivals"', false);
+            ->assertSee('data-module="event_related_artists"', false);
 
         $this->get(route('artista.show', $artist->slug))
             ->assertOk()
