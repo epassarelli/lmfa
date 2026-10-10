@@ -81,6 +81,48 @@
 <div class="row">
   <div class="col-md-4">
     <div class="form-group">
+      <label for="instagram">Instagram</label>
+      <input type="text" name="instagram" id="instagram" class="form-control" value="{{ $field('instagram') }}" maxlength="255" placeholder="@usuario o URL del perfil">
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="facebook">Facebook</label>
+      <input type="text" name="facebook" id="facebook" class="form-control" value="{{ $field('facebook') }}" maxlength="255" placeholder="nombre de la página o URL">
+    </div>
+  </div>
+</div>
+
+<h5 class="mt-2">Seguimiento del contacto <small class="text-muted">(interno)</small></h5>
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="contact_stage">Etapa</label>
+      <select name="contact_stage" id="contact_stage" class="form-control">
+        @foreach (config('entity_management.contact_stages') as $value => $label)
+          <option value="{{ $value }}" @selected($field('contact_stage', 'prospect') === $value)>{{ $label }}</option>
+        @endforeach
+      </select>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="last_contacted_at">Último contacto</label>
+      <input type="date" name="last_contacted_at" id="last_contacted_at" class="form-control"
+        value="{{ old('last_contacted_at', optional($organization->last_contacted_at)->format('Y-m-d')) }}">
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="form-group">
+      <label for="contact_notes">Notas</label>
+      <textarea name="contact_notes" id="contact_notes" rows="3" class="form-control" maxlength="5000" placeholder="Qué se habló, a quién escribir, cuándo volver a contactar...">{{ $field('contact_notes') }}</textarea>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
       <label for="province_id">Provincia</label>
       <select name="province_id" id="province_id" class="form-control select2" data-placeholder="Sin provincia">
         <option value="">Sin provincia</option>

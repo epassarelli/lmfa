@@ -1,5 +1,14 @@
 # 00 - Estado Actual del Proyecto
 
+### Implementado en local y validado por tests 2026-10-10: seguimiento de contacto en Organizaciones (opción A)
+
+- **Rama:** `feature/organization-entity-management` (continúa los slices 1 y 2). Spec: `openspec/changes/organization-contact-tracking/`. Sin push, merge ni tag.
+- **Qué hay:** en `organizations`, Instagram, Facebook, etapa del contacto, último contacto y notas; listado con filtro por etapa, enlaces a redes y "Registrar contacto"; export CSV de contactables (activas + consentimiento + sin baja + con email). Pensado para el flujo "contacto por IG/FB, luego se obtiene el email". El envío masivo desde el portal queda para cuando haya volumen (opción C); `crm-contact-directory` sigue sin implementar.
+- **Migración:** `2026_10_10_120000_add_contact_tracking_to_organizations` aplicada en la base local `mfa` tras mostrar `migrate:status` y recibir confirmación. Reversible; 5 columnas; sin datos migrados.
+- **Validación:** `tests/Feature/EntityManagement`: 35 tests, 190 aserciones OK. Regresión Artists + Festivals + Pasarela + AdminAutoPublish: 139 tests, solo las 2 fallas previas de los auditores. Datos demo re-sembrados (9 organizaciones, dos en contacto por redes sin email).
+- **Performance y SEO:** sin impacto público. El export recorre con cursor y sin N+1; el listado conserva 25 por página.
+- **No validado:** revisión visual en navegador ni envío real de correos (no existe). Los consentimientos deben registrarse solo cuando la persona acepta recibir comunicaciones.
+
 ### Implementado en local y validado por tests 2026-10-10: backoffice de Organizaciones (slice 2)
 
 - **Rama:** `feature/organization-entity-management` (continúa el slice 1; el checkout principal quedó en esta rama para revisión local). Spec: `openspec/changes/organization-admin-backoffice/`. Sin push, merge ni tag.

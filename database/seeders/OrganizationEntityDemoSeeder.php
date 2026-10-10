@@ -148,12 +148,12 @@ class OrganizationEntityDemoSeeder extends Seeder
     {
         $organizations = [
             'ana' => [
-                'attributes' => ['type' => 'artista', 'name' => 'Ana Solista', 'email' => 'ana@'.self::EMAIL_DOMAIN, 'source' => 'claim', 'verified' => true, 'consent' => true],
+                'attributes' => ['type' => 'artista', 'name' => 'Ana Solista', 'email' => 'ana@'.self::EMAIL_DOMAIN, 'source' => 'claim', 'verified' => true, 'consent' => true, 'instagram' => '@ana.solista.demo', 'stage' => 'email_obtained'],
                 'links' => [['interprete_ana', true]],
                 'members' => [['ana', 'owner', 'active']],
             ],
             'duo' => [
-                'attributes' => ['type' => 'artista', 'name' => 'Dúo Los Demo', 'email' => 'duo@'.self::EMAIL_DOMAIN, 'source' => 'email_reply', 'verified' => true, 'consent' => true],
+                'attributes' => ['type' => 'artista', 'name' => 'Dúo Los Demo', 'email' => 'duo@'.self::EMAIL_DOMAIN, 'source' => 'email_reply', 'verified' => true, 'consent' => true, 'instagram' => '@duo.los.demo', 'stage' => 'email_obtained'],
                 'links' => [['interprete_duo', true]],
                 'members' => [
                     ['duo_owner', 'owner', 'active'],
@@ -162,7 +162,7 @@ class OrganizationEntityDemoSeeder extends Seeder
                 ],
             ],
             'productora' => [
-                'attributes' => ['type' => 'productora', 'name' => 'Productora Cuerdas', 'email' => 'productora@'.self::EMAIL_DOMAIN, 'source' => 'manual', 'verified' => false, 'consent' => true],
+                'attributes' => ['type' => 'productora', 'name' => 'Productora Cuerdas', 'email' => 'productora@'.self::EMAIL_DOMAIN, 'source' => 'manual', 'verified' => false, 'consent' => true, 'stage' => 'email_obtained'],
                 // Además vincula (sin ser principal) la ficha del Dúo: una ficha con dos organizaciones.
                 'links' => [['interprete_trio', true], ['interprete_cantor', true], ['interprete_banda', true], ['interprete_duo', false]],
                 'members' => [['productora', 'owner', 'active']],
@@ -182,12 +182,23 @@ class OrganizationEntityDemoSeeder extends Seeder
             ],
             // Contactos sin cuenta ni fichas: respondieron por mail o se dieron de baja.
             'prensa-sin-cuenta' => [
-                'attributes' => ['type' => 'prensa', 'name' => 'Prensa Sin Cuenta', 'email' => 'prensa@'.self::EMAIL_DOMAIN, 'source' => 'email_reply', 'verified' => false, 'consent' => true],
+                'attributes' => ['type' => 'prensa', 'name' => 'Prensa Sin Cuenta', 'email' => 'prensa@'.self::EMAIL_DOMAIN, 'source' => 'email_reply', 'verified' => false, 'consent' => true, 'stage' => 'email_obtained'],
                 'links' => [],
                 'members' => [],
             ],
             'pena-con-baja' => [
-                'attributes' => ['type' => 'peña', 'name' => 'Peña Con Baja', 'email' => 'pena@'.self::EMAIL_DOMAIN, 'source' => 'import', 'verified' => false, 'consent' => true, 'unsubscribed' => true],
+                'attributes' => ['type' => 'peña', 'name' => 'Peña Con Baja', 'email' => 'pena@'.self::EMAIL_DOMAIN, 'source' => 'import', 'verified' => false, 'consent' => true, 'unsubscribed' => true, 'stage' => 'declined'],
+                'links' => [],
+                'members' => [],
+            ],
+            // Contacto en curso por redes: todavía no hay email, así que no son contactables.
+            'prospecto-instagram' => [
+                'attributes' => ['type' => 'artista', 'name' => 'Prospecto Por Instagram', 'email' => null, 'source' => 'manual', 'verified' => false, 'consent' => false, 'instagram' => '@prospecto.demo', 'stage' => 'prospect'],
+                'links' => [],
+                'members' => [],
+            ],
+            'contactado-facebook' => [
+                'attributes' => ['type' => 'festival', 'name' => 'Festival Contactado Por Facebook', 'email' => null, 'source' => 'manual', 'verified' => false, 'consent' => false, 'facebook' => 'festival.demo.facebook', 'stage' => 'contacted', 'contacted_days_ago' => 3],
                 'links' => [],
                 'members' => [],
             ],
@@ -200,7 +211,13 @@ class OrganizationEntityDemoSeeder extends Seeder
             $organization->forceFill([
                 'type' => $a['type'],
                 'name' => self::PREFIX.' '.$a['name'],
-                'email' => $a['email'],
+                'email' => $a['email'] ?? null,
+                'instagram' => $a['instagram'] ?? null,
+                'facebook' => $a['facebook'] ?? null,
+                'contact_stage' => $a['stage'] ?? 'prospect',
+                'last_contacted_at' => isset($a['contacted_days_ago'])
+                    ? ($organization->last_contacted_at ?? now()->subDays($a['contacted_days_ago']))
+                    : $organization->last_contacted_at,
                 'source' => $a['source'],
                 'status' => $a['status'] ?? 'active',
                 'is_verified' => $a['verified'],

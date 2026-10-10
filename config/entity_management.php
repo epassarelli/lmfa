@@ -50,5 +50,14 @@ return [
 
     'sources' => ['manual', 'email_reply', 'claim', 'import'],
 
+    // Etapas del contacto previo al envío de información (se suele empezar por Instagram o Facebook).
+    'contact_stages' => [
+        'prospect' => 'Prospecto (sin contactar)',
+        'contacted' => 'Contactado',
+        'replied' => 'Respondió',
+        'email_obtained' => 'Con email obtenido',
+        'declined' => 'No le interesa',
+    ],
+
     'verification_methods' => ['email_match', 'code', 'social_proof', 'manual'],
 ];

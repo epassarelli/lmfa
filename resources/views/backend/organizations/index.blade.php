@@ -15,6 +15,10 @@
     <div class="card-header">
       <h3 class="card-title">Listado de organizaciones</h3>
       <div class="card-tools">
+        <a href="{{ route('backend.organizations.export', request()->only(['search', 'type'])) }}" class="btn btn-outline-primary btn-sm mr-1"
+           title="Solo activas, con consentimiento, sin baja y con email">
+          <i class="fas fa-file-csv mr-1"></i> Exportar contactables (CSV)
+        </a>
         <a href="{{ route('backend.organizations.create') }}" class="btn btn-success btn-sm">
           <i class="fas fa-plus mr-1"></i> Nueva organización
         </a>
@@ -39,6 +43,15 @@
             <option value="">Todos</option>
             @foreach (config('entity_management.organization_types') as $value => $label)
               <option value="{{ $value }}" @selected(request('type') === $value)>{{ $label }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="stage" class="small text-muted mb-1">Etapa de contacto</label>
+          <select id="stage" name="stage" class="form-control">
+            <option value="">Todas</option>
+            @foreach (config('entity_management.contact_stages') as $value => $label)
+              <option value="{{ $value }}" @selected(request('stage') === $value)>{{ $label }}</option>
             @endforeach
           </select>
         </div>
@@ -68,7 +81,8 @@
             <tr>
               <th>Nombre</th>
               <th>Tipo</th>
-              <th>Email</th>
+              <th>Email y redes</th>
+              <th>Contacto</th>
               <th>Estado</th>
               <th class="text-center">Verificada</th>
               <th class="text-center">Contactable</th>
@@ -90,7 +104,27 @@
                   <div class="small text-muted"><code>{{ $organization->slug }}</code></div>
                 </td>
                 <td>{{ config('entity_management.organization_types.'.$organization->type, $organization->type) }}</td>
-                <td>{{ $organization->email ?: '-' }}</td>
+                <td>
+                  {{ $organization->email ?: '-' }}
+                  <div>
+                    @if ($organization->instagram_url)
+                      <a href="{{ $organization->instagram_url }}" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    @endif
+                    @if ($organization->facebook_url)
+                      <a href="{{ $organization->facebook_url }}" target="_blank" rel="noopener noreferrer" title="Facebook" class="ml-1"><i class="fab fa-facebook"></i></a>
+                    @endif
+                  </div>
+                </td>
+                <td>
+                  <span class="badge badge-info">{{ config('entity_management.contact_stages.'.$organization->contact_stage, $organization->contact_stage) }}</span>
+                  <div class="small text-muted">
+                    {{ $organization->last_contacted_at ? 'Último: '.$organization->last_contacted_at->format('d/m/Y') : 'Sin contactar' }}
+                  </div>
+                  <form action="{{ route('backend.organizations.contacted', $organization) }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-link btn-sm p-0" title="Anotar que le escribí hoy">Registrar contacto</button>
+                  </form>
+                </td>
                 <td>
                   <span class="badge badge-{{ $organization->status === 'active' ? 'success' : 'secondary' }}">
                     {{ $organization->status === 'active' ? 'Activa' : 'Inactiva' }}
@@ -108,7 +142,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="9" class="text-center text-muted py-4">No hay organizaciones para los filtros elegidos.</td>
+                <td colspan="10" class="text-center text-muted py-4">No hay organizaciones para los filtros elegidos.</td>
               </tr>
             @endforelse
           </tbody>

@@ -93,7 +93,7 @@ class OrganizationDemoSeederTest extends TestCase
         $this->seed(OrganizationEntityDemoSeeder::class);
         $this->seed(OrganizationEntityDemoSeeder::class);
 
-        $this->assertSame(7, $this->demoOrganizations()->count());
+        $this->assertSame(9, $this->demoOrganizations()->count());
         $this->assertSame(8, Interprete::where('slug', 'like', OrganizationEntityDemoSeeder::SLUG_PREFIX.'%')->count());
         $this->assertSame(10, User::where('email', 'like', '%@'.OrganizationEntityDemoSeeder::EMAIL_DOMAIN)->count());
 

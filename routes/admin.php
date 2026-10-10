@@ -102,12 +102,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('organization-lookups/entities', [OrganizationLookupController::class, 'entities'])->name('backend.organization-lookups.entities');
         Route::get('organization-lookups/users', [OrganizationLookupController::class, 'users'])->name('backend.organization-lookups.users');
 
+        Route::get('organizations/export', [OrganizationController::class, 'export'])->name('backend.organizations.export');
+
         Route::resource('organizations', OrganizationController::class)
             ->except(['show', 'destroy'])
             ->names('backend.organizations')
             ->parameters(['organizations' => 'organization']);
 
         Route::scopeBindings()->prefix('organizations/{organization}')->name('backend.organizations.')->group(function () {
+            Route::post('contacted', [OrganizationController::class, 'markContacted'])->name('contacted');
             Route::post('entities', [OrganizationEntityController::class, 'store'])->name('entities.store');
             Route::patch('entities/{entityLink}/primary', [OrganizationEntityController::class, 'primary'])->name('entities.primary');
             Route::delete('entities/{entityLink}', [OrganizationEntityController::class, 'destroy'])->name('entities.destroy');

@@ -27,6 +27,11 @@ class Organization extends Model
         'logo_media_id',
         'cover_media_id',
         'is_verified',
+        'instagram',
+        'facebook',
+        'contact_stage',
+        'last_contacted_at',
+        'contact_notes',
         'contact_consent_at',
         'contact_consent_purpose',
         'unsubscribed_at',
@@ -43,7 +48,33 @@ class Organization extends Model
         'contact_consent_at' => 'datetime',
         'unsubscribed_at' => 'datetime',
         'verified_at' => 'datetime',
+        'last_contacted_at' => 'datetime',
     ];
+
+    public function getInstagramUrlAttribute(): ?string
+    {
+        return $this->socialUrl($this->instagram, 'https://www.instagram.com/');
+    }
+
+    public function getFacebookUrlAttribute(): ?string
+    {
+        return $this->socialUrl($this->facebook, 'https://www.facebook.com/');
+    }
+
+    private function socialUrl(?string $value, string $base): ?string
+    {
+        $value = trim((string) $value);
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('#^https?://#i', $value)) {
+            return $value;
+        }
+
+        return $base.ltrim($value, '@/');
+    }
 
     /**
      * Organizaciones con consentimiento de contacto vigente y sin baja.
