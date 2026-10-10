@@ -27,13 +27,50 @@ class Organization extends Model
         'logo_media_id',
         'cover_media_id',
         'is_verified',
+        'contact_consent_at',
+        'contact_consent_purpose',
+        'unsubscribed_at',
+        'source',
+        'verified_at',
+        'verification_method',
+        'verified_by',
         'status',
         'created_by',
     ];
 
     protected $casts = [
         'is_verified' => 'boolean',
+        'contact_consent_at' => 'datetime',
+        'unsubscribed_at' => 'datetime',
+        'verified_at' => 'datetime',
     ];
+
+    /**
+     * Organizaciones con consentimiento de contacto vigente y sin baja.
+     */
+    public function scopeContactable($query)
+    {
+        return $query->where('status', 'active')
+            ->whereNotNull('contact_consent_at')
+            ->whereNull('unsubscribed_at');
+    }
+
+    public function entityLinks()
+    {
+        return $this->hasMany(OrganizationEntity::class);
+    }
+
+    public function interpretes()
+    {
+        return $this->morphedByMany(Interprete::class, 'entity', 'organization_entities')
+            ->withPivot('is_primary')->withTimestamps();
+    }
+
+    public function festivales()
+    {
+        return $this->morphedByMany(Festival::class, 'entity', 'organization_entities')
+            ->withPivot('is_primary')->withTimestamps();
+    }
 
     /**
      * Boot function from Laravel.

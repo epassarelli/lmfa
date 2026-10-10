@@ -1,5 +1,15 @@
 # 00 - Estado Actual del Proyecto
 
+### Implementado en local y validado 2026-10-10: administración de fichas por organización (slice 1)
+
+- **Rama desde dev:** `feature/organization-entity-management` (worktree aislado en `storage/app/worktrees/organization-entity-management`; el checkout principal estaba ocupado por `feature/event-programs-and-venues`). Spec: `openspec/changes/organization-entity-management/`. **Sin push, sin merge, sin tag** (el tag se asigna al integrar).
+- **Qué hace:** vincula `organizations` con intérpretes y festivales (`organization_entities`) y autoriza la edición por membresía activa `owner`/`editor`. Preserva admin y acceso legacy por `user_id`. Agrega consentimiento/baja/verificación a `organizations`. Listado de festivales de colaboradores incluye lo administrado; listado de intérpretes se recorta solo con `ENTITY_MANAGEMENT_SCOPE_LISTINGS=true` (default apagado). Altas de no administradores crean su organización (`OrganizationProvisioner`).
+- **Migración:** `2026_10_08_130000_create_organization_entities_and_contact_metadata` aplicada en la base local `mfa` (autorizada por el usuario, ejecutada sola con `migrate:status` previo). Reversible. Sin datos migrados: las 445 fichas y 47 festivales siguen sin organización hasta que haga falta.
+- **Validación:** `EntityManagementTest` 11 tests / 37 aserciones OK, sin datos residuales en la base. Regresión Artists + Festivals + Pasarela + AdminAutoPublish: 139 tests, 2 fallas **previas** (`ArtistAuditCommandTest`, `FestivalAuditCommandTest`), que fallan igual sin este cambio por el contenido real de la base restaurada. Tests corridos desde el worktree con un autoload local en `vendor/autoload.php` (ignorado por git).
+- **Performance y SEO:** sin cambios en rutas públicas ni sitemap. La verificación de permiso hace una consulta indexada por usuario y tipo (memoizada); el scope de listado usa subconsulta, 1 consulta (verificado por test).
+- **No validado:** comportamiento en navegador, y con cuentas reales. `organizations` nunca se usó en producción.
+- **Pendiente / siguientes slices:** pantalla de administración de organizaciones y miembros; autorización de Eventos y Noticias (después de integrar `feature/event-programs-and-venues`, que modifica `Event*`, `AuthServiceProvider` y rutas); login con Google y solicitud de vínculo con verificación por email; decidir relación con `crm-contact-directory`. Reconciliar seeder y base de permisos del rol colaborador. Al integrar, es probable un conflicto trivial en CHANGELOG y este archivo con la otra rama.
+
 ### Integrado en dev y validado localmente 2026-10-03: contenidos vinculados de festivales
 
 - **Rama desde dev:** `codex/festival-related-content`. Spec aprobada por el usuario: `openspec/changes/festival-public-related-content/`. Checkout aislado en `storage/app/worktrees/festival-public-related-content` porque otra tarea cambió la rama del checkout principal durante la ejecución.

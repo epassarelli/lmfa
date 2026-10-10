@@ -27,7 +27,7 @@ class InterpretePolicy
 
     public function update(User $user, Interprete $interprete)
     {
-        return $user->hasRole('administrador') || $interprete->user_id == $user->id;
+        return $user->canManage($interprete);
     }
 
     public function delete(User $user, Interprete $interprete)
