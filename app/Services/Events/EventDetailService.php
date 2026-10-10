@@ -58,7 +58,7 @@ final class EventDetailService
     {
         return Cache::remember(self::UPCOMING_PROVINCES_CACHE_KEY, now()->addHour(), function () {
             $counts = Event::publiclyVisible()
-                ->where('start_at', '>=', now()->startOfDay())
+                ->upcomingOrOngoing()
                 ->whereNotNull('province_id')
                 ->groupBy('province_id')
                 ->select('province_id', DB::raw('COUNT(*) as total'))
@@ -118,7 +118,7 @@ final class EventDetailService
         }
 
         $upcoming = $this->artistEvents($artist, $event)
-            ->where('start_at', '>=', now()->startOfDay())
+            ->upcomingOrOngoing()
             ->orderBy('start_at')
             ->limit(self::CONTINUITY_LIMIT)
             ->get();
@@ -147,7 +147,7 @@ final class EventDetailService
 
         return Event::publiclyVisible()
             ->where('province_id', $event->province_id)
-            ->where('start_at', '>=', now()->startOfDay())
+            ->upcomingOrOngoing()
             ->whereNotIn('events.id', array_merge([$event->id], $excludeIds))
             ->with($this->cardRelations())
             ->orderBy('start_at')
@@ -167,6 +167,7 @@ final class EventDetailService
     {
         return [
             'images',
+            'program.images',
             'provincia',
             'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')->orderBy('event_interprete.sort_order'),
         ];

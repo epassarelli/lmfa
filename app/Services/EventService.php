@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Event;
-use App\Support\RichTextHeadingSanitizer;
+use App\Models\EventProgram;
+use App\Support\EventInput;
 use App\Support\ImageSourceMetadata;
+use App\Support\RichTextHeadingSanitizer;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -23,6 +25,9 @@ class EventService
     public function createEvent(array $data, mixed $image = null): Event
     {
         return DB::transaction(function () use ($data, $image) {
+            $data = EventInput::validate($data);
+            $data = $this->programDefaults($data);
+            app(VenueService::class)->resolve($data);
             $data['created_by'] = $data['created_by'] ?? auth()->id();
             $data['is_free'] = $data['is_free'] ?? false;
 
@@ -33,7 +38,7 @@ class EventService
             }
 
             if (empty($data['slug'])) {
-                $data['slug'] = Str::slug($data['title'].'-'.now()->timestamp);
+                $data['slug'] = Str::slug($data['title']).'-'.Str::lower(Str::random(10));
             }
 
             if (isset($data['estado'])) {
@@ -73,6 +78,9 @@ class EventService
     public function updateEvent(Event $event, array $data, mixed $image = null): Event
     {
         return DB::transaction(function () use ($event, $data, $image) {
+            $data = EventInput::validate($data, $event);
+            $data = $this->programDefaults($data, $event);
+            app(VenueService::class)->resolve($data, $event->venue_id);
             if (array_key_exists('is_free', $data) && $data['is_free'] === null) {
                 $data['is_free'] = false;
             }
@@ -148,6 +156,41 @@ class EventService
         } finally {
             $this->imageResolver->cleanupTemporary($resolved);
         }
+    }
+
+    private function programDefaults(array $data, ?Event $event = null): array
+    {
+        $id = array_key_exists('program_id', $data) ? $data['program_id'] : $event?->program_id;
+        if (! $id) {
+            if (array_key_exists('program_id', $data)) {
+                $data['program_overrides'] = null;
+            }
+            unset($data['inherit_fields']);
+
+            return $data;
+        }
+        $program = EventProgram::findOrFail($id);
+        $sameProgram = $event && (int) $event->program_id === (int) $id;
+        $overrides = $sameProgram ? ($event->program_overrides ?? []) : [];
+        foreach (EventProgramService::COMMON_FIELDS as $field) {
+            if (in_array($field, $data['inherit_fields'] ?? [], true)) {
+                $data[$field] = $program->{$field};
+                $overrides = array_diff($overrides, [$field]);
+            } elseif (array_key_exists($field, $data)) {
+                $matches = $field === 'is_free' ? (bool) $data[$field] === (bool) $program->{$field} : (string) $data[$field] === (string) $program->{$field};
+                if (! $matches) {
+                    $overrides[] = $field;
+                } else {
+                    $overrides = array_diff($overrides, [$field]);
+                }
+            } elseif (! $sameProgram) {
+                $data[$field] = $program->{$field};
+            }
+        }
+        $data['program_overrides'] = array_values(array_unique($overrides));
+        unset($data['inherit_fields']);
+
+        return $data;
     }
 
     /**

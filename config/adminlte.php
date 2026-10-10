@@ -294,58 +294,13 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
-        // [
-        //     'text' => 'pages',
-        //     'url' => 'admin/pages',
-        //     'icon' => 'far fa-fw fa-file',
-        //     'label' => 4,
-        //     'label_color' => 'success',
-        // ],
-
-        // ['header' => 'account_settings'],
-
-        // [
-        //     'type' => 'navbar-search',
-        //     'text' => 'search',
-        //     'topnav_right' => true,
-        // ],
-        // [
-        //     'type' => 'fullscreen-widget',
-        //     'topnav_right' => true,
-        // ],
-
-        // // Sidebar items:
-        // [
-        //     'type' => 'sidebar-menu-search',
-        //     'text' => 'search',
-        // ],
-        // [
-        //     'text' => 'blog',
-        //     'url' => 'admin/blog',
-        //     'can' => 'manage-blog',
-        // ],
-
-        ['header' => 'CONTENIDO EDITORIAL'],
-
         [
-            'text' => 'Eventos / Cartelera',
-            'url' => 'admin/events',
-            'icon' => 'fas fa-fw fa-calendar-alt',
-            'label_color' => 'success',
-            'active' => ['admin/events*'],
+            'header' => 'CONTENIDO EDITORIAL',
         ],
         [
-            'text' => 'Noticias / Actualidad',
-            'url' => 'admin/news',
-            'icon' => 'fas fa-fw fa-newspaper',
-            'active' => ['admin/news*'],
-        ],
-        [
-            'text' => 'Enciclopedia',
-            'url' => 'admin/knowledge-articles',
-            'icon' => 'fas fa-fw fa-book-open',
-            'active' => ['admin/knowledge-articles*'],
+            'text' => 'Comidas Típicas',
+            'url' => 'admin/comidas',
+            'icon' => 'fas fa-fw fa-utensils',
         ],
         [
             'text' => 'Copa del Folklore 2026',
@@ -357,121 +312,122 @@ return [
             ],
         ],
         [
+            'text' => 'Discos',
+            'url' => 'admin/discos',
+            'icon' => 'fas fa-fw fa-record-vinyl',
+        ],
+        [
+            'text' => 'Enciclopedia',
+            'url' => 'admin/knowledge-articles',
+            'icon' => 'fas fa-fw fa-book-open',
+            'active' => [
+                'admin/knowledge-articles*',
+            ],
+        ],
+        [
+            'text' => 'Eventos / Cartelera',
+            'url' => 'admin/events',
+            'icon' => 'fas fa-fw fa-calendar-alt',
+            'label_color' => 'success',
+            'active' => [
+                'admin/events*',
+                'admin/event-programs*',
+            ],
+        ],
+        [
+            'text' => 'Festivales',
+            'url' => 'admin/festivales',
+            'icon' => 'fas fa-fw fa-map-marked-alt',
+        ],
+        [
             'text' => 'Intérpretes',
             'url' => 'admin/interpretes',
             'icon' => 'fas fa-fw fa-microphone',
             'can' => 'read interprete',
         ],
         [
-            'text' => 'Música y Cultura',
-            'icon' => 'fas fa-fw fa-compact-disc',
+            'text' => 'Letras / Canciones',
+            'url' => 'admin/canciones',
+            'icon' => 'fas fa-fw fa-music',
+        ],
+        [
+            'text' => 'Mitos y Leyendas',
+            'url' => 'admin/mitos',
+            'icon' => 'fas fa-fw fa-book',
+        ],
+        [
+            'text' => 'Noticias / Actualidad',
+            'url' => 'admin/news',
+            'icon' => 'fas fa-fw fa-newspaper',
+            'active' => [
+                'admin/news*',
+            ],
+        ],
+        [
+            'text' => 'Pasarela de Contenidos',
+            'icon' => 'fas fa-fw fa-share-alt',
             'submenu' => [
                 [
-                    'text' => 'Discos',
-                    'url' => 'admin/discos',
-                    'icon' => 'fas fa-fw fa-record-vinyl',
+                    'text' => 'Cuentas Sociales',
+                    'url' => 'admin/pasarela/social-accounts',
+                    'icon' => 'fab fa-fw fa-facebook-messenger',
+                    'can' => 'manage social accounts',
                 ],
                 [
-                    'text' => 'Letras / Canciones',
-                    'url' => 'admin/canciones',
-                    'icon' => 'fas fa-fw fa-music',
+                    'text' => 'Historial de Publicación',
+                    'url' => 'admin/pasarela/publication-requests',
+                    'icon' => 'fas fa-fw fa-history',
+                    'can' => 'manage user',
                 ],
                 [
-                    'text' => 'Festivales',
-                    'url' => 'admin/festivales',
-                    'icon' => 'fas fa-fw fa-map-marked-alt',
+                    'text' => 'Nueva Publicación',
+                    'url' => 'admin/pasarela/publication-requests/create',
+                    'icon' => 'fas fa-fw fa-share-alt',
+                    'can' => 'manage user',
                 ],
                 [
-                    'text' => 'Peñas',
-                    'url' => 'admin/penia-profiles',
-                    'icon' => 'fas fa-fw fa-store',
-                ],
-                [
-                    'text' => 'Comidas Típicas',
-                    'url' => 'admin/comidas',
-                    'icon' => 'fas fa-fw fa-utensils',
-                ],
-                [
-                    'text' => 'Mitos y Leyendas',
-                    'url' => 'admin/mitos',
-                    'icon' => 'fas fa-fw fa-book',
+                    'text' => 'Plantillas (Templates)',
+                    'url' => 'admin/pasarela/templates',
+                    'icon' => 'fas fa-fw fa-layer-group',
+                    'can' => 'manage templates',
                 ],
             ],
         ],
-
-        ['header' => 'PASARELA DE CONTENIDOS', 'can' => 'manage user'],
-
         [
-            'text' => 'Cuentas Sociales',
-            'url' => 'admin/pasarela/social-accounts',
-            'icon' => 'fab fa-fw fa-facebook-messenger',
-            'can' => 'manage social accounts',
+            'text' => 'Peñas',
+            'url' => 'admin/penia-profiles',
+            'icon' => 'fas fa-fw fa-store',
         ],
         [
-            'text' => 'Nueva Publicación',
-            'url' => 'admin/pasarela/publication-requests/create',
-            'icon' => 'fas fa-fw fa-share-alt',
-            'can' => 'manage user',
+            'text' => 'Salas / Lugares',
+            'url' => 'admin/venues',
+            'icon' => 'fas fa-fw fa-map-marker-alt',
+            'active' => [
+                'admin/venues*',
+            ],
+            'can' => 'manage-event-venues',
         ],
         [
-            'text' => 'Historial de Publicación',
-            'url' => 'admin/pasarela/publication-requests',
-            'icon' => 'fas fa-fw fa-history',
-            'can' => 'manage user',
+            'header' => 'ASTRONOMÍA Y AUDIENCIA',
         ],
         [
-            'text' => 'Plantillas (Templates)',
-            'url' => 'admin/pasarela/templates',
-            'icon' => 'fas fa-fw fa-layer-group',
-            'can' => 'manage templates',
+            'text' => 'Avisos Clasificados',
+            'url' => 'admin/classifieds',
+            'icon' => 'fas fa-fw fa-bullhorn',
+            'active' => [
+                'admin/classifieds*',
+            ],
         ],
-
-        ['header' => 'ASTRONOMÍA Y AUDIENCIA'],
-
         [
             'text' => 'Centro de Moderación',
             'url' => 'admin/moderation',
             'icon' => 'fas fa-fw fa-tasks',
             'label' => 'Revisión',
             'label_color' => 'warning',
-            'can' => 'manage user', // Proxy para admin
-        ],
-        [
-            'text' => 'Avisos Clasificados',
-            'url' => 'admin/classifieds',
-            'icon' => 'fas fa-fw fa-bullhorn',
-            'active' => ['admin/classifieds*'],
-        ],
-
-        ['header' => 'SISTEMA Y AUDIENCIA'],
-
-        [
-            'text' => 'Usuarios y Roles',
-            'icon' => 'fas fa-fw fa-user-shield',
-            'can' => 'read user',
-            'submenu' => [
-                [
-                    'text' => 'Usuarios',
-                    'url' => 'admin/users',
-                    'icon' => 'fas fa-fw fa-users',
-                ],
-                [
-                    'text' => 'Roles',
-                    'url' => 'admin/roles',
-                    'icon' => 'fas fa-fw fa-user-tag',
-                ],
-                [
-                    'text' => 'Permisos',
-                    'url' => 'admin/permissions',
-                    'icon' => 'fas fa-fw fa-shield-alt',
-                ],
-            ],
-        ],
-        [
-            'text' => 'Newsletter',
-            'url' => 'admin/newsletter-subscribers',
-            'icon' => 'fas fa-fw fa-envelope-open-text',
             'can' => 'manage user',
+        ],
+        [
+            'header' => 'SISTEMA Y AUDIENCIA',
         ],
         [
             'text' => 'Categorías y Tags',
@@ -488,73 +444,34 @@ return [
                 ],
             ],
         ],
-
-        // [
-        //     'text' => 'profile',
-        //     'url' => 'admin/settings',
-        //     'icon' => 'fas fa-fw fa-user',
-        // ],
-
-        // [
-        //     'text' => 'change_password',
-        //     'url' => 'admin/settings',
-        //     'icon' => 'fas fa-fw fa-lock',
-        // ],
-
-        // [
-        //     'text' => 'multilevel',
-        //     'icon' => 'fas fa-fw fa-share',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //             'submenu' => [
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url' => '#',
-        //                 ],
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url' => '#',
-        //                     'submenu' => [
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url' => '#',
-        //                         ],
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url' => '#',
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //         ],
-        //     ],
-        // ],
-        // ['header' => 'labels'],
-        // [
-        //     'text' => 'important',
-        //     'icon_color' => 'red',
-        //     'url' => '#',
-        // ],
-        // [
-        //     'text' => 'warning',
-        //     'icon_color' => 'yellow',
-        //     'url' => '#',
-        // ],
-        // [
-        //     'text' => 'information',
-        //     'icon_color' => 'cyan',
-        //     'url' => '#',
-        // ],
+        [
+            'text' => 'Newsletter',
+            'url' => 'admin/newsletter-subscribers',
+            'icon' => 'fas fa-fw fa-envelope-open-text',
+            'can' => 'manage user',
+        ],
+        [
+            'text' => 'Usuarios y Roles',
+            'icon' => 'fas fa-fw fa-user-shield',
+            'can' => 'read user',
+            'submenu' => [
+                [
+                    'text' => 'Permisos',
+                    'url' => 'admin/permissions',
+                    'icon' => 'fas fa-fw fa-shield-alt',
+                ],
+                [
+                    'text' => 'Roles',
+                    'url' => 'admin/roles',
+                    'icon' => 'fas fa-fw fa-user-tag',
+                ],
+                [
+                    'text' => 'Usuarios',
+                    'url' => 'admin/users',
+                    'icon' => 'fas fa-fw fa-users',
+                ],
+            ],
+        ],
     ],
 
     /*

@@ -3,10 +3,15 @@
 @section('title', 'Editar Evento')
 
 @section('content_header')
-    <h1><i class="fas fa-edit mr-2"></i>Editar Evento: {{ $event->title }}</h1>
+    <h1><i class="fas fa-edit mr-2"></i>{{ $event->program_id ? 'Editar jornada' : 'Editar evento' }}: {{ $event->title }}</h1>
 @stop
 
 @section('content')
+@if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
+@if(!$event->program_id)
+<div class="card"><div class="card-body"><p>¿Este evento se realiza en más de una fecha? Agregá jornadas con sus propios horarios y artistas. La fecha actual se conserva como primera jornada.</p>
+<form method="POST" action="{{ route('backend.events.sessions', $event) }}">@csrf<button class="btn btn-outline-primary">Agregar jornadas al evento</button></form></div></div>
+@endif
 <div class="row">
     <div class="col-md-10 mx-auto">
         <form action="{{ route('backend.events.update', $event) }}" method="POST" enctype="multipart/form-data">
@@ -67,6 +72,8 @@
 
 @section('js')
     @include('backend.partials.scripts._select2')
+    @include('backend.partials.scripts._ckeditor')
+    @include('backend.events._venue_script')
     <script>
         $(document).ready(function () {
             $('.custom-file-input').on('change', function() {
@@ -74,28 +81,6 @@
                 $(this).next('.custom-file-label').addClass("selected").html(fileName);
             });
 
-            const $editor = $('#body[data-summernote-profile="editorial-body"]');
-            if ($editor.length && typeof $editor.summernote === 'function') {
-                if ($editor.next('.note-editor').length) {
-                    $editor.summernote('destroy');
-                }
-
-                $editor.summernote({
-                    height: 240,
-                    toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'italic', 'underline', 'clear']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['insert', ['link']],
-                        ['view', ['codeview', 'help']]
-                    ],
-                    styleTags: [
-                        'p',
-                        { title: 'Titulo 2', tag: 'h2', className: 'note-h2' },
-                        { title: 'Titulo 3', tag: 'h3', className: 'note-h3' }
-                    ]
-                });
-            }
         });
     </script>
 @stop

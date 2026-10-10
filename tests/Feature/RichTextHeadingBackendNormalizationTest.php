@@ -111,7 +111,7 @@ class RichTextHeadingBackendNormalizationTest extends TestCase
 
         KnowledgeCategory::factory()->create([
             'name' => 'Ritmos',
-            'slug' => 'ritmos',
+            'slug' => 'heading-profile-'.\Illuminate\Support\Str::uuid(),
             'is_active' => true,
         ]);
 
@@ -144,10 +144,10 @@ class RichTextHeadingBackendNormalizationTest extends TestCase
 
         $this->get(route('backend.events.edit', $event))
             ->assertOk()
-            ->assertSee('data-summernote-profile="editorial-body"', false)
-            ->assertSee("tag: 'h2'", false)
-            ->assertSee("tag: 'h3'", false)
-            ->assertDontSee("tag: 'h1'", false);
+            ->assertSee('data-ckeditor-profile="editorial-body"', false)
+            ->assertSee("view: 'h2'", false)
+            ->assertSee("view: 'h3'", false)
+            ->assertDontSee("view: 'h1'", false);
     }
 
     /** @test */

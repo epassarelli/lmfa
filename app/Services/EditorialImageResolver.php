@@ -119,7 +119,8 @@ class EditorialImageResolver
             $entity instanceof News => $this->loadedBelongsTo($entity, 'interprete')
                 ?? $this->firstLoadedFrom($entity, 'festivales'),
 
-            $entity instanceof Event => $this->firstLoadedFrom($entity, 'interpretes')
+            $entity instanceof Event => $this->programWithImage($entity)
+                ?? $this->firstLoadedFrom($entity, 'interpretes')
                 ?? $this->firstLoadedFrom($entity, 'festivales'),
 
             $entity instanceof Festival => $this->firstLoadedFrom($entity, 'interpretes')
@@ -144,6 +145,12 @@ class EditorialImageResolver
         $related = $entity->getRelation($relation);
 
         return $related instanceof Model ? $related : null;
+    }
+
+    private function programWithImage(Event $event): ?Model
+    {
+        $program = $this->loadedBelongsTo($event, 'program');
+        return $program && $this->firstLoadedMedia($program) ? $program : null;
     }
 
     private function firstLoadedFrom(Model $entity, string $relation): ?Model

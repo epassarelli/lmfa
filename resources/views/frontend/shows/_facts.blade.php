@@ -17,20 +17,23 @@
           : null;
   }
 
-  $venueName = $show->venue_id ? $show->venue?->name : null;
-  $city = filled($show->city) ? trim($show->city) : null;
+  $venue = $show->venue_id ? $show->venue : null;
+  $venueName = $venue?->name;
+  $city = filled($show->city) ? trim($show->city) : $venue?->city;
   $place = $venueName ?: $city;
-  $address = filled($show->address) ? trim($show->address) : null;
+  $address = filled($show->address) ? trim($show->address) : $venue?->address;
   if ($address && $place && \Illuminate\Support\Str::lower($address) === \Illuminate\Support\Str::lower($place)) {
       $address = null;
   }
   $placeDetail = $venueName && $city ? $city : null;
-  $province = $show->provincia;
+  $province = $show->provincia ?? $venue?->provincia;
   $priceText = $show->is_free ? 'Gratis' : (filled($show->price_text) ? trim($show->price_text) : null);
 
   $mapsUrl = null;
-  if ($show->latitude !== null && $show->longitude !== null) {
-      $mapsUrl = 'https://www.google.com/maps/search/?api=1&query='.urlencode($show->latitude.','.$show->longitude);
+  $latitude = $show->latitude ?? $venue?->latitude;
+  $longitude = $show->longitude ?? $venue?->longitude;
+  if ($latitude !== null && $longitude !== null) {
+      $mapsUrl = 'https://www.google.com/maps/search/?api=1&query='.urlencode($latitude.','.$longitude);
   } elseif ($address) {
       $mapsUrl = 'https://www.google.com/maps/search/?api=1&query='.urlencode(implode(', ', array_filter([$address, $city, $province?->nombre, 'Argentina'])));
   }

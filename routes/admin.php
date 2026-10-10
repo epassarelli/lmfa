@@ -43,7 +43,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('operational-health', [OperationalHealthController::class, 'diagnosis'])->middleware('role:administrador')->name('backend.operational-health');
 
     // --- GESTIÓN DE CONTENIDOS (EVENTOS Y NOTICIAS) ---
+    Route::post('events/{event}/sessions', [EventController::class, 'addSessions'])->name('backend.events.sessions');
     Route::resource('events', EventController::class)->names('backend.events')->parameters(['events' => 'event']);
+    Route::resource('venues', \App\Http\Controllers\Backend\VenueController::class)->except('show')->names('backend.venues');
+    Route::resource('event-programs', \App\Http\Controllers\Backend\EventProgramController::class)->except(['show', 'destroy'])->names('backend.event-programs');
     Route::resource('news', NewsController::class)->names('backend.news')->parameters(['news' => 'news']);
     Route::resource('knowledge-articles', KnowledgeArticleController::class)
         ->names('backend.knowledge-articles')

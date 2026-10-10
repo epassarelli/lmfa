@@ -71,23 +71,23 @@ class ShowsController extends Controller
         $filters = $this->resolveFilters($request);
 
         $query = Event::query()
-            ->where('editorial_status', 'published')
-            ->where('start_at', '>=', now()->startOfDay());
+            ->publiclyVisible()
+            ->upcomingOrOngoing();
 
         if ($filters['provincia']) {
             $query->where('province_id', $filters['provincia']->id);
         }
 
         if ($filters['month_start'] && $filters['month_end']) {
-            $query->whereBetween('start_at', [$filters['month_start'], $filters['month_end']]);
+            $query->overlapping($filters['month_start'], $filters['month_end']);
         }
 
         if ($filters['is_today']) {
-            $query->whereDate('start_at', today());
+            $query->overlapping(today(), today()->endOfDay());
         }
 
         if ($filters['specific_date']) {
-            $query->whereDate('start_at', $filters['specific_date']->toDateString());
+            $query->overlapping($filters['specific_date']->copy()->startOfDay(), $filters['specific_date']->copy()->endOfDay());
         }
 
         if ($filters['interprete']) {
@@ -104,6 +104,7 @@ class ShowsController extends Controller
                     ->orWhere('body', 'like', "%{$search}%")
                     ->orWhere('city', 'like', "%{$search}%")
                     ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhereHas('venue', fn ($q) => $q->where('name', 'like', "%{$search}%"))
                     ->orWhereHas('interpretes', function ($artistQuery) use ($search) {
                         $artistQuery->where('interprete', 'like', "%{$search}%");
                     });
@@ -111,7 +112,7 @@ class ShowsController extends Controller
         }
 
         $shows = $query
-            ->with(['interpretes.images', 'images', 'provincia'])
+            ->with(['interpretes.images', 'images', 'provincia', 'program.images', 'venue.provincia', 'organization'])
             ->orderBy('start_at')
             ->paginate(12)
             ->withQueryString();
@@ -148,7 +149,7 @@ class ShowsController extends Controller
         $interprete = Interprete::where('estado', 1)->where('slug', $slug)->firstOrFail();
         $shows = $interprete->events()
             ->publiclyVisible()
-            ->with(['images', 'interpretes.images'])
+            ->with(['images', 'interpretes.images', 'program.images'])
             ->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);
 
@@ -173,13 +174,14 @@ class ShowsController extends Controller
                 'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')->orderBy('event_interprete.sort_order'),
                 'provincia',
                 'images',
+                'program.images',
             ])
             ->where('slug', $slug)
             ->firstOrFail();
 
         // Venue y organización casi no tienen cobertura: solo se consultan si el evento los tiene.
         $show->loadMissing(array_values(array_filter([
-            $show->venue_id ? 'venue' : null,
+            $show->venue_id ? 'venue.provincia' : null,
             $show->organization_id ? 'organization' : null,
         ])));
 

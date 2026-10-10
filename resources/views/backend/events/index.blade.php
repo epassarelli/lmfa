@@ -53,13 +53,11 @@
         <tbody>
           @foreach ($events as $event)
             <tr>
+              <td>{{ $event->program ? \Carbon\Carbon::parse($event->program->events_min_start_at)->format('d-m-Y') : $event->start_at?->format('d-m-Y') }}</td>
+              <td><strong>{{ $event->program?->title ?? $event->title }}</strong><br><span class="small text-muted">{{ $event->program ? $event->program->events_count.' jornadas' : 'Una fecha' }}</span></td>
+              <td>{{ $event->program ? 'Ver artistas por jornada' : ($event->interpretes->first()->interprete ?? '-') }}</td>
               <td>
-                {{ $event->start_at ? $event->start_at->format('d-m-Y') : '-' }}
-              </td>
-              <td><strong>{{ $event->title }}</strong></td>
-              <td>{{ $event->interpretes->first()->interprete ?? '-' }}</td>
-              <td>
-                @switch($event->editorial_status)
+                @switch($event->program?->editorial_status ?? $event->editorial_status)
                     @case('published') <span class="badge badge-success">Publicado</span> @break
                     @case('draft') <span class="badge badge-secondary">Borrador</span> @break
                     @case('pending_review') <span class="badge badge-warning">En revision</span> @break
@@ -67,9 +65,10 @@
                 @endswitch
               </td>
               <td class="text-right" style="white-space: nowrap;">
-                <a href="{{ route('backend.events.edit', $event) }}" class="btn btn-sm btn-warning">
-                  <i class="fas fa-edit"></i>
+                <a href="{{ $event->program ? route('backend.event-programs.edit', $event->program) : route('backend.events.edit', $event) }}" class="btn btn-sm btn-warning">
+                  <i class="fas fa-edit"></i> {{ $event->program ? 'Editar evento y jornadas' : 'Editar evento' }}
                 </a>
+                @if(!$event->program_id)
                 @can('delete', $event)
                   <form action="{{ route('backend.events.destroy', $event) }}" method="POST" style="display:inline-block;">
                     @csrf
@@ -80,6 +79,7 @@
                     </button>
                   </form>
                 @endcan
+                @endif
               </td>
             </tr>
           @endforeach

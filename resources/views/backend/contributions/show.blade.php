@@ -23,14 +23,14 @@
                             <div class="col-md-6">
                                 <label class="text-danger">Actual (Producción):</label>
                                 <div class="p-3 border bg-light" style="min-height: 200px; max-height: 500px; overflow-y: auto;">
-                                    {!! $original->$key ?? 'Sin contenido' !!}
+                                    {{ is_array($original->$key) ? json_encode($original->$key, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : ($original->$key ?? 'Sin contenido') }}
                                 </div>
                             </div>
                             @endif
                             <div class="col-md-{{ $original ? '6' : '12' }}">
                                 <label class="text-success">Sugerido (Usuario):</label>
                                 <div class="p-3 border bg-white shadow-sm" style="min-height: 200px; max-height: 500px; overflow-y: auto; border-left: 4px solid #28a745;">
-                                    {{ $value }}
+                                    @if(is_array($value))<pre class="text-wrap">{{ json_encode($value, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) }}</pre>@else{{ $value }}@endif
                                 </div>
                             </div>
                         </div>

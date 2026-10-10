@@ -64,10 +64,16 @@ class AppServiceProvider extends ServiceProvider
             \App\Models\Radio::class,
             \App\Models\PeniaProfile::class,
             \App\Models\Event::class,
+            \App\Models\EventProgram::class,
+            \App\Models\Venue::class,
         ];
 
         $clear = function ($model) {
             \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            if ($model instanceof \App\Models\Event || $model instanceof \App\Models\EventProgram || $model instanceof \App\Models\Venue) {
+                Cache::forget(\App\Services\Events\EventDetailService::UPCOMING_PROVINCES_CACHE_KEY);
+                Cache::forget('festivales:index:related-events');
+            }
 
             if ($model instanceof \App\Models\News) {
                 Cache::forget('home:ultimas-noticias');

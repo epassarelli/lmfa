@@ -251,16 +251,18 @@ class SitemapController extends Controller
 
     protected function eventEntries(): Collection
     {
+        $programs = \App\Models\EventProgram::publiclyVisible()->orderBy('id')->get()
+            ->map(fn ($program) => $this->entry(route('event-programs.show', $program->slug), $this->bestDate($program->updated_at, $program->published_at, $program->created_at)));
         return $this->uniqueEntries(Event::query()
-            ->where('editorial_status', 'published')
+            ->publiclyVisible()
             ->whereNotNull('slug')
-            ->where('start_at', '>=', now()->startOfDay())
+            ->upcomingOrOngoing()
             ->orderBy('id')
             ->get()
             ->map(fn (Event $event) => $this->entry(
                 route('cartelera.show', $event->slug),
                 $this->bestDate($event->updated_at, $event->published_at, $event->created_at, $event->start_at)
-            )));
+            ))->concat($programs));
     }
 
     protected function festivalEntries(): Collection

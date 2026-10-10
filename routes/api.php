@@ -54,6 +54,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::apiResource('artists', \App\Http\Controllers\Api\ArtistController::class)->except(['index', 'show']);
         Route::apiResource('myths', \App\Http\Controllers\Api\MythController::class)->except(['index', 'show']);
         Route::apiResource('events', \App\Http\Controllers\Api\EventController::class)->except(['index', 'show']);
+        Route::post('event-programs', [\App\Http\Controllers\Api\EventProgramController::class, 'store']);
+        Route::match(['put', 'patch'], 'event-programs/{event_program}', [\App\Http\Controllers\Api\EventProgramController::class, 'update']);
         Route::apiResource('penia-profiles', \App\Http\Controllers\Api\PeniaProfileController::class)->except(['index', 'show']);
         Route::apiResource('radio-signals', \App\Http\Controllers\Api\RadioSignalController::class)->except(['index', 'show']);
         Route::apiResource('radio-programs', \App\Http\Controllers\Api\RadioProgramController::class)->except(['index', 'show']);
