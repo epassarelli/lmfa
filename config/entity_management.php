@@ -50,6 +50,18 @@ return [
 
     'sources' => ['manual', 'email_reply', 'claim', 'import'],
 
+    // Solicitudes de vínculo usuario <-> ficha.
+    'claims' => [
+        'max_pending_per_user' => 5,
+        'relationships' => [
+            'artist' => 'Soy el artista o integrante',
+            'representative' => 'Soy representante, productor o manager',
+            'organizer' => 'Soy organizador/a del festival',
+            'press' => 'Soy prensa o comunicación',
+            'other' => 'Otra relación',
+        ],
+    ],
+
     // Etapas del contacto previo al envío de información (se suele empezar por Instagram o Facebook).
     'contact_stages' => [
         'prospect' => 'Prospecto (sin contactar)',

@@ -326,6 +326,13 @@ return [
         //     'can' => 'manage-blog',
         // ],
 
+        [
+            'text' => 'Mis fichas',
+            'url' => 'admin/mis-fichas',
+            'icon' => 'fas fa-fw fa-id-card',
+            'active' => ['admin/mis-fichas*'],
+        ],
+
         ['header' => 'CONTENIDO EDITORIAL'],
 
         [
@@ -470,6 +477,12 @@ return [
                     'url' => 'admin/organizations',
                     'icon' => 'fas fa-fw fa-building',
                     'active' => ['admin/organizations*'],
+                ],
+                [
+                    'text' => 'Solicitudes de vínculo',
+                    'url' => 'admin/claims',
+                    'icon' => 'fas fa-fw fa-user-check',
+                    'active' => ['admin/claims*'],
                 ],
             ],
         ],

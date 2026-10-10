@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\EntityClaimRequest;
 use App\Models\Festival;
 use App\Models\Interprete;
 use App\Models\Mes;
@@ -43,6 +44,7 @@ class OrganizationEntityDemoSeeder extends Seeder
         $users = $this->users();
         $fichas = $this->fichas($users);
         $this->organizations($users, $fichas);
+        $this->claims($users, $fichas);
 
         $this->command?->info('Datos demo de organizaciones listos ('.count($users).' usuarios, '.count($fichas).' fichas).');
     }
@@ -52,6 +54,8 @@ class OrganizationEntityDemoSeeder extends Seeder
      */
     public static function purge(): void
     {
+        $demoUserIds = User::query()->where('email', 'like', '%@'.self::EMAIL_DOMAIN)->pluck('id');
+        EntityClaimRequest::query()->whereIn('user_id', $demoUserIds)->delete();
         Organization::query()->where('slug', 'like', self::SLUG_PREFIX.'%')->get()->each->delete();
         Interprete::query()->where('slug', 'like', self::SLUG_PREFIX.'%')->delete();
         Festival::query()->where('slug', 'like', self::SLUG_PREFIX.'%')->delete();
@@ -138,6 +142,38 @@ class OrganizationEntityDemoSeeder extends Seeder
         $fichas['festival'] = $festival;
 
         return $fichas;
+    }
+
+    /**
+     * Solicitudes pendientes para probar la revisión del administrador.
+     *
+     * @param  array<string, User>  $users
+     * @param  array<string, Interprete|Festival>  $fichas
+     */
+    private function claims(array $users, array $fichas): void
+    {
+        $requests = [
+            // Ficha sin organización: al aprobar se crea una y el usuario queda como responsable.
+            ['sin_vinculo', 'interprete_sin_org', 'artist', 'Soy integrante del grupo. Pueden confirmarlo por el Instagram oficial de la agrupación.'],
+            // Ficha con organización y responsable activo: se sugiere rol editor.
+            ['duo_solicitante', 'interprete_cantor', 'representative', 'Represento al cantor para sus presentaciones. Mi contacto de producción está en su sitio web.'],
+            // Festival con organización existente.
+            ['sin_vinculo', 'festival', 'organizer', 'Integro la comisión organizadora del festival y quiero cargar la grilla.'],
+        ];
+
+        foreach ($requests as [$userKey, $fichaKey, $relationship, $message]) {
+            $ficha = $fichas[$fichaKey];
+
+            EntityClaimRequest::query()->firstOrCreate(
+                [
+                    'user_id' => $users[$userKey]->id,
+                    'entity_type' => $ficha->getMorphClass(),
+                    'entity_id' => $ficha->getKey(),
+                    'status' => EntityClaimRequest::PENDING,
+                ],
+                ['relationship' => $relationship, 'message' => $message]
+            );
+        }
     }
 
     /**

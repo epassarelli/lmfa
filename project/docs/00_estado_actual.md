@@ -1,5 +1,14 @@
 # 00 - Estado Actual del Proyecto
 
+### Implementado en local y validado por tests 2026-10-10: solicitud de vínculo usuario ↔ ficha (slice 3)
+
+- **Rama:** `feature/organization-entity-management`. Spec: `openspec/changes/entity-claim-requests/`. Sin push, merge ni tag.
+- **Qué hay:** `admin/mis-fichas` (cualquier autenticado: fichas que administra, solicitud con búsqueda, estados, cancelar) y `admin/claims` (solo `administrador`: listado por estado, detalle, aprobar con rol, rechazar con motivo). La aprobación usa la organización activa de la ficha o crea la principal y suma al usuario como miembro activo; si la única organización está inactiva se rechaza la aprobación. Funciona igual con login común, Google o Facebook porque depende solo del guard `auth`.
+- **Migración:** `2026_10_10_140000_create_entity_claim_requests_table` aplicada en la base local `mfa` tras mostrar `migrate:status` y recibir confirmación. Reversible; tabla nueva sin datos migrados.
+- **Validación:** `tests/Feature/EntityManagement`: 51 tests, 301 aserciones OK. Regresión Artists + Festivals + Pasarela + AdminAutoPublish: 139 tests, solo las 2 fallas previas de los auditores. Demo local: 3 solicitudes pendientes.
+- **Hallazgo previo al deploy:** el login con Google y Facebook hoy no funciona (reportado por el usuario); no se investigó todavía y es independiente de esta entrega.
+- **No validado:** revisión visual en navegador; avisos por correo (no existen); botón público "Reclamar este perfil" y verificación automática (fuera de alcance).
+
 ### Implementado en local y validado por tests 2026-10-10: seguimiento de contacto en Organizaciones (opción A)
 
 - **Rama:** `feature/organization-entity-management` (continúa los slices 1 y 2). Spec: `openspec/changes/organization-contact-tracking/`. Sin push, merge ni tag.

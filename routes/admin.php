@@ -17,6 +17,8 @@ use App\Http\Controllers\Backend\MitoController;
 use App\Http\Controllers\Backend\ModerationController;
 use App\Http\Controllers\Backend\NewsController;
 use App\Http\Controllers\Backend\NewsletterSubscriberController;
+use App\Http\Controllers\Backend\EntityClaimRequestController;
+use App\Http\Controllers\Backend\MyEntitiesController;
 use App\Http\Controllers\Backend\OrganizationController;
 use App\Http\Controllers\Backend\OrganizationEntityController;
 use App\Http\Controllers\Backend\OrganizationLookupController;
@@ -97,8 +99,19 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('users/{user}/api-tokens/{token}', [UserController::class, 'revokeApiToken'])->name('users.api-tokens.destroy');
     Route::resource('permissions', PermissionController::class)->names('permissions');
 
+    // --- MIS FICHAS: cualquier usuario autenticado puede solicitar administrar una ficha ---
+    Route::get('mis-fichas', [MyEntitiesController::class, 'index'])->name('backend.my-entities.index');
+    Route::get('mis-fichas/buscar', [MyEntitiesController::class, 'search'])->name('backend.my-entities.search');
+    Route::post('mis-fichas/solicitar', [MyEntitiesController::class, 'store'])->middleware('throttle:10,1')->name('backend.my-entities.claims.store');
+    Route::post('mis-fichas/solicitudes/{claim}/cancelar', [MyEntitiesController::class, 'cancel'])->name('backend.my-entities.claims.cancel');
+
     // --- ORGANIZACIONES (administración de fichas, contacto y miembros) ---
     Route::middleware('role:administrador')->group(function () {
+        Route::get('claims', [EntityClaimRequestController::class, 'index'])->name('backend.claims.index');
+        Route::get('claims/{claim}', [EntityClaimRequestController::class, 'show'])->name('backend.claims.show');
+        Route::post('claims/{claim}/approve', [EntityClaimRequestController::class, 'approve'])->name('backend.claims.approve');
+        Route::post('claims/{claim}/reject', [EntityClaimRequestController::class, 'reject'])->name('backend.claims.reject');
+
         Route::get('organization-lookups/entities', [OrganizationLookupController::class, 'entities'])->name('backend.organization-lookups.entities');
         Route::get('organization-lookups/users', [OrganizationLookupController::class, 'users'])->name('backend.organization-lookups.users');
 
