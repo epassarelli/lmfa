@@ -1,5 +1,14 @@
 # 00 - Estado Actual del Proyecto
 
+### Implementado en local y validado por tests 2026-10-10: backoffice de Organizaciones (slice 2)
+
+- **Rama:** `feature/organization-entity-management` (continúa el slice 1; el checkout principal quedó en esta rama para revisión local). Spec: `openspec/changes/organization-admin-backoffice/`. Sin push, merge ni tag.
+- **Qué hay:** `admin/organizations` (solo `administrador`): listado con filtros, alta/edición con consentimiento y verificación, fichas vinculadas (intérpretes y festivales, con Select2 remoto y organización principal) y miembros con rol/estado. Desactivar una organización revoca permisos. Sin migraciones.
+- **Validación:** `tests/Feature/EntityManagement`: 24 tests, 112 aserciones OK (11 del slice 1 + 13 nuevos: acceso, listado, alta/edición, slug, desactivación, vínculos, miembros y búsquedas). Regresión Artists + Festivals + Pasarela + AdminAutoPublish: 139 tests, solo las 2 fallas previas de los auditores. Sin datos residuales en la base.
+- **Performance:** listado con 25 por página y conteos en SQL; la edición carga vínculos (morph) y miembros con eager loading; las búsquedas remotas devuelven máximo 20 resultados y exigen 2 caracteres. Sin impacto público ni SEO.
+- **No validado:** revisión visual en navegador (queda a cargo del usuario) y el comportamiento de Select2 remoto en pantalla real.
+- **Pendiente:** solicitud de vínculo y login con Google (slice 3), autorización de Eventos y Noticias tras integrar `feature/event-programs-and-venues`. Conflicto probable al integrar en `routes/admin.php`, `config/adminlte.php`, CHANGELOG y este archivo.
+
 ### Implementado en local y validado 2026-10-10: administración de fichas por organización (slice 1)
 
 - **Rama desde dev:** `feature/organization-entity-management` (worktree aislado en `storage/app/worktrees/organization-entity-management`; el checkout principal estaba ocupado por `feature/event-programs-and-venues`). Spec: `openspec/changes/organization-entity-management/`. **Sin push, sin merge, sin tag** (el tag se asigna al integrar).

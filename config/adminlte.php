@@ -465,6 +465,12 @@ return [
                     'url' => 'admin/permissions',
                     'icon' => 'fas fa-fw fa-shield-alt',
                 ],
+                [
+                    'text' => 'Organizaciones',
+                    'url' => 'admin/organizations',
+                    'icon' => 'fas fa-fw fa-building',
+                    'active' => ['admin/organizations*'],
+                ],
             ],
         ],
         [

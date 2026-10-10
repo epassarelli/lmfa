@@ -17,6 +17,10 @@ use App\Http\Controllers\Backend\MitoController;
 use App\Http\Controllers\Backend\ModerationController;
 use App\Http\Controllers\Backend\NewsController;
 use App\Http\Controllers\Backend\NewsletterSubscriberController;
+use App\Http\Controllers\Backend\OrganizationController;
+use App\Http\Controllers\Backend\OrganizationEntityController;
+use App\Http\Controllers\Backend\OrganizationLookupController;
+use App\Http\Controllers\Backend\OrganizationMemberController;
 use App\Http\Controllers\Backend\PeniaProfileController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\PublisherDashboardController;
@@ -92,6 +96,26 @@ Route::middleware(['auth'])->group(function () {
     Route::post('users/{user}/api-tokens', [UserController::class, 'issueApiToken'])->name('users.api-tokens.store');
     Route::delete('users/{user}/api-tokens/{token}', [UserController::class, 'revokeApiToken'])->name('users.api-tokens.destroy');
     Route::resource('permissions', PermissionController::class)->names('permissions');
+
+    // --- ORGANIZACIONES (administración de fichas, contacto y miembros) ---
+    Route::middleware('role:administrador')->group(function () {
+        Route::get('organization-lookups/entities', [OrganizationLookupController::class, 'entities'])->name('backend.organization-lookups.entities');
+        Route::get('organization-lookups/users', [OrganizationLookupController::class, 'users'])->name('backend.organization-lookups.users');
+
+        Route::resource('organizations', OrganizationController::class)
+            ->except(['show', 'destroy'])
+            ->names('backend.organizations')
+            ->parameters(['organizations' => 'organization']);
+
+        Route::scopeBindings()->prefix('organizations/{organization}')->name('backend.organizations.')->group(function () {
+            Route::post('entities', [OrganizationEntityController::class, 'store'])->name('entities.store');
+            Route::patch('entities/{entityLink}/primary', [OrganizationEntityController::class, 'primary'])->name('entities.primary');
+            Route::delete('entities/{entityLink}', [OrganizationEntityController::class, 'destroy'])->name('entities.destroy');
+            Route::post('members', [OrganizationMemberController::class, 'store'])->name('members.store');
+            Route::patch('members/{member}', [OrganizationMemberController::class, 'update'])->name('members.update');
+            Route::delete('members/{member}', [OrganizationMemberController::class, 'destroy'])->name('members.destroy');
+        });
+    });
     Route::resource('interpretes', InterpreteController::class)->names('backend.interpretes');
     Route::resource('categories', CategoryController::class)->names('backend.categories');
     Route::resource('tags', TagController::class)->names('backend.tags');

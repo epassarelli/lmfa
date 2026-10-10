@@ -74,13 +74,13 @@ class OrganizationProvisioner
         return (string) ($entity->interprete ?? $entity->title ?? $entity->name ?? class_basename($entity).' #'.$entity->getKey());
     }
 
-    private function uniqueSlug(string $name): string
+    public function uniqueSlug(string $name, ?int $ignoreId = null): string
     {
         $base = Str::slug($name) ?: 'organizacion';
         $slug = $base;
         $suffix = 2;
 
-        while (Organization::query()->where('slug', $slug)->exists()) {
+        while (Organization::query()->where('slug', $slug)->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))->exists()) {
             $slug = $base.'-'.$suffix++;
         }
 
