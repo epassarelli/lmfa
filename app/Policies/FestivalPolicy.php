@@ -17,7 +17,7 @@ class FestivalPolicy
 
   public function view(User $user, Festival $festival)
   {
-    return $user->hasRole('administrador') || $festival->user_id == $user->id;
+    return $user->canManage($festival);
   }
 
   public function create(User $user)
@@ -27,7 +27,7 @@ class FestivalPolicy
 
   public function update(User $user, Festival $festival)
   {
-    return $user->hasRole('administrador') || $festival->user_id == $user->id;
+    return $user->canManage($festival);
   }
 
   public function delete(User $user, Festival $festival)

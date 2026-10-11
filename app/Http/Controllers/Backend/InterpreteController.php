@@ -12,6 +12,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Services\ImageUploadService;
+use App\Services\OrganizationProvisioner;
 use App\Support\BackendListing;
 
 class InterpreteController extends Controller
@@ -33,8 +34,14 @@ class InterpreteController extends Controller
       'noticias_count'
     );
 
+    $user = Auth::user();
+
     $interpretes = Interprete::withCount(['noticias', 'shows', 'discos', 'canciones'])
       ->with(['images'])
+      ->when(
+        config('entity_management.scope_listings') && ! $user->hasRole('administrador'),
+        fn ($query) => $query->managedOrLegacyBy($user)
+      )
       ->when($request->filled('search'), function ($query) use ($request) {
         $search = $request->string('search')->trim()->toString();
 
@@ -69,6 +76,10 @@ class InterpreteController extends Controller
     $artista->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
     $artista->save();
+
+    if (! Auth::user()->hasRole('administrador')) {
+      app(OrganizationProvisioner::class)->forEntity($artista, Auth::user());
+    }
 
     if ($request->hasFile('foto')) {
       $this->imageService->process(

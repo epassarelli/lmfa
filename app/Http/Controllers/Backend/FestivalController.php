@@ -13,6 +13,7 @@ use App\Models\Mes;
 use App\Models\News;
 use App\Models\Provincia;
 use App\Services\ImageUploadService;
+use App\Services\OrganizationProvisioner;
 use App\Support\RichTextHeadingSanitizer;
 use App\Support\BackendListing;
 use Illuminate\Http\Request;
@@ -41,7 +42,7 @@ class FestivalController extends Controller
 
         $festivales = Festival::query()
             ->when($user->hasRole(['colaborador', 'prensa']), function ($query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->managedOrLegacyBy($user);
             })
             ->with([
                 'user:id,name',
@@ -94,6 +95,10 @@ class FestivalController extends Controller
 
             return $festival;
         });
+
+        if (! Auth::user()->hasRole('administrador')) {
+            app(OrganizationProvisioner::class)->forEntity($festival, Auth::user());
+        }
 
         if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
             $this->sendNotification($festival);
