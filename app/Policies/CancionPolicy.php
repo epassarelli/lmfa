@@ -18,19 +18,19 @@ class CancionPolicy
   public function view(User $user, Cancion $cancion)
   {
     // return $user->hasRole('administrador') || $cancion->user_id == $user->id;
-    return $user->can('read cancion');
+    return $user->can('read cancion') || $user->canManageInterpreteId($cancion->interprete_id);
   }
 
   public function create(User $user)
   {
     // return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
-    return $user->can('create cancion');
+    return $user->can('create cancion') || $user->managedInterpreteIds() !== [];
   }
 
   public function update(User $user, Cancion $cancion)
   {
     // return $user->hasRole('administrador') || $cancion->user_id == $user->id;
-    return $user->can('update cancion');
+    return $user->can('update cancion') || $user->canManageInterpreteId($cancion->interprete_id);
   }
 
   public function delete(User $user, Cancion $cancion)

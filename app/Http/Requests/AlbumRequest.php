@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\ValidatesManagedInterprete;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class AlbumRequest extends FormRequest
 {
+  use ValidatesManagedInterprete;
+
   public function authorize()
   {
     return true;
@@ -26,7 +29,7 @@ class AlbumRequest extends FormRequest
       'meta_description' => 'nullable|string|max:320',
       'image_alt' => 'nullable|string|max:255',
       'spotify' => 'nullable|string',
-      'interprete_id' => 'required|exists:interpretes,id',
+      'interprete_id' => $this->interpreteRules('album'),
       'foto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
     ];
   }

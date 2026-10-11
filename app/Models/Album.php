@@ -12,6 +12,7 @@ use App\Traits\CommonMethodsTrait;
 class Album extends Model
 {
     use CommonMethodsTrait;
+    use \App\Traits\ScopesToManagedInterprete;
     use HasFactory;
     protected $table = 'albunes';
     protected $casts = [

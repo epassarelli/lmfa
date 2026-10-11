@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-11: contenido del artista para quien administra su ficha (Etapa 1)
+
+- Spec `entity-member-content-access` (decisiones del usuario: letras publicables directo, carga directa, trabajo en dev). Miembros owner/editor activos gestionan discos y canciones de sus artistas; test `MemberContentAccessTest` (9 casos); suite completa 465 pasan y 13 fallos previos por datos reales. **No validado:** comportamiento en navegador con cuenta real sin roles. Pendiente: Etapa 2 (eventos y noticias), Etapa 3 (festivales). Observación: `canciones/store-ajax` sin policy (previa). Sin push ni despliegue.
+
 ### Pendiente de ejecución humana 2026-10-11: base aislada de tests
 
 - `.env.testing` ahora apunta a `mfa_test` (antes `mfa`, base con datos reales: causa de 13 fallos de la suite por colisión de datos). La base **aún no existe**: crearla con `database/testing/create_test_database.sql` y migrarla con `--env=testing` tras revisar `migrate:status` (pasos en el encabezado del .sql). Hasta entonces los tests locales fallan con "Unknown database" (falla segura); para correr temporalmente contra `mfa`: `-e DB_DATABASE=mfa`. Falta resolver datos de referencia (p. ej. `provincias`, no sembradas por migración) tras la primera corrida. CI no cambia (el job fija `DB_DATABASE`). Humo nuevo: `BackofficeSmokeTest` y cartelera en `PublicQualityGateTest`.

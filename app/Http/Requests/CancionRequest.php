@@ -3,12 +3,14 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\NormalizesRichTextFields;
+use App\Http\Requests\Concerns\ValidatesManagedInterprete;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class CancionRequest extends FormRequest
 {
   use NormalizesRichTextFields;
+  use ValidatesManagedInterprete;
 
   protected function prepareForValidation(): void
   {
@@ -36,7 +38,7 @@ class CancionRequest extends FormRequest
       'meta_description' => 'nullable|string|max:320',
       'youtube' => 'nullable|string',
       'spotify' => 'nullable|string',
-      'interprete_id' => 'required|exists:interpretes,id',
+      'interprete_id' => $this->interpreteRules('cancion'),
       // 'album_id' => 'required|exists:albunes,id',
       'publicar' => 'nullable|date',
     ];

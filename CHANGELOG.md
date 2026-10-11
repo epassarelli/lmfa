@@ -9,6 +9,7 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Contenido del artista para quien administra su ficha** (spec `entity-member-content-access`, Etapa 1): un miembro owner/editor activo de una organización activa puede crear, editar y publicar directamente discos y canciones (incluida la letra) de los artistas que administra, sin roles ni permisos globales. Listados y selector de artistas limitados a los suyos; `interprete_id` validado en servidor. `delete` sigue restringido. Etapas 2 (eventos/noticias) y 3 (festivales) pendientes.
 - **Demos locales de Eventos:** dos conjuntos de cuatro/cinco jornadas y un evento independiente, con sedes e intérpretes relacionados para probar herencia y excepciones. Datos ficticios identificados; script restringido a local y sin duplicados. Spec `event-demos-and-sidebar`.
 
 - **Eventos con jornadas y Salas/Lugares (implementado y validado en local):** carga común de conjuntos/ediciones con fichas por jornada, artistas propios y excepciones; ABM independiente de lugares con ubicación y coordenadas; CKEditor en Eventos; reglas compartidas en los ingresos editoriales y agenda que contempla duración. Migración local aplicada con autorización; 98 pruebas Feature pasan. Spec `event-programs-and-venues`. Revisión interactiva pendiente; sin despliegue.

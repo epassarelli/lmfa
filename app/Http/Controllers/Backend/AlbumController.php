@@ -36,9 +36,10 @@ class AlbumController extends Controller
         $search = trim($request->string('search')->toString());
 
         $albums = Album::query()
-            ->when($user->hasRole('colaborador') || $user->hasRole('prensa'), function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
+            ->when(
+                $user->hasRole('colaborador') || $user->hasRole('prensa') || $user->isScopedToManagedInterpretes('update album'),
+                fn ($query) => $query->ownedOrOfManagedInterprete($user)
+            )
             ->with('interprete', 'user', 'images')
             ->withCount('canciones')
             ->when($search !== '', function ($query) use ($search) {
@@ -59,10 +60,25 @@ class AlbumController extends Controller
         return view('backend.albunes.index', compact('albums'));
     }
 
+    /**
+     * Quien no tiene permiso global de escritura solo elige entre los artistas que administra.
+     */
+    private function selectableInterpretes()
+    {
+        $user = Auth::user();
+
+        return Interprete::active()
+            ->when(
+                $user->isScopedToManagedInterpretes('create album') && $user->isScopedToManagedInterpretes('update album'),
+                fn ($query) => $query->whereIn('id', $user->managedInterpreteIds())
+            )
+            ->get();
+    }
+
     public function create()
     {
         $action = 'create';
-        $interpretes = Interprete::active()->get();
+        $interpretes = $this->selectableInterpretes();
 
         return view('backend.albunes.create', compact('interpretes', 'action'));
     }
@@ -76,7 +92,7 @@ class AlbumController extends Controller
             ? Str::slug($payload['slug'])
             : Str::slug($album->album);
         $album->user_id = Auth::id();
-        $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $album->estado = Auth::user()->canManageInterpreteId($album->interprete_id) ? 1 : 0;
         $album->visitas = 0;
         $album->save();
 
@@ -104,7 +120,7 @@ class AlbumController extends Controller
     public function edit(Album $album)
     {
         $action = 'edit';
-        $interpretes = Interprete::active()->get();
+        $interpretes = $this->selectableInterpretes();
         $interpreteId = $album->interprete_id;
 
         $album_canciones_ids = $album->canciones->pluck('id')->toArray();
@@ -125,7 +141,7 @@ class AlbumController extends Controller
             ? Str::slug($payload['slug'])
             : Str::slug($album->album);
         $album->user_id = Auth::id();
-        $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $album->estado = Auth::user()->canManageInterpreteId($album->interprete_id) ? 1 : 0;
 
         if ($request->hasFile('foto')) {
             $this->imageService->process(

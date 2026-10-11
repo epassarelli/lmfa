@@ -43,9 +43,10 @@ class CancionController extends Controller
         ];
 
         $canciones = Cancion::query()
-            ->when($user->hasRole('colaborador') || $user->hasRole('prensa'), function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
+            ->when(
+                $user->hasRole('colaborador') || $user->hasRole('prensa') || $user->isScopedToManagedInterpretes('update cancion'),
+                fn ($query) => $query->ownedOrOfManagedInterprete($user)
+            )
             ->with('interprete:id,interprete', 'user:id,name')
             ->when(array_key_exists($status, $statusMap), function ($query) use ($status, $statusMap) {
                 $query->where('estado', $statusMap[$status]);
@@ -113,10 +114,25 @@ class CancionController extends Controller
             ->make(true);
     }
 
+    /**
+     * Quien no tiene permiso global de escritura solo elige entre los artistas que administra.
+     */
+    private function selectableInterpretes()
+    {
+        $user = Auth::user();
+
+        return Interprete::active()
+            ->when(
+                $user->isScopedToManagedInterpretes('create cancion') && $user->isScopedToManagedInterpretes('update cancion'),
+                fn ($query) => $query->whereIn('id', $user->managedInterpreteIds())
+            )
+            ->get();
+    }
+
     public function create()
     {
         $action = 'create';
-        $interpretes = Interprete::active()->get();
+        $interpretes = $this->selectableInterpretes();
 
         return view('backend.canciones.create', compact('interpretes', 'action'));
     }
@@ -135,7 +151,7 @@ class CancionController extends Controller
             $cancion->rights_status = $cancion->rights_status ?: 'not_available';
         }
         $cancion->user_id = Auth::id();
-        $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $cancion->estado = Auth::user()->canManageInterpreteId($cancion->interprete_id) ? 1 : 0;
         $cancion->visitas = 0;
         $cancion->save();
 
@@ -151,7 +167,7 @@ class CancionController extends Controller
     public function edit(Cancion $cancion)
     {
         $action = 'edit';
-        $interpretes = Interprete::active()->get();
+        $interpretes = $this->selectableInterpretes();
         $albums = Album::where('interprete_id', $cancion->interprete_id)->get();
 
         return view('backend.canciones.edit', compact('cancion', 'interpretes', 'albums', 'action'));
@@ -171,7 +187,7 @@ class CancionController extends Controller
             $cancion->rights_status = $cancion->rights_status ?: 'not_available';
         }
         $cancion->user_id = Auth::id();
-        $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $cancion->estado = Auth::user()->canManageInterpreteId($cancion->interprete_id) ? 1 : 0;
         $cancion->save();
 
         Alert::success('Cancion actualizada', 'La cancion ha sido actualizada con exito.');

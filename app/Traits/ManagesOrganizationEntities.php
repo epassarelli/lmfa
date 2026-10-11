@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Interprete;
 use App\Models\Organization;
 use App\Models\OrganizationMember;
 use Illuminate\Database\Eloquent\Model;
@@ -60,6 +61,43 @@ trait ManagesOrganizationEntities
     public function forgetManagedEntities(): void
     {
         $this->managedEntityIdsMemo = [];
+    }
+
+    /**
+     * Ids de los intérpretes que el usuario administra como miembro owner/editor.
+     *
+     * @return array<int, int>
+     */
+    public function managedInterpreteIds(): array
+    {
+        return $this->managedEntityIds((new Interprete)->getMorphClass());
+    }
+
+    public function managedInterpreteIdsSubquery(): QueryBuilder
+    {
+        return $this->managedEntityIdsSubquery((new Interprete)->getMorphClass());
+    }
+
+    /**
+     * Administra el intérprete por membresía (o es administrador global).
+     * No considera el user_id legacy: ese acceso aplica solo a la ficha, no a su contenido.
+     */
+    public function canManageInterpreteId(?int $interpreteId): bool
+    {
+        if ($this->hasRole('administrador')) {
+            return true;
+        }
+
+        return $interpreteId !== null && in_array($interpreteId, $this->managedInterpreteIds(), true);
+    }
+
+    /**
+     * Usuario sin permiso global de escritura sobre un contenido (p. ej. 'update album'):
+     * su alcance queda limitado a los intérpretes que administra por membresía.
+     */
+    public function isScopedToManagedInterpretes(string $globalPermission): bool
+    {
+        return ! $this->hasRole('administrador') && ! $this->can($globalPermission);
     }
 
     public function canManage(Model $entity): bool

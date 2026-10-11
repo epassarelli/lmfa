@@ -13,6 +13,7 @@ use App\Traits\CommonMethodsTrait;
 class Cancion extends Model
 {
     use CommonMethodsTrait;
+    use \App\Traits\ScopesToManagedInterprete;
     use HasFactory;
     protected $table = 'canciones';
     protected $casts = [
