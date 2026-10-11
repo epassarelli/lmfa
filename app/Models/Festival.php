@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class Festival extends Model
 {
-    use HasFactory, HasMedia;
+    use HasFactory, HasMedia, \App\Traits\HasOrganizations;
 
     protected $table = 'festivales';
 

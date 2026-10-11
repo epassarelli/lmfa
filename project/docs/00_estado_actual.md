@@ -1,5 +1,43 @@
 # 00 - Estado Actual del Proyecto
 
+### Implementado en local y validado por tests 2026-10-10: solicitud de vínculo usuario ↔ ficha (slice 3)
+
+- **Rama:** `feature/organization-entity-management`. Spec: `openspec/changes/entity-claim-requests/`. Sin push, merge ni tag.
+- **Qué hay:** `admin/mis-fichas` (cualquier autenticado: fichas que administra, solicitud con búsqueda, estados, cancelar) y `admin/claims` (solo `administrador`: listado por estado, detalle, aprobar con rol, rechazar con motivo). La aprobación usa la organización activa de la ficha o crea la principal y suma al usuario como miembro activo; si la única organización está inactiva se rechaza la aprobación. Funciona igual con login común, Google o Facebook porque depende solo del guard `auth`.
+- **Migración:** `2026_10_10_140000_create_entity_claim_requests_table` aplicada en la base local `mfa` tras mostrar `migrate:status` y recibir confirmación. Reversible; tabla nueva sin datos migrados.
+- **Validación:** `tests/Feature/EntityManagement`: 51 tests, 301 aserciones OK. Regresión Artists + Festivals + Pasarela + AdminAutoPublish: 139 tests, solo las 2 fallas previas de los auditores. Demo local: 3 solicitudes pendientes.
+- **Hallazgo previo al deploy:** el login con Google y Facebook hoy no funciona (reportado por el usuario); no se investigó todavía y es independiente de esta entrega.
+- **No validado:** revisión visual en navegador; avisos por correo (no existen); botón público "Reclamar este perfil" y verificación automática (fuera de alcance).
+
+### Implementado en local y validado por tests 2026-10-10: seguimiento de contacto en Organizaciones (opción A)
+
+- **Rama:** `feature/organization-entity-management` (continúa los slices 1 y 2). Spec: `openspec/changes/organization-contact-tracking/`. Sin push, merge ni tag.
+- **Qué hay:** en `organizations`, Instagram, Facebook, etapa del contacto, último contacto y notas; listado con filtro por etapa, enlaces a redes y "Registrar contacto"; export CSV de contactables (activas + consentimiento + sin baja + con email). Pensado para el flujo "contacto por IG/FB, luego se obtiene el email". El envío masivo desde el portal queda para cuando haya volumen (opción C); `crm-contact-directory` sigue sin implementar.
+- **Migración:** `2026_10_10_120000_add_contact_tracking_to_organizations` aplicada en la base local `mfa` tras mostrar `migrate:status` y recibir confirmación. Reversible; 5 columnas; sin datos migrados.
+- **Validación:** `tests/Feature/EntityManagement`: 35 tests, 190 aserciones OK. Regresión Artists + Festivals + Pasarela + AdminAutoPublish: 139 tests, solo las 2 fallas previas de los auditores. Datos demo re-sembrados (9 organizaciones, dos en contacto por redes sin email).
+- **Performance y SEO:** sin impacto público. El export recorre con cursor y sin N+1; el listado conserva 25 por página.
+- **No validado:** revisión visual en navegador ni envío real de correos (no existe). Los consentimientos deben registrarse solo cuando la persona acepta recibir comunicaciones.
+
+### Implementado en local y validado por tests 2026-10-10: backoffice de Organizaciones (slice 2)
+
+- **Rama:** `feature/organization-entity-management` (continúa el slice 1; el checkout principal quedó en esta rama para revisión local). Spec: `openspec/changes/organization-admin-backoffice/`. Sin push, merge ni tag.
+- **Qué hay:** `admin/organizations` (solo `administrador`): listado con filtros, alta/edición con consentimiento y verificación, fichas vinculadas (intérpretes y festivales, con Select2 remoto y organización principal) y miembros con rol/estado. Desactivar una organización revoca permisos. Sin migraciones.
+- **Validación:** `tests/Feature/EntityManagement`: 24 tests, 112 aserciones OK (11 del slice 1 + 13 nuevos: acceso, listado, alta/edición, slug, desactivación, vínculos, miembros y búsquedas). Regresión Artists + Festivals + Pasarela + AdminAutoPublish: 139 tests, solo las 2 fallas previas de los auditores. Sin datos residuales en la base.
+- **Performance:** listado con 25 por página y conteos en SQL; la edición carga vínculos (morph) y miembros con eager loading; las búsquedas remotas devuelven máximo 20 resultados y exigen 2 caracteres. Sin impacto público ni SEO.
+- **No validado:** revisión visual en navegador (queda a cargo del usuario) y el comportamiento de Select2 remoto en pantalla real.
+- **Datos demo locales (2026-10-10, autorizado, solo dev):** `OrganizationEntityDemoSeeder` (idempotente, rechaza producción) cargó 7 organizaciones, 9 fichas sin publicar y 10 usuarios `demo.*@demo-local.example.test`, con escenarios de solista, dúo con ayudante y solicitud pendiente, productora con 3 artistas, festival con editor y lector, organización inactiva, contactos sin cuenta y una baja. Se deshace con `OrganizationEntityDemoSeeder::purge()` (solo toca `demo-org-*` y ese dominio). Credencial de prueba definida en el seeder. Test: `OrganizationDemoSeederTest`. 27 tests, 144 aserciones OK en `EntityManagement`.
+- **Pendiente:** solicitud de vínculo y login con Google (slice 3), autorización de Eventos y Noticias tras integrar `feature/event-programs-and-venues`. Conflicto probable al integrar en `routes/admin.php`, `config/adminlte.php`, CHANGELOG y este archivo.
+
+### Implementado en local y validado 2026-10-10: administración de fichas por organización (slice 1)
+
+- **Rama desde dev:** `feature/organization-entity-management` (worktree aislado en `storage/app/worktrees/organization-entity-management`; el checkout principal estaba ocupado por `feature/event-programs-and-venues`). Spec: `openspec/changes/organization-entity-management/`. **Sin push, sin merge, sin tag** (el tag se asigna al integrar).
+- **Qué hace:** vincula `organizations` con intérpretes y festivales (`organization_entities`) y autoriza la edición por membresía activa `owner`/`editor`. Preserva admin y acceso legacy por `user_id`. Agrega consentimiento/baja/verificación a `organizations`. Listado de festivales de colaboradores incluye lo administrado; listado de intérpretes se recorta solo con `ENTITY_MANAGEMENT_SCOPE_LISTINGS=true` (default apagado). Altas de no administradores crean su organización (`OrganizationProvisioner`).
+- **Migración:** `2026_10_08_130000_create_organization_entities_and_contact_metadata` aplicada en la base local `mfa` (autorizada por el usuario, ejecutada sola con `migrate:status` previo). Reversible. Sin datos migrados: las 445 fichas y 47 festivales siguen sin organización hasta que haga falta.
+- **Validación:** `EntityManagementTest` 11 tests / 37 aserciones OK, sin datos residuales en la base. Regresión Artists + Festivals + Pasarela + AdminAutoPublish: 139 tests, 2 fallas **previas** (`ArtistAuditCommandTest`, `FestivalAuditCommandTest`), que fallan igual sin este cambio por el contenido real de la base restaurada. Tests corridos desde el worktree con un autoload local en `vendor/autoload.php` (ignorado por git).
+- **Performance y SEO:** sin cambios en rutas públicas ni sitemap. La verificación de permiso hace una consulta indexada por usuario y tipo (memoizada); el scope de listado usa subconsulta, 1 consulta (verificado por test).
+- **No validado:** comportamiento en navegador, y con cuentas reales. `organizations` nunca se usó en producción.
+- **Pendiente / siguientes slices:** pantalla de administración de organizaciones y miembros; autorización de Eventos y Noticias (después de integrar `feature/event-programs-and-venues`, que modifica `Event*`, `AuthServiceProvider` y rutas); login con Google y solicitud de vínculo con verificación por email; decidir relación con `crm-contact-directory`. Reconciliar seeder y base de permisos del rol colaborador. Al integrar, es probable un conflicto trivial en CHANGELOG y este archivo con la otra rama.
+
 ### Integrado en dev y validado localmente 2026-10-03: contenidos vinculados de festivales
 
 - **Rama desde dev:** `codex/festival-related-content`. Spec aprobada por el usuario: `openspec/changes/festival-public-related-content/`. Checkout aislado en `storage/app/worktrees/festival-public-related-content` porque otra tarea cambió la rama del checkout principal durante la ejecución.

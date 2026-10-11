@@ -21,6 +21,7 @@ class Interprete extends Model
     use CommonMethodsTrait;
 
     use HasFactory;
+    use \App\Traits\HasOrganizations;
     // protected $fillable = ['interprete', 'slug', 'biografia', 'foto', 'visitas', 'publicar', 'user_id', 'estado'];
     protected $casts = [
         'estado' => 'boolean',
