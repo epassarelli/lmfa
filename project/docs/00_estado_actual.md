@@ -8,7 +8,9 @@
 ### Corrección 2026-10-11: description del JSON-LD en cartelera
 
 - Cartelera (`shows/index.blade.php`) usaba solo `body` para `Event.description`; ahora usa `SeoMetadata::event()` como la ficha (meta_description → excerpt → body → genérico). Spec local `event-agenda-description-fallback`, aprobada por el usuario. Test nuevo `EventAgendaDescriptionTest` (3 casos); `tests/Feature/Events` pasa completo. Fallo previo no relacionado: `PublicTemplateSeoTest` (UniqueConstraintViolationException, falla igual sin este cambio). Sin BD, sin URLs. Los 114 eventos locales sin body siguen siendo deuda editorial; no se afirma que esto resuelva el aviso productivo de Search Console. Implementado en local; sin commit, push ni despliegue.
-### Checkpoint de feature en curso — 2026-10-10
+### Checkpoint de feature en curso — 2026-10-10 (integrada en dev local el 2026-10-11, sin cierre)
+
+**Integración 2026-10-11:** a pedido del usuario se mergeó `feature/event-programs-and-venues` en `dev` local para no desfasarse, aunque la feature sigue abierta (validación visual del usuario y ajustes pendientes). Suite completa en local contra `mfa`: 456 pasan, 13 fallan por colisión con datos reales (slugs de knowledge_categories, conteos de auditorías, grupos del torneo), ninguno nuevo. Sin push, sin tag de release (feature no cerrada), sin despliegue.
 
 Por pedido del usuario se guarda un commit de avance de Eventos/jornadas/lugares y sidebar en `feature/event-programs-and-venues` para trabajar luego en un fix. **Feature no finalizada ni archivada**: resta la validación visual/operativa del usuario y continuar ajustes; el hallazgo de descripción vacía en cartelera está documentado, sin corrección implementada. Evidencia automatizada vigente: regresión seleccionada de 106 pruebas y posterior validación dirigida de roles (7 pruebas). Sin push, merge ni despliegue; cambios previos ajenos preservados fuera del commit.
 
