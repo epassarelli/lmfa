@@ -320,6 +320,7 @@ return [
         [
             'text' => 'Discos',
             'url' => 'admin/discos',
+            'can' => 'backoffice-section.discos',
             'icon' => 'fas fa-fw fa-record-vinyl',
         ],
         [
@@ -333,6 +334,7 @@ return [
         [
             'text' => 'Eventos / Cartelera',
             'url' => 'admin/events',
+            'can' => 'backoffice-section.eventos',
             'icon' => 'fas fa-fw fa-calendar-alt',
             'label_color' => 'success',
             'active' => [
@@ -343,17 +345,19 @@ return [
         [
             'text' => 'Festivales',
             'url' => 'admin/festivales',
+            'can' => 'backoffice-section.festivales',
             'icon' => 'fas fa-fw fa-map-marked-alt',
         ],
         [
             'text' => 'Intérpretes',
             'url' => 'admin/interpretes',
             'icon' => 'fas fa-fw fa-microphone',
-            'can' => 'read interprete',
+            'can' => 'backoffice-section.interpretes',
         ],
         [
             'text' => 'Letras / Canciones',
             'url' => 'admin/canciones',
+            'can' => 'backoffice-section.canciones',
             'icon' => 'fas fa-fw fa-music',
         ],
         [

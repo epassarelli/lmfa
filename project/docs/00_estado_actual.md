@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-11: acceso al backoffice según fichas (flag apagado)
+
+- Spec `backoffice-access-by-entities`. Flag `BACKOFFICE_ACCESS_BY_ENTITIES` (por defecto false): restringe Intérpretes, Discos, Canciones, Festivales y Eventos a quienes administran fichas; el resto (Mitos, Comidas, Noticias) queda igual por decisión del usuario. `BackofficeAccessByEntitiesTest` (11 casos); suite completa 476 pasan, 13 fallos previos por datos reales. **No validado:** navegador con cuentas reales. **Recordatorio pendiente al usuario:** decidir qué pasa con Mitos/Comidas/Noticias de los colaboradores (memoria del proyecto). Siguiente: solicitud de alta de ficha y Etapa 2.
+
 ### Implementado en local 2026-10-11: contenido del artista para quien administra su ficha (Etapa 1)
 
 - Spec `entity-member-content-access` (decisiones del usuario: letras publicables directo, carga directa, trabajo en dev). Miembros owner/editor activos gestionan discos y canciones de sus artistas; test `MemberContentAccessTest` (9 casos); suite completa 465 pasan y 13 fallos previos por datos reales. **No validado:** comportamiento en navegador con cuenta real sin roles. Pendiente: Etapa 2 (eventos y noticias), Etapa 3 (festivales). Observación: `canciones/store-ajax` sin policy (previa). Sin push ni despliegue.

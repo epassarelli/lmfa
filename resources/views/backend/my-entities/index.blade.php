@@ -15,6 +15,14 @@
   @if (session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
   @endif
+  @if (session('warning'))
+    <div class="alert alert-warning" role="alert"><i class="fas fa-lock mr-1"></i>{{ session('warning') }}</div>
+  @endif
+  @if (! empty($showNoFichasBanner))
+    <div class="alert alert-info" role="status">
+      Todavía no administrás ninguna ficha. Buscá a tu artista o festival y solicitá el vínculo; cuando un administrador lo apruebe vas a ver las secciones correspondientes.
+    </div>
+  @endif
   @if ($errors->any())
     <div class="alert alert-danger">
       <ul class="mb-0">

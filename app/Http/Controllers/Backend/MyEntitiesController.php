@@ -56,7 +56,9 @@ class MyEntitiesController extends Controller
             }
         }
 
-        return view('backend.my-entities.index', compact('managed', 'claims', 'prefill'));
+        $showNoFichasBanner = config('backoffice_access.enabled') && $user->hasNoManagedEntities() && ! $user->hasRole('administrador');
+
+        return view('backend.my-entities.index', compact('managed', 'claims', 'prefill', 'showNoFichasBanner'));
     }
 
     public function store(Request $request)

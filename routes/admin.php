@@ -49,10 +49,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('operational-health', [OperationalHealthController::class, 'diagnosis'])->middleware('role:administrador')->name('backend.operational-health');
 
     // --- GESTIÓN DE CONTENIDOS (EVENTOS Y NOTICIAS) ---
-    Route::post('events/{event}/sessions', [EventController::class, 'addSessions'])->name('backend.events.sessions');
-    Route::resource('events', EventController::class)->names('backend.events')->parameters(['events' => 'event']);
+    Route::post('events/{event}/sessions', [EventController::class, 'addSessions'])->middleware('backoffice.section:eventos')->name('backend.events.sessions');
+    Route::resource('events', EventController::class)->middleware('backoffice.section:eventos')->names('backend.events')->parameters(['events' => 'event']);
     Route::resource('venues', \App\Http\Controllers\Backend\VenueController::class)->except('show')->names('backend.venues');
-    Route::resource('event-programs', \App\Http\Controllers\Backend\EventProgramController::class)->except(['show', 'destroy'])->names('backend.event-programs');
+    Route::resource('event-programs', \App\Http\Controllers\Backend\EventProgramController::class)->middleware('backoffice.section:eventos')->except(['show', 'destroy'])->names('backend.event-programs');
     Route::resource('news', NewsController::class)->names('backend.news')->parameters(['news' => 'news']);
     Route::resource('knowledge-articles', KnowledgeArticleController::class)
         ->names('backend.knowledge-articles')
@@ -135,7 +135,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('members/{member}', [OrganizationMemberController::class, 'destroy'])->name('members.destroy');
         });
     });
-    Route::resource('interpretes', InterpreteController::class)->names('backend.interpretes');
+    Route::resource('interpretes', InterpreteController::class)->middleware('backoffice.section:interpretes')->names('backend.interpretes');
     Route::resource('categories', CategoryController::class)->names('backend.categories');
     Route::resource('tags', TagController::class)->names('backend.tags');
 
@@ -147,7 +147,7 @@ Route::middleware(['auth'])->group(function () {
     // --- OTROS CONTENIDOS ---
     Route::resource('mitos', MitoController::class)->names('backend.mitos');
     Route::resource('comidas', ComidaController::class)->names('backend.comidas');
-    Route::resource('festivales', FestivalController::class)->names('backend.festivales')->parameters(['festivales' => 'festival']);
+    Route::resource('festivales', FestivalController::class)->middleware('backoffice.section:festivales')->names('backend.festivales')->parameters(['festivales' => 'festival']);
     Route::get('penia-profiles/{penia_profile}/preview', [PeniaProfileController::class, 'preview'])->name('backend.penia-profiles.preview');
     Route::post('penia-profiles/{penia_profile}/publish', [PeniaProfileController::class, 'publish'])->name('backend.penia-profiles.publish');
     Route::post('penia-profiles/{penia_profile}/unpublish', [PeniaProfileController::class, 'unpublish'])->name('backend.penia-profiles.unpublish');
@@ -160,10 +160,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('radios/programs/{radio_program}/unpublish', [RadioProgramController::class, 'unpublish'])->name('backend.radios.programs.unpublish');
     Route::get('radios/programs/{radio_program}/preview', [RadioProgramController::class, 'preview'])->name('backend.radios.programs.preview');
     Route::resource('radios/programs', RadioProgramController::class)->names('backend.radios.programs')->parameters(['programs' => 'radio_program'])->except('show');
-    Route::resource('discos', AlbumController::class)->names('backend.discos')->parameters(['discos' => 'album']);
-    Route::get('canciones/data', [CancionController::class, 'getCanciones'])->name('backend.canciones.get');
-    Route::post('canciones/store-ajax', [CancionController::class, 'storeAjax'])->name('backend.canciones.store-ajax');
-    Route::resource('canciones', CancionController::class)->names('backend.canciones')->parameters(['canciones' => 'cancion']);
+    Route::resource('discos', AlbumController::class)->middleware('backoffice.section:discos')->names('backend.discos')->parameters(['discos' => 'album']);
+    Route::get('canciones/data', [CancionController::class, 'getCanciones'])->middleware('backoffice.section:canciones')->name('backend.canciones.get');
+    Route::post('canciones/store-ajax', [CancionController::class, 'storeAjax'])->middleware('backoffice.section:canciones')->name('backend.canciones.store-ajax');
+    Route::resource('canciones', CancionController::class)->middleware('backoffice.section:canciones')->names('backend.canciones')->parameters(['canciones' => 'cancion']);
 
     // --- NEWSLETTER Y MODERACIÓN ---
     Route::resource('newsletter-subscribers', NewsletterSubscriberController::class)->only(['index'])->names('backend.newsletter');

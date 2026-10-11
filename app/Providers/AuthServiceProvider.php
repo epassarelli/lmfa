@@ -41,6 +41,12 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         \Illuminate\Support\Facades\Gate::define('manage-event-venues', fn ($user) => $user->hasRole('administrador'));
 
+        // Un gate por sección del backoffice restringida por fichas (config/backoffice_access.php);
+        // se usa como 'can' => 'backoffice-section.<seccion>' en el menú AdminLTE.
+        foreach (array_keys(config('backoffice_access.sections', [])) as $section) {
+            \Illuminate\Support\Facades\Gate::define("backoffice-section.$section", fn ($user) => $user->canAccessBackofficeSection($section));
+        }
+
         // Bypass para el rol administrador
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
             return $user->hasRole('administrador') ? true : null;

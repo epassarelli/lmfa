@@ -18,6 +18,9 @@ trait ManagesOrganizationEntities
     /** @var array<string, array<int, int>> */
     protected array $managedEntityIdsMemo = [];
 
+    /** @var array<string, bool> */
+    protected array $managedEntityTypeMemo = [];
+
     public function organizations(): BelongsToMany
     {
         return $this->belongsToMany(Organization::class, 'organization_members')
@@ -61,6 +64,63 @@ trait ManagesOrganizationEntities
     public function forgetManagedEntities(): void
     {
         $this->managedEntityIdsMemo = [];
+        $this->managedEntityTypeMemo = [];
+    }
+
+    /**
+     * Administra al menos una ficha del tipo (clave de config/entity_management.php), ya sea por
+     * membresía o por ser el creador legacy (mismo criterio que "Mis fichas").
+     */
+    public function hasManagedEntityOfType(string $typeKey): bool
+    {
+        if (array_key_exists($typeKey, $this->managedEntityTypeMemo)) {
+            return $this->managedEntityTypeMemo[$typeKey];
+        }
+
+        $model = config("entity_management.entities.$typeKey.model");
+
+        return $this->managedEntityTypeMemo[$typeKey] = $model
+            ? $model::query()->managedOrLegacyBy($this)->exists()
+            : false;
+    }
+
+    /**
+     * Acceso a una sección del backoffice según las fichas que administra el usuario.
+     * Con el flag apagado, para administradores o para secciones no restringidas siempre es true.
+     */
+    public function canAccessBackofficeSection(string $section): bool
+    {
+        if (! config('backoffice_access.enabled') || $this->hasRole('administrador')) {
+            return true;
+        }
+
+        $types = config("backoffice_access.sections.$section");
+
+        if ($types === null) {
+            return true;
+        }
+
+        foreach ($types as $typeKey) {
+            if ($this->hasManagedEntityOfType($typeKey)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * El usuario no administra ninguna ficha de los tipos registrados.
+     */
+    public function hasNoManagedEntities(): bool
+    {
+        foreach (array_keys(config('entity_management.entities', [])) as $typeKey) {
+            if ($this->hasManagedEntityOfType($typeKey)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

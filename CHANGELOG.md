@@ -9,6 +9,7 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Acceso al backoffice según las fichas** (spec `backoffice-access-by-entities`, flag `BACKOFFICE_ACCESS_BY_ENTITIES`, apagado por defecto): con el flag activo, quien no administra fichas ve solo "Mis fichas" en las secciones que dependen de artistas o festivales (Intérpretes, Discos, Canciones, Festivales, Eventos) y es redirigido a Mis fichas con un aviso si entra por URL (403 JSON en AJAX). Con ficha de artista o festival se habilitan las secciones correspondientes. Mitos, Comidas y Noticias no se tocan por ahora.
 - **Contenido del artista para quien administra su ficha** (spec `entity-member-content-access`, Etapa 1): un miembro owner/editor activo de una organización activa puede crear, editar y publicar directamente discos y canciones (incluida la letra) de los artistas que administra, sin roles ni permisos globales. Listados y selector de artistas limitados a los suyos; `interprete_id` validado en servidor. `delete` sigue restringido. Etapas 2 (eventos/noticias) y 3 (festivales) pendientes.
 - **Demos locales de Eventos:** dos conjuntos de cuatro/cinco jornadas y un evento independiente, con sedes e intérpretes relacionados para probar herencia y excepciones. Datos ficticios identificados; script restringido a local y sin duplicados. Spec `event-demos-and-sidebar`.
 

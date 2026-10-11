@@ -80,3 +80,14 @@ Pendiente: decisiones 1-4 y confirmacion de la opcion de aviso.
 2. Mitos/Comidas: **se deja tal cual** hasta terminar los demas puntos; recordarselo al usuario al cerrar (memoria del proyecto).
 3. Pregunta sobre prensa/sin rol: pendiente de aclarar.
 4. Flag `BACKOFFICE_ACCESS_BY_ENTITIES` (apagado por defecto): aprobado.
+
+## Resultado (implementado en local, 2026-10-11)
+- Flag `BACKOFFICE_ACCESS_BY_ENTITIES` (config/backoffice_access.php), apagado por defecto. Con el flag apagado nada cambia.
+- Alcance acotado por la decision 2 (dejar Mitos/Comidas/Noticias tal cual): solo se restringen Interpretes, Discos, Canciones, Festivales y Eventos (incl. jornadas y `store-ajax` de canciones). `Salas` ya era solo administrador.
+- Eventos se habilita con ficha de artista **o** de festival (Etapa 3 afinara el detalle).
+- Sidebar: gates `backoffice-section.<seccion>` usados como `can` en AdminLTE (sin filtro propio). Rutas: middleware `backoffice.section:<seccion>`.
+- Rechazo web: redirect a Mis fichas con flash `warning`; AJAX/JSON: 403 con el mismo mensaje. Banner fijo en Mis fichas sin fichas.
+- "Tiene ficha" = membresia owner/editor activa en organizacion activa o creador legacy (`user_id`), memoizado por request.
+- Prensa y sin rol: mismo tratamiento que colaborador (confirmado por el usuario).
+- Tests: `BackofficeAccessByEntitiesTest` (11 casos). Suite completa: 476 pasan; 13 fallos previos por datos reales.
+- Pendiente: solicitud de alta de ficha (`entity-creation-requests`) y recordatorio de Mitos/Comidas.
