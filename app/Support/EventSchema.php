@@ -90,15 +90,21 @@ final class EventSchema
             '@type' => 'PostalAddress',
             'streetAddress' => filled($event->address) ? trim($event->address) : (filled($venue?->address) ? trim($venue->address) : null),
             'addressLocality' => filled($event->city) ? trim($event->city) : (filled($venue?->city) ? trim($venue->city) : null),
-            'addressRegion' => $event->provincia?->nombre,
+            'addressRegion' => $event->provincia?->nombre ?? $venue?->provincia?->nombre,
             'addressCountry' => 'AR',
         ]);
 
-        return [
+        $location = [
             '@type' => 'Place',
             'name' => $venue?->name ?: ($address['addressLocality'] ?? $address['addressRegion'] ?? 'Argentina'),
             'address' => $address,
         ];
+        $latitude = $event->latitude ?? $venue?->latitude;
+        $longitude = $event->longitude ?? $venue?->longitude;
+        if ($latitude !== null && $longitude !== null) {
+            $location['geo'] = ['@type' => 'GeoCoordinates', 'latitude' => (float)$latitude, 'longitude' => (float)$longitude];
+        }
+        return $location;
     }
 
     private static function offers(Event $event): ?array

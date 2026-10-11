@@ -16,6 +16,8 @@ class Event extends Model
     protected $fillable = [
         'organization_id',
         'venue_id',
+        'program_id',
+        'program_overrides',
         'title',
         'subtitle',
         'excerpt',
@@ -58,6 +60,7 @@ class Event extends Model
     ];
 
     protected $casts = [
+        'program_overrides' => 'array',
         'start_at' => 'datetime',
         'end_at' => 'datetime',
         'approved_at' => 'datetime',
@@ -199,6 +202,23 @@ class Event extends Model
     public function venue()
     {
         return $this->belongsTo(Venue::class);
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(EventProgram::class);
+    }
+
+    public function scopeUpcomingOrOngoing(Builder $query): Builder
+    {
+        return $query->where(fn ($q) => $q->where('start_at', '>=', now()->startOfDay())
+            ->orWhere('end_at', '>=', now()->startOfDay()));
+    }
+
+    public function scopeOverlapping(Builder $query, $start, $end): Builder
+    {
+        return $query->where('start_at', '<=', $end)->where(fn ($q) => $q
+            ->where('start_at', '>=', $start)->orWhere('end_at', '>=', $start));
     }
 
     public function creator()

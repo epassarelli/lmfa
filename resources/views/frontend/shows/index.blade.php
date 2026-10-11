@@ -6,36 +6,11 @@
 @section('metaRobots', $metaRobots)
 
 @push('json-ld')
+@php
+  $agendaSchema = ['@context' => 'https://schema.org', '@graph' => $shows->getCollection()->map(fn ($event) => \App\Support\EventSchema::forEvent($event, \App\Support\CanonicalUrl::normalize(route('cartelera.show', $event->slug)), null, \App\Support\SeoMetadata::event($event)['description']))->all()];
+@endphp
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    @foreach ($shows as $show)
-      {
-        "@type": "Event",
-        "name": @json($show->titulo),
-        "startDate": @json(optional($show->fecha)->toIso8601String()),
-        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-        "eventStatus": "https://schema.org/EventScheduled",
-        "url": @json(route('cartelera.show', $show->slug)),
-        "description": @json(\Illuminate\Support\Str::limit(strip_tags($show->detalle), 160)),
-        "location": {
-          "@type": "Place",
-          "name": @json(trim(($show->lugar ?? '') . ($show->provincia?->nombre ? ', ' . $show->provincia->nombre : '')))
-        }@if($show->interpretes->isNotEmpty()),
-        "performer": [
-          @foreach($show->interpretes as $interprete)
-            {
-              "@type": "MusicGroup",
-              "name": @json($interprete->interprete),
-              "url": @json(route('artista.show', $interprete->slug))
-            }@if(!$loop->last),@endif
-          @endforeach
-        ]@endif
-      }@if(!$loop->last),@endif
-    @endforeach
-  ]
-}
+@json($agendaSchema)
 </script>
 @endpush
 

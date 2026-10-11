@@ -23,6 +23,7 @@ class ModerationController extends Controller
     private const PUBLISHABLE = [
         'news'       => News::class,
         'event'      => Event::class,
+        'event-program' => \App\Models\EventProgram::class,
         'interprete' => Interprete::class,
         'album'      => \App\Models\Album::class,
         'cancion'    => \App\Models\Cancion::class,
@@ -44,7 +45,9 @@ class ModerationController extends Controller
                 'approved_by' => auth()->id(),
             ]);
         } elseif ($type === 'event') {
-            $model->update(['editorial_status' => 'published']);
+            app(\App\Services\EventService::class)->updateEvent($model, ['editorial_status' => 'published', 'approved_by' => auth()->id(), 'approved_at' => now()]);
+        } elseif ($type === 'event-program') {
+            app(\App\Services\EventProgramService::class)->save(array_merge($model->only(['title', 'body', 'excerpt', 'venue_id', 'ticket_url', 'price_text', 'is_free']), ['editorial_status' => 'published']), null, $model);
         } else {
             $model->update(['estado' => 1]);
         }
@@ -63,11 +66,13 @@ class ModerationController extends Controller
 
         $events = Event::where('editorial_status', 'draft')
                       ->with('user')->get();
+        $programs = \App\Models\EventProgram::where('editorial_status', 'draft')->with('creator')->get();
+        $pendingVenues = \App\Models\Venue::where('status', 'pending')->with('provincia')->get();
 
         $interpretes = Interprete::where('estado', 0)->get();
         $albunes = Album::where('estado', 0)->get();
         $canciones = Cancion::where('estado', 0)->get();
 
-        return view('backend.moderation.index', compact('news', 'events', 'interpretes', 'albunes', 'canciones'));
+        return view('backend.moderation.index', compact('news', 'events', 'programs', 'pendingVenues', 'interpretes', 'albunes', 'canciones'));
     }
 }

@@ -53,6 +53,7 @@ class PublicQualityGateTest extends TestCase
             '/festivales-y-fiestas-tradicionales',
             '/penias',
             '/radios-de-folklore-argentino',
+            '/cartelera-de-eventos-folkloricos',
         ];
     }
 }

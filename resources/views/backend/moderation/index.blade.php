@@ -8,6 +8,13 @@
 
 @section('content')
 <div class="row">
+    <div class="col-12"><div class="card card-info card-outline"><div class="card-header"><h2 class="card-title">Eventos con jornadas pendientes ({{ $programs->count() }})</h2></div><div class="card-body">
+      <p class="text-muted">La ficha del evento y cada jornada se revisan por separado.</p>
+      @foreach($programs as $program)<p>{{ $program->title }} — {{ $program->creator?->name }} <a class="btn btn-sm btn-primary" href="{{ route('backend.event-programs.edit', $program) }}">Revisar evento y jornadas</a></p>@endforeach
+    </div></div></div>
+    <div class="col-12"><div class="card card-warning card-outline"><div class="card-header"><h2 class="card-title">Lugares propuestos ({{ $pendingVenues->count() }})</h2></div><div class="card-body">
+      @foreach($pendingVenues as $venue)<p>{{ $venue->name }} — {{ $venue->city }} / {{ $venue->provincia?->nombre }} <a class="btn btn-sm btn-primary" href="{{ route('backend.venues.edit', $venue) }}">Revisar y activar lugar</a></p>@endforeach
+    </div></div></div>
     <!-- Noticias -->
     <div class="col-md-12">
         <div class="card card-warning card-outline">

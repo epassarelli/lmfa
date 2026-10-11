@@ -13,6 +13,7 @@
 
     <form action="{{ route('backend.contributions.store') }}" method="POST" class="bg-white rounded-lg shadow-lg p-8 space-y-6">
         @csrf
+        @if($errors->any())<div class="rounded border border-red-300 bg-red-50 p-4 text-red-800"><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
         <input type="hidden" name="type" value="{{ $type }}">
         @if($original)
             <input type="hidden" name="id" value="{{ $original->id }}">
@@ -54,15 +55,8 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Detalle del Festival</label>
                 <textarea id="editor" name="payload[detalle]" rows="10" class="w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500">{{ $original?->detalle }}</textarea>
             </div>
-        @elseif($type == 'show')
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Show / Evento</label>
-                <input type="text" name="payload[titulo]" value="{{ $original?->titulo }}" class="w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500" required>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Detalles del Show</label>
-                <textarea id="editor" name="payload[detalle]" rows="10" class="w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500">{{ $original?->detalle }}</textarea>
-            </div>
+        @elseif($type == 'event')
+            @include('frontend.contributions._event')
         @endif
 
         <div class="bg-blue-50 p-4 rounded-md text-sm text-blue-700 italic border border-blue-100">
@@ -79,6 +73,10 @@
 @endsection
 
 @section('scripts')
+@if($type === 'event')
+@include('backend.partials.scripts._ckeditor')
+@include('frontend.contributions._event_script')
+@else
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -87,4 +85,5 @@
         }
     });
 </script>
+@endif
 @endsection

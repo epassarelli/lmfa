@@ -55,6 +55,7 @@ Route::get('/sitemap-news.xml', [SitemapController::class, 'legacyGoogleNews'])-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/healthz', [OperationalHealthController::class, 'public'])->name('healthz');
 
+
 // Legales / cumplimiento Meta
 Route::get('/privacidad', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/condiciones', [LegalController::class, 'terms'])->name('legal.terms');
@@ -83,6 +84,7 @@ Route::get('/letras-de-canciones-folkloricas/letra/{letra}', [CancionesControlle
 Route::get('/discografias-del-folklore-argentino', [DiscosController::class, 'index'])->name('discografias.index');
 
 Route::get('/festivales-y-fiestas-tradicionales', [FestivalesController::class, 'index'])->name('festivales.index');
+Route::get('/programacion-de-eventos/{slug}', [\App\Http\Controllers\Frontend\EventProgramController::class, 'show'])->name('event-programs.show');
 Route::get('/festivales-y-fiestas-tradicionales/provincia/{provinceSlug}/mes/{monthSlug}', [FestivalesController::class, 'provinceMonth'])->name('festivales.province-month');
 Route::get('/festivales-y-fiestas-tradicionales/provincia/{provinceSlug}', [FestivalesController::class, 'province'])->name('festivales.province');
 Route::get('/festivales-y-fiestas-tradicionales/mes/{monthSlug}', [FestivalesController::class, 'month'])->name('festivales.month');

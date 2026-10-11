@@ -1,3 +1,13 @@
+<div class="form-group">
+  @if($event->program_id)
+    <input type="hidden" name="program_id" value="{{ $event->program_id }}">
+    <p class="mt-2"><a href="{{ route('backend.event-programs.edit', $event->program_id) }}">Editar datos comunes y ver jornadas</a></p>
+    <fieldset class="border rounded p-2 mb-3"><legend class="h6">Volver a heredar datos del evento</legend><p class="small text-muted">Marcá los campos que querés reemplazar por los del evento al guardar. Los campos distintos se conservan como excepciones de esta jornada.</p>
+      @foreach(['body' => 'Detalle', 'excerpt' => 'Resumen', 'venue_id' => 'Lugar', 'ticket_url' => 'Entradas', 'price_text' => 'Precio', 'is_free' => 'Gratuidad'] as $field => $label)<label class="mr-3"><input type="checkbox" name="inherit_fields[]" value="{{ $field }}" @checked(in_array($field, old('inherit_fields', [])))> {{ $label }}</label>@endforeach
+    </fieldset>
+  @endif
+</div>
+@include('backend.events._venue', ['locationEntity' => $event])
 <div class="row">
   <!-- Título -->
   <div class="col-md-8">
@@ -12,7 +22,7 @@
   </div>
 
   <!-- Artistas -->
-  <div class="col-md-4">
+  <div class="col-md-4" data-single-event>
     <div class="form-group">
       <label for="interprete_ids">Artistas participantes</label>
       @php
@@ -26,6 +36,7 @@
           </option>
         @endforeach
       </select>
+      <input type="hidden" name="interprete_ids[]" value="">
       <small class="form-text text-muted">Podés asociar uno o varios artistas. La lista reemplaza la nómina actual al guardar.</small>
       @error('interprete_ids')
         <small class="text-danger">{{ $message }}</small>
@@ -34,7 +45,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row" data-single-event>
   <!-- Fecha y hora (start_at) -->
   <div class="col-md-4">
     <div class="form-group">
@@ -53,7 +64,7 @@
       <label for="end_at">Fecha y hora de fin</label>
       <input type="datetime-local" name="end_at" id="end_at" class="form-control"
         value="{{ old('end_at', isset($event) && $event->end_at ? \Carbon\Carbon::parse($event->end_at)->format('Y-m-d\TH:i') : '') }}">
-      <small class="form-text text-muted">Opcional. Para eventos de varios días o con horario de cierre.</small>
+      <small class="form-text text-muted">Opcional. Una misma jornada puede terminar al día siguiente; para varias fechas usá jornadas.</small>
       @error('end_at')
         <small class="text-danger">{{ $message }}</small>
       @enderror
@@ -105,7 +116,7 @@
   @endif
 </div>
 
-<div class="row">
+<div class="row" data-single-event>
   <!-- Lugar (city) -->
   <div class="col-md-4">
     <div class="form-group">
@@ -177,6 +188,7 @@
 
   <!-- Entrada libre (is_free) -->
   <div class="col-md-2 d-flex align-items-end pb-3">
+    <input type="hidden" name="is_free" value="0">
     <div class="custom-control custom-checkbox">
       <input type="checkbox" name="is_free" class="custom-control-input" id="is_free" value="1"
         {{ old('is_free', $event->is_free ?? false) ? 'checked' : '' }}>
@@ -193,7 +205,7 @@
     ['name' => 'penia_profile_ids', 'label' => 'Peñas', 'placeholder' => 'Seleccionar peñas', 'options' => $peniaOptions ?? collect(), 'selected' => $event->relationLoaded('peniaProfiles') ? $event->peniaProfiles->pluck('id')->all() : []],
   ];
 @endphp
-<div class="row">
+<div class="row" data-single-event>
   @foreach ($relationSelects as $relationSelect)
     @php $selectedIds = array_map('intval', array_filter((array) old($relationSelect['name'], $relationSelect['selected']))); @endphp
     <div class="col-md-4">
@@ -226,8 +238,8 @@
 
 <!-- Detalle (body) -->
 <div class="form-group">
-  <label for="body">Detalles del Evento <span class="text-danger">*</span></label>
-  <textarea name="body" id="body" class="form-control summernote" rows="6" placeholder="Descripción completa del evento..." data-summernote-profile="editorial-body">{{ old('body', $event->body ?? '') }}</textarea>
+  <label for="editor">Detalles del Evento <span class="text-danger">*</span></label>
+  <textarea name="body" id="editor" class="form-control" rows="6" placeholder="Descripción completa del evento..." data-ckeditor-profile="editorial-body">{{ old('body', $event->body ?? '') }}</textarea>
   @error('body')
     <small class="text-danger">{{ $message }}</small>
   @enderror

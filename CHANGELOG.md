@@ -9,6 +9,10 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Demos locales de Eventos:** dos conjuntos de cuatro/cinco jornadas y un evento independiente, con sedes e intérpretes relacionados para probar herencia y excepciones. Datos ficticios identificados; script restringido a local y sin duplicados. Spec `event-demos-and-sidebar`.
+
+- **Eventos con jornadas y Salas/Lugares (implementado y validado en local):** carga común de conjuntos/ediciones con fichas por jornada, artistas propios y excepciones; ABM independiente de lugares con ubicación y coordenadas; CKEditor en Eventos; reglas compartidas en los ingresos editoriales y agenda que contempla duración. Migración local aplicada con autorización; 98 pruebas Feature pasan. Spec `event-programs-and-venues`. Revisión interactiva pendiente; sin despliegue.
+
 - **Solicitud de vínculo usuario ↔ ficha** (spec `entity-claim-requests`): cualquier usuario autenticado, con o sin rol y con login común, Google o Facebook (mismo guard), puede pedir administrar un intérprete o festival desde **Mis fichas** (`admin/mis-fichas`: fichas administradas, formulario con búsqueda, estado de solicitudes y cancelación). El administrador las revisa en **Solicitudes de vínculo** (`admin/claims`): aprueba con rol (usa la organización activa de la ficha o crea la principal y agrega al usuario como miembro activo) o rechaza con motivo visible para el usuario. Límites: una pendiente por usuario y ficha, máximo 5 pendientes, throttle de envío y bloqueo si ya administra la ficha. Una tabla nueva (`entity_claim_requests`), reversible. Sin avisos por correo.
 - **Seguimiento de contacto en Organizaciones** (spec `organization-contact-tracking`): Instagram y Facebook, etapa del contacto (`prospect`, `contacted`, `replied`, `email_obtained`, `declined`), último contacto y notas. El listado suma filtro por etapa, enlaces a los perfiles, búsqueda por Instagram y la acción "Registrar contacto". Nuevo export CSV de contactables (solo activas, con consentimiento, sin baja y con email; respeta búsqueda y tipo; neutraliza fórmulas de planilla). Una migración reversible con 5 columnas; sin envío de correos (queda para cuando haya volumen).
 - **Backoffice de Organizaciones** (spec `organization-admin-backoffice`, solo rol `administrador`, `admin/organizations`): listado paginado con búsqueda, filtros (tipo, estado, verificadas, contactables) y orden; alta y edición con datos de contacto, consentimiento, baja y verificación; vínculo y desvínculo de intérpretes y festivales con búsqueda remota (Select2) y organización principal por ficha; miembros con rol y estado (aprobar una solicitud es pasar `pending` a `active`). Las organizaciones no se borran: se desactivan, lo que revoca los permisos de sus miembros. Tipos vinculables configurables en `config/entity_management.php`. Sin migraciones; menú "Usuarios y Roles > Organizaciones".
@@ -20,12 +24,20 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Cambiado
 
+- **Ingreso unificado de Eventos:** único Nuevo evento con Una fecha o Varias jornadas, datos comunes y grillas por jornada; listado con una fila por evento y posibilidad de agregar jornadas a uno existente conservando su ficha. Se elimina Conjuntos / Jornadas del sidebar y se mantienen URLs/compatibilidad. Validado en local con regresión de 106 pruebas; sin nueva migración.
+
+- **Sidebar del Backoffice:** módulos de Música y Cultura como enlaces directos, Pasarela de Contenidos plegable y orden alfabético ASC en cada sección y submenú, conservando permisos y URLs.
+
 - **Consultas y SEO de la ficha de festival**: se eliminan las cargas completas y duplicadas de relaciones, con colecciones acotadas y fallback de imagen preservado. La paginación conserva la URL canónica de la ficha y usa `noindex,follow` en páginas posteriores. Sin nuevas dependencias, scripts globales ni migraciones.
 - **"Explorar por provincia"** en la cartelera muestra solo provincias con eventos futuros publicados y su cantidad (antes, las 8 primeras en orden alfabético).
 - **JSON-LD `Event` de la ficha**: agrega `eventStatus`, `eventAttendanceMode`, `endDate`, dirección estructurada (`PostalAddress`), `offers` solo con datos cargados, `organizer` y `superEvent`.
 - **Performance de la cartelera**: provincias, resolución de provincia por slug e intérpretes del buscador quedan en caché; se eliminaron consultas sin uso en la ficha. Las consultas de continuidad tienen `limit` en SQL y eager loading.
 
 ### Corregido
+
+- **Description del JSON-LD en la cartelera de Eventos:** ahora usa la misma prioridad que la ficha (meta_description, excerpt, body, texto genérico) en lugar de solo `body`, que podía salir vacío. Sin cambios de BD ni de URLs. Spec `event-agenda-description-fallback`.
+
+- **Listado de Eventos con roles combinados:** un administrador que también es colaborador/prensa ya no recibe el filtro por autor; conserva visibilidad administrativa. Los demás colaboradores siguen viendo sus eventos.
 
 - **Imágenes rotas cuando el archivo no existe**: `EditorialImageResolver` verifica en el disco local que exista la imagen propia, la legacy o la del artista relacionado y, si falta, usa el fallback editorial de la entidad. Aplica a todas las secciones. `optimized-image` toma el primer grupo de variantes no vacío.
 - **Ficha de evento a ancho completo**: se quitaron el contenedor anidado y la columna `lg:w-2/3`, que dejaban el contenido en la mitad del ancho disponible.

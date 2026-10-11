@@ -107,7 +107,7 @@ class FestivalesController extends Controller
                 return Event::query()
                     ->publishedVisible()
                     ->whereHas('festivales')
-                    ->with(['interpretes:id,interprete,slug', 'images', 'provincia:id,nombre'])
+                    ->with(['interpretes:id,interprete,slug', 'images', 'program.images', 'provincia:id,nombre'])
                     ->orderBy('start_at')
                     ->take(3)
                     ->get();

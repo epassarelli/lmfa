@@ -39,6 +39,9 @@
     @endif
 
     <h1 class="text-3xl font-bold mb-2">{{ $h1 }}</h1>
+    @if($show->program && $show->program->isPublished())
+      <p class="mb-4 text-sm">Forma parte de <a href="{{ route('event-programs.show', $show->program->slug) }}" class="text-orange-700 underline">{{ $show->program->title }} — ver todas las jornadas</a>.</p>
+    @endif
 
     @if (filled($show->excerpt))
       <p class="text-lg text-slate-700 mb-4">{{ $show->excerpt }}</p>
@@ -75,7 +78,7 @@
       </div>
     @endif
 
-    <a href="{{ route('backend.contributions.create', ['type' => 'show', 'id' => $show->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium" data-nosnippet>
+    <a href="{{ route('backend.contributions.create', ['type' => 'event', 'id' => $show->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium" data-nosnippet>
       Sugerir corrección de datos del evento
     </a>
   </article>

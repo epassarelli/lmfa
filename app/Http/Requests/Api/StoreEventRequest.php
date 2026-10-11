@@ -22,7 +22,7 @@ class StoreEventRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        return array_merge(\App\Support\EventInput::rules(), [
             'title' => 'required_without:show|string|max:255',
             'body' => 'nullable|string',
             'show' => 'required_without:title|string|max:255',
@@ -65,6 +65,6 @@ class StoreEventRequest extends FormRequest
             'interprete_secundarios.*' => 'exists:interpretes,id',
             'estado' => ['nullable', Rule::in(['0', '1', 0, 1])],
             'publicar' => 'nullable|date',
-        ];
+        ]);
     }
 }

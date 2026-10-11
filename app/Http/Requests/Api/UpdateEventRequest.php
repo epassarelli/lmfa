@@ -22,7 +22,7 @@ class UpdateEventRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        return array_merge(\App\Support\EventInput::rules(), [
             'title' => 'sometimes|string|max:255',
             'body' => 'sometimes|nullable|string',
             'show' => 'sometimes|string|max:255',
@@ -65,6 +65,6 @@ class UpdateEventRequest extends FormRequest
             'interprete_secundarios.*' => 'exists:interpretes,id',
             'estado' => ['sometimes', 'nullable', Rule::in(['0', '1', 0, 1])],
             'publicar' => 'sometimes|nullable|date',
-        ];
+        ]);
     }
 }

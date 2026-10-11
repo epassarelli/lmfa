@@ -65,7 +65,7 @@ class EventController extends Controller
 
         $event = $this->eventService->createEvent($payload, $image);
 
-        return response()->json($event, 201);
+        return response()->json($event->load(['venue', 'program', 'interpretes']), 201);
     }
 
     public function update(UpdateEventRequest $request, Event $event)
@@ -77,7 +77,7 @@ class EventController extends Controller
 
         $event = $this->eventService->updateEvent($event, $payload, $image);
 
-        return response()->json($event);
+        return response()->json($event->load(['venue', 'program', 'interpretes']));
     }
 
     public function destroy(Event $event)

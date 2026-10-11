@@ -132,10 +132,10 @@ class InterpretesController extends Controller
         $canciones = $interprete->canciones()->with('interprete')->latest()->take(3)->get();
         $discos = $interprete->discos()->with('images')->orderByDesc('anio')->take(3)->get();
         $eventos = $interprete->events()
-            ->publishedVisible()
-            ->where('start_at', '>=', now())
+            ->publiclyVisible()
+            ->upcomingOrOngoing()
             ->orderBy('start_at')
-            ->with('images')
+            ->with(['images', 'program.images'])
             ->take(2)
             ->get();
         $interpretes = Interprete::getInterpretesExcluding($interprete->id);

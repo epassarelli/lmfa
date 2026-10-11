@@ -39,6 +39,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+        \Illuminate\Support\Facades\Gate::define('manage-event-venues', fn ($user) => $user->hasRole('administrador'));
 
         // Bypass para el rol administrador
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {

@@ -19,7 +19,7 @@ class ShowRequest extends FormRequest
         $this->normalizeRichTextFields(['body']);
 
         // El formulario envía un hidden vacío por relación para permitir desvincular todo.
-        foreach (['festival_ids', 'knowledge_article_ids', 'penia_profile_ids'] as $field) {
+        foreach (['interprete_ids', 'festival_ids', 'knowledge_article_ids', 'penia_profile_ids'] as $field) {
             if (is_array($this->input($field))) {
                 $this->merge([$field => array_values(array_filter($this->input($field), 'filled'))]);
             }
@@ -28,7 +28,19 @@ class ShowRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        if (! $this->route('event') && $this->input('event_format') === 'multiple') {
+            $rules = \App\Services\EventProgramService::rules();
+            $rules['sessions'] = 'required|array|min:2|max:60';
+
+            return array_merge($rules, [
+                'event_format' => 'required|in:single,multiple',
+                'estado' => 'nullable|integer|in:0,1',
+                'imagen_destacada' => 'nullable|image|max:5120',
+            ]);
+        }
+
+        return array_merge(\App\Support\EventInput::rules(), [
+            'event_format' => 'nullable|in:single,multiple',
             'title' => 'required|string|max:255',
             'body' => 'required|string',
             'start_at' => 'required|date',
@@ -53,6 +65,7 @@ class ShowRequest extends FormRequest
             'slug' => 'nullable|string|max:255|unique:events,slug,'.($this->route('event')?->id ?? $this->route('show')?->id ?? ''),
             'estado' => 'nullable|integer|in:0,1',
             'foto' => 'nullable|image|max:5120',
-        ];
+            'imagen_destacada' => 'nullable|image|max:5120',
+        ]);
     }
 }

@@ -100,6 +100,23 @@ class ContributionController extends Controller
 
                 if ($modelClass === News::class) {
                     $this->approveNewsContribution($contribution, $payload, $isNew);
+                } elseif ($modelClass === \App\Models\Event::class) {
+                    $payload['created_by'] = $contribution->user_id;
+                    $payload['approved_by'] = auth()->id();
+                    $payload['approved_at'] = now();
+                    $payload['editorial_status'] = 'published';
+                    unset($payload['estado']);
+                    if ($isNew && isset($payload['sessions'])) {
+                        $program = app(\App\Services\EventProgramService::class)->save($payload);
+                        $program->update(['created_by' => $contribution->user_id]);
+                        $program->events()->update(['created_by' => $contribution->user_id]);
+                        $contribution->contributable_id = $program->events()->orderBy('id')->value('id');
+                    } elseif ($isNew) {
+                        $event = app(\App\Services\EventService::class)->createEvent($payload);
+                        $contribution->contributable_id = $event->id;
+                    } else {
+                        app(\App\Services\EventService::class)->updateEvent(\App\Models\Event::findOrFail($contribution->contributable_id), $payload);
+                    }
                 } else {
                     $this->approveLegacyContribution($contribution, $modelClass, $payload, $isNew);
                 }

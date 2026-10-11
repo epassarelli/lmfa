@@ -3,14 +3,24 @@
 @section('title', 'Nuevo Evento')
 
 @section('content_header')
-    <h1><i class="fas fa-calendar-plus mr-2"></i>Crear Nuevo Evento</h1>
+    <h1><i class="fas fa-calendar-plus mr-2"></i>{{ $event->program_id ? 'Agregar jornada al evento' : 'Crear Nuevo Evento' }}</h1>
 @stop
 
 @section('content')
+@if($errors->any())<div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
 <div class="row">
     <div class="col-md-10 mx-auto">
         <form action="{{ route('backend.events.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @if($event->program_id)<p class="alert alert-info">Esta jornada forma parte de un evento. <a href="{{ route('backend.event-programs.edit', $event->program_id) }}">Volver a sus datos comunes y jornadas</a>.</p>@endif
+            @if(!$event->program_id)
+            <div class="card"><div class="card-body">
+                <fieldset><legend class="h6">¿Cómo se realiza el evento?</legend>
+                <label class="mr-4"><input type="radio" name="event_format" value="single" @checked(old('event_format', request('format', 'single')) !== 'multiple')> Una fecha</label>
+                <label><input type="radio" name="event_format" value="multiple" @checked(old('event_format', request('format')) === 'multiple')> Varias jornadas</label>
+                <p class="text-muted mb-0">Si se realiza en varios días, agregá una jornada por fecha con sus horarios y artistas. El nombre, detalle, lugar e imagen se cargan una sola vez.</p></fieldset>
+            </div></div>
+            @endif
 
             <div class="card card-outline card-success">
                 <div class="card-header">
@@ -20,6 +30,12 @@
                     @include('backend.events.form')
                 </div>
             </div>
+
+            @if(!$event->program_id)
+            <fieldset id="multiple-event-fields" hidden disabled>
+                @include('backend.events._sessions')
+            </fieldset>
+            @endif
 
             <div class="card card-outline card-info">
                 <div class="card-header">
@@ -51,6 +67,9 @@
 
 @section('js')
     @include('backend.partials.scripts._select2')
+    @include('backend.partials.scripts._ckeditor')
+    @include('backend.events._venue_script')
+    @include('backend.events._sessions_script')
     <script>
         $(document).ready(function () {
             $('.custom-file-input').on('change', function() {
@@ -58,28 +77,6 @@
                 $(this).next('.custom-file-label').addClass("selected").html(fileName);
             });
 
-            const $editor = $('#body[data-summernote-profile="editorial-body"]');
-            if ($editor.length && typeof $editor.summernote === 'function') {
-                if ($editor.next('.note-editor').length) {
-                    $editor.summernote('destroy');
-                }
-
-                $editor.summernote({
-                    height: 240,
-                    toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'italic', 'underline', 'clear']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['insert', ['link']],
-                        ['view', ['codeview', 'help']]
-                    ],
-                    styleTags: [
-                        'p',
-                        { title: 'Titulo 2', tag: 'h2', className: 'note-h2' },
-                        { title: 'Titulo 3', tag: 'h3', className: 'note-h3' }
-                    ]
-                });
-            }
         });
     </script>
 @stop

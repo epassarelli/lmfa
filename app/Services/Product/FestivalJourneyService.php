@@ -17,8 +17,8 @@ final class FestivalJourneyService
 
         $events = $festival->events()
             ->publiclyVisible()
-            ->where('start_at', '>=', now()->startOfDay())
-            ->with(['images', 'provincia', 'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')->orderBy('interprete')])
+            ->upcomingOrOngoing()
+            ->with(['images', 'program.images', 'provincia', 'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')->orderBy('interprete')])
             ->orderBy('start_at')
             ->orderBy('events.id')
             ->paginate(3, ['events.*'], 'eventos_page', max(1, $eventPage));
@@ -78,9 +78,9 @@ final class FestivalJourneyService
 
         return [
             'enabled' => true,
-            'events' => $artist->events()->publiclyVisible()->where('start_at', '>=', now()->startOfDay())
+            'events' => $artist->events()->publiclyVisible()->upcomingOrOngoing()
                 ->whereHas('festivales', fn ($query) => $query->publishedVisible()->whereIn('festivales.id', $allowlist))
-                ->with(['images', 'provincia', 'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')])
+                ->with(['images', 'program.images', 'provincia', 'interpretes' => fn ($query) => $query->where('estado', 1)->with('images')])
                 ->orderBy('start_at')->limit(3)->get(),
             'festivals' => $artist->festivales()->publishedVisible()->whereIn('festivales.id', $allowlist)
                 ->with(['images', 'provincia', 'mes', 'locality'])->orderBy('title')->limit(3)->get(),
