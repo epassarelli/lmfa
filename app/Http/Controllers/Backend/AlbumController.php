@@ -92,7 +92,7 @@ class AlbumController extends Controller
             ? Str::slug($payload['slug'])
             : Str::slug($album->album);
         $album->user_id = Auth::id();
-        $album->estado = Auth::user()->canManageInterpreteId($album->interprete_id) ? 1 : 0;
+        $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
         $album->visitas = 0;
         $album->save();
 
@@ -141,7 +141,7 @@ class AlbumController extends Controller
             ? Str::slug($payload['slug'])
             : Str::slug($album->album);
         $album->user_id = Auth::id();
-        $album->estado = Auth::user()->canManageInterpreteId($album->interprete_id) ? 1 : 0;
+        $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
 
         if ($request->hasFile('foto')) {
             $this->imageService->process(

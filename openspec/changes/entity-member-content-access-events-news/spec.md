@@ -1,6 +1,6 @@
 # Cambio: entity-member-content-access-events-news (Etapa 2)
 
-Estado: BORRADOR, pendiente de aprobacion. No implementado. Continua `entity-member-content-access` (Etapa 1, discos y canciones).
+Estado: regla multi-artista APROBADA (2026-10-11); publicacion RECTIFICADA: todo va a Revision. Pendiente implementar. Continua `entity-member-content-access` (Etapa 1, discos y canciones).
 
 ## Objetivo
 Que quien administra un artista (miembro activo owner/editor de una organizacion activa, via `canManageInterpreteId`) pueda crear, editar y publicar directamente eventos y noticias de ese artista, sin roles ni permisos globales. Criterio del usuario: aprobar la ficha implica que carga contenido directamente.
@@ -75,3 +75,9 @@ Un editor de un artista, sin roles globales, crea, edita y publica eventos y not
 
 ## Aprobacion
 Pendiente.
+
+## RECTIFICACION del usuario (2026-10-11)
+- Regla multi-artista: **aprobada** tal como esta propuesta (crear con al menos un artista propio; editar si es creador o administra todos los vinculados).
+- **Publicacion:** en esta primera instancia todo va a Revision. Se elimina la "publicacion contextual" (`canPublishFor`): el miembro guarda en `draft` / `estado = 0` y un administrador publica. Se mantiene `canPublish()` global sin cambios, lo que simplifica EventService/EventProgramService/NewsService (no se tocan).
+- Las decisiones 1 y 2 de la seccion anterior quedan resueltas (2: noticias tambien van a Revision).
+- Pendiente de implementar; depende en parte de `backoffice-access-by-entities` (visibilidad de secciones).

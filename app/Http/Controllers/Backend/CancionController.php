@@ -151,7 +151,7 @@ class CancionController extends Controller
             $cancion->rights_status = $cancion->rights_status ?: 'not_available';
         }
         $cancion->user_id = Auth::id();
-        $cancion->estado = Auth::user()->canManageInterpreteId($cancion->interprete_id) ? 1 : 0;
+        $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
         $cancion->visitas = 0;
         $cancion->save();
 
@@ -187,7 +187,7 @@ class CancionController extends Controller
             $cancion->rights_status = $cancion->rights_status ?: 'not_available';
         }
         $cancion->user_id = Auth::id();
-        $cancion->estado = Auth::user()->canManageInterpreteId($cancion->interprete_id) ? 1 : 0;
+        $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
         $cancion->save();
 
         Alert::success('Cancion actualizada', 'La cancion ha sido actualizada con exito.');

@@ -99,3 +99,9 @@ Pendiente. El usuario eligio la Opcion A en el chat (2026-10-11); falta aprobar 
 - Listados y selector de artistas limitados a los artistas administrados (scope `ownedOrOfManagedInterprete`).
 - Tests: `tests/Feature/EntityManagement/MemberContentAccessTest.php` (9 casos). Suite completa: 465 pasan; 13 fallos previos por datos reales de la base local.
 - Observacion fuera de alcance: `CancionController@storeAjax` (`canciones/store-ajax`) queda fuera de `authorizeResource` y crea canciones activas para cualquier usuario autenticado.
+
+## RECTIFICACION del usuario (2026-10-11, posterior)
+Todo lo que cargue un miembro va a **Revision** en esta primera instancia. Quedan sin efecto las decisiones 1 (letras publicables directo) y 2 (carga directa) de arriba:
+- `estado = 1` solo para administrador; miembros guardan `estado = 0` (pendiente), igual que colaborador/prensa. Incluye la letra.
+- Efecto conocido (comportamiento previo de no administradores): al editar un registro ya publicado vuelve a `estado = 0` hasta nueva revision.
+- Implementado y probado: `MemberContentAccessTest` (9 casos) espera `estado = 0` para miembros y `1` para administrador.

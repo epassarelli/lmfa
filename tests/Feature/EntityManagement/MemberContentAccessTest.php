@@ -63,7 +63,7 @@ class MemberContentAccessTest extends TestCase
         return array_merge(['cancion' => 'Nuevo tema '.uniqid(), 'interprete_id' => $artist->id, 'letra' => '<p>Letra de prueba</p>'], $extra);
     }
 
-    public function test_editor_creates_and_publishes_album_for_own_artist(): void
+    public function test_editor_creates_album_for_own_artist_pending_review(): void
     {
         $user = $this->user();
         $mine = $this->artist('propio');
@@ -71,7 +71,7 @@ class MemberContentAccessTest extends TestCase
 
         $this->actingAs($user)->post(route('backend.discos.store'), $this->albumPayload($mine))->assertSessionHasNoErrors()->assertRedirect();
 
-        $this->assertSame(1, (int) Album::where('interprete_id', $mine->id)->latest('id')->first()->estado);
+        $this->assertSame(0, (int) Album::where('interprete_id', $mine->id)->latest('id')->first()->estado);
     }
 
     public function test_editor_cannot_create_album_for_another_artist(): void
@@ -97,7 +97,7 @@ class MemberContentAccessTest extends TestCase
         $this->actingAs($user)->get(route('backend.discos.edit', $own))->assertOk();
         $this->put(route('backend.discos.update', $own), $this->albumPayload($mine, ['album' => 'Renombrado']))->assertSessionHasNoErrors();
         $this->assertSame('Renombrado', $own->fresh()->album);
-        $this->assertSame(1, (int) $own->fresh()->estado);
+        $this->assertSame(0, (int) $own->fresh()->estado);
 
         $this->get(route('backend.discos.edit', $foreign))->assertForbidden();
         $this->put(route('backend.discos.update', $foreign), $this->albumPayload($other))->assertForbidden();
@@ -114,7 +114,7 @@ class MemberContentAccessTest extends TestCase
 
         $this->actingAs($user)->post(route('backend.canciones.store'), $this->songPayload($mine))->assertSessionHasNoErrors()->assertRedirect();
         $created = Cancion::where('interprete_id', $mine->id)->latest('id')->first();
-        $this->assertSame(1, (int) $created->estado);
+        $this->assertSame(0, (int) $created->estado);
         $this->assertStringContainsString('Letra de prueba', (string) $created->letra);
 
         $this->post(route('backend.canciones.store'), $this->songPayload($other))->assertSessionHasErrors('interprete_id');
