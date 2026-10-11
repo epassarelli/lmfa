@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Pendiente de ejecución humana 2026-10-11: base aislada de tests
+
+- `.env.testing` ahora apunta a `mfa_test` (antes `mfa`, base con datos reales: causa de 13 fallos de la suite por colisión de datos). La base **aún no existe**: crearla con `database/testing/create_test_database.sql` y migrarla con `--env=testing` tras revisar `migrate:status` (pasos en el encabezado del .sql). Hasta entonces los tests locales fallan con "Unknown database" (falla segura); para correr temporalmente contra `mfa`: `-e DB_DATABASE=mfa`. Falta resolver datos de referencia (p. ej. `provincias`, no sembradas por migración) tras la primera corrida. CI no cambia (el job fija `DB_DATABASE`). Humo nuevo: `BackofficeSmokeTest` y cartelera en `PublicQualityGateTest`.
+
 ### Corrección 2026-10-11: description del JSON-LD en cartelera
 
 - Cartelera (`shows/index.blade.php`) usaba solo `body` para `Event.description`; ahora usa `SeoMetadata::event()` como la ficha (meta_description → excerpt → body → genérico). Spec local `event-agenda-description-fallback`, aprobada por el usuario. Test nuevo `EventAgendaDescriptionTest` (3 casos); `tests/Feature/Events` pasa completo. Fallo previo no relacionado: `PublicTemplateSeoTest` (UniqueConstraintViolationException, falla igual sin este cambio). Sin BD, sin URLs. Los 114 eventos locales sin body siguen siendo deuda editorial; no se afirma que esto resuelva el aviso productivo de Search Console. Implementado en local; sin commit, push ni despliegue.
