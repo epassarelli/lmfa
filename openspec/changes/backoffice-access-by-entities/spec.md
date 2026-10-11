@@ -74,3 +74,9 @@ Un colaborador sin fichas ve solo Mis fichas (mas lo definido en las decisiones)
 
 ## Aprobacion
 Pendiente: decisiones 1-4 y confirmacion de la opcion de aviso.
+
+## Respuestas del usuario (2026-10-11)
+1. Primera ficha: correcto el problema; en lugar de alta directa, propone que el usuario **solicite la creacion de la ficha** explicando su relacion (artista, prensa, manager...). Diseno en discusion (ver propuesta en el chat: solicitud de alta dentro del flujo de claims, con busqueda previa y deteccion de duplicados).
+2. Mitos/Comidas: **se deja tal cual** hasta terminar los demas puntos; recordarselo al usuario al cerrar (memoria del proyecto).
+3. Pregunta sobre prensa/sin rol: pendiente de aclarar.
+4. Flag `BACKOFFICE_ACCESS_BY_ENTITIES` (apagado por defecto): aprobado.
