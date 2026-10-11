@@ -7,7 +7,7 @@
 
 @push('json-ld')
 @php
-  $agendaSchema = ['@context' => 'https://schema.org', '@graph' => $shows->getCollection()->map(fn ($event) => \App\Support\EventSchema::forEvent($event, \App\Support\CanonicalUrl::normalize(route('cartelera.show', $event->slug)), null, \Illuminate\Support\Str::limit(strip_tags((string)$event->body), 160)))->all()];
+  $agendaSchema = ['@context' => 'https://schema.org', '@graph' => $shows->getCollection()->map(fn ($event) => \App\Support\EventSchema::forEvent($event, \App\Support\CanonicalUrl::normalize(route('cartelera.show', $event->slug)), null, \App\Support\SeoMetadata::event($event)['description']))->all()];
 @endphp
 <script type="application/ld+json">
 @json($agendaSchema)

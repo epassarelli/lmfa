@@ -31,6 +31,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Corregido
 
+- **Description del JSON-LD en la cartelera de Eventos:** ahora usa la misma prioridad que la ficha (meta_description, excerpt, body, texto genérico) en lugar de solo `body`, que podía salir vacío. Sin cambios de BD ni de URLs. Spec `event-agenda-description-fallback`.
+
 - **Listado de Eventos con roles combinados:** un administrador que también es colaborador/prensa ya no recibe el filtro por autor; conserva visibilidad administrativa. Los demás colaboradores siguen viendo sus eventos.
 
 - **Imágenes rotas cuando el archivo no existe**: `EditorialImageResolver` verifica en el disco local que exista la imagen propia, la legacy o la del artista relacionado y, si falta, usa el fallback editorial de la entidad. Aplica a todas las secciones. `optimized-image` toma el primer grupo de variantes no vacío.
