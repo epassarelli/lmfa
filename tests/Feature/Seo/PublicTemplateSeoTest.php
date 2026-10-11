@@ -189,11 +189,11 @@ class PublicTemplateSeoTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        $category = KnowledgeCategory::factory()->create([
-            'name' => 'Historia',
-            'slug' => 'historia',
-            'is_active' => true,
-        ]);
+        // La base local puede tener ya la categoria real "historia"; se reutiliza dentro de la transaccion.
+        $category = KnowledgeCategory::updateOrCreate(
+            ['slug' => 'historia'],
+            ['name' => 'Historia', 'is_active' => true]
+        );
 
         $article = KnowledgeArticle::factory()->published()->create([
             'knowledge_category_id' => $category->id,
