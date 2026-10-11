@@ -24,7 +24,7 @@ class BackofficeSidebarTest extends TestCase
             $this->assertArrayHasKey('url', $byText[$text]);
         }
         $this->assertSame(['Cuentas Sociales', 'Historial de Publicación', 'Nueva Publicación', 'Plantillas (Templates)'], array_column($byText['Pasarela de Contenidos']['submenu'], 'text'));
-        $this->assertSame(['Permisos', 'Roles', 'Usuarios'], array_column($byText['Usuarios y Roles']['submenu'], 'text'));
+        $this->assertSame(['Organizaciones', 'Permisos', 'Roles', 'Solicitudes de vínculo', 'Usuarios'], array_column($byText['Usuarios y Roles']['submenu'], 'text'));
         $sections = [];
         $current = [];
         foreach ($menu as $item) {

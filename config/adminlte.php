@@ -462,6 +462,12 @@ return [
             'can' => 'read user',
             'submenu' => [
                 [
+                    'text' => 'Organizaciones',
+                    'url' => 'admin/organizations',
+                    'icon' => 'fas fa-fw fa-building',
+                    'active' => ['admin/organizations*'],
+                ],
+                [
                     'text' => 'Permisos',
                     'url' => 'admin/permissions',
                     'icon' => 'fas fa-fw fa-shield-alt',
@@ -472,21 +478,15 @@ return [
                     'icon' => 'fas fa-fw fa-user-tag',
                 ],
                 [
-                    'text' => 'Usuarios',
-                    'url' => 'admin/users',
-                    'icon' => 'fas fa-fw fa-users',
-                ],
-                [
-                    'text' => 'Organizaciones',
-                    'url' => 'admin/organizations',
-                    'icon' => 'fas fa-fw fa-building',
-                    'active' => ['admin/organizations*'],
-                ],
-                [
                     'text' => 'Solicitudes de vínculo',
                     'url' => 'admin/claims',
                     'icon' => 'fas fa-fw fa-user-check',
                     'active' => ['admin/claims*'],
+                ],
+                [
+                    'text' => 'Usuarios',
+                    'url' => 'admin/users',
+                    'icon' => 'fas fa-fw fa-users',
                 ],
             ],
         ],
