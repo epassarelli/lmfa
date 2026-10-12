@@ -3,7 +3,6 @@
 namespace Tests\Feature\News;
 
 use App\Models\Categoria;
-use App\Models\Contribution;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -59,70 +58,5 @@ class UnifiedNewsFlowTest extends TestCase
         
         $news = News::where('title', 'Noticia de Prueba')->first();
         $this->assertCount(1, $news->images);
-    }
-
-    /** @test */
-    public function it_approves_contribution_and_downloads_external_image()
-    {
-        $this->actingAs($this->admin);
-
-        // Mock de la imagen externa
-        $externalImage = UploadedFile::fake()->image('external.jpg');
-        Http::fake([
-            'https://externo.com/foto.jpg' => Http::response(file_get_contents($externalImage->getPathname()), 200, [
-                'Content-Type' => 'image/jpeg'
-            ]),
-        ]);
-
-        $contribution = Contribution::create([
-            'user_id' => $this->colaborador->id,
-            'contributable_type' => News::class,
-            'status' => 'pending',
-            'payload' => [
-                'titulo' => 'Noticia Colaborada',
-                'noticia' => 'Contenido colaborado',
-                'categoria_id' => $this->categoria->id,
-                'foto' => 'https://externo.com/foto.jpg',
-            ]
-        ]);
-
-        $response = $this->post(route('backend.contributions.approve', $contribution->id));
-
-        $response->assertRedirect();
-        $this->assertDatabaseHas('news', [
-            'title' => 'Noticia Colaborada',
-            'created_by' => $this->colaborador->id,
-            'approved_by' => $this->admin->id,
-        ]);
-
-        $news = News::where('title', 'Noticia Colaborada')->first();
-        $this->assertCount(1, $news->images);
-        $this->assertEquals('published', $news->editorial_status);
-    }
-
-    /** @test */
-    public function it_blocks_ssrf_attempts_in_image_resolution()
-    {
-        $this->actingAs($this->admin);
-
-        $contribution = Contribution::create([
-            'user_id' => $this->colaborador->id,
-            'contributable_type' => News::class,
-            'status' => 'pending',
-            'payload' => [
-                'titulo' => 'Noticia Maliciosa',
-                'noticia' => 'Contenido malicioso',
-                'categoria_id' => $this->categoria->id,
-                'foto' => 'http://127.0.0.1/admin/config', // Intento de SSRF
-            ]
-        ]);
-
-        // La aplicación debería manejar la excepción y redirigir con error
-        $response = $this->post(route('backend.contributions.approve', $contribution->id));
-        
-        // El controlador actual no tiene un catch específico para ImageSecurityException todavía, 
-        // pero el test fallará si el resolver no lanza la excepción.
-        // Para este test, verificamos que NO se cree la noticia.
-        $this->assertDatabaseMissing('news', ['title' => 'Noticia Maliciosa']);
     }
 }

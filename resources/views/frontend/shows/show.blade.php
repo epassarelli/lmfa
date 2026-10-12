@@ -77,10 +77,6 @@
         {!! $show->body !!}
       </div>
     @endif
-
-    <a href="{{ route('backend.contributions.create', ['type' => 'event', 'id' => $show->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium" data-nosnippet>
-      Sugerir corrección de datos del evento
-    </a>
   </article>
 
   @if ($relatedContent['festivals']->isNotEmpty())

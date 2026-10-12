@@ -35,11 +35,6 @@
   @endif
   <section class="bg-white p-2 rounded shadow-sm mb-4">
     <h1 class="text-2xl font-semibold mb-2">{{ $h1 }}</h1>
-    <div class="mb-6">
-      <a href="{{ route('backend.contributions.create', ['type' => 'interprete', 'id' => $interprete->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1" data-nosnippet>
-        Sugerir edicion de biografia
-      </a>
-    </div>
 
     <div class="prose max-w-none prose-lg prose-slate">
       {!! $interprete->biografia !!}

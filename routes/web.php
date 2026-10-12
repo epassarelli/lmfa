@@ -5,13 +5,7 @@ use App\Http\Controllers\OperationalHealthController;
 // Controladores del front
 use Illuminate\Support\Facades\Route;
 
-// --- PUBLICAR / CONTRIBUCIONES ---
-// Panel del colaborador (usuario autenticado ve sus propias contribuciones)
-Route::middleware(['web', 'auth'])->prefix('admin/contribuir')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Frontend\ContributionController::class, 'index'])->name('backend.contributions.index');
-    Route::get('crear/{type}/{id?}', [\App\Http\Controllers\Frontend\ContributionController::class, 'create'])->name('backend.contributions.create');
-    Route::post('store', [\App\Http\Controllers\Frontend\ContributionController::class, 'store'])->name('backend.contributions.store');
-});
+
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Frontend\BusquedaController;
 use App\Http\Controllers\Frontend\CancionesController;

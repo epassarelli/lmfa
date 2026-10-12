@@ -59,3 +59,6 @@ Regla práctica: *crear* depende del rol/permiso global; *editar* depende del cr
 
 ## Eventos: artistas y festivales
 Un evento tiene artistas y, opcionalmente, festivales. Para editarlo por membresía (si no sos el creador): si tiene festivales, tenés que administrar **todos** (la grilla de artistas se ignora); si no tiene festivales, tenés que administrar **todos** sus artistas. Para crear, alcanza con incluir un artista o un festival que administrás.
+
+## Entrada desde el sitio público
+El botón **Publicar** del sitio lleva a `/admin`: un visitante pasa por el login y vuelve a `/admin`. No existe otro circuito de aportes (el flujo "Contribuir" se retiró). Con el acceso por fichas activo, quien no es administrador aterriza en **Mis fichas**, desde donde solicita el vínculo o el alta de una ficha.

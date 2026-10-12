@@ -45,6 +45,10 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 - **JSON-LD `Event` de la ficha**: agrega `eventStatus`, `eventAttendanceMode`, `endDate`, dirección estructurada (`PostalAddress`), `offers` solo con datos cargados, `organizer` y `superEvent`.
 - **Performance de la cartelera**: provincias, resolución de provincia por slug e intérpretes del buscador quedan en caché; se eliminaron consultas sin uso en la ficha. Las consultas de continuidad tienen `limit` en SQL y eager loading.
 
+### Eliminado
+
+- **Flujo público "Publicar / Contribuir"** (spec `remove-contribuir-flow`): se retiran `/admin/contribuir`, la moderación `/admin/contributions`, sus controladores, vistas, el modelo `Contribution`, el contador del dashboard y los 4 enlaces "Sugerir corrección" de las páginas públicas. "Publicar" ahora lleva a `/admin` (pasando por el login) y rigen las fichas, solicitudes y roles; con el acceso por fichas activo, quien no es administrador entra a Mis fichas. **No se borra ningún dato:** la tabla `contributions` y `users.points/rank` se conservan sin uso. Antes de desplegar, resolver las contribuciones pendientes en producción (ver checklist).
+
 ### Corregido
 - **`canciones/store-ajax` sin autorización:** cualquier usuario autenticado podía crear canciones publicadas para cualquier artista. Ahora aplica la regla de creación de Canciones, limita los artistas a los que administra quien no tiene permiso global y publica solo si el usuario puede publicar. Tests de Eventos y Noticias ya no dependen de provincias sembradas.
 - **Permisos de edición y publicación:** `update album/cancion/noticia` ya no permiten editar contenido ajeno (edita el creador o quien administra el artista); Álbumes y Canciones conservan el creador al editar; el estado de un Festival ya no lo decide el request; `UserPolicy::viewAny` solo para administrador; `isAdmin()` solo reconoce `administrador`.

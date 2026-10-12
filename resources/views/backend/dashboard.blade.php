@@ -11,22 +11,7 @@
   <section class="content">
     <div class="container-fluid">
       <!-- Small boxes (Stat box) -->
-      <div class="row">
-        <div class="col-lg-12">
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>{{ $contadores['contributions'] }}</h3>
-                    <p>Publicaciones Pendientes</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-tasks"></i>
-                </div>
-                <a href="{{ route('backend.contributions.index') }}" class="small-box-footer">
-                    Revisar publicaciones <i class="fas fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-      </div>
+
       <div class="row">
 
         <div class="col-lg-3 col-6">

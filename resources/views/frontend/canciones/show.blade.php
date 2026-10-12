@@ -40,11 +40,7 @@
 
   <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $h1 }}</h1>
-    <div class="mb-4">
-      <a href="{{ route('backend.contributions.create', ['type' => 'cancion', 'id' => $cancion->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1" data-nosnippet>
-        Sugerir correccion de letra
-      </a>
-    </div>
+
     <p class="text-lg text-gray-700 mb-4">{{ $interprete->interprete }}</p>
 
     @if (filled($cancion->letra))

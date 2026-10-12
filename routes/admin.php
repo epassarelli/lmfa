@@ -5,7 +5,6 @@ use App\Http\Controllers\Backend\CancionController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ClassifiedController;
 use App\Http\Controllers\Backend\ComidaController;
-use App\Http\Controllers\Backend\ContributionController;
 use App\Http\Controllers\Backend\Dashboard;
 use App\Http\Controllers\Backend\EventController;
 use App\Http\Controllers\Backend\FestivalController;
@@ -181,12 +180,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('moderation', [ModerationController::class, 'index'])->name('backend.moderation.index');
     Route::post('moderation/{type}/{id}/publish', [ModerationController::class, 'publish'])->name('backend.moderation.publish');
 
-    // --- MODERACIÓN DE CONTRIBUCIONES UGC ---
-    Route::prefix('contributions')->name('backend.contributions.')->group(function () {
-        Route::get('/', [ContributionController::class, 'index'])->name('admin.index');
-        Route::get('{id}', [ContributionController::class, 'show'])->name('show');
-        Route::post('{id}/approve', [ContributionController::class, 'approve'])->name('approve');
-        Route::post('{id}/reject', [ContributionController::class, 'reject'])->name('reject');
-    });
 
 });

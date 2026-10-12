@@ -75,10 +75,6 @@ class User extends Authenticatable
         return $value ?? 'Colaborador';
     }
 
-    public function contributions()
-    {
-        return $this->hasMany(Contribution::class);
-    }
 
     public function socialAccounts()
     {

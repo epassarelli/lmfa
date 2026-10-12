@@ -56,7 +56,6 @@ class PublicTemplateSeoTest extends TestCase
         $bio->assertSee('content="Raul Carnota fue un referente del folklore argentino. Compuso obras claves y marco una epoca."', false);
         $bio->assertSee('<link rel="canonical" href="https://mifolkloreargentino.com/raul-carnota/biografia" />', false);
         $bio->assertSee('<h1 class="text-2xl font-semibold mb-2">Biografia de Raul Carnota</h1>', false);
-        $bio->assertSee('data-nosnippet', false);
         $this->assertSame(1, substr_count($bio->getContent(), '<h1'));
     }
 
@@ -138,13 +137,11 @@ class PublicTemplateSeoTest extends TestCase
         $event->assertOk();
         $event->assertSee('content="Festival en Cosquin con artistas invitados y entrada libre. Una cita clave del calendario."', false);
         $event->assertSee('<h1 class="text-3xl font-bold mb-2">Festival en Cosquin</h1>', false);
-        $event->assertSee('data-nosnippet', false);
 
         $festival = $this->call('GET', '/festivales-y-fiestas-tradicionales/fiesta-de-la-chaya', [], [], [], $this->serverVariables());
         $festival->assertOk();
         $festival->assertSee('content="Celebracion popular con musica, comparsas y tradicion riojana."', false);
         $festival->assertSee('<h1 class="text-3xl font-bold mb-2">Fiesta de la Chaya</h1>', false);
-        $festival->assertSee('data-nosnippet', false);
     }
 
     /** @test */
@@ -224,7 +221,6 @@ class PublicTemplateSeoTest extends TestCase
         $lyrics->assertSee('<title>Letra de Alfonsina y el mar | Mercedes Sosa SEO</title>', false);
         $lyrics->assertSee('content="Por la blanda arena que lame el mar su pequeña huella no vuelve mas."', false);
         $lyrics->assertSee('<h1 class="text-2xl font-bold text-gray-900 mb-2">Alfonsina y el mar</h1>', false);
-        $lyrics->assertSee('data-nosnippet', false);
     }
 
     private function serverVariables(): array

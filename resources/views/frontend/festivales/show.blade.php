@@ -64,11 +64,6 @@
       {!! $festival->body !!}
     </div>
 
-    <div class="mb-4">
-      <a href="{{ route('backend.contributions.create', ['type' => 'festival', 'id' => $festival->id]) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium flex items-center gap-1" data-nosnippet>
-        Sugerir correccion o actualizacion
-      </a>
-    </div>
 
     <div class="flex flex-wrap gap-3">
       <a href="{{ route('festivales.index') }}" class="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Ver todos los festivales</a>

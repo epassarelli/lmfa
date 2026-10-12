@@ -26,6 +26,13 @@ class Dashboard extends Controller
     public function index()
     {
         $user = Auth::user();
+
+        // Con el acceso por fichas activo, el punto de entrada de quien no es administrador es Mis fichas
+        // (el dashboard muestra contadores globales y enlaces a secciones restringidas).
+        if (config('backoffice_access.enabled') && ! $user->hasRole('administrador')) {
+            return redirect()->route('backend.my-entities.index');
+        }
+
         $roles = $user->getRoleNames();
         $permissions = $user->getAllPermissions()->pluck('name');
 
@@ -39,7 +46,6 @@ class Dashboard extends Controller
             'discos' => Album::count(),
             'comidas' => Comida::count(),
             'festivales' => Festival::count(),
-            'contributions' => \App\Models\Contribution::where('status', 'pending')->count(),
         ];
 
 

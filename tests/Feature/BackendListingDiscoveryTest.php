@@ -7,7 +7,6 @@ use App\Models\Cancion;
 use App\Models\Category;
 use App\Models\Classified;
 use App\Models\Comida;
-use App\Models\Contribution;
 use App\Models\Interprete;
 use App\Models\NewsletterSubscriber;
 use App\Models\PublicationTemplate;
@@ -258,44 +257,6 @@ class BackendListingDiscoveryTest extends TestCase
         $response->assertDontSee('Guitarra rechazada');
         $response->assertSee('value="Bombo"', false);
         $response->assertSee('option value="activo" selected', false);
-    }
-
-    public function test_contributions_index_supports_search_status_filter_and_sort(): void
-    {
-        $admin = $this->makeAdmin();
-        $contributor = User::factory()->create([
-            'name' => 'Colaborador Uno',
-            'email' => 'colaborador@example.com',
-        ]);
-
-        Contribution::create([
-            'user_id' => $contributor->id,
-            'contributable_type' => 'App\Models\News',
-            'contributable_id' => null,
-            'payload' => ['title' => 'Aporte destacado'],
-            'status' => 'pending',
-        ]);
-
-        Contribution::create([
-            'user_id' => $contributor->id,
-            'contributable_type' => 'App\Models\Event',
-            'contributable_id' => null,
-            'payload' => ['title' => 'Otro aporte'],
-            'status' => 'rejected',
-        ]);
-
-        $response = $this->actingAs($admin)->get(route('backend.contributions.admin.index', [
-            'search' => 'Aporte destacado',
-            'status' => 'pending',
-            'sort' => 'status',
-            'direction' => 'asc',
-        ]));
-
-        $response->assertOk();
-        $response->assertSee('Aporte destacado');
-        $response->assertDontSee('Otro aporte');
-        $response->assertSee('value="Aporte destacado"', false);
-        $response->assertSee('option value="pending" selected', false);
     }
 
     public function test_canciones_datatable_supports_async_search_filter_and_sort(): void

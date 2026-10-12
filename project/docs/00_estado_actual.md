@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Ejecutado 2026-10-12: se retira el flujo "Publicar / Contribuir"
+
+- Spec `remove-contribuir-flow` (pedido del usuario: una sola puerta, Publicar → login → /admin). Sin migraciones: la tabla `contributions` y `users.points/rank` se conservan sin uso (retiro definitivo = migración aparte a aprobar tras exportar). Con el acceso por fichas activo, los no administradores que entran a `/admin` van a Mis fichas. Tests: `ContributionFlowRemovedTest` (7), `ImageSourceResolverSecurityTest` (4, cobertura directa de SSRF que antes dependía de la aprobación de contribuciones); suite en base limpia 568 pasan, 0 fallan. **Antes del despliegue:** resolver contribuciones pendientes en producción y exportar la tabla. Pendiente de decisión: enlace "¿Sos este artista? Solicitá administrar tu ficha" en páginas públicas, y si Avisos Clasificados sigue visible.
+
 ### Ajuste 2026-10-12 tras probar el sidebar: Copa, Enciclopedia y Peñas solo administrador
 
 - Detrás del flag, como el resto. `BackofficeAccessByEntitiesTest` (20 casos). Un colaborador sin fichas ve solo Mis fichas y Avisos Clasificados. **Pendiente de decisión:** cómo se integra el flujo público "Publicar" (`/admin/contribuir`) con Mis fichas y si Avisos Clasificados sigue visible.

@@ -6,7 +6,7 @@ Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se
 
 | Dato | Valor |
 |---|---|
-| Rama origen | `dev` (31 commits sin push respecto de `origin/dev`) |
+| Rama origen | `dev` (varios commits sin push respecto de `origin/dev`; contar con `git log --oneline origin/dev..dev`) |
 | Tamaño | 213 archivos, ≈11.600 líneas agregadas |
 | Rama de despliegue | `main` (se hace *pull* de `main` en el servidor; ver `frontend-assets-deploy.md`) |
 | Migraciones nuevas | 6 (ver sección 3) |
@@ -14,7 +14,7 @@ Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se
 | Build del frontend (`public/build`) | **sin cambios por este lote**; `npm run build:verify` pasa (13 assets). Solo cambió una vista pública (cartelera, valor del JSON-LD) sin clases CSS nuevas |
 | Workflows / Docker | solo `ci.yml` (+1 paso: sembrar datos de referencia de tests) |
 
-**Funcionalidad incluida** (detalle en `CHANGELOG.md` → `[Unreleased]`): organizaciones y fichas (vínculo, alta, revisión delegada al responsable), contenido de artistas y festivales para sus administradores (discos, canciones, eventos, noticias), eventos con jornadas y salas, rol `verificado` y baja del rol `prensa`, correcciones de permisos, acceso por fichas (detrás de un flag, apagado), login sin botones sociales, description del JSON-LD de la cartelera.
+**Funcionalidad incluida** (detalle en `CHANGELOG.md` → `[Unreleased]`): organizaciones y fichas (vínculo, alta, revisión delegada al responsable), contenido de artistas y festivales para sus administradores (discos, canciones, eventos, noticias), eventos con jornadas y salas, rol `verificado` y baja del rol `prensa`, correcciones de permisos, acceso por fichas (detrás de un flag, apagado), login sin botones sociales, description del JSON-LD de la cartelera. **Se elimina el flujo público "Publicar / Contribuir"** (`/admin/contribuir` y su moderación): "Publicar" lleva a `/admin`.
 
 ## 1. Antes de empezar (decisiones y pruebas pendientes de **vos**)
 
@@ -39,6 +39,13 @@ Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se
   -- migraciones aplicadas
   SELECT COUNT(*) FROM migrations;
   ```
+- [ ] **Contribuciones del flujo "Contribuir" (se retira en este despliegue).** La pantalla de moderación desaparece con el *pull*, así que **antes de desplegar**:
+  ```sql
+  SELECT status, COUNT(*) FROM contributions GROUP BY status;   -- ¿hay 'pending'?
+  ```
+  - [ ] Si hay pendientes: abrir `/admin/contributions` **en producción (versión actual)** y aprobarlas o rechazarlas una por una. Aprobar una publica el contenido de inmediato y deja al autor como dueño de artistas/festivales/canciones nuevos; revisar antes de aprobar.
+  - [ ] Exportar la tabla completa como respaldo histórico (`contributions`). La tabla **no se borra** en este despliegue; el código deja de usarla.
+  - [ ] Avisar si se usaban los puntos/rango de colaborador (`users.points` / `users.rank`): ya no se otorgan ni se muestran.
 - [ ] Anotar cuántos usuarios tienen rol `prensa`. En local eran 2 de prueba; **si en producción hay usuarios reales con ese rol, la migración los pasa a `colaborador`** (pierden `update album/cancion/noticia/show`, que de todos modos ya no tienen efecto cruzado). Avisarles si corresponde.
 - [ ] Revisar `storage/logs/laravel.log` reciente: línea base de errores antes de desplegar.
 
@@ -97,6 +104,8 @@ Nuevas, en este orden:
 
 - [ ] Home y una página interna → `200`; CSS/JS → `200`.
 - [ ] `/login` y `/register`: **sin** botones de Google/Facebook; formulario de email y contraseña visible.
+- [ ] Botón **Publicar** del menú → lleva al login; tras iniciar sesión cae en `/admin` (con el flag apagado, el dashboard; con el flag encendido y usuario no administrador, Mis fichas).
+- [ ] `/admin/contribuir` y `/admin/contributions` responden `404`; las páginas de artista, festival, canción y evento ya no muestran "Sugerir corrección".
 - [ ] `/cartelera-de-eventos-folkloricos` → `200`; una ficha de evento → `200`. En el HTML de la cartelera, cada evento del JSON-LD tiene `description` no vacía.
 - [ ] `storage/logs/laravel.log` sin errores nuevos.
 
@@ -158,6 +167,8 @@ Solo después de unos días estables y de la validación manual:
 
 ## 13. Pendientes conocidos que **no** bloquean el despliegue
 
+- Retiro definitivo de la tabla `contributions` y de `users.points/rank`: migración aparte, a aprobar después de exportar y de unas semanas sin uso.
+- Enlace opcional "¿Sos este artista? Solicitá administrar tu ficha" en las páginas públicas (reemplazaría a los enlaces retirados).
 - 2 tests omitidos de larga data (`NoticiasBugFixTest` entre ellos).
 - `RolesAndPermissionsSeeder` histórico está desfasado (aún crea el rol `prensa`): no ejecutarlo en entornos con datos; evaluar retirarlo.
 - Alternativa D (Mitos y Comidas por el flujo "Contribuir") se evalúa solo si aparece demanda de colaboradores.
