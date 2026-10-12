@@ -365,7 +365,7 @@ class ContactFormTest extends TestCase
     {
         $this->seedMessages();
 
-        $this->actingAs($this->user('administrador'))->get(route('dashboard'))->assertOk()->assertSee('Mensaje de contacto nuevo')->assertSee('Mensajes de contacto');
+        $this->actingAs($this->user('administrador'))->get(route('dashboard'))->assertOk()->assertSee('Mensajes sin leer')->assertSee('Mensajes de contacto');
     }
 
     public function test_collaborators_do_not_see_the_inbox_in_their_dashboard_or_sidebar(): void
@@ -373,7 +373,7 @@ class ContactFormTest extends TestCase
         $this->seedMessages();
 
         $this->actingAs($this->user('colaborador'))->get(route('dashboard'))->assertOk()
-            ->assertDontSee('Mensaje de contacto nuevo')
+            ->assertDontSee('Mensajes sin leer')
             ->assertDontSee('admin/contact-messages');
     }
 }

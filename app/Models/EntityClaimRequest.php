@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class EntityClaimRequest extends Model
 {
+    protected static function booted(): void
+    {
+        $forget = fn () => app(\App\Services\AdminAttentionService::class)->forget();
+        static::saved($forget);
+        static::deleted($forget);
+    }
+
     public const PENDING = 'pending';
     public const APPROVED = 'approved';
     public const REJECTED = 'rejected';

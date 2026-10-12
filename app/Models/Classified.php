@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Classified extends Model
 {
+    protected static function booted(): void
+    {
+        $forget = fn () => app(\App\Services\AdminAttentionService::class)->forget();
+        static::saved($forget);
+        static::deleted($forget);
+    }
+
     use HasFactory;
 
     protected $fillable = [

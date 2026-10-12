@@ -15,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Datos del tablero y del sidebar: un único cálculo por petición.
+        $this->app->scoped(\App\Services\AdminAttentionService::class);
     }
 
     /**

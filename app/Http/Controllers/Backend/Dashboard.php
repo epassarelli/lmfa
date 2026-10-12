@@ -49,10 +49,17 @@ class Dashboard extends Controller
         ];
 
 
-        if ($user->hasRole('administrador') && \Illuminate\Support\Facades\Schema::hasTable('contact_messages')) {
-            $contadores['mensajes_nuevos'] = \App\Models\ContactMessage::query()->status(\App\Models\ContactMessage::NEW)->count();
+        $isAdmin = $user->hasRole('administrador');
+        $attention = null;
+        $cards = [];
+
+        // "Requiere tu atención": solo administradores (datos cacheados 30 s, ver AdminAttentionService).
+        if ($isAdmin) {
+            $service = app(\App\Services\AdminAttentionService::class);
+            $attention = $service->data();
+            $cards = $service->cards();
         }
 
-        return view('backend.dashboard', compact('user', 'roles', 'permissions', 'contadores'));
+        return view('backend.dashboard', compact('user', 'roles', 'permissions', 'contadores', 'isAdmin', 'attention', 'cards'));
     }
 }

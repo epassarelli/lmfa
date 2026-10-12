@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: tablero "Requiere tu atención" e insignias del sidebar
+
+Spec `admin-attention-dashboard`. `AdminAttentionService` (caché 30 s + invalidación por hooks de modelo), `ModerationQueue`, `PendingBadgeFilter`, nuevo `dashboard.blade.php`, festivales en el Centro de Moderación. Validado en `mfa_test`: 655 passed, 2 skipped. No se corrió `mfa` completa en este ciclo. Sin migraciones. Pendiente: validación visual en navegador.
+
 ### Implementado en local 2026-10-13: selección acotada a lo propio (con el flag activo)
 
 - Spec `member-selection-scoping` (decisiones del usuario: 1 sí, 2 listados solo con lo suyo, 3 festivales con la misma lógica). Medición previa con el flag encendido: un colaborador con una ficha veía y creaba Discos/Canciones de cualquier artista, veía todos los Intérpretes y podía crear Noticias/Eventos sin artistas propios. `MemberSelectionScopingTest` (12 casos); suite en base limpia 649 pasan, 0 fallan; en `mfa` solo los 13 previos. Los tests de contacto ya no dependen de que la tabla esté vacía (se vacía dentro de la transacción). **Observación abierta:** con el flag activo un colaborador con una ficha todavía puede crear artistas/festivales nuevos de forma directa (permiso `create interprete/festival`), salteando la solicitud de alta; no se tocó por no estar pedido.

@@ -12,6 +12,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ContactMessage extends Model
 {
+    protected static function booted(): void
+    {
+        $forget = fn () => app(\App\Services\AdminAttentionService::class)->forget();
+        static::saved($forget);
+        static::deleted($forget);
+    }
+
     public const NEW = 'new';
     public const READ = 'read';
     public const ANSWERED = 'answered';

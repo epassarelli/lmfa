@@ -428,6 +428,7 @@ return [
         ],
         [
             'text' => 'Avisos Clasificados',
+            'pending' => 'classifieds',
             'url' => 'admin/classifieds',
             'icon' => 'fas fa-fw fa-bullhorn',
             'active' => [
@@ -436,10 +437,9 @@ return [
         ],
         [
             'text' => 'Centro de Moderación',
+            'pending' => 'review',
             'url' => 'admin/moderation',
             'icon' => 'fas fa-fw fa-tasks',
-            'label' => 'Revisión',
-            'label_color' => 'warning',
             'can' => 'manage user',
         ],
         [
@@ -462,6 +462,7 @@ return [
         ],
         [
             'text' => 'Mensajes de contacto',
+            'pending' => 'contacts',
             'url' => 'admin/contact-messages',
             'icon' => 'fas fa-fw fa-envelope',
             'can' => 'manage user',
@@ -475,6 +476,7 @@ return [
         ],
         [
             'text' => 'Usuarios y Roles',
+            'pending' => 'claims',
             'icon' => 'fas fa-fw fa-user-shield',
             'can' => 'read user',
             'submenu' => [
@@ -496,6 +498,7 @@ return [
                 ],
                 [
                     'text' => 'Solicitudes de vínculo',
+                    'pending' => 'claims',
                     'url' => 'admin/claims',
                     'icon' => 'fas fa-fw fa-user-check',
                     'active' => ['admin/claims*'],
@@ -529,6 +532,7 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
+        App\Menu\Filters\PendingBadgeFilter::class,
     ],
 
     /*

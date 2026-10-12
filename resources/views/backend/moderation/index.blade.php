@@ -15,6 +15,17 @@
     <div class="col-12"><div class="card card-warning card-outline"><div class="card-header"><h2 class="card-title">Lugares propuestos ({{ $pendingVenues->count() }})</h2></div><div class="card-body">
       @foreach($pendingVenues as $venue)<p>{{ $venue->name }} — {{ $venue->city }} / {{ $venue->provincia?->nombre }} <a class="btn btn-sm btn-primary" href="{{ route('backend.venues.edit', $venue) }}">Revisar y activar lugar</a></p>@endforeach
     </div></div></div>
+    <div class="col-12"><div class="card card-success card-outline"><div class="card-header"><h2 class="card-title">Festivales en borrador ({{ $festivales->count() }})</h2></div><div class="card-body">
+      @forelse($festivales as $festival)
+        <p class="mb-2">
+          {{ $festival->title }}
+          <a class="btn btn-sm btn-primary ml-2" href="{{ route('backend.festivales.edit', $festival) }}">Revisar</a>
+          <form action="{{ route('backend.moderation.publish', ['type' => 'festival', 'id' => $festival->id]) }}" method="POST" class="d-inline ml-1">@csrf<button type="submit" class="btn btn-sm btn-success">Publicar</button></form>
+        </p>
+      @empty
+        <p class="text-muted mb-0">No hay festivales en borrador.</p>
+      @endforelse
+    </div></div></div>
     <!-- Noticias -->
     <div class="col-md-12">
         <div class="card card-warning card-outline">

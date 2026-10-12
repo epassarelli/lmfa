@@ -27,6 +27,7 @@ class ModerationController extends Controller
         'interprete' => Interprete::class,
         'album'      => \App\Models\Album::class,
         'cancion'    => \App\Models\Cancion::class,
+        'festival'   => \App\Models\Festival::class,
     ];
 
     public function publish(string $type, int $id)
@@ -48,9 +49,13 @@ class ModerationController extends Controller
             app(\App\Services\EventService::class)->updateEvent($model, ['editorial_status' => 'published', 'approved_by' => auth()->id(), 'approved_at' => now()]);
         } elseif ($type === 'event-program') {
             app(\App\Services\EventProgramService::class)->save(array_merge($model->only(['title', 'body', 'excerpt', 'venue_id', 'ticket_url', 'price_text', 'is_free']), ['editorial_status' => 'published']), null, $model);
+        } elseif ($type === 'festival') {
+            $model->update(['status' => 'published', 'published_at' => $model->published_at ?? now()]);
         } else {
             $model->update(['estado' => 1]);
         }
+
+        app(\App\Services\AdminAttentionService::class)->forget();
 
         return redirect()->route('backend.moderation.index')
             ->with('success', 'Contenido publicado correctamente.');
@@ -58,21 +63,17 @@ class ModerationController extends Controller
 
     public function index()
     {
-        $news = News::where(function ($q) {
-                       $q->where('editorial_status', 'draft')
-                         ->orWhereNull('published_at');
-                   })
-                   ->with('user')->get();
+        // Las definiciones de "pendiente" viven en ModerationQueue (las comparte el tablero).
+        $news = \App\Support\ModerationQueue::news()->with('user')->get();
+        $events = \App\Support\ModerationQueue::events()->with('user')->get();
+        $programs = \App\Support\ModerationQueue::programs()->with('creator')->get();
+        $pendingVenues = \App\Support\ModerationQueue::venues()->with('provincia')->get();
 
-        $events = Event::where('editorial_status', 'draft')
-                      ->with('user')->get();
-        $programs = \App\Models\EventProgram::where('editorial_status', 'draft')->with('creator')->get();
-        $pendingVenues = \App\Models\Venue::where('status', 'pending')->with('provincia')->get();
+        $interpretes = \App\Support\ModerationQueue::interpretes()->get();
+        $albunes = \App\Support\ModerationQueue::albums()->get();
+        $canciones = \App\Support\ModerationQueue::canciones()->get();
+        $festivales = \App\Support\ModerationQueue::festivales()->get();
 
-        $interpretes = Interprete::where('estado', 0)->get();
-        $albunes = Album::where('estado', 0)->get();
-        $canciones = Cancion::where('estado', 0)->get();
-
-        return view('backend.moderation.index', compact('news', 'events', 'programs', 'pendingVenues', 'interpretes', 'albunes', 'canciones'));
+        return view('backend.moderation.index', compact('news', 'events', 'programs', 'pendingVenues', 'interpretes', 'albunes', 'canciones', 'festivales'));
     }
 }
