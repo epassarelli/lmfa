@@ -117,6 +117,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">@foreach ($journey['events'] as $event)<x-show-card :show="$event" :journey="['sourceType' => 'artist', 'sourceId' => $interprete->id, 'module' => 'artist_events', 'position' => $loop->iteration]" />@endforeach</div>
       </x-content-journey.section>
     @endif
+
+    <p class="mt-8 text-sm text-gray-600" data-nosnippet>
+      ¿Sos este artista o lo representás?
+      <a href="{{ route('backend.my-entities.index', ['type' => 'interprete', 'id' => $interprete->id]) }}" rel="nofollow" class="font-medium text-orange-600 hover:text-orange-700">Solicitá administrar su ficha</a>
+    </p>
   </div>
 @endsection
 

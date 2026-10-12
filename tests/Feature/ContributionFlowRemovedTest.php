@@ -80,8 +80,10 @@ class ContributionFlowRemovedTest extends TestCase
         $this->assertStringNotContainsString('contribuir', $html);
     }
 
-    public function test_the_contributions_table_is_kept_for_historical_data(): void
+    public function test_the_contributions_table_and_the_points_and_rank_columns_are_gone(): void
     {
-        $this->assertTrue(\Illuminate\Support\Facades\Schema::hasTable('contributions'));
+        $this->assertFalse(\Illuminate\Support\Facades\Schema::hasTable('contributions'));
+        $this->assertFalse(\Illuminate\Support\Facades\Schema::hasColumn('users', 'points'));
+        $this->assertFalse(\Illuminate\Support\Facades\Schema::hasColumn('users', 'rank'));
     }
 }

@@ -64,6 +64,10 @@
       {!! $festival->body !!}
     </div>
 
+    <p class="mb-4 text-sm text-gray-600" data-nosnippet>
+      ¿Organizás este festival?
+      <a href="{{ route('backend.my-entities.index', ['type' => 'festival', 'id' => $festival->id]) }}" rel="nofollow" class="font-medium text-orange-600 hover:text-orange-700">Solicitá administrar su ficha</a>
+    </p>
 
     <div class="flex flex-wrap gap-3">
       <a href="{{ route('festivales.index') }}" class="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Ver todos los festivales</a>

@@ -9,7 +9,7 @@ Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se
 | Rama origen | `dev` (varios commits sin push respecto de `origin/dev`; contar con `git log --oneline origin/dev..dev`) |
 | Tamaño | 213 archivos, ≈11.600 líneas agregadas |
 | Rama de despliegue | `main` (se hace *pull* de `main` en el servidor; ver `frontend-assets-deploy.md`) |
-| Migraciones nuevas | 6 (ver sección 3) |
+| Migraciones nuevas | 7 (ver sección 3) |
 | Dependencias (composer/npm) | **sin cambios** |
 | Build del frontend (`public/build`) | **sin cambios por este lote**; `npm run build:verify` pasa (13 assets). Solo cambió una vista pública (cartelera, valor del JSON-LD) sin clases CSS nuevas |
 | Workflows / Docker | solo `ci.yml` (+1 paso: sembrar datos de referencia de tests) |
@@ -39,13 +39,12 @@ Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se
   -- migraciones aplicadas
   SELECT COUNT(*) FROM migrations;
   ```
-- [ ] **Contribuciones del flujo "Contribuir" (se retira en este despliegue).** La pantalla de moderación desaparece con el *pull*, así que **antes de desplegar**:
+- [ ] **Flujo "Contribuir" (se retira en este despliegue).** El responsable confirmó que **no hay contribuciones en producción**. Verificarlo igual antes de migrar, porque la migración **borra** la tabla `contributions` y las columnas `users.points` / `users.rank`:
   ```sql
-  SELECT status, COUNT(*) FROM contributions GROUP BY status;   -- ¿hay 'pending'?
+  SELECT COUNT(*) FROM contributions;                 -- esperado: 0
+  SELECT COUNT(*) FROM users WHERE points > 0;        -- esperado: 0 (los puntos solo se otorgaban al aprobar contribuciones)
   ```
-  - [ ] Si hay pendientes: abrir `/admin/contributions` **en producción (versión actual)** y aprobarlas o rechazarlas una por una. Aprobar una publica el contenido de inmediato y deja al autor como dueño de artistas/festivales/canciones nuevos; revisar antes de aprobar.
-  - [ ] Exportar la tabla completa como respaldo histórico (`contributions`). La tabla **no se borra** en este despliegue; el código deja de usarla.
-  - [ ] Avisar si se usaban los puntos/rango de colaborador (`users.points` / `users.rank`): ya no se otorgan ni se muestran.
+  - [ ] Si alguna consulta devuelve más de 0: **parar** y avisar; el respaldo completo del paso 2 permite recuperar los datos, y el `down()` de la migración recrea la estructura (no los datos).
 - [ ] Anotar cuántos usuarios tienen rol `prensa`. En local eran 2 de prueba; **si en producción hay usuarios reales con ese rol, la migración los pasa a `colaborador`** (pierden `update album/cancion/noticia/show`, que de todos modos ya no tienen efecto cruzado). Avisarles si corresponde.
 - [ ] Revisar `storage/logs/laravel.log` reciente: línea base de errores antes de desplegar.
 
@@ -61,8 +60,9 @@ Nuevas, en este orden:
 | `2026_10_10_140000_create_entity_claim_requests_table` | Solicitudes de vínculo usuario↔ficha | Bajo |
 | `2026_10_11_120000_add_creation_requests_to_entity_claim_requests` | Solicitudes de alta; `entity_id` pasa a nullable (ALTER) y 4 columnas nuevas | Medio-bajo (ALTER sobre tabla chica) |
 | `2026_10_12_100000_trusted_publishing_role_and_remove_prensa_role` | Crea permiso `publish contents` y rol `verificado`; **pasa usuarios `prensa` a `colaborador` y elimina el rol `prensa`** | **Medio: modifica datos de roles** |
+| `2026_10_12_140000_drop_contributions_and_user_points_rank` | **Borra** la tabla `contributions` y las columnas `users.points` / `users.rank` (flujo "Contribuir" retirado) | **Medio: destructiva** (sin datos en producción, confirmado; `down()` recrea la estructura, no los datos) |
 
-- [ ] `php artisan migrate:status` → deben figurar **exactamente esas 6** como *Pending*. Si hay más o menos, parar y revisar.
+- [ ] `php artisan migrate:status` → deben figurar **exactamente esas 7** como *Pending*. Si hay más o menos, parar y revisar.
 - [ ] `php artisan migrate --pretend` → leer el SQL que se ejecutaría (no ejecuta nada).
 - [ ] `php artisan migrate --force` (con el usuario de la aplicación para no crear archivos como root).
 - [ ] `php artisan migrate:status` → 0 pendientes.
@@ -70,7 +70,9 @@ Nuevas, en este orden:
   ```sql
   SELECT r.name, COUNT(mhr.model_id) FROM roles r LEFT JOIN model_has_roles mhr ON mhr.role_id = r.id GROUP BY r.name;   -- sin `prensa`; aparece `verificado` con 0
   SELECT name FROM permissions WHERE name = 'publish contents';                                                  -- 1 fila
-  SELECT COUNT(*) FROM entity_claim_requests WHERE kind = 'link';                                               -- = total previo
+  SELECT COUNT(*) FROM entity_claim_requests WHERE kind = 'link';
+  SHOW TABLES LIKE 'contributions';                                                                        -- 0 filas (la tabla ya no existe)
+  SELECT COUNT(*) FROM users;                                                                             -- = total previo (no se pierden usuarios)                                               -- = total previo
   ```
 - [ ] **No** ejecutar `migrate:fresh`, `migrate:refresh` ni seeders de demo en producción. `AccessValidationAccountsSeeder` y `TestingReferenceDataSeeder` están protegidos (no corren en producción) y no deben usarse.
 - [ ] `down()`: el de roles recrea el rol `prensa` con sus permisos pero **no reasigna usuarios**. Si hace falta volver atrás, restaurar el backup.
@@ -106,6 +108,7 @@ Nuevas, en este orden:
 - [ ] `/login` y `/register`: **sin** botones de Google/Facebook; formulario de email y contraseña visible.
 - [ ] Botón **Publicar** del menú → lleva al login; tras iniciar sesión cae en `/admin` (con el flag apagado, el dashboard; con el flag encendido y usuario no administrador, Mis fichas).
 - [ ] `/admin/contribuir` y `/admin/contributions` responden `404`; las páginas de artista, festival, canción y evento ya no muestran "Sugerir corrección".
+- [ ] Una página de **artista** (home y biografía) y una de **festival** muestran, discreto, "¿Sos este artista o lo representás? / ¿Organizás este festival? Solicitá administrar su ficha"; el enlace pasa por el login y cae en **Mis fichas** con la ficha ya elegida. Las páginas de evento y canción no lo muestran.
 - [ ] `/cartelera-de-eventos-folkloricos` → `200`; una ficha de evento → `200`. En el HTML de la cartelera, cada evento del JSON-LD tiene `description` no vacía.
 - [ ] `storage/logs/laravel.log` sin errores nuevos.
 
@@ -167,9 +170,7 @@ Solo después de unos días estables y de la validación manual:
 
 ## 13. Pendientes conocidos que **no** bloquean el despliegue
 
-- Retiro definitivo de la tabla `contributions` y de `users.points/rank`: migración aparte, a aprobar después de exportar y de unas semanas sin uso.
-- Enlace opcional "¿Sos este artista? Solicitá administrar tu ficha" en las páginas públicas (reemplazaría a los enlaces retirados).
 - 2 tests omitidos de larga data (`NoticiasBugFixTest` entre ellos).
 - `RolesAndPermissionsSeeder` histórico está desfasado (aún crea el rol `prensa`): no ejecutarlo en entornos con datos; evaluar retirarlo.
-- Alternativa D (Mitos y Comidas por el flujo "Contribuir") se evalúa solo si aparece demanda de colaboradores.
+- Mitos y Comidas son solo de administradores y `verificado`. El flujo "Contribuir" ya no existe: si aparece demanda de aportes de colaboradores, habría que diseñar un camino nuevo dentro del circuito de fichas y revisión.
 - Cierre de versión: pasar `[Unreleased]` del CHANGELOG a una versión (`v2.4.0` sugerida, a decidir) y archivar las specs de OpenSpec una vez validado en producción. `openspec/` está en `.gitignore`: las specs se versionaron con `git add -f`.

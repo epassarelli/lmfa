@@ -29,8 +29,6 @@ class User extends Authenticatable
         'password',
         'google_id',
         'facebook_id',
-        'points',
-        'rank',
         'phone',
         'status',
         'is_verified_publisher',
@@ -69,11 +67,6 @@ class User extends Authenticatable
     protected $appends = [
         // 'profile_photo_url',
     ];
-
-    public function getRankAttribute($value): string
-    {
-        return $value ?? 'Colaborador';
-    }
 
 
     public function socialAccounts()

@@ -39,6 +39,11 @@
     <div class="prose max-w-none prose-lg prose-slate">
       {!! $interprete->biografia !!}
     </div>
+
+    <p class="mt-4 text-sm text-gray-600" data-nosnippet>
+      ¿Sos este artista o lo representás?
+      <a href="{{ route('backend.my-entities.index', ['type' => 'interprete', 'id' => $interprete->id]) }}" rel="nofollow" class="font-medium text-orange-600 hover:text-orange-700">Solicitá administrar su ficha</a>
+    </p>
   </section>
 
   <div class="redes">
