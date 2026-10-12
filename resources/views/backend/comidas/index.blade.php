@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+  <x-backend.list-help section="comida" />
   @if (session('success'))
     <script>
       Swal.fire({

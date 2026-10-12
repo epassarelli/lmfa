@@ -1,3 +1,4 @@
+<x-backend.form-help section="album" :open="! isset($album->id)" />
 <div class="row">
 
   <div class="col-md-8">
@@ -18,7 +19,7 @@
       <div class="col-md-6">
         @if (Auth::user()->hasRole('administrador'))
           <div class="form-group">
-            <label for="slug">Slug</label>
+            <label for="slug">Dirección web</label>
             <input type="text" name="slug" id="slug" class="form-control"
               value="{{ old('slug', $album->slug ?? '') }}" required>
             @error('slug')
@@ -82,7 +83,7 @@
         <div class="form-group">
           <label for="foto">Foto</label>
           <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png,image/webp">
-          <small class="form-text text-muted">JPEG, PNG o WebP. Máximo 5 MB.</small>
+          <x-backend.image-hint profile="album" />
           @if (isset($album) && $album->images->isNotEmpty())
             <div class="mt-2 text-center">
               <label>Previsualización (Nueva):</label><br>
@@ -127,25 +128,27 @@
         </div>
       </div>
 
-      <div class="col-md-12 mt-2"><h5 class="border-bottom pb-2">SEO y metadatos</h5></div>
+      <x-backend.seo-box noun="este disco">
       <div class="col-md-6">
         <div class="form-group">
-          <label for="seo_title">Título SEO</label>
+          <label for="seo_title">Título en Google</label>
           <input type="text" name="seo_title" id="seo_title" class="form-control" value="{{ old('seo_title', $album->seo_title ?? '') }}">
         </div>
       </div>
       <div class="col-md-6">
         <div class="form-group">
-          <label for="meta_description">Meta description</label>
+          <label for="meta_description">Resumen en Google</label>
           <textarea name="meta_description" id="meta_description" rows="3" class="form-control">{{ old('meta_description', $album->meta_description ?? '') }}</textarea>
         </div>
       </div>
       <div class="col-md-12">
         <div class="form-group">
-          <label for="image_alt">Texto alternativo de portada</label>
+          <label for="image_alt">Descripción de la tapa</label>
           <input type="text" name="image_alt" id="image_alt" class="form-control" value="{{ old('image_alt', $album->image_alt ?? '') }}">
+          <small class="form-text text-muted">Dice qué se ve en la tapa (para lectores de pantalla y Google). Si queda vacío se usa el título del disco.</small>
         </div>
       </div>
+      </x-backend.seo-box>
 
     </div>
 

@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+  <x-backend.list-help section="news" />
 
   <div class="card card-outline card-primary">
     <div class="card-header">

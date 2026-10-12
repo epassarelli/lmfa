@@ -1,0 +1,105 @@
+<?php
+
+/*
+| Textos de ayuda del backoffice (componentes <x-backend.form-help>, <x-backend.list-help> y
+| <x-backend.image-hint>). Escritos para quien no es técnico. Si cambia una regla de acceso,
+| publicación u obligatoriedad, actualizar acá y en tests/Feature/BackofficeHelpTest.php.
+*/
+
+return [
+    // Medidas recomendadas según los perfiles de config/image_profiles.php (la imagen se recorta sola
+    // a cada formato; lo importante tiene que quedar en el centro).
+    'images' => [
+        'artist' => ['shape' => 'vertical (3:4)', 'size' => '1200 × 1600 px', 'min' => '900 × 1200 px', 'max_mb' => 5, 'tip' => 'En algunas tarjetas se muestra cuadrada: dejá la cara o el grupo en el centro.'],
+        'album' => ['shape' => 'cuadrada (1:1)', 'size' => '1000 × 1000 px', 'min' => '600 × 600 px', 'max_mb' => 5, 'tip' => 'Usá la tapa del disco, sin bordes ni textos agregados.'],
+        'festival' => ['shape' => 'horizontal (16:9)', 'size' => '1600 × 900 px', 'min' => '1024 × 576 px', 'max_mb' => 5, 'tip' => 'Se muestra grande arriba de la página: evitá fotos con texto cerca de los bordes.'],
+        'event' => ['shape' => 'horizontal (16:9)', 'size' => '1600 × 900 px', 'min' => '1024 × 576 px', 'max_mb' => 5, 'tip' => 'Si es un afiche vertical, agregale margen a los costados para que no se corte.'],
+        'news' => ['shape' => 'horizontal (16:9)', 'size' => '1600 × 900 px', 'min' => '1024 × 576 px', 'max_mb' => 5, 'tip' => 'Es la imagen principal de la nota y la que se ve al compartirla.'],
+        'recipe' => ['shape' => 'apaisada (4:3)', 'size' => '1200 × 900 px', 'min' => '800 × 600 px', 'max_mb' => 5, 'tip' => 'Una foto del plato terminado, bien iluminada.'],
+        'mito' => ['shape' => 'apaisada (4:3)', 'size' => '1200 × 900 px', 'min' => '800 × 600 px', 'max_mb' => 5, 'tip' => 'Una ilustración o foto relacionada con la leyenda.'],
+        'classified' => ['shape' => 'horizontal (16:9)', 'size' => '1280 × 720 px', 'min' => '800 × 450 px', 'max_mb' => 2, 'tip' => 'Podés subir varias; cada una hasta 2 MB.'],
+    ],
+
+    'sections' => [
+        'interprete' => [
+            'what' => 'La ficha de un artista o grupo: biografía, foto y datos de contacto. Es la base para cargar sus discos, canciones y noticias.',
+            'scope' => [
+                'admin' => 'Ves todos los artistas del portal.',
+                'member' => 'Ves los artistas que administrás (tus fichas) y los que cargaste vos. Para trabajar sobre otro, pedí vincularte desde Mis fichas.',
+                // Colaboradores con el acceso por fichas apagado: el listado es completo (se eligen al cargar discos/canciones).
+                'member_open' => 'Ves todos los artistas, para poder elegirlos al cargar discos o canciones, pero solo podés editar los de tus fichas. Para editar otro, pedí vincularte desde Mis fichas.',
+            ],
+            'required' => ['Intérprete (nombre)', 'Biografía'],
+        ],
+        'album' => [
+            'what' => 'Un disco de un artista, con su tapa, año y canciones.',
+            'scope' => [
+                'admin' => 'Ves todos los discos.',
+                'member' => 'Ves los discos que cargaste vos y los de los artistas que administrás.',
+            ],
+            'required' => ['Disco (título)', 'Intérprete', 'Año'],
+        ],
+        'cancion' => [
+            'what' => 'Una canción dentro de un disco. Acá no se publica la letra completa: solo los datos de la obra y los créditos.',
+            'scope' => [
+                'admin' => 'Ves todas las canciones.',
+                'member' => 'Ves las canciones que cargaste vos y las de los artistas que administrás.',
+            ],
+            'required' => ['Canción (título)', 'Intérprete', 'Disco'],
+        ],
+        'festival' => [
+            'what' => 'Un festival o fiesta tradicional: cuándo y dónde se hace, su historia y los artistas que pasan por él.',
+            'scope' => [
+                'admin' => 'Ves todos los festivales.',
+                'member' => 'Ves los festivales que administrás (tus fichas) y los que cargaste vos.',
+            ],
+            'required' => ['Título', 'Contenido', 'Provincia', 'Mes'],
+        ],
+        'event' => [
+            'what' => 'Un evento con fecha: recital, peña, encuentro. Aparece en la cartelera mientras no haya pasado.',
+            'scope' => [
+                'admin' => 'Ves todos los eventos.',
+                'member' => 'Ves los eventos que cargaste vos y los vinculados a artistas o festivales que administrás.',
+            ],
+            'required' => ['Título', 'Fecha y hora de inicio', 'Detalles del evento'],
+        ],
+        'news' => [
+            'what' => 'Una nota del portal. Puede estar ligada a artistas, festivales o eventos.',
+            'scope' => [
+                'admin' => 'Ves todas las noticias.',
+                'member' => 'Ves las noticias que cargaste vos y las vinculadas a fichas que administrás.',
+            ],
+            'required' => ['Título', 'Categoría', 'Cuerpo de la noticia', 'Imagen destacada (al crear)', 'Fecha de publicación'],
+        ],
+        'mito' => [
+            'what' => 'Un mito o leyenda del folklore, contado en tus palabras o con su fuente.',
+            'scope' => [
+                'admin' => 'Ves todos los mitos.',
+                'member' => 'Solo ves los mitos que cargaste vos.',
+            ],
+            'required' => ['Título', 'Mito'],
+        ],
+        'comida' => [
+            'what' => 'Una receta o comida típica, con ingredientes y preparación.',
+            'scope' => [
+                'admin' => 'Ves todas las comidas.',
+                'member' => 'Solo ves las comidas que cargaste vos.',
+            ],
+            'required' => ['Título', 'Receta'],
+        ],
+        'classified' => [
+            'what' => 'Un aviso clasificado: se publica después de que el equipo lo revisa.',
+            'scope' => [
+                'admin' => 'Ves todos los avisos y los que esperan moderación.',
+                'member' => 'Ves los avisos que cargaste vos.',
+            ],
+            'required' => ['Categoría', 'Título', 'Descripción', 'Ubicación', 'Contacto'],
+        ],
+    ],
+
+    // Cómo se publica lo que carga cada persona.
+    'publishing' => [
+        'can' => 'Podés publicar directamente: elegí «Publicado» (o «Activo») en el estado y se ve en el portal.',
+        'cannot' => 'Lo que cargues queda en borrador hasta que el equipo lo revise y lo publique. Mientras tanto no se ve en el portal.',
+    ],
+];

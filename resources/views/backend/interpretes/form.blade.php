@@ -1,15 +1,17 @@
+<x-backend.form-help section="interprete" :open="$action !== 'edit'" />
 <div class="row">
   <div class="col-md-4">
-    <x-input name="interprete" label="Interprete" :value="$interprete->interprete ?? ''" onkeyup="autocompleteSlug(this, '#slug')" required />
+    <x-input name="interprete" label="Nombre del artista o grupo" :value="$interprete->interprete ?? ''" onkeyup="autocompleteSlug(this, '#slug')" required />
   </div>
 
   <div class="col-md-4">
-    <x-input name="slug" label="Slug" :value="$interprete->slug ?? ''" required />
+    <x-input name="slug" label="Dirección web" :value="$interprete->slug ?? ''" required />
+    <small class="form-text text-muted" style="margin-top:-12px">Se completa sola desde el nombre. Es parte del enlace público: cambiala solo si hace falta.</small>
   </div>
 
   <div class="col-md-4">
     <x-file name="foto" label="Foto" :value="$interprete->foto ?? null" path="interpretes" :required="false" />
-    <small class="form-text text-muted">JPEG, PNG o WebP. Máximo 5 MB. Si no se carga una imagen, el frontend utilizará media relacionada o fallback.</small>
+    <x-backend.image-hint profile="artist" />
     @if (isset($interprete) && $interprete->images->isNotEmpty())
       <div class="mt-2 text-center">
         <label>Previsualizacion (Nueva):</label><br>
@@ -28,23 +30,23 @@
   </div>
 </div>
 
-<x-textarea name="biografia" label="Biografia" :value="$interprete->biografia ?? ''" editor editor-profile="editorial-body" />
+<x-textarea name="biografia" label="Biografía" :value="$interprete->biografia ?? ''" editor editor-profile="editorial-body" :required="true" />
 
 <div class="row mt-3">
-  <div class="col-md-12">
-    <h5 class="border-bottom pb-2">SEO y metadatos</h5>
-  </div>
-  <div class="col-md-6">
-    <x-input name="seo_title" label="Titulo SEO" :value="$interprete->seo_title ?? ''" />
-    <small class="form-text text-muted">Si queda vacío se deriva del nombre del artista.</small>
-  </div>
-  <div class="col-md-6">
-    <x-input name="meta_description" label="Meta description" :value="$interprete->meta_description ?? ''" />
-    <small class="form-text text-muted">Si queda vacía se deriva de la bajada o biografía.</small>
-  </div>
-  <div class="col-md-12">
-    <x-input name="image_alt" label="Texto alternativo de imagen" :value="$interprete->image_alt ?? ''" />
-  </div>
+  <x-backend.seo-box noun="este artista">
+    <div class="col-md-6">
+      <x-input name="seo_title" label="Título en Google" :value="$interprete->seo_title ?? ''" />
+      <small class="form-text text-muted">Si queda vacío se usa el nombre del artista.</small>
+    </div>
+    <div class="col-md-6">
+      <x-input name="meta_description" label="Resumen en Google" :value="$interprete->meta_description ?? ''" />
+      <small class="form-text text-muted">Si queda vacío se arma con la bajada o la biografía.</small>
+    </div>
+    <div class="col-md-12">
+      <x-input name="image_alt" label="Descripción de la foto" :value="$interprete->image_alt ?? ''" />
+      <small class="form-text text-muted">Dice qué se ve en la foto (para lectores de pantalla y Google). Si queda vacío se usa el nombre.</small>
+    </div>
+  </x-backend.seo-box>
 </div>
 
 <div class="row">

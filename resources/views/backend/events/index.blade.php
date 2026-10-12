@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+  <x-backend.list-help section="event" />
 
   @if (session('success'))
     <script>

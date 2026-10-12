@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+  <x-backend.list-help section="festival" />
   <div class="card card-outline card-primary shadow-sm">
     <div class="card-header">
       <h3 class="card-title">Listado de Festivales</h3>

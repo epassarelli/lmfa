@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+  <x-backend.list-help section="interprete" />
 
   <div class="card card-outline card-primary shadow-sm">
 

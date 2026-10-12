@@ -33,6 +33,25 @@
     </div>
   @endif
 
+  <details class="callout callout-info mb-3" data-fichas-help @if (empty($showNoFichasBanner) === false) open @endif>
+    <summary class="font-weight-bold" style="cursor:pointer"><i class="fas fa-question-circle mr-1"></i> ¿Qué es una ficha y por qué veo unas secciones y otras no?</summary>
+    <div class="mt-2 small">
+      <p class="mb-2">Una <strong>ficha</strong> es la página de un artista o de un festival. Lo que podés cargar y editar depende de las fichas que administrás:</p>
+      <ul class="pl-3 mb-2">
+        <li>Si administrás un <strong>artista</strong>, podés editar su ficha y cargar sus discos, canciones, noticias y eventos.</li>
+        <li>Si administrás un <strong>festival</strong>, podés editar su ficha y cargar sus eventos.</li>
+        <li>Si todavía no administrás ninguna, no ves esas secciones. Pedí vincularte abajo y, cuando un administrador lo apruebe, aparecen.</li>
+      </ul>
+      <p class="mb-1"><strong>Roles dentro de una ficha:</strong></p>
+      <ul class="pl-3 mb-2">
+        <li><strong>Responsable:</strong> edita la ficha y aprueba o rechaza a quienes piden sumarse.</li>
+        <li><strong>Editor:</strong> edita la ficha y carga contenido relacionado.</li>
+        <li><strong>Miembro:</strong> solo lectura.</li>
+      </ul>
+      <p class="mb-0">Si el artista o festival no existe, usá «Pedí que la creemos». Un administrador revisa cada solicitud antes de aprobarla; cuando se resuelve te avisamos por email.</p>
+    </div>
+  </details>
+
   <div class="row">
     <div class="col-lg-6">
       <div class="card card-outline card-primary shadow-sm">

@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: ayuda contextual en el backoffice
+
+Spec `backoffice-contextual-help`. Componentes `x-backend.form-help|list-help|image-hint|seo-box` y textos en `config/backoffice_help.php`, aplicados a los ABM de contenido y a Mis fichas. mfa_test: 669 passed, 2 skipped. Sin migraciones. Pendiente: validación visual con varios roles y revisión editorial de los textos.
+
 ### Implementado en local 2026-10-12: registro sin rol, listados acotados, alta directa limitada y Mi panel
 
 Spec `registration-role-and-scoping`. Registro sin rol por defecto (decisión); listados acotados para no administradores; alta directa de artistas/festivales solo admin y verificado con el flag activo; dashboard de no administradores reemplazado por Mi panel. mfa_test: 661 passed, 2 skipped. Sin migraciones. Pendiente: validación visual y, en producción, los 6 usuarios sin rol quedan sin rol.

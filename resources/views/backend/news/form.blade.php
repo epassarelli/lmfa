@@ -1,3 +1,4 @@
+<x-backend.form-help section="news" :open="! isset($news->id)" />
 <div class="row">
   <div class="col-md-6">
     <div class="form-group">
@@ -9,7 +10,8 @@
 
   <div class="col-md-6">
     <div class="form-group">
-      <label for="slug">Slug / URL Amigable</label>
+      <label for="slug">Dirección web</label>
+      <small class="form-text text-muted">Se completa sola desde el título. Es parte del enlace público.</small>
       <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $news->slug ?? '') }}" required>
       @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
@@ -32,11 +34,12 @@
 
   <div class="col-md-6">
     <div class="form-group">
-      <label for="foto">Imagen Principal</label>
+      <label for="foto">Imagen principal @unless (isset($news->id)) <span class="text-danger">*</span> @endunless</label>
       <div class="custom-file">
-        <input type="file" name="foto" id="foto" class="custom-file-input">
+        <input type="file" name="foto" id="foto" class="custom-file-input" accept="image/jpeg,image/png,image/webp" @unless (isset($news->id)) required @endunless>
         <label class="custom-file-label" for="foto">Elegir imagen...</label>
       </div>
+      <x-backend.image-hint profile="news" />
       @error('foto') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>

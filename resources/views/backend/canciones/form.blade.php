@@ -1,3 +1,4 @@
+<x-backend.form-help section="cancion" :open="! isset($cancion->id)" />
 <div class="row">
 
   <div class="col md-6">
@@ -11,19 +12,26 @@
       @enderror
     </div>
 
-    <div class="form-group">
-      <label for="seo_title">Título SEO</label>
-      <input type="text" name="seo_title" id="seo_title" class="form-control" value="{{ old('seo_title', $cancion->seo_title ?? '') }}">
-    </div>
-
-    <div class="form-group">
-      <label for="meta_description">Meta description</label>
-      <textarea name="meta_description" id="meta_description" rows="3" class="form-control">{{ old('meta_description', $cancion->meta_description ?? '') }}</textarea>
+    <div class="row">
+      <x-backend.seo-box noun="esta canción">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="seo_title">Título en Google</label>
+            <input type="text" name="seo_title" id="seo_title" class="form-control" value="{{ old('seo_title', $cancion->seo_title ?? '') }}">
+            <small class="form-text text-muted">Si queda vacío se usa el nombre de la canción.</small>
+          </div>
+          <div class="form-group">
+            <label for="meta_description">Resumen en Google</label>
+            <textarea name="meta_description" id="meta_description" rows="3" class="form-control">{{ old('meta_description', $cancion->meta_description ?? '') }}</textarea>
+            <small class="form-text text-muted">Si queda vacío se arma con los datos de la obra.</small>
+          </div>
+        </div>
+      </x-backend.seo-box>
     </div>
 
     @if (Auth::user()->hasRole('administrador'))
       <div class="form-group">
-        <label for="slug">Slug</label>
+        <label for="slug">Dirección web</label>
         <input type="text" name="slug" id="slug" class="form-control"
           value="{{ old('slug', $cancion->slug ?? '') }}" required>
         @error('slug')

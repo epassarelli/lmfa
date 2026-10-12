@@ -1,3 +1,4 @@
+<x-backend.form-help section="event" :open="! isset($event->id)" />
 <div class="form-group">
   @if($event->program_id)
     <input type="hidden" name="program_id" value="{{ $event->program_id }}">

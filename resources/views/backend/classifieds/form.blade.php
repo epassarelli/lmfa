@@ -1,12 +1,13 @@
 @extends('adminlte::page')
 
-@section('title', isset($classified) ? 'Edit Classified' : 'Create Classified')
+@section('title', isset($classified) ? 'Editar aviso clasificado' : 'Nuevo aviso clasificado')
 
 @section('content_header')
-  <h1>{{ isset($classified) ? 'Edit Classified' : 'Create Classified' }}</h1>
+  <h1>{{ isset($classified) ? 'Editar aviso clasificado' : 'Nuevo aviso clasificado' }}</h1>
 @endsection
 
 @section('content')
+  <x-backend.form-help section="classified" :open="! isset($classified)" />
   <div class="card">
     <div class="card-body">
       <form action="{{ isset($classified) ? route('backend.classifieds.update', $classified) : route('backend.classifieds.store') }}"
@@ -17,7 +18,7 @@
         @endif
 
         <div class="form-group">
-          <label for="category_id">Category</label>
+          <label for="category_id">Categoría</label>
           <select name="category_id" id="category_id" class="form-control" required>
             @foreach ($categories as $category)
               <option value="{{ $category->id }}"
@@ -32,7 +33,7 @@
         </div>
 
         <div class="form-group">
-          <label for="title">Title</label>
+          <label for="title">Título</label>
           <input type="text" name="title" id="title" class="form-control"
             value="{{ old('title', $classified->title ?? '') }}" required>
           @error('title')
@@ -41,7 +42,7 @@
         </div>
 
         <div class="form-group">
-          <label for="description">Description</label>
+          <label for="description">Descripción</label>
           <textarea name="description" id="description" class="form-control" rows="4" required>{{ old('description', $classified->description ?? '') }}</textarea>
           @error('description')
             <div class="text-danger">{{ $message }}</div>
@@ -49,7 +50,7 @@
         </div>
 
         <div class="form-group">
-          <label for="price">Price</label>
+          <label for="price">Precio (opcional)</label>
           <input type="text" name="price" id="price" class="form-control"
             value="{{ old('price', $classified->price ?? '') }}">
           @error('price')
@@ -58,7 +59,7 @@
         </div>
 
         <div class="form-group">
-          <label for="location">Location</label>
+          <label for="location">Ubicación</label>
           <input type="text" name="location" id="location" class="form-control"
             value="{{ old('location', $classified->location ?? '') }}" required>
           @error('location')
@@ -67,7 +68,7 @@
         </div>
 
         <div class="form-group">
-          <label for="contact_info">Contact Info</label>
+          <label for="contact_info">Datos de contacto</label>
           <input type="text" name="contact_info" id="contact_info" class="form-control"
             value="{{ old('contact_info', $classified->contact_info ?? '') }}" required>
           @error('contact_info')
@@ -76,7 +77,7 @@
         </div>
 
         <div class="form-group">
-          <label for="expiration_date">Expiration Date</label>
+          <label for="expiration_date">Vence el (opcional)</label>
           <input type="date" name="expiration_date" id="expiration_date" class="form-control"
             value="{{ old('expiration_date', $classified->expiration_date ?? '') }}">
           @error('expiration_date')
@@ -85,7 +86,7 @@
         </div>
 
         <div class="form-group">
-          <label for="tags">Tags</label>
+          <label for="tags">Etiquetas (opcional)</label>
           <select name="tags[]" id="tags" class="form-control" multiple>
             @foreach ($tags as $tag)
               <option value="{{ $tag->id }}"
@@ -100,8 +101,9 @@
         </div>
 
         <div class="form-group">
-          <label for="images">Images</label>
-          <input type="file" name="images[]" id="images" class="form-control" multiple>
+          <label for="images">Imágenes (opcional)</label>
+          <input type="file" name="images[]" id="images" class="form-control" accept="image/jpeg,image/png,image/webp" multiple>
+          <x-backend.image-hint profile="classified" />
           @if (isset($classified) && $classified->images->isNotEmpty())
             <div class="mt-3 d-flex flex-wrap gap-2">
               @foreach ($classified->images as $image)
@@ -116,8 +118,8 @@
           @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{{ route('backend.classifieds.index') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ route('backend.classifieds.index') }}" class="btn btn-secondary">Cancelar</a>
       </form>
     </div>
   </div>

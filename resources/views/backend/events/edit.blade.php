@@ -51,7 +51,8 @@
                                     <input type="file" name="imagen_destacada" class="custom-file-input" id="imagen_destacada" accept="image/*">
                                     <label class="custom-file-label" for="imagen_destacada">Elegir nuevo archivo...</label>
                                 </div>
-                                <small class="text-muted">Si no seleccionas un archivo, se mantendrá la imagen actual.</small>
+                                <small class="text-muted">Si no elegís un archivo, se mantiene la imagen actual.</small>
+                                <x-backend.image-hint profile="event" />
                             </div>
                         </div>
                     </div>

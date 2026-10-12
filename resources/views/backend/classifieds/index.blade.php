@@ -9,6 +9,7 @@
 @endsection
 
 @section('content')
+  <x-backend.list-help section="classified" />
 <div class="card card-outline card-primary shadow-sm">
     <div class="card-body">
         @if(session('success'))

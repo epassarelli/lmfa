@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+  <x-backend.list-help section="mito" />
   @if (session('success'))
     <script>
       Swal.fire({

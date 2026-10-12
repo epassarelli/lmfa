@@ -1,3 +1,4 @@
+<x-backend.form-help section="mito" :open="! isset($mito)" />
 <div class="form-group">
   <label for="titulo">Título del Mito</label>
   <input type="text" name="titulo" id="titulo" class="form-control" value="{{ old('titulo', $mito->titulo ?? '') }}"
@@ -43,7 +44,7 @@
 <div class="form-group">
   <label for="foto">Foto</label>
   <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png,image/webp">
-  <small class="form-text text-muted">JPEG, PNG o WebP. Máximo 5 MB. La imagen es opcional.</small>
+  <x-backend.image-hint profile="mito" />
   @if (isset($mito) && $mito->images->isNotEmpty())
     <div class="mt-2 text-center">
       <label>Previsualización (Nueva):</label><br>
@@ -61,7 +62,7 @@
 
 @if (Auth::user()->hasRole('administrador'))
   <div class="form-group">
-    <label for="slug">Slug</label>
+    <label for="slug">Dirección web</label>
     <input type="text" name="slug" id="slug" class="form-control"
       value="{{ old('slug', $mito->slug ?? '') }}" required>
     @error('slug')
@@ -71,25 +72,27 @@
 @endif
 
 <div class="row mt-3">
-  <div class="col-md-12"><h5 class="border-bottom pb-2">SEO y metadatos</h5></div>
+  <x-backend.seo-box noun="este mito">
   <div class="col-md-6">
     <div class="form-group">
-      <label for="seo_title">Título SEO</label>
+      <label for="seo_title">Título en Google</label>
       <input type="text" name="seo_title" id="seo_title" class="form-control" value="{{ old('seo_title', $mito->seo_title ?? '') }}">
     </div>
   </div>
   <div class="col-md-6">
     <div class="form-group">
-      <label for="meta_description">Meta description</label>
+      <label for="meta_description">Resumen en Google</label>
       <textarea name="meta_description" id="meta_description" class="form-control" rows="2">{{ old('meta_description', $mito->meta_description ?? '') }}</textarea>
     </div>
   </div>
   <div class="col-md-12">
     <div class="form-group">
-      <label for="image_alt">Texto alternativo de imagen</label>
+      <label for="image_alt">Descripción de la imagen</label>
       <input type="text" name="image_alt" id="image_alt" class="form-control" value="{{ old('image_alt', $mito->image_alt ?? '') }}">
+      <small class="form-text text-muted">Dice qué se ve en la foto (para lectores de pantalla y Google). Si queda vacío se usa el título.</small>
     </div>
   </div>
+  </x-backend.seo-box>
 </div>
 
 <div class="form-group">

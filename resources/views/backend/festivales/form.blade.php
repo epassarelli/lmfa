@@ -1,3 +1,4 @@
+<x-backend.form-help section="festival" :open="! isset($festival->id)" />
 <div class="row">
   <div class="col-md-8">
     <div class="form-group">
@@ -9,8 +10,9 @@
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="slug">Slug</label>
+      <label for="slug">Dirección web</label>
       <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $festival->slug ?? '') }}">
+      <small class="form-text text-muted">Se completa sola desde el título. Cambiala solo si hace falta: forma parte del enlace público.</small>
       @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
@@ -79,7 +81,8 @@
   <div class="col-md-6">
     <div class="form-group">
       <label for="foto">Imagen destacada</label>
-      <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png,image/webp">\n      <small class="form-text text-muted">JPEG, PNG o WebP. Maximo 5 MB.</small>
+      <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png,image/webp">
+      <x-backend.image-hint profile="festival" />
       @if (isset($festival) && $festival->images->isNotEmpty())
         <div class="mt-2 text-center">
           <x-optimized-image :image="$festival->images->first()" variant="card" style="max-height: 80px;" class="img-thumbnail" />
@@ -105,45 +108,49 @@
   <div class="col-md-3">
     <div class="form-group">
       <label for="status">Estado</label>
+      @if (auth()->user()->canPublish())
       <select name="status" id="status" class="form-control" required>
         @foreach (['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'] as $value => $label)
           <option value="{{ $value }}" @selected(old('status', $festival->status ?? 'draft') === $value)>{{ $label }}</option>
         @endforeach
       </select>
+      @else
+      <input type="hidden" name="status" value="draft">
+      <input type="text" class="form-control" value="Borrador (lo publica el equipo)" disabled>
+      @endif
       @error('status') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
-  <div class="col-md-12 mt-2">
-    <h5 class="border-bottom pb-2">SEO y metadatos</h5>
-  </div>
+  <x-backend.seo-box noun="este festival">
 
   <div class="col-md-6">
     <div class="form-group">
-      <label for="seo_title">Titulo SEO</label>
+      <label for="seo_title">Título en Google</label>
       <input type="text" name="seo_title" id="seo_title" class="form-control" maxlength="255" value="{{ old('seo_title', $festival->seo_title ?? '') }}">
-      <small class="form-text text-muted">Si queda vacio, el frontend usa el titulo del festival.</small>
+      <small class="form-text text-muted">Si queda vacío, se usa el título del festival.</small>
       @error('seo_title') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
   <div class="col-md-6">
     <div class="form-group">
-      <label for="meta_description">Meta descripcion</label>
+      <label for="meta_description">Resumen en Google</label>
       <textarea name="meta_description" id="meta_description" class="form-control" rows="3" maxlength="320">{{ old('meta_description', $festival->meta_description ?? '') }}</textarea>
-      <small class="form-text text-muted">Si queda vacia, se deriva de la bajada o del cuerpo.</small>
+      <small class="form-text text-muted">Hasta 320 letras. Si queda vacío, se arma con la bajada o el contenido.</small>
       @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
   <div class="col-md-12">
     <div class="form-group">
-      <label for="image_alt">Texto alternativo de imagen</label>
+      <label for="image_alt">Descripción de la imagen</label>
       <input type="text" name="image_alt" id="image_alt" class="form-control" maxlength="255" value="{{ old('image_alt', $festival->image_alt ?? '') }}">
-      <small class="form-text text-muted">Describe la imagen de forma breve. Si queda vacio, se usa el titulo del festival.</small>
+      <small class="form-text text-muted">Dice qué se ve en la foto (la leen los lectores de pantalla y Google). Si queda vacío, se usa el título.</small>
       @error('image_alt') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
+  </x-backend.seo-box>
 
   @php
     $selectedNews = old('news_ids', isset($festival) ? $festival->noticias->pluck('id')->all() : []);
