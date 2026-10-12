@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: eventos de festivales (Etapa 3)
+
+- Spec `entity-member-content-access-festival-events`. `MemberFestivalEventsTest` (10 casos); Etapa 2 intacta (12). Sin migraciones. **No validado:** navegador. Cierra las etapas de contenido de fichas. **Pendiente para decidir juntos:** Mitos/Comidas/Noticias de colaboradores y activación del flag `BACKOFFICE_ACCESS_BY_ENTITIES`; `mfa_test` sin crear.
+
 ### Implementado en local 2026-10-12: revisión de solicitudes delegada al owner
 
 - Spec `owner-delegated-claim-review`. `DelegatedClaimReviewTest` (9 casos). Sin migraciones. **No validado:** navegador (tarjeta "Solicitudes para mis fichas" en Mis fichas). Pendiente: Mitos/Comidas de colaboradores, activación del flag de acceso por fichas, Etapa 3, `mfa_test`.

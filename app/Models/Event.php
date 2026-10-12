@@ -245,15 +245,36 @@ class Event extends Model
     }
 
     /**
-     * Eventos donde el usuario administra al menos un artista vinculado y ninguno ajeno.
+     * Ids de los festivales vinculados (pivote event_festival).
+     *
+     * @return array<int, int>
+     */
+    public function linkedFestivalIds(): array
+    {
+        return $this->festivales()->pluck('festivales.id')->map(fn ($id) => (int) $id)->all();
+    }
+
+    /**
+     * Eventos editables por membresía: con festivales, todos administrados por el usuario; sin
+     * festivales, todos los artistas vinculados administrados (y al menos uno).
      */
     public function scopeEditableByMember(\Illuminate\Database\Eloquent\Builder $query, User $user): \Illuminate\Database\Eloquent\Builder
     {
-        $managed = $user->managedInterpreteIdsSubquery();
+        $artists = $user->managedInterpreteIdsSubquery();
+        $festivals = $user->managedFestivalIdsSubquery();
 
-        return $query
-            ->whereHas('interpretes', fn ($q) => $q->whereIn('interpretes.id', $managed))
-            ->whereDoesntHave('interpretes', fn ($q) => $q->whereNotIn('interpretes.id', $managed));
+        return $query->where(function ($either) use ($artists, $festivals) {
+            $either->where(function ($withFestival) use ($festivals) {
+                $withFestival
+                    ->whereHas('festivales', fn ($q) => $q->whereIn('festivales.id', $festivals))
+                    ->whereDoesntHave('festivales', fn ($q) => $q->whereNotIn('festivales.id', $festivals));
+            })->orWhere(function ($withoutFestival) use ($artists) {
+                $withoutFestival
+                    ->whereDoesntHave('festivales')
+                    ->whereHas('interpretes', fn ($q) => $q->whereIn('interpretes.id', $artists))
+                    ->whereDoesntHave('interpretes', fn ($q) => $q->whereNotIn('interpretes.id', $artists));
+            });
+        });
     }
 
     public function interpretes()

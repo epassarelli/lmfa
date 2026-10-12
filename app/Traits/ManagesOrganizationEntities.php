@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Festival;
 use App\Models\Interprete;
 use App\Models\Organization;
 use App\Models\OrganizationMember;
@@ -149,6 +150,39 @@ trait ManagesOrganizationEntities
         }
 
         return $interpreteId !== null && in_array($interpreteId, $this->managedInterpreteIds(), true);
+    }
+
+    /**
+     * Ids de los festivales que el usuario administra como miembro owner/editor.
+     *
+     * @return array<int, int>
+     */
+    public function managedFestivalIds(): array
+    {
+        return $this->managedEntityIds((new Festival)->getMorphClass());
+    }
+
+    public function managedFestivalIdsSubquery(): QueryBuilder
+    {
+        return $this->managedEntityIdsSubquery((new Festival)->getMorphClass());
+    }
+
+    /**
+     * Regla de edición de eventos por membresía: si el evento tiene festivales, hay que administrar
+     * todos (los artistas de la grilla se ignoran); si no los tiene, todos los artistas vinculados.
+     *
+     * @param  array<int, int|string|null>  $artistIds
+     * @param  array<int, int|string|null>  $festivalIds
+     */
+    public function canEditEventByMembership(array $artistIds, array $festivalIds): bool
+    {
+        $festivalIds = array_values(array_unique(array_map('intval', array_filter($festivalIds))));
+
+        if ($festivalIds !== []) {
+            return array_diff($festivalIds, $this->managedFestivalIds()) === [];
+        }
+
+        return $this->managesAllInterpretes($artistIds);
     }
 
     /**

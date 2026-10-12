@@ -23,7 +23,7 @@ class EventPolicy
      */
     public function view(User $user, Event $event)
     {
-        return $user->hasRole('administrador') || $event->created_by == $user->id || $user->managesAllInterpretes($event->linkedInterpreteIds());
+        return $user->hasRole('administrador') || $event->created_by == $user->id || $user->canEditEventByMembership($event->linkedInterpreteIds(), $event->linkedFestivalIds());
     }
 
     /**
@@ -31,7 +31,7 @@ class EventPolicy
      */
     public function create(User $user)
     {
-        return $user->hasAnyRole(['administrador', 'colaborador']) || $user->managedInterpreteIds() !== [];
+        return $user->hasAnyRole(['administrador', 'colaborador']) || $user->managedInterpreteIds() !== [] || $user->managedFestivalIds() !== [];
     }
 
     /**
@@ -39,7 +39,7 @@ class EventPolicy
      */
     public function update(User $user, Event $event)
     {
-        return $user->hasRole('administrador') || $event->created_by == $user->id || $user->managesAllInterpretes($event->linkedInterpreteIds());
+        return $user->hasRole('administrador') || $event->created_by == $user->id || $user->canEditEventByMembership($event->linkedInterpreteIds(), $event->linkedFestivalIds());
     }
 
     /**

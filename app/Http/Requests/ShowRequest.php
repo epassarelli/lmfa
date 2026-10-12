@@ -25,7 +25,13 @@ class ShowRequest extends FormRequest
             ? (int) $event->created_by !== (int) $user->id
             : ! $user->hasRole('colaborador'));
 
-        $this->requireOwnArtist($validator, (bool) $membershipOnly, array_merge((array) $this->input('interprete_ids', []), [$this->input('interprete_id')]), 'interprete_ids');
+        $this->requireOwnArtistOrFestival(
+            $validator,
+            (bool) $membershipOnly,
+            array_merge((array) $this->input('interprete_ids', []), [$this->input('interprete_id')]),
+            (array) $this->input('festival_ids', []),
+            'interprete_ids'
+        );
     }
 
     protected function prepareForValidation(): void
