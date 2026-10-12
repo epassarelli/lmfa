@@ -54,3 +54,11 @@ volver a sufijarlo** (ej. `-v3`) en vez de sobreescribir el archivo con el
 mismo nombre — las imágenes se sirven con cache de un año (`immutable`) en
 `public/.htaccess`, así que un archivo reemplazado con el mismo nombre no
 se actualiza para los visitantes ni para el CDN hasta que expire ese cache.
+
+## Máximos, peso y aviso en el formulario
+
+- **Peso máximo (lo valida el servidor):** 5 MB por imagen; 2 MB en clasificados.
+- **Lado máximo útil (sugerido, no se valida):** 4000 px. Por encima no mejora la calidad —la variante más grande es de 1920 px— y la subida tarda más.
+- **Tipos aceptados:** JPG, PNG o WebP.
+- **Las medidas son sugeridas, no obligatorias.** Los formularios del backoffice muestran debajo de cada campo de imagen la proporción y el tamaño mínimo de esta tabla, y al elegir un archivo avisan (sin bloquear) si es más chico que lo sugerido, más grande de lo necesario o de otra proporción. Los textos están en `config/backoffice_help.php` y un test (`BackofficeHelpTest`) verifica que sus mínimos coincidan con esta guía: si se cambia una, hay que cambiar la otra.
+- **Clasificados** usa el perfil de noticias (`news_full`, 16:9, 1600×900).

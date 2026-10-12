@@ -60,6 +60,25 @@ class BackofficeHelpTest extends TestCase
         }
     }
 
+    public function test_image_suggestions_come_from_the_documented_guide(): void
+    {
+        $guide = file_get_contents(base_path('project/docs/editorial/image-upload-guide.md'));
+
+        foreach (config('backoffice_help.images') as $profile => $spec) {
+            if ($profile === 'classified') {
+                continue; // usa el perfil de noticias (news_full)
+            }
+
+            $this->assertStringContainsString($spec['min_w'].'×'.$spec['min_h'], $guide, "El mínimo de '$profile' no coincide con la guía de imágenes.");
+            $this->assertGreaterThan(max($spec['min_w'], $spec['min_h']), $spec['max_side']);
+        }
+
+        $html = $this->actingAs($this->user('administrador'))->get(route('backend.festivales.create'))->getContent();
+        $this->assertStringContainsString('desde <strong>1600 × 900 px</strong>', $html);
+        $this->assertStringContainsString('data-min-w="1600"', $html);
+        $this->assertStringContainsString('data-max-mb="5"', $html);
+    }
+
     public function test_the_text_adapts_to_the_role(): void
     {
         $this->actingAs($this->user('administrador'))->get(route('backend.mitos.index'))->assertSee('Ves todos los mitos.');

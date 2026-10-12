@@ -7,19 +7,22 @@
 */
 
 return [
-    // Medidas recomendadas según los perfiles de config/image_profiles.php (la imagen se recorta sola
-    // a cada formato; lo importante tiene que quedar en el centro).
+    // Medidas SUGERIDAS por tipo de contenido. Fuente: project/docs/editorial/image-upload-guide.md y
+    // config/image_profiles.php. Nunca bloquean la carga: el servidor solo valida tipo y peso
+    // (max_mb). min_w/min_h = tamaño mínimo recomendado (por debajo, el sitio sirve una versión más
+    // chica de lo ideal); max_side = lado máximo útil (por encima no mejora nada y pesa más);
+    // ratio = proporción objetivo (las variantes se recortan al centro). mode 'portrait' = artistas:
+    // conviene vertical o cuadrada, una foto panorámica pierde calidad al recortar.
     'images' => [
-        'artist' => ['shape' => 'vertical (3:4)', 'size' => '1200 × 1600 px', 'min' => '900 × 1200 px', 'max_mb' => 5, 'tip' => 'En algunas tarjetas se muestra cuadrada: dejá la cara o el grupo en el centro.'],
-        'album' => ['shape' => 'cuadrada (1:1)', 'size' => '1000 × 1000 px', 'min' => '600 × 600 px', 'max_mb' => 5, 'tip' => 'Usá la tapa del disco, sin bordes ni textos agregados.'],
-        'festival' => ['shape' => 'horizontal (16:9)', 'size' => '1600 × 900 px', 'min' => '1024 × 576 px', 'max_mb' => 5, 'tip' => 'Se muestra grande arriba de la página: evitá fotos con texto cerca de los bordes.'],
-        'event' => ['shape' => 'horizontal (16:9)', 'size' => '1600 × 900 px', 'min' => '1024 × 576 px', 'max_mb' => 5, 'tip' => 'Si es un afiche vertical, agregale margen a los costados para que no se corte.'],
-        'news' => ['shape' => 'horizontal (16:9)', 'size' => '1600 × 900 px', 'min' => '1024 × 576 px', 'max_mb' => 5, 'tip' => 'Es la imagen principal de la nota y la que se ve al compartirla.'],
-        'recipe' => ['shape' => 'apaisada (4:3)', 'size' => '1200 × 900 px', 'min' => '800 × 600 px', 'max_mb' => 5, 'tip' => 'Una foto del plato terminado, bien iluminada.'],
-        'mito' => ['shape' => 'apaisada (4:3)', 'size' => '1200 × 900 px', 'min' => '800 × 600 px', 'max_mb' => 5, 'tip' => 'Una ilustración o foto relacionada con la leyenda.'],
-        'classified' => ['shape' => 'horizontal (16:9)', 'size' => '1280 × 720 px', 'min' => '800 × 450 px', 'max_mb' => 2, 'tip' => 'Podés subir varias; cada una hasta 2 MB.'],
+        'artist' => ['shape' => 'vertical o cuadrada (retrato)', 'min_w' => 800, 'min_h' => 1024, 'ratio' => [3, 4], 'mode' => 'portrait', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Subí un retrato, no un paisaje ancho. Dejá la cara o el grupo en el centro: en algunas tarjetas se recorta cuadrada.'],
+        'album' => ['shape' => 'cuadrada (1:1)', 'min_w' => 800, 'min_h' => 800, 'ratio' => [1, 1], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Usá la tapa del disco, sin bordes ni textos agregados.'],
+        'festival' => ['shape' => 'horizontal (16:9)', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Se muestra grande arriba de la página: evitá texto cerca de los bordes, porque se recorta.'],
+        'event' => ['shape' => 'horizontal (16:9)', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Si es un afiche vertical, agregale margen a los costados para que no se corte.'],
+        'news' => ['shape' => 'horizontal (16:9)', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Es la imagen principal de la nota y la que se ve al compartirla.'],
+        'recipe' => ['shape' => 'apaisada (4:3)', 'min_w' => 800, 'min_h' => 600, 'ratio' => [4, 3], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Una foto del plato terminado, bien iluminada.'],
+        'mito' => ['shape' => 'apaisada (4:3)', 'min_w' => 900, 'min_h' => 675, 'ratio' => [4, 3], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Una ilustración o foto relacionada con la leyenda.'],
+        'classified' => ['shape' => 'horizontal (16:9)', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 2, 'tip' => 'Podés subir varias; cada una hasta 2 MB.'],
     ],
-
     'sections' => [
         'interprete' => [
             'what' => 'La ficha de un artista o grupo: biografía, foto y datos de contacto. Es la base para cargar sus discos, canciones y noticias.',
