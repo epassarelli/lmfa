@@ -105,6 +105,8 @@ Route::middleware(['auth'])->group(function () {
     // --- MIS FICHAS: cualquier usuario autenticado puede solicitar administrar una ficha ---
     Route::get('mis-fichas', [MyEntitiesController::class, 'index'])->name('backend.my-entities.index');
     Route::get('mis-fichas/buscar', [MyEntitiesController::class, 'search'])->name('backend.my-entities.search');
+    Route::get('mis-fichas/similares', [MyEntitiesController::class, 'similar'])->name('backend.my-entities.similar');
+    Route::post('mis-fichas/solicitar-alta', [MyEntitiesController::class, 'storeCreation'])->middleware('throttle:10,1')->name('backend.my-entities.creations.store');
     Route::post('mis-fichas/solicitar', [MyEntitiesController::class, 'store'])->middleware('throttle:10,1')->name('backend.my-entities.claims.store');
     Route::post('mis-fichas/solicitudes/{claim}/cancelar', [MyEntitiesController::class, 'cancel'])->name('backend.my-entities.claims.cancel');
 

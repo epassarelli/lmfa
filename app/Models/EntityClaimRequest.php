@@ -13,10 +13,17 @@ class EntityClaimRequest extends Model
     public const REJECTED = 'rejected';
     public const CANCELLED = 'cancelled';
 
+    public const KIND_LINK = 'link';
+    public const KIND_CREATE = 'create';
+
     protected $fillable = [
         'user_id',
+        'kind',
         'entity_type',
         'entity_id',
+        'proposed_name',
+        'evidence_url',
+        'proposed_data',
         'relationship',
         'message',
         'contact_phone',
@@ -29,6 +36,7 @@ class EntityClaimRequest extends Model
 
     protected $casts = [
         'reviewed_at' => 'datetime',
+        'proposed_data' => 'array',
     ];
 
     public function user(): BelongsTo
@@ -61,6 +69,19 @@ class EntityClaimRequest extends Model
         $config = $this->entityConfig();
 
         return $config && $this->entity ? (string) $this->entity->{$config['name_column']} : null;
+    }
+
+    public function isCreation(): bool
+    {
+        return $this->kind === self::KIND_CREATE;
+    }
+
+    /**
+     * Nombre a mostrar: la ficha vinculada o, si todavía no existe, el nombre propuesto.
+     */
+    public function displayName(): ?string
+    {
+        return $this->entityName() ?? $this->proposed_name;
     }
 
     public function isPending(): bool

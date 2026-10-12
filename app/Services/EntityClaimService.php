@@ -3,10 +3,14 @@
 namespace App\Services;
 
 use App\Models\EntityClaimRequest;
+use App\Models\Festival;
+use App\Models\Interprete;
+use App\Models\Mes;
 use App\Models\OrganizationMember;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -61,6 +65,183 @@ class EntityClaimService
             'contact_phone' => $data['contact_phone'] ?? null,
             'status' => EntityClaimRequest::PENDING,
         ]);
+    }
+
+    /**
+     * Solicitud de alta: el usuario no encontró su artista/festival y pide que se cree.
+     *
+     * @param  array{entity_type:string, proposed_name:string, relationship:string, message:string, evidence_url?:?string, contact_phone?:?string, mes_id?:?int}  $data
+     */
+    public function requestCreation(User $user, array $data): EntityClaimRequest
+    {
+        $config = config('entity_management.entities.'.$data['entity_type']);
+
+        if (! $config) {
+            throw ValidationException::withMessages(['entity_type' => 'El tipo de ficha no es válido.']);
+        }
+
+        $name = trim(preg_replace('/\s+/u', ' ', (string) $data['proposed_name']));
+        $morph = (new $config['model'])->getMorphClass();
+
+        $duplicate = EntityClaimRequest::query()
+            ->pending()
+            ->where('user_id', $user->getKey())
+            ->where('kind', EntityClaimRequest::KIND_CREATE)
+            ->where('entity_type', $morph)
+            ->where('proposed_name', $name)
+            ->exists();
+
+        if ($duplicate) {
+            throw ValidationException::withMessages(['proposed_name' => 'Ya tenés una solicitud de alta pendiente con ese nombre.']);
+        }
+
+        $this->ensureUnderPendingLimit($user);
+
+        return EntityClaimRequest::create([
+            'user_id' => $user->getKey(),
+            'kind' => EntityClaimRequest::KIND_CREATE,
+            'entity_type' => $morph,
+            'entity_id' => null,
+            'proposed_name' => $name,
+            'relationship' => $data['relationship'],
+            'message' => $data['message'],
+            'evidence_url' => $data['evidence_url'] ?? null,
+            'contact_phone' => $data['contact_phone'] ?? null,
+            'proposed_data' => ($data['entity_type'] === 'festival' && ! empty($data['mes_id'])) ? ['mes_id' => (int) $data['mes_id']] : null,
+            'status' => EntityClaimRequest::PENDING,
+        ]);
+    }
+
+    /**
+     * Fichas existentes con nombre parecido, para evitar duplicados (usuario y administrador).
+     *
+     * @return \Illuminate\Support\Collection<int, array{id:int, name:string}>
+     */
+    public function similarEntities(string $typeKey, string $name, int $limit = 8)
+    {
+        $config = config('entity_management.entities.'.$typeKey);
+        $name = trim($name);
+
+        if (! $config || mb_strlen($name) < 3) {
+            return collect();
+        }
+
+        $column = $config['name_column'];
+        $tokens = collect(preg_split('/\s+/u', $name))->filter(fn ($token) => mb_strlen($token) >= 4)->take(4);
+        $escape = fn (string $value) => addcslashes($value, '%_\\');
+
+        return $config['model']::query()
+            ->where(function ($query) use ($column, $name, $tokens, $escape) {
+                $query->where($column, 'like', '%'.$escape($name).'%');
+
+                foreach ($tokens as $token) {
+                    $query->orWhere($column, 'like', '%'.$escape($token).'%');
+                }
+            })
+            ->orderByRaw("$column = ? desc", [$name])
+            ->orderBy($column)
+            ->limit($limit)
+            ->get(['id', $column])
+            ->map(fn ($entity) => ['id' => (int) $entity->getKey(), 'name' => (string) $entity->{$column}]);
+    }
+
+    /**
+     * Aprueba una solicitud de alta: crea una ficha mínima en estado pendiente de revisión (sin
+     * inventar datos) o, si el administrador detecta un duplicado, vincula a una ficha existente.
+     * Luego aplica el mismo alta de membresía que una solicitud de vínculo.
+     */
+    public function approveCreation(EntityClaimRequest $claim, User $reviewer, string $role, ?string $notes = null, ?int $existingEntityId = null): EntityClaimRequest
+    {
+        $this->ensurePending($claim);
+
+        if (! $claim->isCreation()) {
+            throw ValidationException::withMessages(['claim' => 'Esta solicitud no es de alta de ficha.']);
+        }
+
+        $typeKey = collect(config('entity_management.entities'))
+            ->search(fn ($config) => (new $config['model'])->getMorphClass() === $claim->entity_type);
+
+        if ($typeKey === false) {
+            throw ValidationException::withMessages(['claim' => 'El tipo de ficha ya no está registrado.']);
+        }
+
+        $config = config("entity_management.entities.$typeKey");
+
+        return DB::transaction(function () use ($claim, $reviewer, $role, $notes, $existingEntityId, $typeKey, $config) {
+            if ($existingEntityId) {
+                $entity = $config['model']::query()->find($existingEntityId);
+
+                if (! $entity) {
+                    throw ValidationException::withMessages(['existing_entity_id' => 'La ficha existente seleccionada no existe.']);
+                }
+            } else {
+                $entity = $this->createStub($typeKey, $claim);
+            }
+
+            $claim->update(['entity_id' => $entity->getKey()]);
+            $claim->setRelation('entity', $entity);
+
+            return $this->approve($claim, $reviewer, $role, $notes);
+        });
+    }
+
+    /**
+     * Ficha mínima: solo el nombre propuesto. No inventa biografía ni datos; queda sin publicar
+     * (estado 0 / draft) y a cargo del usuario, que la completa y la envía a revisión.
+     */
+    private function createStub(string $typeKey, EntityClaimRequest $claim): Model
+    {
+        $name = (string) $claim->proposed_name;
+
+        if ($typeKey === 'interprete') {
+            $entity = new Interprete(['interprete' => $name, 'biografia' => '']);
+            $entity->slug = $this->uniqueSlug(Interprete::class, 'slug', $name);
+            $entity->estado = 0;
+            $entity->user_id = $claim->user_id;
+            $entity->save();
+
+            return $entity;
+        }
+
+        if ($typeKey === 'festival') {
+            $mesId = $claim->proposed_data['mes_id'] ?? null;
+
+            if (! $mesId || ! Mes::query()->whereKey($mesId)->exists()) {
+                throw ValidationException::withMessages(['claim' => 'El festival necesita un mes válido para crearse. Vinculá una ficha existente o rechazá la solicitud.']);
+            }
+
+            $entity = new Festival(['title' => $name, 'status' => 'draft']);
+            $entity->slug = $this->uniqueSlug(Festival::class, 'slug', $name);
+            $entity->mes_id = $mesId;
+            $entity->user_id = $claim->user_id;
+            $entity->save();
+
+            return $entity;
+        }
+
+        throw ValidationException::withMessages(['claim' => 'No se puede crear automáticamente este tipo de ficha.']);
+    }
+
+    private function uniqueSlug(string $model, string $column, string $name): string
+    {
+        $base = Str::slug($name) ?: 'ficha';
+        $slug = $base;
+        $suffix = 2;
+
+        while ($model::query()->where($column, $slug)->exists()) {
+            $slug = $base.'-'.$suffix++;
+        }
+
+        return $slug;
+    }
+
+    private function ensureUnderPendingLimit(User $user): void
+    {
+        $limit = (int) config('entity_management.claims.max_pending_per_user', 5);
+
+        if (EntityClaimRequest::query()->pending()->where('user_id', $user->getKey())->count() >= $limit) {
+            throw ValidationException::withMessages(['entity_id' => "Llegaste al máximo de $limit solicitudes pendientes. Esperá la respuesta o cancelá alguna."]);
+        }
     }
 
     public function cancel(EntityClaimRequest $claim): EntityClaimRequest

@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-11: solicitud de alta de ficha
+
+- Spec `entity-creation-requests`. Migración `2026_10_11_120000` aplicada por pedido del usuario en la base local (las 3 solicitudes existentes quedaron como `link`; `entity_id` ahora nullable). `EntityCreationRequestTest` (8 casos); suite completa 484 pasan, 13 fallos previos por datos reales. **No validado:** navegador (formulario y aviso de similares por JS). Falta aplicar la migración en otros entornos. Pendiente: Etapa 2 y recordatorio Mitos/Comidas.
+
 ### Implementado en local 2026-10-11: acceso al backoffice según fichas (flag apagado)
 
 - Spec `backoffice-access-by-entities`. Flag `BACKOFFICE_ACCESS_BY_ENTITIES` (por defecto false): restringe Intérpretes, Discos, Canciones, Festivales y Eventos a quienes administran fichas; el resto (Mitos, Comidas, Noticias) queda igual por decisión del usuario. `BackofficeAccessByEntitiesTest` (11 casos); suite completa 476 pasan, 13 fallos previos por datos reales. **No validado:** navegador con cuentas reales. **Recordatorio pendiente al usuario:** decidir qué pasa con Mitos/Comidas/Noticias de los colaboradores (memoria del proyecto). Siguiente: solicitud de alta de ficha y Etapa 2.

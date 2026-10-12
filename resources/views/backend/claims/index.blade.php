@@ -52,7 +52,8 @@
                 <td>{{ $claim->user?->name ?? 'Usuario eliminado' }}<div class="small text-muted">{{ $claim->user?->email }}</div></td>
                 <td>
                   <span class="badge badge-light">{{ $claim->entityConfig()['label'] ?? 'Ficha' }}</span>
-                  {{ $claim->entityName() ?? 'Ficha #'.$claim->entity_id.' (no disponible)' }}
+                  @if ($claim->isCreation()) <span class="badge badge-info">Alta</span> @endif
+                  {{ $claim->displayName() ?? 'Ficha #'.$claim->entity_id.' (no disponible)' }}
                 </td>
                 <td>{{ $relationships[$claim->relationship] ?? $claim->relationship }}</td>
                 <td><span class="badge badge-{{ $statusBadges[$claim->status] ?? 'secondary' }}">{{ $statusLabels[$claim->status] ?? $claim->status }}</span></td>

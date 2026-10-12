@@ -43,7 +43,16 @@ class EntityClaimRequestController extends Controller
         $activeOrganization = $organizations->firstWhere('status', 'active');
         $defaultRole = $activeOrganization && $activeOrganization->members->isNotEmpty() ? 'editor' : 'owner';
 
-        return view('backend.claims.show', compact('claim', 'organizations', 'defaultRole'));
+        $similar = collect();
+        $typeKey = null;
+
+        if ($claim->isCreation() && ! $claim->entity_id) {
+            $typeKey = collect(config('entity_management.entities'))->search(fn ($config) => (new $config['model'])->getMorphClass() === $claim->entity_type);
+            $similar = $typeKey !== false ? $this->claims->similarEntities($typeKey, (string) $claim->proposed_name) : collect();
+            $defaultRole = 'owner';
+        }
+
+        return view('backend.claims.show', compact('claim', 'organizations', 'defaultRole', 'similar'));
     }
 
     public function approve(Request $request, EntityClaimRequest $claim)
@@ -51,7 +60,16 @@ class EntityClaimRequestController extends Controller
         $data = $request->validate([
             'role' => ['required', Rule::in(array_keys(config('entity_management.member_roles')))],
             'review_notes' => ['nullable', 'string', 'max:1000'],
-        ], [], ['role' => 'rol', 'review_notes' => 'nota']);
+            'existing_entity_id' => ['nullable', 'integer', 'min:1'],
+        ], [], ['role' => 'rol', 'review_notes' => 'nota', 'existing_entity_id' => 'ficha existente']);
+
+        if ($claim->isCreation() && ! $claim->entity_id) {
+            $this->claims->approveCreation($claim, Auth::user(), $data['role'], $data['review_notes'] ?? null, $data['existing_entity_id'] ?? null);
+
+            return redirect()->route('backend.claims.show', $claim)->with('success', empty($data['existing_entity_id'])
+                ? 'Solicitud aprobada: se creó la ficha (sin publicar) y el usuario ya puede completarla.'
+                : 'Solicitud aprobada: el usuario quedó vinculado a la ficha existente.');
+        }
 
         $this->claims->approve($claim, Auth::user(), $data['role'], $data['review_notes'] ?? null);
 

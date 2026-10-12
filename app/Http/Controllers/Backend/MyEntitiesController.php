@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\EntityClaimRequest;
+use App\Models\Mes;
 use App\Services\EntityClaimService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -58,7 +59,9 @@ class MyEntitiesController extends Controller
 
         $showNoFichasBanner = config('backoffice_access.enabled') && $user->hasNoManagedEntities() && ! $user->hasRole('administrador');
 
-        return view('backend.my-entities.index', compact('managed', 'claims', 'prefill', 'showNoFichasBanner'));
+        $meses = Mes::query()->orderBy('id')->get(['id', 'nombre']);
+
+        return view('backend.my-entities.index', compact('managed', 'claims', 'prefill', 'showNoFichasBanner', 'meses'));
     }
 
     public function store(Request $request)
@@ -81,6 +84,42 @@ class MyEntitiesController extends Controller
 
         return redirect()->route('backend.my-entities.index')
             ->with('success', 'Recibimos tu solicitud. La revisamos y te avisamos por acá el resultado.');
+    }
+
+    public function storeCreation(Request $request)
+    {
+        $data = $request->validate([
+            'entity_type' => ['required', Rule::in(array_keys(config('entity_management.entities')))],
+            'proposed_name' => ['required', 'string', 'min:3', 'max:255'],
+            'mes_id' => ['nullable', 'required_if:entity_type,festival', 'integer', Rule::exists((new Mes)->getTable(), 'id')],
+            'relationship' => ['required', Rule::in(array_keys(config('entity_management.claims.relationships')))],
+            'message' => ['required', 'string', 'min:10', 'max:1000'],
+            'evidence_url' => ['nullable', 'url', 'max:2048'],
+            'contact_phone' => ['nullable', 'string', 'max:50'],
+        ], [], [
+            'entity_type' => 'tipo de ficha',
+            'proposed_name' => 'nombre',
+            'mes_id' => 'mes del festival',
+            'relationship' => 'relación con la ficha',
+            'message' => 'mensaje',
+            'evidence_url' => 'link de respaldo',
+            'contact_phone' => 'teléfono',
+        ]);
+
+        $this->claims->requestCreation(Auth::user(), $data);
+
+        return redirect()->route('backend.my-entities.index')
+            ->with('success', 'Recibimos tu solicitud de alta. Un administrador la revisa y te avisamos por acá el resultado.');
+    }
+
+    public function similar(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'type' => ['required', Rule::in(array_keys(config('entity_management.entities')))],
+            'q' => ['required', 'string', 'max:255'],
+        ]);
+
+        return response()->json(['results' => $this->claims->similarEntities($data['type'], $data['q'])->values()]);
     }
 
     public function cancel(EntityClaimRequest $claim)

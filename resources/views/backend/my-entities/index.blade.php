@@ -65,7 +65,8 @@
               <div class="d-flex justify-content-between">
                 <div>
                   <span class="badge badge-light">{{ $claim->entityConfig()['label'] ?? 'Ficha' }}</span>
-                  <strong>{{ $claim->entityName() ?? 'Ficha #'.$claim->entity_id }}</strong>
+                  @if ($claim->isCreation()) <span class="badge badge-info">Alta</span> @endif
+                  <strong>{{ $claim->displayName() ?? 'Ficha #'.$claim->entity_id }}</strong>
                   <div class="small text-muted">{{ $claim->created_at->format('d/m/Y H:i') }}</div>
                 </div>
                 <div class="text-right">
@@ -135,6 +136,61 @@
           </div>
         </form>
       </div>
+
+      <div class="card card-outline card-secondary shadow-sm" id="creation-card">
+        <div class="card-header"><h3 class="card-title">¿No encontrás tu ficha? Pedí que la creemos</h3></div>
+        <form action="{{ route('backend.my-entities.creations.store') }}" method="POST">
+          @csrf
+          <div class="card-body">
+            <p class="text-muted small">Antes de enviar, revisá que no exista: te mostramos fichas con nombre parecido. Un administrador revisa el pedido y crea la ficha (sin publicar) para que la completes.</p>
+            <div class="form-group">
+              <label for="new_entity_type">Tipo de ficha</label>
+              <select name="entity_type" id="new_entity_type" class="form-control">
+                @foreach (config('entity_management.entities') as $key => $cfg)
+                  <option value="{{ $key }}" @selected(old('entity_type', 'interprete') === $key)>{{ $cfg['label'] }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="proposed_name">Nombre del artista o festival</label>
+              <input type="text" name="proposed_name" id="proposed_name" class="form-control" minlength="3" maxlength="255" value="{{ old('proposed_name') }}" required>
+              <div id="similar-box" class="mt-2 small d-none"></div>
+            </div>
+            <div class="form-group d-none" id="mes-group">
+              <label for="mes_id">Mes en que se realiza el festival</label>
+              <select name="mes_id" id="mes_id" class="form-control">
+                <option value="">Elegí un mes</option>
+                @foreach ($meses as $mes)
+                  <option value="{{ $mes->id }}" @selected((string) old('mes_id') === (string) $mes->id)>{{ $mes->nombre }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="new_relationship">Tu relación con la ficha</label>
+              <select name="relationship" id="new_relationship" class="form-control" required>
+                @foreach (config('entity_management.claims.relationships') as $value => $label)
+                  <option value="{{ $value }}" @selected(old('relationship') === $value)>{{ $label }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="new_message">Contanos quién sos y cómo podemos verificarlo</label>
+              <textarea name="message" id="new_message" rows="3" class="form-control" minlength="10" maxlength="1000" required>{{ old('message') }}</textarea>
+            </div>
+            <div class="form-group">
+              <label for="evidence_url">Link de respaldo (opcional)</label>
+              <input type="url" name="evidence_url" id="evidence_url" class="form-control" maxlength="2048" placeholder="Instagram, web oficial, nota de prensa..." value="{{ old('evidence_url') }}">
+            </div>
+            <div class="form-group">
+              <label for="new_contact_phone">Teléfono o WhatsApp (opcional)</label>
+              <input type="text" name="contact_phone" id="new_contact_phone" class="form-control" maxlength="50" value="{{ old('contact_phone') }}">
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-secondary"><i class="fas fa-plus mr-1"></i> Solicitar alta</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 @stop
@@ -162,6 +218,36 @@
       });
 
       $('#entity_type').on('change', function () { $('#entity_id').val(null).trigger('change'); });
+
+      var similarUrl = @json(route('backend.my-entities.similar'));
+      var claimBase = @json(route('backend.my-entities.index'));
+      var timer = null;
+
+      function toggleMes() {
+        $('#mes-group').toggleClass('d-none', $('#new_entity_type').val() !== 'festival');
+      }
+
+      function checkSimilar() {
+        var name = $.trim($('#proposed_name').val());
+        var box = $('#similar-box');
+        if (name.length < 3) { box.addClass('d-none').empty(); return; }
+        $.getJSON(similarUrl, { type: $('#new_entity_type').val(), q: name }, function (data) {
+          box.empty();
+          if (!data.results.length) { box.addClass('d-none'); return; }
+          box.append($('<div class="font-weight-bold text-warning-emphasis">').text('¿Es alguna de estas? Si ya existe, pedí el vínculo en lugar del alta:'));
+          var list = $('<ul class="mb-0 pl-3">');
+          data.results.forEach(function (item) {
+            var link = $('<a>').attr('href', claimBase + '?type=' + encodeURIComponent($('#new_entity_type').val()) + '&id=' + item.id).text('Solicitar vínculo');
+            list.append($('<li>').text(item.name + ' (#' + item.id + ') — ').append(link));
+          });
+          box.append(list).removeClass('d-none');
+        });
+      }
+
+      $('#new_entity_type').on('change', function () { toggleMes(); checkSimilar(); });
+      $('#proposed_name').on('input', function () { clearTimeout(timer); timer = setTimeout(checkSimilar, 350); });
+      toggleMes();
+      checkSimilar();
     });
   </script>
 @stop

@@ -47,10 +47,20 @@
               <span class="badge badge-light">{{ $config['label'] ?? 'Ficha' }}</span>
               @if ($claim->entityName() && $config)
                 <a href="{{ route($config['edit_route'], $claim->entity_id) }}" target="_blank" rel="noopener">{{ $claim->entityName() }}</a>
+              @elseif ($claim->isCreation())
+                <span class="badge badge-info">Alta de ficha</span> <strong>{{ $claim->proposed_name }}</strong>
+                @if (! empty($claim->proposed_data['mes_id']))
+                  <div class="small text-muted">Mes propuesto (id): {{ $claim->proposed_data['mes_id'] }}</div>
+                @endif
               @else
                 <span class="text-muted">Ficha #{{ $claim->entity_id }} (no disponible)</span>
               @endif
             </dd>
+
+            @if ($claim->evidence_url)
+              <dt class="col-sm-4">Link de respaldo</dt>
+              <dd class="col-sm-8"><a href="{{ $claim->evidence_url }}" target="_blank" rel="noopener nofollow">{{ $claim->evidence_url }}</a></dd>
+            @endif
 
             <dt class="col-sm-4">Relación declarada</dt>
             <dd class="col-sm-8">{{ $relationships[$claim->relationship] ?? $claim->relationship }}</dd>
@@ -113,6 +123,21 @@
                 </select>
                 <small class="text-muted">Sugerido según si la ficha ya tiene un responsable activo.</small>
               </div>
+              @if ($claim->isCreation() && ! $claim->entity_id)
+                <div class="form-group">
+                  <label for="existing_entity_id">¿Es un duplicado? Vincular a una ficha existente</label>
+                  <select name="existing_entity_id" id="existing_entity_id" class="form-control">
+                    <option value="">No: crear la ficha nueva (sin publicar)</option>
+                    @foreach ($similar as $candidate)
+                      <option value="{{ $candidate['id'] }}">{{ $candidate['name'] }} (#{{ $candidate['id'] }})</option>
+                    @endforeach
+                  </select>
+                  <small class="text-muted">
+                    @if ($similar->isEmpty()) No se encontraron fichas con nombre parecido. @else Fichas con nombre parecido; si es una de ellas el usuario queda vinculado a esa. @endif
+                    La ficha nueva se crea solo con el nombre, sin publicar; el usuario la completa y queda en revisión.
+                  </small>
+                </div>
+              @endif
               <div class="form-group mb-0">
                 <label for="approve_notes">Nota (opcional, la ve el usuario)</label>
                 <textarea name="review_notes" id="approve_notes" rows="2" class="form-control" maxlength="1000"></textarea>
