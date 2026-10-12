@@ -202,6 +202,41 @@ class News extends Model
         return $this->belongsToMany(Interprete::class, 'interprete_noticia', 'noticia_id', 'interprete_id');
     }
 
+    /**
+     * Ids de todos los intérpretes vinculados: el principal (interprete_id) y los secundarios (pivote).
+     *
+     * @return array<int, int>
+     */
+    public function linkedInterpreteIds(): array
+    {
+        return collect([$this->interprete_id])
+            ->merge($this->interpretes()->pluck('interpretes.id'))
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Noticias donde el usuario administra al menos un artista vinculado y ninguno ajeno.
+     */
+    public function scopeEditableByMember(\Illuminate\Database\Eloquent\Builder $query, User $user): \Illuminate\Database\Eloquent\Builder
+    {
+        $managed = $user->managedInterpreteIdsSubquery();
+
+        return $query
+            ->where(function ($w) use ($managed) {
+                $w->whereIn($this->qualifyColumn('interprete_id'), $managed)
+                    ->orWhereHas('interpretes', fn ($q) => $q->whereIn('interpretes.id', $managed));
+            })
+            ->where(function ($w) use ($managed) {
+                $w->whereNull($this->qualifyColumn('interprete_id'))
+                    ->orWhereIn($this->qualifyColumn('interprete_id'), $managed);
+            })
+            ->whereDoesntHave('interpretes', fn ($q) => $q->whereNotIn('interpretes.id', $managed));
+    }
+
     public function festivales()
     {
         return $this->belongsToMany(Festival::class, 'festival_news');

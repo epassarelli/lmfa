@@ -56,6 +56,15 @@ class NewsService
                     $data['editorial_status'] = 'draft';
                 }
 
+                // Quien no puede publicar nunca publica, aunque el request traiga estado=1: va a revisión.
+                if (auth()->user() && ! auth()->user()->canPublish()) {
+                    $data['editorial_status'] = 'draft';
+
+                    if (array_key_exists('estado', $data)) {
+                        $data['estado'] = 0;
+                    }
+                }
+
                 // 3. Crear la noticia
                 unset($data['foto']);
                 if (! isset($data['editorial_status'])) {
@@ -130,6 +139,15 @@ class NewsService
 
                 if (! isset($data['editorial_status']) && ! auth()->user()->canPublish()) {
                     $data['editorial_status'] = 'draft';
+                }
+
+                // Quien no puede publicar nunca publica, aunque el request traiga estado=1: va a revisión.
+                if (auth()->user() && ! auth()->user()->canPublish()) {
+                    $data['editorial_status'] = 'draft';
+
+                    if (array_key_exists('estado', $data)) {
+                        $data['estado'] = 0;
+                    }
                 }
 
                 // 2. Actualizar

@@ -1,6 +1,6 @@
 # Cambio: entity-member-content-access-events-news (Etapa 2)
 
-Estado: regla multi-artista APROBADA (2026-10-11); publicacion RECTIFICADA: todo va a Revision. Pendiente implementar. Continua `entity-member-content-access` (Etapa 1, discos y canciones).
+Estado: APROBADA e implementada en local (2026-10-11). Regla multi-artista aprobada; todo va a Revision.
 
 ## Objetivo
 Que quien administra un artista (miembro activo owner/editor de una organizacion activa, via `canManageInterpreteId`) pueda crear, editar y publicar directamente eventos y noticias de ese artista, sin roles ni permisos globales. Criterio del usuario: aprobar la ficha implica que carga contenido directamente.
@@ -81,3 +81,11 @@ Pendiente.
 - **Publicacion:** en esta primera instancia todo va a Revision. Se elimina la "publicacion contextual" (`canPublishFor`): el miembro guarda en `draft` / `estado = 0` y un administrador publica. Se mantiene `canPublish()` global sin cambios, lo que simplifica EventService/EventProgramService/NewsService (no se tocan).
 - Las decisiones 1 y 2 de la seccion anterior quedan resueltas (2: noticias tambien van a Revision).
 - Pendiente de implementar; depende en parte de `backoffice-access-by-entities` (visibilidad de secciones).
+
+## Resultado (implementado en local, 2026-10-11)
+- `EventPolicy`/`NewsPolicy`: create si administra al menos un artista; view/update si es creador (o permiso global previo) o administra TODOS los artistas vinculados (>= 1). Jornadas: `EventPolicy::updateProgram` (administrador, creador o todos los eventos editables).
+- Validacion server-side (`ShowRequest`, `NoticiaRequest`): si el acceso viene solo de la membresia, el registro debe incluir al menos un artista propio (puede sumar invitados).
+- Todo a revision: tope en `EventService` y `NewsService`: quien no puede publicar (`canPublish()`) nunca publica, aunque el request traiga `estado=1` (en noticias tambien fuerza `estado=0`). Esto endurece tambien a colaborador/prensa (antes solo la UI lo impedia).
+- Listados de Eventos y Noticias: para no administradores, solo lo propio o editable por membresia (antes Eventos solo restringia a colaborador/prensa).
+- Tests: `MemberEventsNewsAccessTest` (12 casos). Suite completa: 496 pasan; 13 fallos previos por datos reales.
+- Fuera de alcance / pendiente: Etapa 3 (festivales), invitados que sumen un artista ajeno a un evento existente bloquean la edicion futura salvo para el creador (consecuencia de la regla).

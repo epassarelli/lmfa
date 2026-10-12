@@ -3,16 +3,30 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\NormalizesRichTextFields;
+use App\Http\Requests\Concerns\ValidatesOwnArtistOnMembershipAccess;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class NoticiaRequest extends FormRequest
 {
     use NormalizesRichTextFields;
+    use ValidatesOwnArtistOnMembershipAccess;
 
     public function authorize(): bool
     {
         return true;
+    }
+
+    public function withValidator($validator): void
+    {
+        $user = $this->user();
+        $news = $this->route('news');
+
+        $membershipOnly = $user && ! $user->hasRole('administrador') && ($news
+            ? ((int) $news->created_by !== (int) $user->id && ! $user->can('update noticia'))
+            : ! $user->can('create noticia'));
+
+        $this->requireOwnArtist($validator, (bool) $membershipOnly, array_merge((array) $this->input('interprete_secundarios', []), [$this->input('interprete_principal_id')]), 'interprete_principal_id');
     }
 
     protected function prepareForValidation(): void

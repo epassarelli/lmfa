@@ -49,7 +49,8 @@ class NewsController extends Controller
 
         // Si no es admin, solo ve lo suyo
         if (!auth()->user()->isAdmin()) {
-            $query->where('created_by', auth()->id());
+            $user = auth()->user();
+            $query->where(fn ($own) => $own->where('created_by', $user->id)->orWhere(fn ($member) => $member->editableByMember($user)));
         }
 
         if ($sort === 'estado') {

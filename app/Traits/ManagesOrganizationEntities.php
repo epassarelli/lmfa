@@ -152,6 +152,29 @@ trait ManagesOrganizationEntities
     }
 
     /**
+     * Administra al menos uno y TODOS los intérpretes indicados (regla de edición de eventos/noticias
+     * con varios artistas: no se pisa contenido donde participan artistas que no administra).
+     *
+     * @param  array<int, int|string|null>  $ids
+     */
+    public function managesAllInterpretes(array $ids): bool
+    {
+        $ids = array_values(array_unique(array_map('intval', array_filter($ids))));
+
+        return $ids !== [] && array_diff($ids, $this->managedInterpreteIds()) === [];
+    }
+
+    /**
+     * @param  array<int, int|string|null>  $ids
+     */
+    public function managesAnyInterprete(array $ids): bool
+    {
+        $ids = array_map('intval', array_filter($ids));
+
+        return array_intersect($ids, $this->managedInterpreteIds()) !== [];
+    }
+
+    /**
      * Usuario sin permiso global de escritura sobre un contenido (p. ej. 'update album'):
      * su alcance queda limitado a los intérpretes que administra por membresía.
      */

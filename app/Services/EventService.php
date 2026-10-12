@@ -50,6 +50,11 @@ class EventService
                 $data['editorial_status'] = 'draft';
             }
 
+            // Quien no puede publicar nunca publica, aunque el request traiga estado=1: va a revisión.
+            if (($data['editorial_status'] ?? null) === 'published' && auth()->user() && ! auth()->user()->canPublish()) {
+                $data['editorial_status'] = 'draft';
+            }
+
             if (! isset($data['editorial_status'])) {
                 $data['editorial_status'] = array_key_exists('estado', $data)
                     ? ($data['estado'] == 1 ? 'published' : 'draft')
@@ -102,6 +107,11 @@ class EventService
 
             if (! isset($data['editorial_status']) && isset($data['estado'])) {
                 $data['editorial_status'] = $data['estado'] == 1 ? 'published' : 'draft';
+            }
+
+            // Quien no puede publicar nunca publica, aunque el request traiga estado=1: va a revisión.
+            if (($data['editorial_status'] ?? null) === 'published' && auth()->user() && ! auth()->user()->canPublish()) {
+                $data['editorial_status'] = 'draft';
             }
 
             if (isset($data['slug']) && empty($data['slug'])) {

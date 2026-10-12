@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-11: eventos y noticias de artistas (Etapa 2)
+
+- Spec `entity-member-content-access-events-news`. Regla multi-artista aprobada, todo a revisión. `MemberEventsNewsAccessTest` (12 casos); suite completa 496 pasan, 13 fallos previos por datos reales. Endurecimiento de `EventService`/`NewsService`: no publican si el usuario no puede publicar. **No validado:** navegador con cuenta real. **Pendientes que debo recordarte (memoria del proyecto):** rol sugerido por relación al aprobar, diferencia colaborador vs prensa, Mitos/Comidas de colaboradores, activación del flag, Etapa 3 y observaciones previas.
+
 ### Implementado en local 2026-10-11: solicitud de alta de ficha
 
 - Spec `entity-creation-requests`. Migración `2026_10_11_120000` aplicada por pedido del usuario en la base local (las 3 solicitudes existentes quedaron como `link`; `entity_id` ahora nullable). `EntityCreationRequestTest` (8 casos); suite completa 484 pasan, 13 fallos previos por datos reales. **No validado:** navegador (formulario y aviso de similares por JS). Falta aplicar la migración en otros entornos. Pendiente: Etapa 2 y recordatorio Mitos/Comidas.

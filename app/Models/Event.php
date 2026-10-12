@@ -234,6 +234,28 @@ class Event extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Ids de los intérpretes vinculados (pivote event_interprete).
+     *
+     * @return array<int, int>
+     */
+    public function linkedInterpreteIds(): array
+    {
+        return $this->interpretes()->pluck('interpretes.id')->map(fn ($id) => (int) $id)->all();
+    }
+
+    /**
+     * Eventos donde el usuario administra al menos un artista vinculado y ninguno ajeno.
+     */
+    public function scopeEditableByMember(\Illuminate\Database\Eloquent\Builder $query, User $user): \Illuminate\Database\Eloquent\Builder
+    {
+        $managed = $user->managedInterpreteIdsSubquery();
+
+        return $query
+            ->whereHas('interpretes', fn ($q) => $q->whereIn('interpretes.id', $managed))
+            ->whereDoesntHave('interpretes', fn ($q) => $q->whereNotIn('interpretes.id', $managed));
+    }
+
     public function interpretes()
     {
         // event_interprete NO tiene columnas de timestamps — no usar withTimestamps()

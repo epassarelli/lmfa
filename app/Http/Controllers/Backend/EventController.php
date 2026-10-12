@@ -47,8 +47,8 @@ class EventController extends Controller
             ->where(function ($query) {
                 $query->whereNull('events.program_id')->orWhereIn('events.id', Event::selectRaw('MIN(id)')->whereNotNull('program_id')->groupBy('program_id'));
             })
-            ->when(! $user->hasRole('administrador') && $user->hasAnyRole(['colaborador', 'prensa']), function ($query) use ($user) {
-                $query->where('events.created_by', $user->id);
+            ->when(! $user->hasRole('administrador'), function ($query) use ($user) {
+                $query->where(fn ($own) => $own->where('events.created_by', $user->id)->orWhere(fn ($member) => $member->editableByMember($user)));
             })
             ->with([
                 'user:id,name',
@@ -79,7 +79,7 @@ class EventController extends Controller
         $event = new Event();
         if ($request->filled('program_id')) {
             $program = \App\Models\EventProgram::findOrFail($request->integer('program_id'));
-            abort_unless(auth()->user()->hasRole('administrador') || (int) $program->created_by === (int) auth()->id(), 403);
+            abort_unless(app(\App\Policies\EventPolicy::class)->updateProgram(auth()->user(), $program), 403);
             $event->fill($program->only(\App\Services\EventProgramService::COMMON_FIELDS));
             $event->program_id = $program->id;
             $event->title = $program->title.' — Jornada';

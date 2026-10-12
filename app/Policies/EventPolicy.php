@@ -23,7 +23,7 @@ class EventPolicy
      */
     public function view(User $user, Event $event)
     {
-        return $user->hasRole('administrador') || $event->created_by == $user->id;
+        return $user->hasRole('administrador') || $event->created_by == $user->id || $user->managesAllInterpretes($event->linkedInterpreteIds());
     }
 
     /**
@@ -31,7 +31,7 @@ class EventPolicy
      */
     public function create(User $user)
     {
-        return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
+        return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']) || $user->managedInterpreteIds() !== [];
     }
 
     /**
@@ -39,7 +39,21 @@ class EventPolicy
      */
     public function update(User $user, Event $event)
     {
-        return $user->hasRole('administrador') || $event->created_by == $user->id;
+        return $user->hasRole('administrador') || $event->created_by == $user->id || $user->managesAllInterpretes($event->linkedInterpreteIds());
+    }
+
+    /**
+     * Jornadas (EventProgram): administrador, creador, o quien puede editar todos los eventos del programa.
+     */
+    public function updateProgram(User $user, \App\Models\EventProgram $program): bool
+    {
+        if ($user->hasRole('administrador') || (int) $program->created_by === (int) $user->id) {
+            return true;
+        }
+
+        $events = $program->events()->get();
+
+        return $events->isNotEmpty() && $events->every(fn (Event $event) => $this->update($user, $event));
     }
 
     /**

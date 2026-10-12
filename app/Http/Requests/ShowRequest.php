@@ -3,15 +3,29 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\NormalizesRichTextFields;
+use App\Http\Requests\Concerns\ValidatesOwnArtistOnMembershipAccess;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ShowRequest extends FormRequest
 {
     use NormalizesRichTextFields;
+    use ValidatesOwnArtistOnMembershipAccess;
 
     public function authorize()
     {
         return true;
+    }
+
+    public function withValidator($validator): void
+    {
+        $user = $this->user();
+        $event = $this->route('event');
+
+        $membershipOnly = $user && ! $user->hasRole('administrador') && ($event
+            ? (int) $event->created_by !== (int) $user->id
+            : ! $user->hasAnyRole(['prensa', 'colaborador']));
+
+        $this->requireOwnArtist($validator, (bool) $membershipOnly, array_merge((array) $this->input('interprete_ids', []), [$this->input('interprete_id')]), 'interprete_ids');
     }
 
     protected function prepareForValidation(): void

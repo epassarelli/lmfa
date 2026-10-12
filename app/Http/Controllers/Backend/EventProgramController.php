@@ -21,7 +21,7 @@ class EventProgramController extends Controller
     private function authorizeProgram(?EventProgram $program = null): void
     {
         $this->authorize('create', Event::class);
-        abort_unless(! $program || auth()->user()->hasRole('administrador') || (int) $program->created_by === (int) auth()->id(), 403);
+        abort_unless(! $program || app(\App\Policies\EventPolicy::class)->updateProgram(auth()->user(), $program), 403);
     }
 
     public function index(Request $request)
