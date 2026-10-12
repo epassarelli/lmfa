@@ -108,6 +108,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('mis-fichas/similares', [MyEntitiesController::class, 'similar'])->name('backend.my-entities.similar');
     Route::post('mis-fichas/solicitar-alta', [MyEntitiesController::class, 'storeCreation'])->middleware('throttle:10,1')->name('backend.my-entities.creations.store');
     Route::post('mis-fichas/solicitar', [MyEntitiesController::class, 'store'])->middleware('throttle:10,1')->name('backend.my-entities.claims.store');
+    Route::post('mis-fichas/revision/{claim}/aprobar', [MyEntitiesController::class, 'reviewApprove'])->middleware('throttle:30,1')->name('backend.my-entities.review.approve');
+    Route::post('mis-fichas/revision/{claim}/rechazar', [MyEntitiesController::class, 'reviewReject'])->middleware('throttle:30,1')->name('backend.my-entities.review.reject');
     Route::post('mis-fichas/solicitudes/{claim}/cancelar', [MyEntitiesController::class, 'cancel'])->name('backend.my-entities.claims.cancel');
 
     // --- ORGANIZACIONES (administración de fichas, contacto y miembros) ---

@@ -52,3 +52,7 @@ Regla práctica: *crear* depende del rol/permiso global; *editar* depende del cr
 ## Gestión
 - Asignar `verificado`: Backoffice → Usuarios → editar → roles (marcar `colaborador` y `verificado`).
 - Cambios de roles/permisos de base de datos: migración revisable (`2026_10_12_100000_trusted_publishing_role_and_remove_prensa_role`).
+
+## Aprobación de vínculos (delegada)
+- El **administrador** aprueba las solicitudes de alta de ficha, al primer owner de una ficha y cualquier solicitud en cualquier momento (Backoffice → Solicitudes de vínculo).
+- El **owner activo** de una ficha aprueba o rechaza desde Mis fichas las solicitudes de vínculo de otros usuarios sobre esa ficha, otorgando Editor o Miembro (nunca Responsable). Interruptor: `ENTITY_CLAIMS_DELEGATE_TO_OWNERS`.

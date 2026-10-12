@@ -57,6 +57,58 @@
         </div>
       </div>
 
+      @if ($toReview->isNotEmpty())
+        <div class="card card-outline card-warning shadow-sm" id="delegated-review">
+          <div class="card-header"><h3 class="card-title">Solicitudes para mis fichas <span class="badge badge-warning">{{ $toReview->count() }}</span></h3></div>
+          <div class="card-body">
+            <p class="text-muted small">Como responsable de la ficha podés aprobar o rechazar a quienes piden editarla. Podés darles el rol Editor o Miembro; el rol de Responsable lo otorga un administrador.</p>
+            @foreach ($toReview as $pending)
+              <div class="border-bottom pb-3 mb-3">
+                <div>
+                  <span class="badge badge-light">{{ $pending->entityConfig()['label'] ?? 'Ficha' }}</span>
+                  <strong>{{ $pending->entityName() ?? 'Ficha #'.$pending->entity_id }}</strong>
+                </div>
+                <div class="small mt-1">
+                  <strong>{{ $pending->user?->name ?? 'Usuario eliminado' }}</strong>
+                  · {{ config('entity_management.claims.relationships')[$pending->relationship] ?? $pending->relationship }}
+                  · {{ $pending->created_at->format('d/m/Y') }}
+                </div>
+                <blockquote class="small text-muted border-left pl-2 my-2">{{ $pending->message }}</blockquote>
+                <details class="mb-1">
+                  <summary class="text-success"><i class="fas fa-check"></i> Aprobar</summary>
+                  <form action="{{ route('backend.my-entities.review.approve', $pending) }}" method="POST" class="mt-2">
+                    @csrf
+                    <div class="form-group mb-2">
+                      <label class="small mb-0" for="role-{{ $pending->id }}">Rol</label>
+                      <select name="role" id="role-{{ $pending->id }}" class="form-control form-control-sm">
+                        <option value="editor" selected>Editor (puede editar la ficha)</option>
+                        <option value="member">Miembro (solo lectura)</option>
+                      </select>
+                    </div>
+                    <div class="form-group mb-2">
+                      <label class="small mb-0" for="approve-notes-{{ $pending->id }}">Nota (opcional, la ve la persona)</label>
+                      <input type="text" name="review_notes" id="approve-notes-{{ $pending->id }}" class="form-control form-control-sm" maxlength="1000">
+                    </div>
+                    <button type="submit" class="btn btn-success btn-sm">Aprobar</button>
+                  </form>
+                </details>
+                <details>
+                  <summary class="text-danger"><i class="fas fa-times"></i> Rechazar</summary>
+                  <form action="{{ route('backend.my-entities.review.reject', $pending) }}" method="POST" class="mt-2">
+                    @csrf
+                    <div class="form-group mb-2">
+                      <label class="small mb-0" for="reject-notes-{{ $pending->id }}">Motivo (lo ve la persona)</label>
+                      <input type="text" name="review_notes" id="reject-notes-{{ $pending->id }}" class="form-control form-control-sm" minlength="3" maxlength="1000" required>
+                    </div>
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Rechazar</button>
+                  </form>
+                </details>
+              </div>
+            @endforeach
+          </div>
+        </div>
+      @endif
+
       <div class="card card-outline card-info shadow-sm">
         <div class="card-header"><h3 class="card-title">Mis solicitudes</h3></div>
         <div class="card-body">

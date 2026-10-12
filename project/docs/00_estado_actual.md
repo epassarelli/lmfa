@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: revisión de solicitudes delegada al owner
+
+- Spec `owner-delegated-claim-review`. `DelegatedClaimReviewTest` (9 casos). Sin migraciones. **No validado:** navegador (tarjeta "Solicitudes para mis fichas" en Mis fichas). Pendiente: Mitos/Comidas de colaboradores, activación del flag de acceso por fichas, Etapa 3, `mfa_test`.
+
 ### Implementado en local 2026-10-12: migración de roles aplicada y cierre de observaciones previas
 
 - Migración `2026_10_12_100000` **aplicada en la base local por pedido del usuario**: permiso `publish contents`, rol `verificado`, los 2 usuarios de prueba con rol prensa pasaron a colaborador (434) y el rol prensa se eliminó; usuarios totales sin cambios (445). Falta aplicarla en otros entornos.

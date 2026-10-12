@@ -6,6 +6,7 @@ use App\Models\EntityClaimRequest;
 use App\Models\Festival;
 use App\Models\Interprete;
 use App\Models\Mes;
+use App\Models\Organization;
 use App\Models\OrganizationMember;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -314,6 +315,121 @@ class EntityClaimService
         }
 
         return ['role' => $role, 'reason' => $reason, 'alerts' => $alerts];
+    }
+
+    /** Roles de membresía que un owner puede otorgar al revisar (nunca 'owner'). */
+    public const DELEGATED_ROLES = ['editor', 'member'];
+
+    public function delegatedReviewEnabled(): bool
+    {
+        return (bool) config('entity_management.claims.delegate_to_owners', true);
+    }
+
+    /**
+     * Organización activa de la ficha pedida donde el usuario es owner activo; null si no puede
+     * revisar la solicitud por delegación (propia, de alta, ya resuelta, sin owner activo, etc.).
+     */
+    public function delegatedOrganization(User $user, EntityClaimRequest $claim): ?Organization
+    {
+        if (! $this->delegatedReviewEnabled()
+            || $claim->kind !== EntityClaimRequest::KIND_LINK
+            || ! $claim->isPending()
+            || ! $claim->entity_id
+            || (int) $claim->user_id === (int) $user->getKey()) {
+            return null;
+        }
+
+        $organizationId = DB::table('organization_entities as oe')
+            ->join('organization_members as om', 'om.organization_id', '=', 'oe.organization_id')
+            ->join('organizations as o', 'o.id', '=', 'oe.organization_id')
+            ->where('oe.entity_type', $claim->entity_type)
+            ->where('oe.entity_id', $claim->entity_id)
+            ->where('om.user_id', $user->getKey())
+            ->where('om.role', 'owner')
+            ->where('om.status', 'active')
+            ->where('o.status', 'active')
+            ->orderByDesc('oe.is_primary')
+            ->value('o.id');
+
+        return $organizationId ? Organization::query()->find($organizationId) : null;
+    }
+
+    /**
+     * Solicitudes pendientes de vínculo sobre fichas donde el usuario es owner activo.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, EntityClaimRequest>
+     */
+    public function claimsToReview(User $user, int $limit = 30)
+    {
+        if (! $this->delegatedReviewEnabled()) {
+            return new \Illuminate\Database\Eloquent\Collection();
+        }
+
+        return EntityClaimRequest::query()
+            ->with(['user:id,name', 'entity'])
+            ->pending()
+            ->where('kind', EntityClaimRequest::KIND_LINK)
+            ->where('user_id', '!=', $user->getKey())
+            ->whereExists(function ($query) use ($user) {
+                $query->select(DB::raw(1))
+                    ->from('organization_entities as oe')
+                    ->join('organization_members as om', 'om.organization_id', '=', 'oe.organization_id')
+                    ->join('organizations as o', 'o.id', '=', 'oe.organization_id')
+                    ->whereColumn('oe.entity_type', 'entity_claim_requests.entity_type')
+                    ->whereColumn('oe.entity_id', 'entity_claim_requests.entity_id')
+                    ->where('om.user_id', $user->getKey())
+                    ->where('om.role', 'owner')
+                    ->where('om.status', 'active')
+                    ->where('o.status', 'active');
+            })
+            ->orderBy('id')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function approveAsOwner(EntityClaimRequest $claim, User $owner, string $role, ?string $notes = null): EntityClaimRequest
+    {
+        $organization = $this->delegatedOrganization($owner, $claim);
+
+        if (! $organization) {
+            throw ValidationException::withMessages(['claim' => 'No podés revisar esta solicitud.']);
+        }
+
+        if (! in_array($role, self::DELEGATED_ROLES, true)) {
+            throw ValidationException::withMessages(['role' => 'Solo podés otorgar el rol Editor o Miembro.']);
+        }
+
+        $existing = OrganizationMember::query()->where('organization_id', $organization->getKey())->where('user_id', $claim->user_id)->first();
+
+        if ($existing && $existing->role === 'owner' && $existing->status === 'active') {
+            throw ValidationException::withMessages(['claim' => 'Esta persona ya es responsable de la ficha.']);
+        }
+
+        return DB::transaction(function () use ($claim, $owner, $organization, $role, $notes) {
+            OrganizationMember::query()->updateOrCreate(
+                ['organization_id' => $organization->getKey(), 'user_id' => $claim->user_id],
+                ['role' => $role, 'status' => 'active']
+            );
+
+            $claim->update([
+                'status' => EntityClaimRequest::APPROVED,
+                'organization_id' => $organization->getKey(),
+                'reviewed_by' => $owner->getKey(),
+                'reviewed_at' => now(),
+                'review_notes' => $notes,
+            ]);
+
+            return $claim;
+        });
+    }
+
+    public function rejectAsOwner(EntityClaimRequest $claim, User $owner, string $notes): EntityClaimRequest
+    {
+        if (! $this->delegatedOrganization($owner, $claim)) {
+            throw ValidationException::withMessages(['claim' => 'No podés revisar esta solicitud.']);
+        }
+
+        return $this->reject($claim, $owner, $notes);
     }
 
     public function cancel(EntityClaimRequest $claim): EntityClaimRequest

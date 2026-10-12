@@ -60,8 +60,9 @@ class MyEntitiesController extends Controller
         $showNoFichasBanner = config('backoffice_access.enabled') && $user->hasNoManagedEntities() && ! $user->hasRole('administrador');
 
         $meses = Mes::query()->orderBy('id')->get(['id', 'nombre']);
+        $toReview = $this->claims->claimsToReview($user);
 
-        return view('backend.my-entities.index', compact('managed', 'claims', 'prefill', 'showNoFichasBanner', 'meses'));
+        return view('backend.my-entities.index', compact('managed', 'claims', 'prefill', 'showNoFichasBanner', 'meses', 'toReview'));
     }
 
     public function store(Request $request)
@@ -120,6 +121,33 @@ class MyEntitiesController extends Controller
         ]);
 
         return response()->json(['results' => $this->claims->similarEntities($data['type'], $data['q'])->values()]);
+    }
+
+    public function reviewApprove(Request $request, EntityClaimRequest $claim)
+    {
+        abort_unless($this->claims->delegatedOrganization(Auth::user(), $claim), 403);
+
+        $data = $request->validate([
+            'role' => ['required', Rule::in(EntityClaimService::DELEGATED_ROLES)],
+            'review_notes' => ['nullable', 'string', 'max:1000'],
+        ], [], ['role' => 'rol', 'review_notes' => 'nota']);
+
+        $this->claims->approveAsOwner($claim, Auth::user(), $data['role'], $data['review_notes'] ?? null);
+
+        return redirect()->route('backend.my-entities.index')->with('success', 'Solicitud aprobada: la persona ya puede editar la ficha.');
+    }
+
+    public function reviewReject(Request $request, EntityClaimRequest $claim)
+    {
+        abort_unless($this->claims->delegatedOrganization(Auth::user(), $claim), 403);
+
+        $data = $request->validate([
+            'review_notes' => ['required', 'string', 'min:3', 'max:1000'],
+        ], [], ['review_notes' => 'motivo']);
+
+        $this->claims->rejectAsOwner($claim, Auth::user(), $data['review_notes']);
+
+        return redirect()->route('backend.my-entities.index')->with('success', 'Solicitud rechazada.');
     }
 
     public function cancel(EntityClaimRequest $claim)

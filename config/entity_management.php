@@ -53,6 +53,8 @@ return [
     // Solicitudes de vínculo usuario <-> ficha.
     'claims' => [
         'max_pending_per_user' => 5,
+        // El responsable (owner) de una ficha puede aprobar/rechazar solicitudes de editores de su ficha.
+        'delegate_to_owners' => env('ENTITY_CLAIMS_DELEGATE_TO_OWNERS', true),
         // Rol de membresía que se sugiere al aprobar según la relación declarada. Es solo una
         // sugerencia: el administrador decide. Si la ficha ya tiene un responsable activo, 'owner' baja a 'editor'.
         'suggested_roles' => [
