@@ -1,6 +1,11 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Ejecutado 2026-10-12: cuentas de validación locales, flag local y checklist de producción
+
+- Seeder `AccessValidationAccountsSeeder` (solo local/testing): 4 cuentas `val.*@example.test` con claves aleatorias no mostradas + artista y festival DEMO sin publicar; ejecutado en la base local (+4 usuarios, +1 interprete, +1 festival, +2 organizaciones, +2 membresías; eventos y noticias sin cambios). `BACKOFFICE_ACCESS_BY_ENTITIES=true` solo en el `.env` local (no versionado). Con el flag encendido por entorno, 18 tests antiguos cambian de resultado por diseño (colaboradores sin fichas ahora son redirigidos); `TestCase` apaga el flag para que la suite no dependa del entorno.
+- Checklist detallado y verificado contra el estado real: `project/docs/releases/checklist-despliegue-dev-2026-10-12.md` (31 commits sin push, 6 migraciones, sin cambios de dependencias ni de build). **Nada se ejecutó en producción.**
+
 ### Ejecutado 2026-10-12: base `mfa_test` creada, migrada y sembrada
 
 - A pedido del usuario se creó `mfa_test` (script revisable), se migró (87) y se sembró con `TestingReferenceDataSeeder`; `mfa` sin cambios. Suite en `mfa_test`: **557 pasan, 0 fallan** (2 omitidos previos); en `mfa` siguen 13 fallos por datos reales. Se corrigieron fixtures con ids fijos y `PeniaProfileFactory`; se agregó el paso de siembra al CI (`.github/workflows/ci.yml`). **Sin verificar:** ejecución real del workflow en GitHub (requiere push). Los tests ya no dependen de variables de entorno del flag de acceso por fichas (`TestCase` lo apaga).
