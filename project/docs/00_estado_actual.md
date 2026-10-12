@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-11: rol sugerido al aprobar (alternativa B)
+
+- Spec `claim-approval-role-suggestion`. `ApprovalRoleSuggestionTest` (7 casos). **No validado:** navegador (alertas en la pantalla de detalle). Resuelto el pendiente 1 de la lista; siguen: colaborador vs prensa, Mitos/Comidas, flag, Etapa 3 y observaciones.
+
 ### Implementado en local 2026-10-11: eventos y noticias de artistas (Etapa 2)
 
 - Spec `entity-member-content-access-events-news`. Regla multi-artista aprobada, todo a revisión. `MemberEventsNewsAccessTest` (12 casos); suite completa 496 pasan, 13 fallos previos por datos reales. Endurecimiento de `EventService`/`NewsService`: no publican si el usuario no puede publicar. **No validado:** navegador con cuenta real. **Pendientes que debo recordarte (memoria del proyecto):** rol sugerido por relación al aprobar, diferencia colaborador vs prensa, Mitos/Comidas de colaboradores, activación del flag, Etapa 3 y observaciones previas.

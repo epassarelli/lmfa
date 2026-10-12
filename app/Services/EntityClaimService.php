@@ -244,6 +244,78 @@ class EntityClaimService
         }
     }
 
+    /**
+     * Rol de membresía sugerido al aprobar, con el motivo y las alertas que el administrador debe ver.
+     * Solo orienta: no aprueba ni cambia nada.
+     *
+     * @return array{role:string, reason:string, alerts:array<int, array{level:string, text:string}>}
+     */
+    public function suggestApproval(EntityClaimRequest $claim, int $similarCount = 0): array
+    {
+        $relationships = config('entity_management.claims.relationships');
+        $declared = $relationships[$claim->relationship] ?? $claim->relationship;
+        $role = config('entity_management.claims.suggested_roles.'.$claim->relationship, 'editor');
+        $alerts = [];
+
+        $organizations = $claim->entity
+            ? $claim->entity->organizations()->orderByDesc('organization_entities.is_primary')->orderBy('organizations.id')->get()
+            : collect();
+        $active = $organizations->firstWhere('status', 'active');
+
+        $activeOwner = $active
+            ? OrganizationMember::query()
+                ->with('user:id,name')
+                ->where('organization_id', $active->getKey())
+                ->where('status', 'active')
+                ->where('role', 'owner')
+                ->where('user_id', '!=', $claim->user_id)
+                ->first()
+            : null;
+
+        $reason = "Declaró: {$declared}.";
+
+        if ($role === 'owner' && $activeOwner) {
+            $role = 'editor';
+            $reason .= ' La ficha ya tiene un responsable activo, por eso se sugiere Editor.';
+        } elseif ($role === 'owner') {
+            $reason .= ' La ficha no tiene un responsable activo: se sugiere Responsable (owner).';
+        } else {
+            $reason .= ' Se sugiere Editor.';
+        }
+
+        if ($organizations->isNotEmpty() && ! $active) {
+            $alerts[] = ['level' => 'danger', 'text' => 'La organización de esta ficha está inactiva: la aprobación se va a rechazar hasta que la actives o vincules otra.'];
+        }
+
+        if ($activeOwner) {
+            $alerts[] = ['level' => 'info', 'text' => 'La ficha ya tiene un responsable activo: '.($activeOwner->user?->name ?? 'usuario #'.$activeOwner->user_id).'.'];
+        }
+
+        if (in_array($claim->relationship, ['press', 'other'], true) && ! $activeOwner) {
+            $alerts[] = ['level' => 'warning', 'text' => "Declaró \"{$declared}\" y la ficha no tiene responsable activo: confirmá quién debería controlarla antes de aprobar."];
+        }
+
+        if ($active) {
+            $existing = OrganizationMember::query()->where('organization_id', $active->getKey())->where('user_id', $claim->user_id)->first();
+
+            if ($existing) {
+                $alerts[] = ['level' => 'warning', 'text' => "El usuario ya es miembro de la organización (rol {$existing->role}, estado {$existing->status}): aprobar actualiza su rol y lo deja activo."];
+            }
+        }
+
+        if ($claim->isCreation()) {
+            if (blank($claim->evidence_url)) {
+                $alerts[] = ['level' => 'warning', 'text' => 'No incluyó link de respaldo.'];
+            }
+
+            if ($similarCount > 0) {
+                $alerts[] = ['level' => 'warning', 'text' => "Hay {$similarCount} ficha(s) con nombre parecido: revisá si es un duplicado antes de crear una nueva."];
+            }
+        }
+
+        return ['role' => $role, 'reason' => $reason, 'alerts' => $alerts];
+    }
+
     public function cancel(EntityClaimRequest $claim): EntityClaimRequest
     {
         $this->ensurePending($claim);

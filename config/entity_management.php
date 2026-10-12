@@ -53,6 +53,15 @@ return [
     // Solicitudes de vínculo usuario <-> ficha.
     'claims' => [
         'max_pending_per_user' => 5,
+        // Rol de membresía que se sugiere al aprobar según la relación declarada. Es solo una
+        // sugerencia: el administrador decide. Si la ficha ya tiene un responsable activo, 'owner' baja a 'editor'.
+        'suggested_roles' => [
+            'artist' => 'owner',
+            'representative' => 'owner',
+            'organizer' => 'owner',
+            'press' => 'editor',
+            'other' => 'editor',
+        ],
         'relationships' => [
             'artist' => 'Soy el artista o integrante',
             'representative' => 'Soy representante, productor o manager',

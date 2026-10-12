@@ -121,7 +121,10 @@
                     <option value="{{ $value }}" @selected($defaultRole === $value)>{{ $label }}</option>
                   @endforeach
                 </select>
-                <small class="text-muted">Sugerido según si la ficha ya tiene un responsable activo.</small>
+                <small class="text-muted d-block" id="role-suggestion">{{ $suggestion['reason'] }}</small>
+                @foreach ($suggestion['alerts'] as $alert)
+                  <div class="alert alert-{{ $alert['level'] }} py-1 px-2 mt-2 mb-0 small" role="alert">{{ $alert['text'] }}</div>
+                @endforeach
               </div>
               @if ($claim->isCreation() && ! $claim->entity_id)
                 <div class="form-group">

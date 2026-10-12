@@ -40,19 +40,18 @@ class EntityClaimRequestController extends Controller
             ? $claim->entity->organizations()->with(['members' => fn ($query) => $query->where('status', 'active')->where('role', 'owner')])->get()
             : collect();
 
-        $activeOrganization = $organizations->firstWhere('status', 'active');
-        $defaultRole = $activeOrganization && $activeOrganization->members->isNotEmpty() ? 'editor' : 'owner';
-
         $similar = collect();
         $typeKey = null;
 
         if ($claim->isCreation() && ! $claim->entity_id) {
             $typeKey = collect(config('entity_management.entities'))->search(fn ($config) => (new $config['model'])->getMorphClass() === $claim->entity_type);
             $similar = $typeKey !== false ? $this->claims->similarEntities($typeKey, (string) $claim->proposed_name) : collect();
-            $defaultRole = 'owner';
         }
 
-        return view('backend.claims.show', compact('claim', 'organizations', 'defaultRole', 'similar'));
+        $suggestion = $this->claims->suggestApproval($claim, $similar->count());
+        $defaultRole = $suggestion['role'];
+
+        return view('backend.claims.show', compact('claim', 'organizations', 'defaultRole', 'similar', 'suggestion'));
     }
 
     public function approve(Request $request, EntityClaimRequest $claim)
