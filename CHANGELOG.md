@@ -31,6 +31,7 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 - **Backend de eventos**: selectores Select2 para vincular festivales, artículos de enciclopedia y peñas, y campos `end_at` y `excerpt`. Sincroniza solo los pivots existentes; sin migraciones.
 
 ### Cambiado
+- **Login y registro sin botones de Google y Facebook** (spec `hide-social-login-buttons`): se ocultan mientras el login social no funcione; se muestra solo email y contraseña. Se reactivan con `SOCIAL_LOGIN_ENABLED=true` sin tocar código; las rutas `auth/*` se conservan.
 
 - **Ingreso unificado de Eventos:** único Nuevo evento con Una fecha o Varias jornadas, datos comunes y grillas por jornada; listado con una fila por evento y posibilidad de agregar jornadas a uno existente conservando su ficha. Se elimina Conjuntos / Jornadas del sidebar y se mantienen URLs/compatibilidad. Validado en local con regresión de 106 pruebas; sin nueva migración.
 

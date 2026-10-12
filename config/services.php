@@ -31,6 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Botones de ingreso/registro con Google y Facebook en el login. Apagado por defecto mientras el
+    // login social no funcione; las rutas auth/* se conservan.
+    'social_login' => [
+        'enabled' => (bool) env('SOCIAL_LOGIN_ENABLED', false),
+    ],
+
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),

@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: login y registro sin botones sociales
+
+- Spec `hide-social-login-buttons`: los botones de Google y Facebook quedan ocultos (flag `SOCIAL_LOGIN_ENABLED`, apagado por defecto). `SocialLoginButtonsTest` (4 casos). **Al desplegar:** no definir el flag en producción y correr `view:clear`. Las rutas y el controlador de login social no se tocaron.
+
 ### Implementado en local 2026-10-12: eventos de festivales (Etapa 3)
 
 - Spec `entity-member-content-access-festival-events`. `MemberFestivalEventsTest` (10 casos); Etapa 2 intacta (12). Sin migraciones. **No validado:** navegador. Cierra las etapas de contenido de fichas. **Pendiente para decidir juntos:** Mitos/Comidas/Noticias de colaboradores y activación del flag `BACKOFFICE_ACCESS_BY_ENTITIES`; `mfa_test` sin crear.
