@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: Noticias, Mitos y Comidas en el acceso por fichas (opción C)
+
+- Spec `gate-editorial-sections-by-entities`. `BackofficeAccessByEntitiesTest` ampliado (16 casos); suite completa 546 pasan, 13 fallos previos por datos reales. Sigue detrás del flag (apagado): con el flag activo, colaboradores sin ficha ni rol `verificado` pierden Noticias, Mitos y Comidas (datos locales: casi no las usan; **verificar en producción antes de activar**). Pendiente: activar el flag tras validación manual, checklist de despliegue, `mfa_test`.
+
 ### Implementado en local 2026-10-12: login y registro sin botones sociales
 
 - Spec `hide-social-login-buttons`: los botones de Google y Facebook quedan ocultos (flag `SOCIAL_LOGIN_ENABLED`, apagado por defecto). `SocialLoginButtonsTest` (4 casos). **Al desplegar:** no definir el flag en producción y correr `view:clear`. Las rutas y el controlador de login social no se tocaron.

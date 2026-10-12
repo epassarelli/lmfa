@@ -53,7 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('events', EventController::class)->middleware('backoffice.section:eventos')->names('backend.events')->parameters(['events' => 'event']);
     Route::resource('venues', \App\Http\Controllers\Backend\VenueController::class)->except('show')->names('backend.venues');
     Route::resource('event-programs', \App\Http\Controllers\Backend\EventProgramController::class)->middleware('backoffice.section:eventos')->except(['show', 'destroy'])->names('backend.event-programs');
-    Route::resource('news', NewsController::class)->names('backend.news')->parameters(['news' => 'news']);
+    Route::resource('news', NewsController::class)->middleware('backoffice.section:noticias')->names('backend.news')->parameters(['news' => 'news']);
     Route::resource('knowledge-articles', KnowledgeArticleController::class)
         ->names('backend.knowledge-articles')
         ->parameters(['knowledge-articles' => 'knowledge_article']);
@@ -149,8 +149,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('classifieds/{classified}/reject', [ClassifiedController::class, 'reject'])->name('backend.classifieds.reject');
 
     // --- OTROS CONTENIDOS ---
-    Route::resource('mitos', MitoController::class)->names('backend.mitos');
-    Route::resource('comidas', ComidaController::class)->names('backend.comidas');
+    Route::resource('mitos', MitoController::class)->middleware('backoffice.section:mitos')->names('backend.mitos');
+    Route::resource('comidas', ComidaController::class)->middleware('backoffice.section:comidas')->names('backend.comidas');
     Route::resource('festivales', FestivalController::class)->middleware('backoffice.section:festivales')->names('backend.festivales')->parameters(['festivales' => 'festival']);
     Route::get('penia-profiles/{penia_profile}/preview', [PeniaProfileController::class, 'preview'])->name('backend.penia-profiles.preview');
     Route::post('penia-profiles/{penia_profile}/publish', [PeniaProfileController::class, 'publish'])->name('backend.penia-profiles.publish');

@@ -13,6 +13,8 @@ class EnsureBackofficeSection
 {
     public const MESSAGE = 'Para gestionar este contenido necesitás que un administrador apruebe tu vínculo con una ficha. Podés solicitarlo desde Mis fichas.';
 
+    public const ROLE_ONLY_MESSAGE = 'Esta sección es para usuarios verificados y administradores. Si administrás una ficha, gestionás su contenido desde Mis fichas.';
+
     public function handle(Request $request, Closure $next, string $section)
     {
         $user = $request->user();
@@ -21,10 +23,14 @@ class EnsureBackofficeSection
             return $next($request);
         }
 
+        $rule = config("backoffice_access.sections.$section");
+        $roleOnly = is_array($rule) && ! array_is_list($rule) && empty($rule['entities']);
+        $message = $roleOnly ? self::ROLE_ONLY_MESSAGE : self::MESSAGE;
+
         if ($request->expectsJson() || $request->ajax()) {
-            return response()->json(['message' => self::MESSAGE], 403);
+            return response()->json(['message' => $message], 403);
         }
 
-        return redirect()->route('backend.my-entities.index')->with('warning', self::MESSAGE);
+        return redirect()->route('backend.my-entities.index')->with('warning', $message);
     }
 }

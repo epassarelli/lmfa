@@ -95,13 +95,22 @@ trait ManagesOrganizationEntities
             return true;
         }
 
-        $types = config("backoffice_access.sections.$section");
+        $rule = config("backoffice_access.sections.$section");
 
-        if ($types === null) {
+        if ($rule === null) {
             return true;
         }
 
-        foreach ($types as $typeKey) {
+        // Compatibilidad: lista simple de tipos de ficha.
+        if (array_is_list($rule)) {
+            $rule = ['entities' => $rule];
+        }
+
+        if (! empty($rule['roles']) && $this->hasAnyRole($rule['roles'])) {
+            return true;
+        }
+
+        foreach ($rule['entities'] ?? [] as $typeKey) {
             if ($this->hasManagedEntityOfType($typeKey)) {
                 return true;
             }

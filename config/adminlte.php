@@ -307,6 +307,7 @@ return [
             'text' => 'Comidas Típicas',
             'url' => 'admin/comidas',
             'icon' => 'fas fa-fw fa-utensils',
+            'can' => 'backoffice-section.comidas',
         ],
         [
             'text' => 'Copa del Folklore 2026',
@@ -364,11 +365,13 @@ return [
             'text' => 'Mitos y Leyendas',
             'url' => 'admin/mitos',
             'icon' => 'fas fa-fw fa-book',
+            'can' => 'backoffice-section.mitos',
         ],
         [
             'text' => 'Noticias / Actualidad',
             'url' => 'admin/news',
             'icon' => 'fas fa-fw fa-newspaper',
+            'can' => 'backoffice-section.noticias',
             'active' => [
                 'admin/news*',
             ],

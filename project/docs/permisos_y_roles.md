@@ -39,7 +39,7 @@ Los permisos globales `update ...` ya **no** permiten editar contenido ajeno. Bo
 - Sin fichas y sin rol: solo puede **solicitar** vínculo o alta de ficha desde Mis fichas.
 
 ## Secciones del sidebar (flag `BACKOFFICE_ACCESS_BY_ENTITIES`)
-Con el flag activo, Intérpretes, Discos, Canciones, Festivales y Eventos solo se muestran a quien administra fichas que las habiliten (ver `config/backoffice_access.php`). Mitos, Comidas y Noticias no se restringen todavía.
+Con el flag activo, Intérpretes, Discos, Canciones, Festivales y Eventos solo se muestran a quien administra fichas que las habiliten; Noticias, a quien administra un artista o es `verificado`; Mitos y Comidas, solo a `verificado` y administradores (ver `config/backoffice_access.php`).
 
 ## Los cuatro mecanismos del código
 1. **Lista fija de roles** en la policy (`hasAnyRole([...])`): crear contenido.

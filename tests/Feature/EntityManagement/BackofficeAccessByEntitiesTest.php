@@ -65,6 +65,11 @@ class BackofficeAccessByEntitiesTest extends TestCase
         OrganizationMember::create(['organization_id' => $org->id, 'user_id' => $user->id, 'role' => $role, 'status' => $status]);
     }
 
+    private function assertBlockedWith(User $user, string $route, string $message): void
+    {
+        $this->actingAs($user)->get(route($route))->assertRedirect(route('backend.my-entities.index'))->assertSessionHas('warning', $message);
+    }
+
     private function assertBlocked(User $user, string $route): void
     {
         $this->actingAs($user)->get(route($route))
@@ -113,10 +118,73 @@ class BackofficeAccessByEntitiesTest extends TestCase
             ->assertDontSee('/admin/events');
     }
 
-    public function test_sections_not_tied_to_entities_are_untouched_for_now(): void
+    private function verified(): User
     {
-        $this->actingAs($this->user())->get(route('backend.mitos.index'))->assertOk();
-        $this->get(route('backend.comidas.index'))->assertOk();
+        Role::findOrCreate('verificado', 'web');
+        $user = $this->user();
+        $user->assignRole('verificado');
+
+        return $user;
+    }
+
+    public function test_editorial_sections_follow_option_c_for_users_without_fichas(): void
+    {
+        $user = $this->user();
+
+        $this->assertBlocked($user, 'backend.news.index');
+
+        foreach (['backend.mitos.index', 'backend.comidas.index'] as $route) {
+            $this->actingAs($user)->get(route($route))
+                ->assertRedirect(route('backend.my-entities.index'))
+                ->assertSessionHas('warning', EnsureBackofficeSection::ROLE_ONLY_MESSAGE);
+        }
+
+        $this->getJson(route('backend.mitos.index'))->assertForbidden()->assertJson(['message' => EnsureBackofficeSection::ROLE_ONLY_MESSAGE]);
+    }
+
+    public function test_verified_users_and_administrators_keep_the_editorial_sections(): void
+    {
+        foreach ([$this->verified(), $this->user('administrador')] as $user) {
+            foreach (['backend.news.index', 'backend.mitos.index', 'backend.comidas.index'] as $route) {
+                $this->actingAs($user)->get(route($route))->assertOk();
+            }
+        }
+    }
+
+    public function test_an_artist_ficha_unlocks_news_but_not_mitos_or_comidas(): void
+    {
+        $user = $this->user();
+        $this->link($this->artist(), $user);
+
+        $this->actingAs($user)->get(route('backend.news.index'))->assertOk();
+        $this->assertBlockedWith($user, 'backend.mitos.index', EnsureBackofficeSection::ROLE_ONLY_MESSAGE);
+        $this->assertBlockedWith($user, 'backend.comidas.index', EnsureBackofficeSection::ROLE_ONLY_MESSAGE);
+    }
+
+    public function test_a_festival_ficha_does_not_unlock_news(): void
+    {
+        $user = $this->user();
+        $this->link($this->festival(), $user);
+
+        $this->assertBlocked($user, 'backend.news.index');
+    }
+
+    // AdminLTE arma el menú una vez por proceso: cada usuario se prueba en su propio test.
+    public function test_the_sidebar_hides_editorial_sections_from_users_without_fichas(): void
+    {
+        $this->actingAs($this->user())->followingRedirects()->get(route('backend.mitos.index'))
+            ->assertOk()->assertDontSee('/admin/mitos')->assertDontSee('/admin/comidas')->assertDontSee('/admin/news');
+    }
+
+    public function test_the_sidebar_shows_editorial_sections_to_verified_users(): void
+    {
+        $this->actingAs($this->verified())->get(route('backend.my-entities.index'))
+            ->assertOk()->assertSee('/admin/mitos')->assertSee('/admin/comidas')->assertSee('/admin/news');
+    }
+
+    public function test_sections_outside_the_flag_scope_are_untouched(): void
+    {
+        $this->actingAs($this->user())->get(route('backend.classifieds.index'))->assertOk();
     }
 
     public function test_artist_membership_unlocks_artist_sections_only(): void
