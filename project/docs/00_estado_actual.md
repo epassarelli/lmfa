@@ -1,6 +1,11 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: migración de roles aplicada y cierre de observaciones previas
+
+- Migración `2026_10_12_100000` **aplicada en la base local por pedido del usuario**: permiso `publish contents`, rol `verificado`, los 2 usuarios de prueba con rol prensa pasaron a colaborador (434) y el rol prensa se eliminó; usuarios totales sin cambios (445). Falta aplicarla en otros entornos.
+- `canciones/store-ajax` ahora autoriza (4 tests nuevos, `CancionStoreAjaxAuthorizationTest`); dos tests dejaron de depender de `provincias` sembradas (posible causa de fallo en CI; **no verificado en una base limpia**, `mfa_test` sigue sin crearse). Suite completa 517 pasan, 13 fallos previos por datos reales.
+
 ### Implementado en local 2026-10-12: camino de confianza, baja del rol prensa y correcciones de permisos
 
 - Spec `roles-trust-ladder-and-cleanup`; modelo en `project/docs/permisos_y_roles.md`. `TrustedPublishingTest` (10 casos); suite completa 513 pasan, 13 fallos previos por datos reales. **Migración `2026_10_12_100000` preparada, NO ejecutada:** crea permiso `publish contents` y rol `verificado`, pasa a colaborador a los usuarios con rol prensa y elimina ese rol (requiere confirmación). Hasta ejecutarla, nadie salvo el administrador publica y los 2 usuarios de prueba con rol prensa quedan sin permisos de creación. Pendiente: colaborador/prensa resuelto; siguen Mitos/Comidas, flag, Etapa 3, delegar aprobaciones al owner y observaciones previas.

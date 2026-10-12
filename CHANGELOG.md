@@ -40,6 +40,7 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 - **Performance de la cartelera**: provincias, resolución de provincia por slug e intérpretes del buscador quedan en caché; se eliminaron consultas sin uso en la ficha. Las consultas de continuidad tienen `limit` en SQL y eager loading.
 
 ### Corregido
+- **`canciones/store-ajax` sin autorización:** cualquier usuario autenticado podía crear canciones publicadas para cualquier artista. Ahora aplica la regla de creación de Canciones, limita los artistas a los que administra quien no tiene permiso global y publica solo si el usuario puede publicar. Tests de Eventos y Noticias ya no dependen de provincias sembradas.
 - **Permisos de edición y publicación:** `update album/cancion/noticia` ya no permiten editar contenido ajeno (edita el creador o quien administra el artista); Álbumes y Canciones conservan el creador al editar; el estado de un Festival ya no lo decide el request; `UserPolicy::viewAny` solo para administrador; `isAdmin()` solo reconoce `administrador`.
 
 - **Description del JSON-LD en la cartelera de Eventos:** ahora usa la misma prioridad que la ficha (meta_description, excerpt, body, texto genérico) en lugar de solo `body`, que podía salir vacío. Sin cambios de BD ni de URLs. Spec `event-agenda-description-fallback`.

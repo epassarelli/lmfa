@@ -121,7 +121,7 @@ class TrustedPublishingTest extends TestCase
 
     public function test_festival_status_is_not_decided_by_the_request_for_non_publishers(): void
     {
-        $province = Provincia::firstOrFail();
+        $province = (Provincia::first() ?: Provincia::create(['nombre' => 'Provincia de prueba']));
         $mes = Mes::first() ?: Mes::create(['nombre' => 'Enero']);
         $payload = fn (string $title) => ['title' => $title, 'body' => '<p>Detalle</p>', 'province_id' => $province->id, 'mes_id' => $mes->id, 'status' => 'published'];
 

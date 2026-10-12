@@ -210,10 +210,21 @@ class CancionController extends Controller
 
     public function storeAjax(Request $request)
     {
+        // Esta ruta queda fuera de authorizeResource: se aplica la misma regla de creación que store().
+        $this->authorize('create', Cancion::class);
+
         $request->validate([
             'cancion' => 'required|string|max:255',
             'interprete_id' => 'required|exists:interpretes,id',
         ]);
+
+        $user = $request->user();
+
+        abort_if(
+            $user->isScopedToManagedInterpretes('create cancion') && ! $user->canManageInterpreteId((int) $request->interprete_id),
+            403,
+            'No administrás este artista.'
+        );
 
         $existingCancion = Cancion::where('cancion', $request->cancion)
             ->where('interprete_id', $request->interprete_id)
@@ -230,7 +241,7 @@ class CancionController extends Controller
         $cancion->rights_status = 'not_available';
         $cancion->youtube = null;
         $cancion->spotify = null;
-        $cancion->estado = 1;
+        $cancion->estado = $user->canPublish() ? 1 : 0;
         $cancion->visitas = 0;
         $cancion->interprete_id = $request->interprete_id;
         $cancion->user_id = auth()->id();

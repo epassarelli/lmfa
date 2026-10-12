@@ -36,7 +36,7 @@ class EventVenuesTest extends TestCase
 
     private function place(array $overrides = []): array
     {
-        return array_merge(['name' => 'Anfiteatro de prueba '.uniqid(), 'address' => 'Calle Ficticia 123', 'city' => 'Localidad de prueba', 'province_id' => Provincia::firstOrFail()->id,
+        return array_merge(['name' => 'Anfiteatro de prueba '.uniqid(), 'address' => 'Calle Ficticia 123', 'city' => 'Localidad de prueba', 'province_id' => (Provincia::first() ?: Provincia::create(['nombre' => 'Provincia de prueba']))->id,
             'latitude' => -31.42, 'longitude' => -64.18, 'status' => 'active'], $overrides);
     }
 
