@@ -95,7 +95,7 @@ class BackofficeHelpTest extends TestCase
     {
         $collaborator = $this->user('colaborador');
 
-        config(['backoffice_access.enabled' => false, 'entity_management.scope_listings' => false]);
+        config(['backoffice_access.enabled' => false]);
         $this->actingAs($collaborator)->get(route('backend.interpretes.index'))->assertSee('Ves todos los artistas, para poder elegirlos');
 
         config(['backoffice_access.enabled' => true]);

@@ -6,7 +6,7 @@
   $canPublish = $user?->canPublish();
   // El listado de artistas es completo para colaboradores mientras el acceso por fichas está apagado.
   $openList = isset($help['scope']['member_open']) && $user && $user->hasRole('colaborador')
-    && ! config('entity_management.scope_listings') && ! config('backoffice_access.enabled');
+    && ! config('backoffice_access.enabled');
   $scopeText = $isAdmin ? $help['scope']['admin'] : ($openList ? $help['scope']['member_open'] : $help['scope']['member']);
 @endphp
 @if ($help)

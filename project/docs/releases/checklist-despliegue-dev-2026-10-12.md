@@ -94,7 +94,6 @@ Nuevas, en este orden:
   | Variable | Valor recomendado | Nota |
   |---|---|---|
   | `BACKOFFICE_ACCESS_BY_ENTITIES` | `false` (u omitir) | Activar recién en la etapa 2 |
-  | `ENTITY_MANAGEMENT_SCOPE_LISTINGS` | `false` (u omitir) | |
   | `ENTITY_CLAIMS_DELEGATE_TO_OWNERS` | `true` (u omitir) | Los owners aprueban editores de su ficha |
   | `SOCIAL_LOGIN_ENABLED` | **no definir** (u omitir/`false`) | Oculta los botones de Google/Facebook |
   | `CONTACT_NOTIFY_TO` | casilla que recibe los avisos (por defecto la actual) | Aviso de cada mensaje de contacto nuevo |

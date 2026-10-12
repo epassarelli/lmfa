@@ -4,7 +4,7 @@
   $user = auth()->user();
   $isAdmin = $user?->hasRole('administrador');
   $openList = isset($help['scope']['member_open']) && $user && $user->hasRole('colaborador')
-    && ! config('entity_management.scope_listings') && ! config('backoffice_access.enabled');
+    && ! config('backoffice_access.enabled');
   $scopeText = $isAdmin ? $help['scope']['admin'] : ($openList ? $help['scope']['member_open'] : $help['scope']['member']);
 @endphp
 @if ($help)

@@ -189,7 +189,7 @@ class EntityManagementTest extends TestCase
     }
 
     /** @test */
-    public function interprete_listing_is_scoped_only_when_flag_is_enabled(): void
+    public function interprete_listing_is_scoped_only_when_access_by_entities_is_enabled(): void
     {
         $user = $this->user();
         $managed = $this->interprete('em-list-managed');
@@ -197,13 +197,13 @@ class EntityManagementTest extends TestCase
         $this->member($this->organizationFor($managed), $user);
         $this->actingAs($user);
 
-        config(['entity_management.scope_listings' => false]);
+        config(['backoffice_access.enabled' => false]);
         $this->get(route('backend.interpretes.index', ['search' => 'em-list']))
             ->assertOk()
             ->assertSee($managed->interprete)
             ->assertSee($other->interprete);
 
-        config(['entity_management.scope_listings' => true]);
+        config(['backoffice_access.enabled' => true]);
         $this->get(route('backend.interpretes.index', ['search' => 'Artista em-list']))
             ->assertOk()
             ->assertSee($managed->interprete)
