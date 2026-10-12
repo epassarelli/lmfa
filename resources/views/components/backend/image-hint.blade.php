@@ -81,20 +81,38 @@
           });
         }
 
-        function toJpeg(canvas, name, maxBytes) {
-          var qualities = [0.9, 0.8, 0.7, 0.6, 0.5];
-          return new Promise(function (resolve) {
-            (function attempt(i) {
-              canvas.toBlob(function (blob) {
-                if (!blob) { resolve(null); return; }
-                if (blob.size <= maxBytes || i >= qualities.length - 1) {
-                  resolve(new File([blob], name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' }));
-                } else {
-                  attempt(i + 1);
-                }
-              }, 'image/jpeg', qualities[i]);
-            })(0);
-          });
+        // Exporta con la menor pérdida posible: el servidor vuelve a comprimir a WebP para las variantes, así que
+        // acá no conviene perder calidad de más. PNG se mantiene PNG (sin pérdida y con transparencia) si entra en
+        // el peso máximo; lo demás sale como JPEG de alta calidad (con fondo blanco).
+        function exportCanvas(canvas, file, maxBytes) {
+          var base = file.name.replace(/\.[^.]+$/, '');
+
+          function blobOf(source, type, quality) {
+            return new Promise(function (resolve) { source.toBlob(resolve, type, quality); });
+          }
+
+          return (async function () {
+            if (file.type === 'image/png') {
+              var png = await blobOf(canvas, 'image/png');
+              if (png && png.size <= maxBytes) { return new File([png], base + '.png', { type: 'image/png' }); }
+            }
+
+            var flat = document.createElement('canvas');
+            flat.width = canvas.width;
+            flat.height = canvas.height;
+            var fctx = flat.getContext('2d');
+            fctx.fillStyle = '#fff';
+            fctx.fillRect(0, 0, flat.width, flat.height);
+            fctx.drawImage(canvas, 0, 0);
+
+            var qualities = [0.95, 0.9, 0.85, 0.8, 0.7, 0.6];
+            for (var i = 0; i < qualities.length; i++) {
+              var jpg = await blobOf(flat, 'image/jpeg', qualities[i]);
+              if (!jpg) { return null; }
+              if (jpg.size <= maxBytes || i === qualities.length - 1) { return new File([jpg], base + '.jpg', { type: 'image/jpeg' }); }
+            }
+            return null;
+          })();
         }
 
         document.querySelectorAll('[data-image-hint]').forEach(function (hint) {
@@ -150,12 +168,10 @@
             canvas.width = Math.max(1, Math.round(crop.width * scale));
             canvas.height = Math.max(1, Math.round(crop.height * scale));
             var ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(loaded.img, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height);
             URL.revokeObjectURL(loaded.url);
 
-            var adjusted = await toJpeg(canvas, file.name, maxBytes);
+            var adjusted = await exportCanvas(canvas, file, maxBytes);
             if (!adjusted) { return file; }
             if (adjusted.size > maxBytes) {
               note(file.name + ' sigue pesando ' + (adjusted.size / 1048576).toFixed(1) + ' MB y el máximo es ' + num('maxMb') + ' MB: no se va a poder guardar.', 'text-danger font-weight-bold');

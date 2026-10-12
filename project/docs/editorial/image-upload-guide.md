@@ -62,7 +62,7 @@ Los formularios del backoffice ajustan la imagen **en el navegador, antes de sub
 - **Ya cumple** (proporción dentro de ±3 % y no supera el ancho máximo): se sube tal cual.
 - **Supera el ancho máximo** (el de la variante más grande del perfil: 1600 px en noticias, festivales, eventos y clasificados; 800 px en artistas y discos; 900 px en mitos): se **reduce sola** manteniendo la proporción. Nunca se agranda.
 - **Otra proporción**: se abre un editor de recorte con la proporción fija. Hay que confirmar el recorte o elegir otra imagen; si se cancela, no se sube nada.
-- **Muy pesada**: se recomprime hasta entrar en el peso máximo.
+- **Muy pesada**: se recomprime hasta entrar en el peso máximo. El navegador exporta con la menor pérdida posible (PNG se mantiene PNG, el resto JPEG de calidad alta) porque después el servidor genera igual las variantes WebP (calidad 85).
 - **Más chica que el mínimo sugerido**: se sube igual (no se agranda) con un aviso de que puede verse borrosa.
 
 **Red de seguridad en el servidor:** `ImageUploadService` guarda el "original" acotado al mismo ancho máximo (no se conserva el archivo sin procesar) y valida tipo (JPG, PNG, WebP) y peso (5 MB; 2 MB en clasificados).
