@@ -39,6 +39,7 @@ use App\Http\Controllers\Pasarela\NotificationController;
 use App\Http\Controllers\Pasarela\PublicationRequestController;
 use App\Http\Controllers\Pasarela\PublicationTemplateController;
 use App\Http\Controllers\Pasarela\SocialAccountController;
+use App\Http\Controllers\Backend\AccountController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
@@ -104,6 +105,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('users/{user}/api-tokens', [UserController::class, 'issueApiToken'])->name('users.api-tokens.store');
     Route::delete('users/{user}/api-tokens/{token}', [UserController::class, 'revokeApiToken'])->name('users.api-tokens.destroy');
     Route::resource('permissions', PermissionController::class)->names('permissions');
+
+    // --- MIS DATOS: cada persona edita sus propios datos y contraseña (sin id en la URL) ---
+    Route::get('mi-cuenta', [AccountController::class, 'edit'])->name('backend.account.edit');
+    Route::put('mi-cuenta/datos', [AccountController::class, 'updateProfile'])->name('backend.account.update');
+    Route::put('mi-cuenta/password', [AccountController::class, 'updatePassword'])->middleware('throttle:6,1')->name('backend.account.password');
+    Route::put('mi-cuenta/newsletter', [AccountController::class, 'updateNewsletter'])->name('backend.account.newsletter');
 
     // --- MIS FICHAS: cualquier usuario autenticado puede solicitar administrar una ficha ---
     Route::get('mis-fichas', [MyEntitiesController::class, 'index'])->name('backend.my-entities.index');

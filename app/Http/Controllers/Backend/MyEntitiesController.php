@@ -28,18 +28,7 @@ class MyEntitiesController extends Controller
         $user = Auth::user();
         $types = config('entity_management.entities');
 
-        $managed = [];
-        foreach ($types as $key => $config) {
-            $column = $config['name_column'];
-
-            foreach ($config['model']::query()->managedOrLegacyBy($user)->orderBy($column)->limit(self::MANAGED_LIMIT)->get(['id', $column]) as $entity) {
-                $managed[] = [
-                    'label' => $config['label'],
-                    'name' => $entity->{$column},
-                    'edit_url' => route($config['edit_route'], $entity->id),
-                ];
-            }
-        }
+        $managed = app(\App\Services\AccountSummaryService::class)->managedEntities($user, self::MANAGED_LIMIT);
 
         $claims = EntityClaimRequest::query()
             ->with(['entity', 'organization:id,name'])

@@ -8,6 +8,7 @@ use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Permission\Models\Role;
 use App\Support\BackendListing;
+use App\Support\UserRules;
 
 class UserController extends Controller
 {
@@ -90,15 +91,17 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
+            'name' => UserRules::name(),
+            'email' => UserRules::email(),
+            'phone' => UserRules::phone(),
+            'password' => UserRules::newPassword(),
             'roles' => 'required|array',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => bcrypt($request->password),
         ]);
 
@@ -122,15 +125,17 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|confirmed|min:6',
+            'name' => UserRules::name(),
+            'email' => UserRules::email($user->id),
+            'phone' => UserRules::phone(),
+            'password' => UserRules::newPassword(false),
             'roles' => 'required|array',
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => $request->password ? bcrypt($request->password) : $user->password,
         ]);
 

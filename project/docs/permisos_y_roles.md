@@ -62,3 +62,6 @@ Un evento tiene artistas y, opcionalmente, festivales. Para editarlo por membres
 
 ## Entrada desde el sitio público
 El botón **Publicar** del sitio lleva a `/admin`: un visitante pasa por el login y vuelve a `/admin`. No existe otro circuito de aportes (el flujo "Contribuir" se retiró). Con el acceso por fichas activo, quien no es administrador aterriza en **Mis fichas**, desde donde solicita el vínculo o el alta de una ficha.
+
+## Mis datos (cuenta propia)
+Cualquier usuario con sesión tiene `/admin/mi-cuenta` (botón **Mis datos** en el menú de usuario): edita nombre, teléfono y contraseña; el email es solo lectura. Solo se aceptan esos campos: roles, estado y demás los gestiona el administrador desde Usuarios. No depende del flag de acceso por fichas.

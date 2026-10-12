@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: menú de usuario con avatar y página "Mis datos"
+
+- Spec `my-account` (etapas 1 y 2). Sin migraciones. `MyAccountTest` (18 casos); suite en base limpia 591 pasan, 0 fallan. Avatar de iniciales (SVG data URI, sin subida), `/admin/mi-cuenta` (nombre, teléfono, contraseña; email solo lectura), resumen de fichas/solicitudes, contenido propio y newsletter; `last_login_at` en cada login; reglas compartidas con el CRUD de Usuarios (contraseña mínima 8, teléfono). **Menú en el sitio público: no se implementó** — las páginas públicas van a caché de página completa decidida antes de iniciar sesión (`PublicPagesCacheProfile`) y un menú personalizado se serviría a anónimos; haría falta un menú hidratado por JS con endpoint sin caché y marca de sesión (complejidad y costo desproporcionados). **Observación:** `lang/vendor/adminlte` en la raíz no se carga (el proyecto usa `resources/lang`); el override efectivo está en `resources/lang/vendor/adminlte/es/menu.php`. No validado en navegador.
+
 ### Ejecutado 2026-10-12: se retira el flujo "Publicar / Contribuir"
 
 - Spec `remove-contribuir-flow` (pedido del usuario: una sola puerta, Publicar → login → /admin). Con la confirmación de que producción no tiene contribuciones se agregó la migración `2026_10_12_140000` (aplicada en `mfa` y `mfa_test`) que elimina la tabla `contributions` y `users.points/rank`; respaldo de la fila local de prueba fuera del repo. Enlace "Solicitá administrar su ficha" en artista y festival. Con el acceso por fichas activo, los no administradores que entran a `/admin` van a Mis fichas. Tests: `ContributionFlowRemovedTest` (7), `ImageSourceResolverSecurityTest` (4, cobertura directa de SSRF que antes dependía de la aprobación de contribuciones); suite en base limpia 568 pasan, 0 fallan. **Antes del despliegue:** resolver contribuciones pendientes en producción y exportar la tabla. Pendiente de decisión: enlace "¿Sos este artista? Solicitá administrar tu ficha" en páginas públicas, y si Avisos Clasificados sigue visible.

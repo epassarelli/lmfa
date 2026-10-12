@@ -95,7 +95,7 @@ Nuevas, en este orden:
 
 ## 5. Cachés (después de migrar y de actualizar el código)
 
-- [ ] `php artisan optimize:clear`
+- [ ] `php artisan optimize:clear` (incluye la caché de vistas: el menú de usuario y la traducción "Mis datos" en `resources/lang/vendor/adminlte/es/menu.php` se leen al renderizar)
 - [ ] `php artisan permission:cache-reset` (caché de roles/permisos de Spatie; imprescindible tras la migración de roles)
 - [ ] `php artisan config:cache`, `php artisan route:cache`, `php artisan view:cache` (la vista de login cambió)
 - [ ] Limpiar la caché de respuestas públicas (response cache) si está activa, para que la cartelera regenere la description del JSON-LD.
@@ -108,6 +108,7 @@ Nuevas, en este orden:
 - [ ] `/login` y `/register`: **sin** botones de Google/Facebook; formulario de email y contraseña visible.
 - [ ] Botón **Publicar** del menú → lleva al login; tras iniciar sesión cae en `/admin` (con el flag apagado, el dashboard; con el flag encendido y usuario no administrador, Mis fichas).
 - [ ] `/admin/contribuir` y `/admin/contributions` responden `404`; las páginas de artista, festival, canción y evento ya no muestran "Sugerir corrección".
+- [ ] **Menú de usuario** (esquina superior derecha del backoffice): avatar de iniciales, nombre, rol y botones **Mis datos** / **Salir**. En **Mis datos** (`/admin/mi-cuenta`): cambiar nombre y teléfono, cambiar contraseña (pide la actual; mínimo 8), ver el resumen y suscribirse/darse de baja del newsletter. El email aparece solo lectura. Verificar también que `/admin/users` (crear/editar) muestra el teléfono y exige contraseña de 8 caracteres o más.
 - [ ] Una página de **artista** (home y biografía) y una de **festival** muestran, discreto, "¿Sos este artista o lo representás? / ¿Organizás este festival? Solicitá administrar su ficha"; el enlace pasa por el login y cae en **Mis fichas** con la ficha ya elegida. Las páginas de evento y canción no lo muestran.
 - [ ] `/cartelera-de-eventos-folkloricos` → `200`; una ficha de evento → `200`. En el HTML de la cartelera, cada evento del JSON-LD tiene `description` no vacía.
 - [ ] `storage/logs/laravel.log` sin errores nuevos.

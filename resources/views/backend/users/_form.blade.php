@@ -35,6 +35,24 @@
 <div class="row">
   <div class="col-md-6">
     <div class="form-group">
+      <label for="phone">Teléfono (opcional)</label>
+      <input
+        type="text"
+        id="phone"
+        name="phone"
+        maxlength="50"
+        class="form-control @error('phone') is-invalid @enderror"
+        value="{{ old('phone', $user->phone ?? '') }}">
+      @error('phone')
+        <div class="invalid-feedback">{{ $message }}</div>
+      @enderror
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group">
       <label for="password">{{ isset($user) ? 'Contraseña nueva' : 'Contraseña' }}</label>
       <input
         type="password"

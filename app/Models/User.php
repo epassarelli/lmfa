@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use App\Support\InitialsAvatar;
 
 class User extends Authenticatable
 {
@@ -68,6 +69,42 @@ class User extends Authenticatable
         // 'profile_photo_url',
     ];
 
+
+    /** Avatar de iniciales (data URI SVG), estable por usuario. */
+    public function avatarUrl(): string
+    {
+        return InitialsAvatar::dataUri((string) $this->name, $this->getKey() ?? 0);
+    }
+
+    /** Nombre del rol más relevante, en lenguaje de usuario. */
+    public function roleLabel(): string
+    {
+        return match (true) {
+            $this->hasRole('administrador') => 'Administrador',
+            $this->hasRole('verificado') => 'Colaborador verificado',
+            $this->hasRole('colaborador') => 'Colaborador',
+            default => 'Usuario',
+        };
+    }
+
+    // --- Menú de usuario de AdminLTE (usermenu_image / usermenu_desc / usermenu_profile_url)
+
+    public function adminlte_image(): string
+    {
+        return $this->avatarUrl();
+    }
+
+    public function adminlte_desc(): string
+    {
+        $since = $this->created_at ? ' · desde '.$this->created_at->copy()->locale('es')->translatedFormat('M Y') : '';
+
+        return $this->roleLabel().$since;
+    }
+
+    public function adminlte_profile_url(): string
+    {
+        return route('backend.account.edit', [], false);
+    }
 
     public function socialAccounts()
     {
