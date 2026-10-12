@@ -32,7 +32,7 @@ class MemberContentAccessTest extends TestCase
     private function artist(string $slug): Interprete
     {
         return Interprete::create([
-            'interprete' => 'Artista '.$slug.' '.uniqid(), 'slug' => $slug.'-'.uniqid(), 'biografia' => 'Biografía de prueba.', 'estado' => 1, 'user_id' => 1,
+            'interprete' => 'Artista '.$slug.' '.uniqid(), 'slug' => $slug.'-'.uniqid(), 'biografia' => 'Biografía de prueba.', 'estado' => 1, 'user_id' => $this->baseUserId(),
         ]);
     }
 
@@ -45,12 +45,12 @@ class MemberContentAccessTest extends TestCase
 
     private function album(Interprete $artist, array $extra = []): Album
     {
-        return Album::create(array_merge(['album' => 'Disco '.uniqid(), 'slug' => 'disco-'.uniqid(), 'anio' => '2020', 'interprete_id' => $artist->id, 'user_id' => 1, 'estado' => 1, 'visitas' => 0], $extra));
+        return Album::create(array_merge(['album' => 'Disco '.uniqid(), 'slug' => 'disco-'.uniqid(), 'anio' => '2020', 'interprete_id' => $artist->id, 'user_id' => $this->baseUserId(), 'estado' => 1, 'visitas' => 0], $extra));
     }
 
     private function song(Interprete $artist, array $extra = []): Cancion
     {
-        return Cancion::create(array_merge(['cancion' => 'Tema '.uniqid(), 'slug' => 'tema-'.uniqid(), 'interprete_id' => $artist->id, 'user_id' => 1, 'estado' => 1, 'visitas' => 0], $extra));
+        return Cancion::create(array_merge(['cancion' => 'Tema '.uniqid(), 'slug' => 'tema-'.uniqid(), 'interprete_id' => $artist->id, 'user_id' => $this->baseUserId(), 'estado' => 1, 'visitas' => 0], $extra));
     }
 
     private function albumPayload(Interprete $artist, array $extra = []): array

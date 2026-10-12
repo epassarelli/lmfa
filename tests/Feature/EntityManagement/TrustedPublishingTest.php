@@ -57,7 +57,7 @@ class TrustedPublishingTest extends TestCase
 
     private function artist(string $slug = 'a'): Interprete
     {
-        return Interprete::create(['interprete' => 'Artista '.$slug.' '.uniqid(), 'slug' => $slug.'-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => 1]);
+        return Interprete::create(['interprete' => 'Artista '.$slug.' '.uniqid(), 'slug' => $slug.'-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => $this->baseUserId()]);
     }
 
     private function link(Interprete $artist, User $user): void
@@ -137,7 +137,7 @@ class TrustedPublishingTest extends TestCase
     public function test_verified_cannot_edit_content_of_artists_it_does_not_manage(): void
     {
         $verified = $this->collaborator(true);
-        $foreign = $this->album($this->artist(), 1);
+        $foreign = $this->album($this->artist(), $this->baseUserId());
 
         $this->actingAs($verified)->get(route('backend.discos.edit', $foreign))->assertForbidden();
         $this->put(route('backend.discos.update', $foreign), $this->albumPayload($foreign->interprete))->assertForbidden();
@@ -147,7 +147,7 @@ class TrustedPublishingTest extends TestCase
     {
         $user = $this->collaborator();
         $user->givePermissionTo(Permission::findOrCreate('update album', 'web'), Permission::findOrCreate('update noticia', 'web'));
-        $foreign = $this->album($this->artist(), 1);
+        $foreign = $this->album($this->artist(), $this->baseUserId());
 
         $this->actingAs($user)->get(route('backend.discos.edit', $foreign))->assertForbidden();
     }
@@ -170,11 +170,11 @@ class TrustedPublishingTest extends TestCase
         $member = $this->collaborator();
         $artist = $this->artist();
         $this->link($artist, $member);
-        $album = $this->album($artist, 1);
+        $album = $this->album($artist, $this->baseUserId());
 
         $this->actingAs($member)->put(route('backend.discos.update', $album), $this->albumPayload($artist))->assertSessionHasNoErrors();
 
-        $this->assertSame(1, (int) $album->fresh()->user_id);
+        $this->assertSame($this->baseUserId(), (int) $album->fresh()->user_id);
     }
 
     // ---------------- Hallazgos 4 y 5 ----------------

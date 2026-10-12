@@ -30,7 +30,7 @@ class DelegatedClaimReviewTest extends TestCase
 
     private function artist(): Interprete
     {
-        return Interprete::create(['interprete' => 'Artista '.uniqid(), 'slug' => 'a-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => 1]);
+        return Interprete::create(['interprete' => 'Artista '.uniqid(), 'slug' => 'a-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => $this->baseUserId()]);
     }
 
     private function organization(Interprete $artist, string $status = 'active'): Organization

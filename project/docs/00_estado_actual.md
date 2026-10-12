@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Ejecutado 2026-10-12: base `mfa_test` creada, migrada y sembrada
+
+- A pedido del usuario se creó `mfa_test` (script revisable), se migró (87) y se sembró con `TestingReferenceDataSeeder`; `mfa` sin cambios. Suite en `mfa_test`: **557 pasan, 0 fallan** (2 omitidos previos); en `mfa` siguen 13 fallos por datos reales. Se corrigieron fixtures con ids fijos y `PeniaProfileFactory`; se agregó el paso de siembra al CI (`.github/workflows/ci.yml`). **Sin verificar:** ejecución real del workflow en GitHub (requiere push). Los tests ya no dependen de variables de entorno del flag de acceso por fichas (`TestCase` lo apaga).
+
 ### Implementado en local 2026-10-12: Noticias, Mitos y Comidas en el acceso por fichas (opción C)
 
 - Spec `gate-editorial-sections-by-entities`. `BackofficeAccessByEntitiesTest` ampliado (16 casos); suite completa 546 pasan, 13 fallos previos por datos reales. Sigue detrás del flag (apagado): con el flag activo, colaboradores sin ficha ni rol `verificado` pierden Noticias, Mitos y Comidas (datos locales: casi no las usan; **verificar en producción antes de activar**). Pendiente: activar el flag tras validación manual, checklist de despliegue, `mfa_test`.

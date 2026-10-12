@@ -19,7 +19,7 @@ class PeniaProfileFactory extends Factory
             'slug' => Str::slug($title).'-'.$this->faker->unique()->numberBetween(100, 999),
             'excerpt' => $this->faker->sentence(),
             'body' => '<p>'.$this->faker->paragraph().'</p>',
-            'province_id' => 1,
+            'province_id' => fn () => \App\Models\Provincia::query()->value('id') ?? \App\Models\Provincia::create(['nombre' => 'Provincia de prueba'])->id,
             'city' => $this->faker->city(),
             'venue_type' => 'penia',
             'source_urls' => ['https://example.test/fuente'],

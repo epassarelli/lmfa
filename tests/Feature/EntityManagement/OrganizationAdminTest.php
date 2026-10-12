@@ -48,7 +48,7 @@ class OrganizationAdminTest extends TestCase
             'slug' => $slug,
             'biografia' => 'Biografía de prueba.',
             'estado' => 1,
-            'user_id' => 1,
+            'user_id' => $this->baseUserId(),
         ]);
     }
 
@@ -222,7 +222,7 @@ class OrganizationAdminTest extends TestCase
     {
         $this->actingAs($this->admin());
         $mes = Mes::first() ?: Mes::create(['nombre' => 'Enero']);
-        $festival = Festival::forceCreate(['title' => 'Festival oa', 'slug' => 'festival-oa-'.uniqid(), 'mes_id' => $mes->id, 'user_id' => 1]);
+        $festival = Festival::forceCreate(['title' => 'Festival oa', 'slug' => 'festival-oa-'.uniqid(), 'mes_id' => $mes->id, 'user_id' => $this->baseUserId()]);
         $organization = $this->organization(['type' => 'festival']);
 
         $this->post(route('backend.organizations.entities.store', $organization), ['entity_type' => 'festival', 'entity_id' => $festival->id])

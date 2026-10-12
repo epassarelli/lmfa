@@ -97,6 +97,9 @@ jobs:
       - name: Run migrations
         run: php artisan migrate:fresh --force
 
+      - name: Seed reference data for tests
+        run: php artisan db:seed --class=TestingReferenceDataSeeder --force
+
       - name: Determine changed PHP files
         id: changed-php
         shell: bash

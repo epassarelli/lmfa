@@ -88,7 +88,7 @@ class EntityCreationRequestTest extends TestCase
 
     public function test_similar_endpoint_suggests_existing_entities(): void
     {
-        $existing = Interprete::create(['interprete' => 'Los Cantores del Alba', 'slug' => 'cantores-alba-'.uniqid(), 'biografia' => 'Bio.', 'estado' => 1, 'user_id' => 1]);
+        $existing = Interprete::create(['interprete' => 'Los Cantores del Alba', 'slug' => 'cantores-alba-'.uniqid(), 'biografia' => 'Bio.', 'estado' => 1, 'user_id' => $this->baseUserId()]);
 
         $this->actingAs($this->user())
             ->getJson(route('backend.my-entities.similar', ['type' => 'interprete', 'q' => 'Cantores del Alba']))
@@ -129,7 +129,7 @@ class EntityCreationRequestTest extends TestCase
     {
         $user = $this->user();
         $admin = $this->user('administrador');
-        $existing = Interprete::create(['interprete' => 'Duplicado Existente', 'slug' => 'duplicado-'.uniqid(), 'biografia' => 'Bio.', 'estado' => 1, 'user_id' => 1]);
+        $existing = Interprete::create(['interprete' => 'Duplicado Existente', 'slug' => 'duplicado-'.uniqid(), 'biografia' => 'Bio.', 'estado' => 1, 'user_id' => $this->baseUserId()]);
         $this->actingAs($user)->post(route('backend.my-entities.creations.store'), $this->payload(['proposed_name' => 'Duplicado Existente']));
         $claim = $this->claimOf($user);
         $before = Interprete::count();

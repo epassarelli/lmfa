@@ -32,7 +32,7 @@ class ApprovalRoleSuggestionTest extends TestCase
     {
         $name ??= 'Artista '.uniqid();
 
-        return Interprete::create(['interprete' => $name, 'slug' => 'a-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => 1]);
+        return Interprete::create(['interprete' => $name, 'slug' => 'a-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => $this->baseUserId()]);
     }
 
     private function organizationFor(Interprete $artist, string $status = 'active', ?User $owner = null): Organization

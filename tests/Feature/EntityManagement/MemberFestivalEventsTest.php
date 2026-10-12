@@ -48,14 +48,14 @@ class MemberFestivalEventsTest extends TestCase
 
     private function artist(): Interprete
     {
-        return Interprete::create(['interprete' => 'Artista '.uniqid(), 'slug' => 'a-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => 1]);
+        return Interprete::create(['interprete' => 'Artista '.uniqid(), 'slug' => 'a-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => $this->baseUserId()]);
     }
 
     private function festival(): Festival
     {
         $mes = Mes::first() ?: Mes::create(['nombre' => 'Enero']);
 
-        return Festival::forceCreate(['title' => 'Festival '.uniqid(), 'slug' => 'festival-'.uniqid(), 'mes_id' => $mes->id, 'user_id' => 1, 'status' => 'published']);
+        return Festival::forceCreate(['title' => 'Festival '.uniqid(), 'slug' => 'festival-'.uniqid(), 'mes_id' => $mes->id, 'user_id' => $this->baseUserId(), 'status' => 'published']);
     }
 
     private function link(Model $entity, User $user, string $role = 'editor', string $status = 'active'): void

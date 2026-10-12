@@ -47,7 +47,7 @@ class EntityClaimRequestTest extends TestCase
     {
         $mes = Mes::first() ?: Mes::create(['nombre' => 'Enero']);
 
-        return Festival::forceCreate(['title' => 'Festival '.$slug, 'slug' => $slug, 'mes_id' => $mes->id, 'user_id' => 1]);
+        return Festival::forceCreate(['title' => 'Festival '.$slug, 'slug' => $slug, 'mes_id' => $mes->id, 'user_id' => $this->baseUserId()]);
     }
 
     private function linkedOrganization($entity, string $status = 'active', ?User $owner = null): Organization

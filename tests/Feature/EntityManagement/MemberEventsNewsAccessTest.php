@@ -48,7 +48,7 @@ class MemberEventsNewsAccessTest extends TestCase
 
     private function artist(string $slug): Interprete
     {
-        return Interprete::create(['interprete' => 'Artista '.$slug.' '.uniqid(), 'slug' => $slug.'-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => 1]);
+        return Interprete::create(['interprete' => 'Artista '.$slug.' '.uniqid(), 'slug' => $slug.'-'.uniqid(), 'biografia' => 'Bio de prueba.', 'estado' => 1, 'user_id' => $this->baseUserId()]);
     }
 
     private function link(Interprete $artist, User $user, string $role = 'editor'): void
@@ -83,7 +83,7 @@ class MemberEventsNewsAccessTest extends TestCase
         $title = 'Noticia '.uniqid();
         $news = News::create([
             'title' => $title, 'slug' => Str::slug($title), 'body' => '<p>Cuerpo</p>', 'editorial_status' => 'published', 'estado' => 1,
-            'created_by' => ($creator ?? $this->user('administrador'))->id, 'user_id' => 1,
+            'created_by' => ($creator ?? $this->user('administrador'))->id, 'user_id' => $this->baseUserId(),
             'interprete_id' => $artists[0]->id, 'categoria_id' => $this->category()->id, 'published_at' => now(),
         ]);
         $news->interpretes()->sync(collect($artists)->slice(1)->pluck('id')->all());
