@@ -8,20 +8,20 @@
 
 return [
     // Medidas SUGERIDAS por tipo de contenido. Fuente: project/docs/editorial/image-upload-guide.md y
-    // config/image_profiles.php. Nunca bloquean la carga: el servidor solo valida tipo y peso
-    // (max_mb). min_w/min_h = tamaño mínimo recomendado (por debajo, el sitio sirve una versión más
-    // chica de lo ideal); max_side = lado máximo útil (por encima no mejora nada y pesa más);
-    // ratio = proporción objetivo (las variantes se recortan al centro). mode 'portrait' = artistas:
-    // conviene vertical o cuadrada, una foto panorámica pierde calidad al recortar.
+    // config/image_profiles.php. El tamaño es SUGERIDO (nunca se agranda ni se bloquea por ser chica); lo que
+    // sí es obligatorio es el ajuste: el formulario reduce lo que supere el ancho de la variante más grande
+    // del perfil ('profile' -> config/image_profiles.php) y pide recortar si la proporción no coincide. El
+    // servidor valida tipo y peso (max_mb) y acota el original guardado a ese mismo ancho.
+    // min_w/min_h = tamaño mínimo recomendado; ratio = proporción objetivo; mode 'portrait' = artistas.
     'images' => [
-        'artist' => ['shape' => 'vertical o cuadrada (retrato)', 'min_w' => 800, 'min_h' => 1024, 'ratio' => [3, 4], 'mode' => 'portrait', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Subí un retrato, no un paisaje ancho. Dejá la cara o el grupo en el centro: en algunas tarjetas se recorta cuadrada.'],
-        'album' => ['shape' => 'cuadrada (1:1)', 'min_w' => 800, 'min_h' => 800, 'ratio' => [1, 1], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Usá la tapa del disco, sin bordes ni textos agregados.'],
-        'festival' => ['shape' => 'horizontal (16:9)', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Se muestra grande arriba de la página: evitá texto cerca de los bordes, porque se recorta.'],
-        'event' => ['shape' => 'horizontal (16:9)', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Si es un afiche vertical, agregale margen a los costados para que no se corte.'],
-        'news' => ['shape' => 'horizontal (16:9)', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Es la imagen principal de la nota y la que se ve al compartirla.'],
-        'recipe' => ['shape' => 'apaisada (4:3)', 'min_w' => 800, 'min_h' => 600, 'ratio' => [4, 3], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Una foto del plato terminado, bien iluminada.'],
-        'mito' => ['shape' => 'apaisada (4:3)', 'min_w' => 900, 'min_h' => 675, 'ratio' => [4, 3], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 5, 'tip' => 'Una ilustración o foto relacionada con la leyenda.'],
-        'classified' => ['shape' => 'horizontal (16:9)', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_side' => 4000, 'max_mb' => 2, 'tip' => 'Podés subir varias; cada una hasta 2 MB.'],
+        'artist' => ['shape' => 'vertical o cuadrada (retrato)', 'profile' => 'artist', 'min_w' => 800, 'min_h' => 1024, 'ratio' => [3, 4], 'mode' => 'portrait', 'max_mb' => 5, 'tip' => 'Subí un retrato, no un paisaje ancho. Dejá la cara o el grupo en el centro: en algunas tarjetas se recorta cuadrada.'],
+        'album' => ['shape' => 'cuadrada (1:1)', 'profile' => 'album', 'min_w' => 800, 'min_h' => 800, 'ratio' => [1, 1], 'mode' => 'cover', 'max_mb' => 5, 'tip' => 'Usá la tapa del disco, sin bordes ni textos agregados.'],
+        'festival' => ['shape' => 'horizontal (16:9)', 'profile' => 'festival', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_mb' => 5, 'tip' => 'Se muestra grande arriba de la página: evitá texto cerca de los bordes, porque se recorta.'],
+        'event' => ['shape' => 'horizontal (16:9)', 'profile' => 'event', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_mb' => 5, 'tip' => 'Si es un afiche vertical, agregale margen a los costados para que no se corte.'],
+        'news' => ['shape' => 'horizontal (16:9)', 'profile' => 'news_full', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_mb' => 5, 'tip' => 'Es la imagen principal de la nota y la que se ve al compartirla.'],
+        'recipe' => ['shape' => 'apaisada (4:3)', 'profile' => 'recipe', 'min_w' => 800, 'min_h' => 600, 'ratio' => [4, 3], 'mode' => 'cover', 'max_mb' => 5, 'tip' => 'Una foto del plato terminado, bien iluminada.'],
+        'mito' => ['shape' => 'apaisada (4:3)', 'profile' => 'mito', 'min_w' => 900, 'min_h' => 675, 'ratio' => [4, 3], 'mode' => 'cover', 'max_mb' => 5, 'tip' => 'Una ilustración o foto relacionada con la leyenda.'],
+        'classified' => ['shape' => 'horizontal (16:9)', 'profile' => 'news_full', 'min_w' => 1600, 'min_h' => 900, 'ratio' => [16, 9], 'mode' => 'cover', 'max_mb' => 2, 'tip' => 'Podés subir varias; cada una hasta 2 MB.'],
     ],
     'sections' => [
         'interprete' => [

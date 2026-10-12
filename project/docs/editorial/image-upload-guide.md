@@ -55,10 +55,16 @@ mismo nombre — las imágenes se sirven con cache de un año (`immutable`) en
 `public/.htaccess`, así que un archivo reemplazado con el mismo nombre no
 se actualiza para los visitantes ni para el CDN hasta que expire ese cache.
 
-## Máximos, peso y aviso en el formulario
+## Ajuste automático en el formulario (obligatorio)
 
-- **Peso máximo (lo valida el servidor):** 5 MB por imagen; 2 MB en clasificados.
-- **Lado máximo útil (sugerido, no se valida):** 4000 px. Por encima no mejora la calidad —la variante más grande es de 1920 px— y la subida tarda más.
-- **Tipos aceptados:** JPG, PNG o WebP.
-- **Las medidas son sugeridas, no obligatorias.** Los formularios del backoffice muestran debajo de cada campo de imagen la proporción y el tamaño mínimo de esta tabla, y al elegir un archivo avisan (sin bloquear) si es más chico que lo sugerido, más grande de lo necesario o de otra proporción. Los textos están en `config/backoffice_help.php` y un test (`BackofficeHelpTest`) verifica que sus mínimos coincidan con esta guía: si se cambia una, hay que cambiar la otra.
-- **Clasificados** usa el perfil de noticias (`news_full`, 16:9, 1600×900).
+Los formularios del backoffice ajustan la imagen **en el navegador, antes de subirla**, con las medidas de esta tabla:
+
+- **Ya cumple** (proporción dentro de ±3 % y no supera el ancho máximo): se sube tal cual.
+- **Supera el ancho máximo** (el de la variante más grande del perfil: 1600 px en noticias, festivales, eventos y clasificados; 800 px en artistas y discos; 900 px en mitos): se **reduce sola** manteniendo la proporción. Nunca se agranda.
+- **Otra proporción**: se abre un editor de recorte con la proporción fija. Hay que confirmar el recorte o elegir otra imagen; si se cancela, no se sube nada.
+- **Muy pesada**: se recomprime hasta entrar en el peso máximo.
+- **Más chica que el mínimo sugerido**: se sube igual (no se agranda) con un aviso de que puede verse borrosa.
+
+**Red de seguridad en el servidor:** `ImageUploadService` guarda el "original" acotado al mismo ancho máximo (no se conserva el archivo sin procesar) y valida tipo (JPG, PNG, WebP) y peso (5 MB; 2 MB en clasificados).
+
+Los textos y medidas del formulario están en `config/backoffice_help.php` (el ancho máximo se deriva de `config/image_profiles.php`); un test (`BackofficeHelpTest`) verifica que los mínimos coincidan con esta guía. El editor usa Cropper.js 1.6.2 desde jsDelivr, igual que Select2.

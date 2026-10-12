@@ -51,14 +51,32 @@ class ImageUploadService
         $originalName = "{$filename}_original.{$originalExtension}";
         $originalPath = "{$basePath}/{$originalName}";
 
-        // Guardar original
-        Storage::disk('public')->putFileAs($basePath, $file, $originalName);
-
-        // Obtener dimensiones originales
+        // Dimensiones de lo recibido
         $img = $this->manager->read($file->getRealPath());
         $originalWidth = $img->width();
         $originalHeight = $img->height();
         $mime = $file->getClientMimeType();
+
+        // Guardar el "original" acotado: nunca más ancho que la variante más grande del perfil (más no se
+        // puede mostrar). No se conserva el archivo sin procesar. Si algo falla al reducirlo, se guarda tal cual.
+        $cap = collect($config['variants'])->flatMap(fn ($variant) => $variant['sizes'] ?? [])->max();
+        $stored = false;
+
+        if ($cap && $originalWidth > $cap) {
+            try {
+                $reduced = $this->manager->read($file->getRealPath())->scaleDown(width: (int) $cap);
+                Storage::disk('public')->put($originalPath, (string) $reduced->encodeByExtension($originalExtension, quality: 90));
+                $originalWidth = $reduced->width();
+                $originalHeight = $reduced->height();
+                $stored = true;
+            } catch (\Throwable $e) {
+                $stored = false;
+            }
+        }
+
+        if (! $stored) {
+            Storage::disk('public')->putFileAs($basePath, $file, $originalName);
+        }
 
         $variantsData = [];
 

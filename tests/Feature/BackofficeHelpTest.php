@@ -70,7 +70,9 @@ class BackofficeHelpTest extends TestCase
             }
 
             $this->assertStringContainsString($spec['min_w'].'×'.$spec['min_h'], $guide, "El mínimo de '$profile' no coincide con la guía de imágenes.");
-            $this->assertGreaterThan(max($spec['min_w'], $spec['min_h']), $spec['max_side']);
+            // El mínimo sugerido nunca puede superar lo que el sitio puede mostrar (variante más ancha del perfil).
+            $cap = collect(config("image_profiles.{$spec['profile']}.variants"))->flatMap(fn ($v) => $v['sizes'])->max();
+            $this->assertLessThanOrEqual($cap, $spec['min_w'], "El mínimo de '$profile' supera la variante más grande del perfil.");
         }
 
         $html = $this->actingAs($this->user('administrador'))->get(route('backend.festivales.create'))->getContent();

@@ -23,5 +23,12 @@ Cambiar reglas de validación o de permisos; Peñas, Radios, Enciclopedia, Copa 
 ## Ajuste: medidas de imagen desde la guía documentada
 Las medidas salen de `project/docs/editorial/image-upload-guide.md` (fuente documentada previa; la primera versión de esta spec había usado valores propios, corregido). Sugeridas, no obligatorias: mínimo por tipo según la guía, máximo útil de 4000 px de lado (propuesta, no validada por el servidor) y peso máximo del servidor (5 MB; 2 MB clasificados). Al elegir un archivo, el formulario avisa sin bloquear si es más chico, más grande o de otra proporción (los artistas piden vertical o cuadrada), y si supera el peso máximo. No hay validación de dimensiones en el servidor. Un test compara los mínimos de `config/backoffice_help.php` con la guía.
 
+## Ajuste 2: ajuste obligatorio de imágenes (recorte / reducción)
+Aprobación explícita del usuario: ajuste obligatorio; lo que supera el ancho máximo se reduce; no se guarda el original; se agrega la librería si hace falta.
+- Navegador (componente `image-hint`, un solo script para todos los formularios, parametrizado por `config/backoffice_help.php` + `config/image_profiles.php`): cumple → se sube igual; supera el ancho de la variante más grande → se reduce solo; otra proporción → editor Cropper.js con proporción fija, obligatorio (cancelar deja el campo vacío); muy pesada → recompresión. Salida JPEG, nunca se agranda. Clasificados procesa varias imágenes en secuencia.
+- Servidor: `ImageUploadService` guarda el original acotado al ancho de la variante más grande (red de seguridad si el navegador no ajustó) y no conserva el archivo sin procesar; sigue validando tipo y peso.
+- Dependencia: Cropper.js 1.6.2 por CDN jsDelivr (mismo criterio que Select2): sin npm, sin build, sin Node en producción. Si no carga, el formulario sigue funcionando sin recorte (el sitio recorta al centro).
+- Límite conocido: el comportamiento del navegador (JS) no tiene test automático; se verificó sintaxis y el HTML/atributos, falta la prueba manual.
+
 ## Resultado
-mfa_test: 670 passed, 2 skipped. `tests/Feature/BackofficeHelpTest.php` (9 tests). El aviso del navegador (JavaScript) no tiene test automático: validar a mano.
+mfa_test: 674 passed, 2 skipped. `BackofficeHelpTest` (9 tests) e `ImageUploadCapTest` (4 tests).

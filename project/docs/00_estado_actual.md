@@ -3,7 +3,7 @@
 
 ### Implementado en local 2026-10-12: ayuda contextual en el backoffice
 
-Spec `backoffice-contextual-help`. Componentes `x-backend.form-help|list-help|image-hint|seo-box` y textos en `config/backoffice_help.php`, aplicados a los ABM de contenido y a Mis fichas. mfa_test: 669 passed, 2 skipped. Sin migraciones. Pendiente: validación visual con varios roles y revisión editorial de los textos.
+Spec `backoffice-contextual-help`. Componentes `x-backend.form-help|list-help|image-hint|seo-box` y textos en `config/backoffice_help.php`, aplicados a los ABM de contenido y a Mis fichas. mfa_test: 674 passed, 2 skipped. Sin migraciones. Ajuste obligatorio de imágenes (recorte/reducción en el navegador con Cropper.js y original acotado en `ImageUploadService`). Pendiente: validación visual con varios roles, prueba manual del editor de imágenes (JS sin test automático) y revisión editorial de los textos.
 
 ### Implementado en local 2026-10-12: registro sin rol, listados acotados, alta directa limitada y Mi panel
 
