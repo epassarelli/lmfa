@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Ejecutado 2026-10-13: mensajes de contacto demo y decisión sobre Clasificados
+
+- Seeder local `ContactMessagesDemoSeeder` (solo local/testing, idempotente, prefijo `[DEMO]` en el nombre y dominio `example.test`): 34 mensajes en `mfa` (18 nuevos, 9 leídos, 6 respondidos, 1 spam; incluye HTML para ver el escape, un mensaje largo, uno de 40 días sin responder, dos del mismo remitente y uno de una cuenta registrada; más de una página). Limpieza: `DELETE FROM contact_messages WHERE nombre LIKE '[DEMO]%';`. `ContactMessagesDemoSeederTest` (3). **Avisos Clasificados sigue visible para todos** (decisión del usuario).
+
 ### Implementado en local 2026-10-13: Mis datos, etapa 3 (avisos, sesiones, eliminación de cuenta)
 
 - Spec `my-account-stage-3`. Sin migraciones. `MyAccountStage3Test` (18 casos); suite en base limpia 634 pasan, 0 fallan; en `mfa` solo los 13 previos. Avisos por email de solicitudes (best-effort), sesiones activas y cierre de las otras (tabla `sessions`, requiere `SESSION_DRIVER=database`), eliminación por anonimización (los administradores no pueden autoeliminarse). **Para verificar en producción:** `SESSION_DRIVER` real y que `MAIL_*` envíe. Fuera de alcance: 2FA (columnas sin implementación) y avisos a responsables cuando llega una solicitud nueva. No validado en navegador.

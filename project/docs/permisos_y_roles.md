@@ -67,3 +67,6 @@ El botón **Publicar** del sitio lleva a `/admin`: un visitante pasa por el logi
 Cualquier usuario con sesión tiene `/admin/mi-cuenta` (botón **Mis datos** en el menú de usuario): edita nombre, teléfono y contraseña; el email es solo lectura. Solo se aceptan esos campos: roles, estado y demás los gestiona el administrador desde Usuarios. No depende del flag de acceso por fichas.
 
 También permite ver y cerrar las **sesiones abiertas** en otros dispositivos y **eliminar la cuenta** (se anonimiza: se borran los datos personales y los vínculos, y el contenido cargado se conserva sin el nombre). Los administradores no pueden eliminar su propia cuenta desde ahí. Quien hace una solicitud de ficha recibe un correo cuando se resuelve.
+
+## Avisos Clasificados
+Siguen siendo visibles para **todos** los usuarios con sesión (decisión del 2026-10-13): no forman parte de las secciones restringidas por el acceso por fichas.

@@ -33,3 +33,6 @@ Enciclopedia, Penas, Radios, Clasificados, Copa y demas secciones; el flujo "Con
 
 ## Ampliacion (2026-10-12, pedido del usuario tras probar el sidebar)
 Copa del Folklore, Enciclopedia y Peñas quedan **solo para administradores** por ahora (secciones `copa`, `enciclopedia`, `penas`, sin entidades ni roles que las habiliten; ni artista ni `verificado` las desbloquean). Mismo mecanismo y flag que el resto; aviso propio ("Esta seccion es solo para administradores por ahora. Si queres aportar contenido, usa Publicar o Mis fichas"). Rutas agrupadas con `backoffice.section:<seccion>` (incluye preview/publicar/despublicar y los partidos de la Copa). Tests: `BackofficeAccessByEntitiesTest` (20 casos). Visible hoy para un colaborador sin fichas: Mis fichas y Avisos Clasificados.
+
+## Decision (2026-10-13)
+**Avisos Clasificados sigue visible para todos** los usuarios con sesion (colaborador sin fichas incluido). No forma parte de las secciones restringidas por el flag; `BackofficeAccessByEntitiesTest::test_sections_outside_the_flag_scope_are_untouched` lo cubre.
