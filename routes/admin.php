@@ -54,25 +54,29 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('venues', \App\Http\Controllers\Backend\VenueController::class)->except('show')->names('backend.venues');
     Route::resource('event-programs', \App\Http\Controllers\Backend\EventProgramController::class)->middleware('backoffice.section:eventos')->except(['show', 'destroy'])->names('backend.event-programs');
     Route::resource('news', NewsController::class)->middleware('backoffice.section:noticias')->names('backend.news')->parameters(['news' => 'news']);
-    Route::resource('knowledge-articles', KnowledgeArticleController::class)
-        ->names('backend.knowledge-articles')
-        ->parameters(['knowledge-articles' => 'knowledge_article']);
-    Route::get('knowledge-articles/{knowledge_article}/preview', [KnowledgeArticleController::class, 'preview'])
-        ->name('backend.knowledge-articles.preview');
-    Route::post('knowledge-articles/{knowledge_article}/publish', [KnowledgeArticleController::class, 'publish'])
-        ->name('backend.knowledge-articles.publish');
-    Route::post('knowledge-articles/{knowledge_article}/unpublish', [KnowledgeArticleController::class, 'unpublish'])
-        ->name('backend.knowledge-articles.unpublish');
-    Route::resource('folklore-tournaments', FolkloreTournamentController::class)
-        ->only(['index', 'show', 'edit', 'update'])
-        ->names('backend.folklore-tournaments')
-        ->parameters(['folklore-tournaments' => 'tournament']);
-    Route::get('folklore-tournaments/{tournament}/matches', [FolkloreTournamentController::class, 'matches'])
-        ->name('backend.folklore-tournaments.matches');
-    Route::get('folklore-tournament-matches/{match}/edit', [FolkloreTournamentMatchController::class, 'edit'])
-        ->name('backend.folklore-tournament-matches.edit');
-    Route::put('folklore-tournament-matches/{match}', [FolkloreTournamentMatchController::class, 'update'])
-        ->name('backend.folklore-tournament-matches.update');
+    Route::middleware('backoffice.section:enciclopedia')->group(function () {
+        Route::resource('knowledge-articles', KnowledgeArticleController::class)
+            ->names('backend.knowledge-articles')
+            ->parameters(['knowledge-articles' => 'knowledge_article']);
+        Route::get('knowledge-articles/{knowledge_article}/preview', [KnowledgeArticleController::class, 'preview'])
+            ->name('backend.knowledge-articles.preview');
+        Route::post('knowledge-articles/{knowledge_article}/publish', [KnowledgeArticleController::class, 'publish'])
+            ->name('backend.knowledge-articles.publish');
+        Route::post('knowledge-articles/{knowledge_article}/unpublish', [KnowledgeArticleController::class, 'unpublish'])
+            ->name('backend.knowledge-articles.unpublish');
+    });
+    Route::middleware('backoffice.section:copa')->group(function () {
+        Route::resource('folklore-tournaments', FolkloreTournamentController::class)
+            ->only(['index', 'show', 'edit', 'update'])
+            ->names('backend.folklore-tournaments')
+            ->parameters(['folklore-tournaments' => 'tournament']);
+        Route::get('folklore-tournaments/{tournament}/matches', [FolkloreTournamentController::class, 'matches'])
+            ->name('backend.folklore-tournaments.matches');
+        Route::get('folklore-tournament-matches/{match}/edit', [FolkloreTournamentMatchController::class, 'edit'])
+            ->name('backend.folklore-tournament-matches.edit');
+        Route::put('folklore-tournament-matches/{match}', [FolkloreTournamentMatchController::class, 'update'])
+            ->name('backend.folklore-tournament-matches.update');
+    });
 
     // --- PASARELA DE CONTENIDOS (REDES SOCIALES Y PUBLICACIÓN) ---
     Route::prefix('pasarela')->name('pasarela.')->group(function () {
@@ -152,10 +156,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('mitos', MitoController::class)->middleware('backoffice.section:mitos')->names('backend.mitos');
     Route::resource('comidas', ComidaController::class)->middleware('backoffice.section:comidas')->names('backend.comidas');
     Route::resource('festivales', FestivalController::class)->middleware('backoffice.section:festivales')->names('backend.festivales')->parameters(['festivales' => 'festival']);
-    Route::get('penia-profiles/{penia_profile}/preview', [PeniaProfileController::class, 'preview'])->name('backend.penia-profiles.preview');
-    Route::post('penia-profiles/{penia_profile}/publish', [PeniaProfileController::class, 'publish'])->name('backend.penia-profiles.publish');
-    Route::post('penia-profiles/{penia_profile}/unpublish', [PeniaProfileController::class, 'unpublish'])->name('backend.penia-profiles.unpublish');
-    Route::resource('penia-profiles', PeniaProfileController::class)->names('backend.penia-profiles')->parameters(['penia-profiles' => 'penia_profile']);
+    Route::middleware('backoffice.section:penas')->group(function () {
+        Route::get('penia-profiles/{penia_profile}/preview', [PeniaProfileController::class, 'preview'])->name('backend.penia-profiles.preview');
+        Route::post('penia-profiles/{penia_profile}/publish', [PeniaProfileController::class, 'publish'])->name('backend.penia-profiles.publish');
+        Route::post('penia-profiles/{penia_profile}/unpublish', [PeniaProfileController::class, 'unpublish'])->name('backend.penia-profiles.unpublish');
+        Route::resource('penia-profiles', PeniaProfileController::class)->names('backend.penia-profiles')->parameters(['penia-profiles' => 'penia_profile']);
+    });
     Route::post('radios/signals/{radio_signal}/publish', [RadioSignalController::class, 'publish'])->name('backend.radios.signals.publish');
     Route::post('radios/signals/{radio_signal}/unpublish', [RadioSignalController::class, 'unpublish'])->name('backend.radios.signals.unpublish');
     Route::get('radios/signals/{radio_signal}/preview', [RadioSignalController::class, 'preview'])->name('backend.radios.signals.preview');

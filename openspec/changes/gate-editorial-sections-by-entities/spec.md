@@ -30,3 +30,6 @@ Enciclopedia, Penas, Radios, Clasificados, Copa y demas secciones; el flujo "Con
 
 ## Riesgos
 - Colaboradores sin fichas ni rol `verificado` pierden Noticias, Mitos y Comidas al activar el flag (en la base local casi nadie las usa). Verificar en produccion antes de activar.
+
+## Ampliacion (2026-10-12, pedido del usuario tras probar el sidebar)
+Copa del Folklore, Enciclopedia y Peñas quedan **solo para administradores** por ahora (secciones `copa`, `enciclopedia`, `penas`, sin entidades ni roles que las habiliten; ni artista ni `verificado` las desbloquean). Mismo mecanismo y flag que el resto; aviso propio ("Esta seccion es solo para administradores por ahora. Si queres aportar contenido, usa Publicar o Mis fichas"). Rutas agrupadas con `backoffice.section:<seccion>` (incluye preview/publicar/despublicar y los partidos de la Copa). Tests: `BackofficeAccessByEntitiesTest` (20 casos). Visible hoy para un colaborador sin fichas: Mis fichas y Avisos Clasificados.

@@ -32,6 +32,7 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 - **Backend de eventos**: selectores Select2 para vincular festivales, artículos de enciclopedia y peñas, y campos `end_at` y `excerpt`. Sincroniza solo los pivots existentes; sin migraciones.
 
 ### Cambiado
+- **Copa del Folklore, Enciclopedia y Peñas solo para administradores** (con `BACKOFFICE_ACCESS_BY_ENTITIES` activo): se ocultan del sidebar y sus rutas redirigen a Mis fichas con aviso para cualquier otro usuario, incluidos responsables de fichas y `verificado`.
 - **Base de tests aislada (`mfa_test`) y datos de referencia para tests/CI** (spec `isolated-test-database`): `.env.testing` apunta a `mfa_test`; nuevo `TestingReferenceDataSeeder` (roles y permisos reales) que el CI ejecuta tras `migrate:fresh`; los tests ya no asumen `user_id=1` ni provincias sembradas. En base limpia la suite pasa completa (557).
 - **Login y registro sin botones de Google y Facebook** (spec `hide-social-login-buttons`): se ocultan mientras el login social no funcione; se muestra solo email y contraseña. Se reactivan con `SOCIAL_LOGIN_ENABLED=true` sin tocar código; las rutas `auth/*` se conservan.
 

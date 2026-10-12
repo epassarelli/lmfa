@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Ajuste 2026-10-12 tras probar el sidebar: Copa, Enciclopedia y Peñas solo administrador
+
+- Detrás del flag, como el resto. `BackofficeAccessByEntitiesTest` (20 casos). Un colaborador sin fichas ve solo Mis fichas y Avisos Clasificados. **Pendiente de decisión:** cómo se integra el flujo público "Publicar" (`/admin/contribuir`) con Mis fichas y si Avisos Clasificados sigue visible.
+
 ### Ejecutado 2026-10-12: cuentas de validación locales, flag local y checklist de producción
 
 - Seeder `AccessValidationAccountsSeeder` (solo local/testing): 4 cuentas `val.*@example.test` con claves aleatorias no mostradas + artista y festival DEMO sin publicar; ejecutado en la base local (+4 usuarios, +1 interprete, +1 festival, +2 organizaciones, +2 membresías; eventos y noticias sin cambios). `BACKOFFICE_ACCESS_BY_ENTITIES=true` solo en el `.env` local (no versionado). Con el flag encendido por entorno, 18 tests antiguos cambian de resultado por diseño (colaboradores sin fichas ahora son redirigidos); `TestCase` apaga el flag para que la suite no dependa del entorno.

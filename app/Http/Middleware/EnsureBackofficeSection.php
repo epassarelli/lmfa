@@ -15,6 +15,8 @@ class EnsureBackofficeSection
 
     public const ROLE_ONLY_MESSAGE = 'Esta sección es para usuarios verificados y administradores. Si administrás una ficha, gestionás su contenido desde Mis fichas.';
 
+    public const ADMIN_ONLY_MESSAGE = 'Esta sección es solo para administradores por ahora. Si querés aportar contenido, usá Publicar o Mis fichas.';
+
     public function handle(Request $request, Closure $next, string $section)
     {
         $user = $request->user();
@@ -25,7 +27,8 @@ class EnsureBackofficeSection
 
         $rule = config("backoffice_access.sections.$section");
         $roleOnly = is_array($rule) && ! array_is_list($rule) && empty($rule['entities']);
-        $message = $roleOnly ? self::ROLE_ONLY_MESSAGE : self::MESSAGE;
+        $adminOnly = $roleOnly && empty($rule['roles']);
+        $message = $adminOnly ? self::ADMIN_ONLY_MESSAGE : ($roleOnly ? self::ROLE_ONLY_MESSAGE : self::MESSAGE);
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json(['message' => $message], 403);

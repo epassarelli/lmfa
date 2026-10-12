@@ -312,6 +312,7 @@ return [
         [
             'text' => 'Copa del Folklore 2026',
             'url' => 'admin/folklore-tournaments',
+            'can' => 'backoffice-section.copa',
             'icon' => 'fas fa-fw fa-trophy',
             'active' => [
                 'admin/folklore-tournaments*',
@@ -327,6 +328,7 @@ return [
         [
             'text' => 'Enciclopedia',
             'url' => 'admin/knowledge-articles',
+            'can' => 'backoffice-section.enciclopedia',
             'icon' => 'fas fa-fw fa-book-open',
             'active' => [
                 'admin/knowledge-articles*',
@@ -409,6 +411,7 @@ return [
         [
             'text' => 'Peñas',
             'url' => 'admin/penia-profiles',
+            'can' => 'backoffice-section.penas',
             'icon' => 'fas fa-fw fa-store',
         ],
         [

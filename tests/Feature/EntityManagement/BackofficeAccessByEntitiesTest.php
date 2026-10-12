@@ -182,6 +182,48 @@ class BackofficeAccessByEntitiesTest extends TestCase
             ->assertOk()->assertSee('/admin/mitos')->assertSee('/admin/comidas')->assertSee('/admin/news');
     }
 
+    private const ADMIN_ONLY = [
+        'backend.folklore-tournaments.index',
+        'backend.knowledge-articles.index',
+        'backend.knowledge-articles.create',
+        'backend.penia-profiles.index',
+        'backend.penia-profiles.create',
+    ];
+
+    public function test_copa_enciclopedia_and_penas_are_administrator_only(): void
+    {
+        $artistManager = $this->user();
+        $this->link($this->artist(), $artistManager);
+
+        foreach ([$this->user(), $artistManager, $this->verified()] as $user) {
+            foreach (self::ADMIN_ONLY as $route) {
+                $this->actingAs($user)->get(route($route))
+                    ->assertRedirect(route('backend.my-entities.index'))
+                    ->assertSessionHas('warning', EnsureBackofficeSection::ADMIN_ONLY_MESSAGE);
+            }
+        }
+
+        $this->getJson(route('backend.penia-profiles.index'))->assertForbidden()->assertJson(['message' => EnsureBackofficeSection::ADMIN_ONLY_MESSAGE]);
+    }
+
+    public function test_administrators_keep_copa_enciclopedia_and_penas(): void
+    {
+        $admin = $this->user('administrador');
+
+        foreach (self::ADMIN_ONLY as $route) {
+            $this->actingAs($admin)->get(route($route))->assertOk();
+        }
+    }
+
+    public function test_the_sidebar_hides_admin_only_sections_even_from_verified_users(): void
+    {
+        $this->actingAs($this->verified())->get(route('backend.my-entities.index'))
+            ->assertOk()
+            ->assertDontSee('/admin/folklore-tournaments')
+            ->assertDontSee('/admin/knowledge-articles')
+            ->assertDontSee('/admin/penia-profiles');
+    }
+
     public function test_sections_outside_the_flag_scope_are_untouched(): void
     {
         $this->actingAs($this->user())->get(route('backend.classifieds.index'))->assertOk();

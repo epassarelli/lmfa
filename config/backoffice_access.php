@@ -19,5 +19,9 @@ return [
         'noticias' => ['entities' => ['interprete'], 'roles' => ['verificado']],
         'mitos' => ['roles' => ['verificado']],
         'comidas' => ['roles' => ['verificado']],
+        // Solo administradores por ahora (sin entidades ni roles que las habiliten).
+        'copa' => ['roles' => []],
+        'enciclopedia' => ['roles' => []],
+        'penas' => ['roles' => []],
     ],
 ];
