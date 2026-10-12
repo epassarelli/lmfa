@@ -47,3 +47,6 @@ database/migrations/*_create_or_extend_contact_messages_table.php, config/contac
 - `ContactFormTest` (25 casos). Suite en base limpia: 616 pasan, 0 fallan. Tres tests de `SeoInfrastructureTest` usaban `/contacto` como pagina de muestra del canonical por defecto del layout; ahora usan `/avisos-clasificados` (el contacto declara un canonical limpio, sin parametros).
 - `public/build` recompilado (3 CSS + manifest); `npm run build:verify` y `test:build-artifact` pasan.
 - Observaciones: codigo heredado sin uso `ContactRequest`/`Contact` (tabla `contacts` inexistente); el envio de correo es sincrono (sin worker de cola confirmado).
+
+## Cierre (2026-10-13)
+- Migracion aplicada tambien en `mfa` (12 columnas, 0 mensajes, 449 usuarios intactos). Se elimino el codigo heredado sin uso: `App\Http\Requests\ContactRequest` y `App\Models\Contact` (tabla `contacts` inexistente; sin referencias).
