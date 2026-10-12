@@ -156,6 +156,71 @@
           </div>
         </form>
       </div>
+
+      @if ($sessionsEnabled)
+        <div class="card card-outline card-primary shadow-sm" id="sessions">
+          <div class="card-header"><h3 class="card-title">Sesiones activas</h3></div>
+          <form action="{{ route('backend.account.sessions.logout-others') }}" method="POST" autocomplete="off">
+            @csrf
+            <div class="card-body">
+              @if ($errors->sessions->any())
+                <div class="alert alert-danger"><ul class="mb-0">@foreach ($errors->sessions->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+              @endif
+              <ul class="list-group mb-3">
+                @foreach ($sessions as $session)
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                      <i class="fas fa-fw fa-laptop text-muted"></i> {{ $session['device'] }}
+                      @if ($session['current']) <span class="badge badge-success ml-1">Esta sesión</span> @endif
+                      <small class="d-block text-muted">{{ $session['ip'] ?? 'IP desconocida' }} · última actividad {{ $session['last_active']->diffForHumans() }}</small>
+                    </span>
+                  </li>
+                @endforeach
+              </ul>
+              <p class="small text-muted">Si no reconocés alguna sesión, cerrala y cambiá tu contraseña. Cerrar las otras sesiones no cierra esta.</p>
+              <div class="form-group mb-0">
+                <label for="sessions_current_password">Contraseña actual</label>
+                <input type="password" name="current_password" id="sessions_current_password" class="form-control" autocomplete="current-password" required>
+              </div>
+            </div>
+            <div class="card-footer"><button type="submit" class="btn btn-outline-primary">Cerrar las otras sesiones</button></div>
+          </form>
+        </div>
+      @endif
+
+      <div class="card card-outline card-danger shadow-sm" id="delete-account">
+        <div class="card-header"><h3 class="card-title">Eliminar mi cuenta</h3></div>
+        @if (! $canDelete)
+          <div class="card-body"><p class="mb-0 text-muted">Las cuentas de administrador no se pueden eliminar desde acá: lo hace otro administrador.</p></div>
+        @else
+          <form action="{{ route('backend.account.destroy') }}" method="POST" autocomplete="off">
+            @csrf
+            @method('DELETE')
+            <div class="card-body">
+              @if ($errors->delete->any())
+                <div class="alert alert-danger"><ul class="mb-0">@foreach ($errors->delete->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+              @endif
+              <p>Esta acción es <strong>definitiva</strong> y no se puede deshacer.</p>
+              <ul class="small">
+                <li><strong>Se borra:</strong> tu acceso, tus datos personales (nombre, email, teléfono), tus vínculos con fichas, tus solicitudes pendientes, tu suscripción al newsletter, tus mensajes de contacto y tus sesiones.</li>
+                <li><strong>Se conserva:</strong> el contenido que cargaste (discos, canciones, noticias, eventos, etc.) sigue en el portal, pero sin tu nombre.</li>
+              </ul>
+              @if ($soleOwnerFichas > 0)
+                <div class="alert alert-warning small">Sos el único responsable de {{ $soleOwnerFichas }} ficha(s): van a quedar sin responsable hasta que alguien la reclame de nuevo.</div>
+              @endif
+              <div class="form-group">
+                <label for="delete_current_password">Contraseña actual</label>
+                <input type="password" name="current_password" id="delete_current_password" class="form-control" autocomplete="current-password" required>
+              </div>
+              <div class="form-group mb-0">
+                <label for="delete_confirmation">Para confirmar, escribí <code>{{ $deleteConfirmation }}</code></label>
+                <input type="text" name="confirmation" id="delete_confirmation" class="form-control" autocomplete="off" required>
+              </div>
+            </div>
+            <div class="card-footer"><button type="submit" class="btn btn-danger">Eliminar mi cuenta para siempre</button></div>
+          </form>
+        @endif
+      </div>
     </div>
   </div>
 @stop

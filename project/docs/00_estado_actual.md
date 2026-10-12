@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-13: Mis datos, etapa 3 (avisos, sesiones, eliminación de cuenta)
+
+- Spec `my-account-stage-3`. Sin migraciones. `MyAccountStage3Test` (18 casos); suite en base limpia 634 pasan, 0 fallan; en `mfa` solo los 13 previos. Avisos por email de solicitudes (best-effort), sesiones activas y cierre de las otras (tabla `sessions`, requiere `SESSION_DRIVER=database`), eliminación por anonimización (los administradores no pueden autoeliminarse). **Para verificar en producción:** `SESSION_DRIVER` real y que `MAIL_*` envíe. Fuera de alcance: 2FA (columnas sin implementación) y avisos a responsables cuando llega una solicitud nueva. No validado en navegador.
+
 ### Implementado en local 2026-10-13: formulario de contacto rehecho y visible
 
 - Spec `contact-form-overhaul`. Diagnóstico: la tabla `contact_messages` no existía (500 al enviar), errores de correo tragados, captcha estático 3+4, sin límites, autorrespondedor a cualquier dirección, sin bandeja, clases Bootstrap en el front y sin enlaces visibles. Ahora: migración defensiva `2026_10_13_100000` (aplicada en `mfa_test`; aplicada también en `mfa` el 2026-10-13), formulario Tailwind con defensas sin captcha, bandeja en el backoffice, enlaces en menú y footer, `public/build` recompilado. `ContactFormTest` (25) + 3 tests de `SeoInfrastructureTest` pasan a otra página de muestra (el canonical de `/contacto` ahora es limpio). Suite en base limpia: 616 pasan, 0 fallan; en `mfa` quedan solo los 13 previos por datos reales. **En producción:** verificar `DESCRIBE contact_messages` antes de migrar (puede existir como tabla heredada) y probar el envío real de correo. No validado en navegador.

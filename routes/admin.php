@@ -112,6 +112,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('mi-cuenta/datos', [AccountController::class, 'updateProfile'])->name('backend.account.update');
     Route::put('mi-cuenta/password', [AccountController::class, 'updatePassword'])->middleware('throttle:6,1')->name('backend.account.password');
     Route::put('mi-cuenta/newsletter', [AccountController::class, 'updateNewsletter'])->name('backend.account.newsletter');
+    Route::post('mi-cuenta/sesiones/cerrar-otras', [AccountController::class, 'logoutOtherSessions'])->middleware('throttle:6,1')->name('backend.account.sessions.logout-others');
+    Route::delete('mi-cuenta', [AccountController::class, 'destroy'])->middleware('throttle:3,10')->name('backend.account.destroy');
 
     // --- MIS FICHAS: cualquier usuario autenticado puede solicitar administrar una ficha ---
     Route::get('mis-fichas', [MyEntitiesController::class, 'index'])->name('backend.my-entities.index');

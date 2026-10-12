@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\EntityClaimResolvedMail;
 use App\Models\EntityClaimRequest;
 use App\Models\Festival;
 use App\Models\Interprete;
@@ -11,8 +12,11 @@ use App\Models\OrganizationMember;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 /**
  * Solicitud y revisión de vínculos usuario <-> ficha (intérprete, festival, ...).
@@ -168,7 +172,7 @@ class EntityClaimService
 
         $config = config("entity_management.entities.$typeKey");
 
-        return DB::transaction(function () use ($claim, $reviewer, $role, $notes, $existingEntityId, $typeKey, $config) {
+        $resolved = DB::transaction(function () use ($claim, $reviewer, $role, $notes, $existingEntityId, $typeKey, $config) {
             if ($existingEntityId) {
                 $entity = $config['model']::query()->find($existingEntityId);
 
@@ -182,8 +186,12 @@ class EntityClaimService
             $claim->update(['entity_id' => $entity->getKey()]);
             $claim->setRelation('entity', $entity);
 
-            return $this->approve($claim, $reviewer, $role, $notes);
+            return $this->approve($claim, $reviewer, $role, $notes, false);
         });
+
+        $this->notifyResolution($resolved);
+
+        return $resolved;
     }
 
     /**
@@ -405,7 +413,7 @@ class EntityClaimService
             throw ValidationException::withMessages(['claim' => 'Esta persona ya es responsable de la ficha.']);
         }
 
-        return DB::transaction(function () use ($claim, $owner, $organization, $role, $notes) {
+        $resolved = DB::transaction(function () use ($claim, $owner, $organization, $role, $notes) {
             OrganizationMember::query()->updateOrCreate(
                 ['organization_id' => $organization->getKey(), 'user_id' => $claim->user_id],
                 ['role' => $role, 'status' => 'active']
@@ -421,6 +429,10 @@ class EntityClaimService
 
             return $claim;
         });
+
+        $this->notifyResolution($resolved);
+
+        return $resolved;
     }
 
     public function rejectAsOwner(EntityClaimRequest $claim, User $owner, string $notes): EntityClaimRequest
@@ -440,7 +452,7 @@ class EntityClaimService
         return $claim;
     }
 
-    public function approve(EntityClaimRequest $claim, User $reviewer, string $role, ?string $notes = null): EntityClaimRequest
+    public function approve(EntityClaimRequest $claim, User $reviewer, string $role, ?string $notes = null, bool $notify = true): EntityClaimRequest
     {
         $this->ensurePending($claim);
 
@@ -450,7 +462,7 @@ class EntityClaimService
             throw ValidationException::withMessages(['claim' => 'La ficha ya no existe.']);
         }
 
-        return DB::transaction(function () use ($claim, $entity, $reviewer, $role, $notes) {
+        $resolved = DB::transaction(function () use ($claim, $entity, $reviewer, $role, $notes) {
             $organization = $this->organizationFor($entity);
 
             OrganizationMember::query()->updateOrCreate(
@@ -468,6 +480,12 @@ class EntityClaimService
 
             return $claim;
         });
+
+        if ($notify) {
+            $this->notifyResolution($resolved);
+        }
+
+        return $resolved;
     }
 
     public function reject(EntityClaimRequest $claim, User $reviewer, ?string $notes = null): EntityClaimRequest
@@ -481,7 +499,29 @@ class EntityClaimService
             'review_notes' => $notes,
         ]);
 
+        $this->notifyResolution($claim);
+
         return $claim;
+    }
+
+    /**
+     * Aviso por email a quien hizo la solicitud. Best-effort: un fallo se registra pero no deshace la
+     * resolución. No se envía a cuentas anonimizadas ni sin email válido.
+     */
+    private function notifyResolution(EntityClaimRequest $claim): void
+    {
+        $claim->loadMissing('user');
+        $email = $claim->user?->email;
+
+        if (! $email || ! filter_var($email, FILTER_VALIDATE_EMAIL) || str_ends_with($email, '.invalid')) {
+            return;
+        }
+
+        try {
+            Mail::send(new EntityClaimResolvedMail($claim->fresh(['user', 'organization'])));
+        } catch (Throwable $e) {
+            Log::error('Solicitud de ficha: no se pudo enviar el aviso al solicitante.', ['claim_id' => $claim->getKey(), 'error' => $e->getMessage()]);
+        }
     }
 
     /**

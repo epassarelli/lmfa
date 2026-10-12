@@ -232,17 +232,7 @@ class LegalController extends Controller
                 ]);
 
                 if ($user->google_id === null) {
-                    $user->forceFill([
-                        'name' => 'Usuario eliminado '.$user->id,
-                        'email' => sprintf(
-                            'deleted-user-%d-%s@mifolkloreargentino.invalid',
-                            $user->id,
-                            Str::lower(Str::random(12))
-                        ),
-                        'email_verified_at' => null,
-                        'password' => Hash::make(Str::random(40)),
-                        'phone' => null,
-                    ]);
+                    app(\App\Services\AccountEraser::class)->scrubIdentity($user);
                 }
 
                 $user->save();
