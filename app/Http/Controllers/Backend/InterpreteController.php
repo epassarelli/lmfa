@@ -39,7 +39,7 @@ class InterpreteController extends Controller
     $interpretes = Interprete::withCount(['noticias', 'shows', 'discos', 'canciones'])
       ->with(['images'])
       ->when(
-        config('entity_management.scope_listings') && ! $user->hasRole('administrador'),
+        (config('entity_management.scope_listings') || config('backoffice_access.enabled')) && ! $user->hasRole('administrador'),
         fn ($query) => $query->managedOrLegacyBy($user)
       )
       ->when($request->filled('search'), function ($query) use ($request) {

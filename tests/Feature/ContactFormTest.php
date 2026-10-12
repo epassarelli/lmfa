@@ -24,6 +24,9 @@ class ContactFormTest extends TestCase
     {
         parent::setUp();
         config(['responsecache.enabled' => false, 'responsecache.cache_store' => 'array']);
+
+        // Independiente de lo que ya haya en la tabla (p. ej. mensajes demo): se revierte con la transacción.
+        ContactMessage::query()->delete();
     }
 
     private function user(?string $role = null, array $attributes = []): User

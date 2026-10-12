@@ -88,10 +88,12 @@ class EventController extends Controller
             }
         }
         $interpretes = Interprete::active()->get();
+        $restrictedByFichas = auth()->user()->isRestrictedByEntities();
+        $ownInterpreteIds = $restrictedByFichas ? auth()->user()->managedInterpreteIds() : [];
         $provincias = Provincia::all();
         $action = 'create';
 
-        return view('backend.events.create', array_merge(compact('event', 'interpretes', 'provincias', 'action'), $this->relationOptions()));
+        return view('backend.events.create', array_merge(compact('event', 'interpretes', 'provincias', 'action', 'restrictedByFichas', 'ownInterpreteIds'), $this->relationOptions()));
     }
 
     public function store(ShowRequest $request)
@@ -115,10 +117,12 @@ class EventController extends Controller
     {
         $event->load(['interpretes', 'festivales:id', 'knowledgeArticles:id', 'peniaProfiles:id', 'venue', 'program']);
         $interpretes = Interprete::active()->get();
+        $restrictedByFichas = auth()->user()->isRestrictedByEntities();
+        $ownInterpreteIds = $restrictedByFichas ? auth()->user()->managedInterpreteIds() : [];
         $provincias = Provincia::all();
         $action = 'edit';
 
-        return view('backend.events.edit', array_merge(compact('event', 'provincias', 'interpretes', 'action'), $this->relationOptions()));
+        return view('backend.events.edit', array_merge(compact('event', 'provincias', 'interpretes', 'action', 'restrictedByFichas', 'ownInterpreteIds'), $this->relationOptions()));
     }
 
     public function update(ShowRequest $request, Event $event)

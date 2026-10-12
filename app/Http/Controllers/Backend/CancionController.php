@@ -117,14 +117,14 @@ class CancionController extends Controller
     /**
      * Quien no tiene permiso global de escritura solo elige entre los artistas que administra.
      */
-    private function selectableInterpretes()
+    private function selectableInterpretes(?int $currentInterpreteId = null)
     {
         $user = Auth::user();
 
         return Interprete::active()
             ->when(
                 $user->isScopedToManagedInterpretes('create cancion') && $user->isScopedToManagedInterpretes('update cancion'),
-                fn ($query) => $query->whereIn('id', $user->managedInterpreteIds())
+                fn ($query) => $query->where(fn ($q) => $q->whereIn('id', $user->managedInterpreteIds())->when($currentInterpreteId, fn ($q2) => $q2->orWhere('id', $currentInterpreteId)))
             )
             ->get();
     }
@@ -167,7 +167,7 @@ class CancionController extends Controller
     public function edit(Cancion $cancion)
     {
         $action = 'edit';
-        $interpretes = $this->selectableInterpretes();
+        $interpretes = $this->selectableInterpretes($cancion->interprete_id);
         $albums = Album::where('interprete_id', $cancion->interprete_id)->get();
 
         return view('backend.canciones.edit', compact('cancion', 'interpretes', 'albums', 'action'));

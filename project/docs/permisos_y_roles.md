@@ -57,6 +57,9 @@ Regla práctica: *crear* depende del rol/permiso global; *editar* depende del cr
 - El **administrador** aprueba las solicitudes de alta de ficha, al primer owner de una ficha y cualquier solicitud en cualquier momento (Backoffice → Solicitudes de vínculo).
 - El **owner activo** de una ficha aprueba o rechaza desde Mis fichas las solicitudes de vínculo de otros usuarios sobre esa ficha, otorgando Editor o Miembro (nunca Responsable). Interruptor: `ENTITY_CLAIMS_DELEGATE_TO_OWNERS`.
 
+## Selección acotada a lo propio (con el acceso por fichas activo)
+Quien no es administrador elige y carga **solo sobre los artistas que administra**, aunque su rol tenga permisos globales: Discos y Canciones ofrecen únicamente esos artistas; en una Noticia el artista **principal** es obligatorio y propio (los secundarios pueden ser cualquiera); un Evento incluye al menos un artista o festival propio (los demás son invitados). El listado de Intérpretes muestra solo las fichas propias. Con el flag apagado rigen los permisos globales de siempre.
+
 ## Eventos: artistas y festivales
 Un evento tiene artistas y, opcionalmente, festivales. Para editarlo por membresía (si no sos el creador): si tiene festivales, tenés que administrar **todos** (la grilla de artistas se ignora); si no tiene festivales, tenés que administrar **todos** sus artistas. Para crear, alcanza con incluir un artista o un festival que administrás.
 

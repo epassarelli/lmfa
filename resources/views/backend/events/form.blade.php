@@ -28,14 +28,33 @@
       @php
         $selectedInterpreteIds = old('interprete_ids', $event->interpretes->pluck('id')->all());
       @endphp
+      @php
+        $ownIds = $ownInterpreteIds ?? [];
+      @endphp
       <select name="interprete_ids[]" id="interprete_ids" class="form-control select2" multiple data-placeholder="Seleccionar artistas">
-        @foreach ($interpretes as $interprete)
-          <option value="{{ $interprete->id }}"
-            {{ in_array($interprete->id, $selectedInterpreteIds) ? 'selected' : '' }}>
-            {{ $interprete->interprete }}
-          </option>
-        @endforeach
+        @if (count($ownIds))
+          <optgroup label="Mis artistas">
+            @foreach ($interpretes->whereIn('id', $ownIds) as $interprete)
+              <option value="{{ $interprete->id }}" {{ in_array($interprete->id, $selectedInterpreteIds) ? 'selected' : '' }}>{{ $interprete->interprete }}</option>
+            @endforeach
+          </optgroup>
+          <optgroup label="Otros artistas (invitados)">
+            @foreach ($interpretes->whereNotIn('id', $ownIds) as $interprete)
+              <option value="{{ $interprete->id }}" {{ in_array($interprete->id, $selectedInterpreteIds) ? 'selected' : '' }}>{{ $interprete->interprete }}</option>
+            @endforeach
+          </optgroup>
+        @else
+          @foreach ($interpretes as $interprete)
+            <option value="{{ $interprete->id }}"
+              {{ in_array($interprete->id, $selectedInterpreteIds) ? 'selected' : '' }}>
+              {{ $interprete->interprete }}
+            </option>
+          @endforeach
+        @endif
       </select>
+      @if (! empty($restrictedByFichas))
+        <small class="form-text text-muted">Incluí al menos un artista o festival que administrás; los demás son invitados.</small>
+      @endif
       <input type="hidden" name="interprete_ids[]" value="">
       <small class="form-text text-muted">Podés asociar uno o varios artistas. La lista reemplaza la nómina actual al guardar.</small>
       @error('interprete_ids')

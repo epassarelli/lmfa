@@ -223,7 +223,16 @@ trait ManagesOrganizationEntities
      */
     public function isScopedToManagedInterpretes(string $globalPermission): bool
     {
-        return ! $this->hasRole('administrador') && ! $this->can($globalPermission);
+        return ! $this->hasRole('administrador') && ($this->isRestrictedByEntities() || ! $this->can($globalPermission));
+    }
+
+    /**
+     * Con el acceso por fichas activo (BACKOFFICE_ACCESS_BY_ENTITIES), quien no es administrador solo
+     * actúa sobre los artistas y festivales que administra, aunque su rol tenga permisos globales.
+     */
+    public function isRestrictedByEntities(): bool
+    {
+        return (bool) config('backoffice_access.enabled') && ! $this->hasRole('administrador');
     }
 
     public function canManage(Model $entity): bool

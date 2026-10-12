@@ -21,14 +21,17 @@ class ShowRequest extends FormRequest
         $user = $this->user();
         $event = $this->route('event');
 
-        $membershipOnly = $user && ! $user->hasRole('administrador') && ($event
+        $membershipOnly = $user && ! $user->hasRole('administrador') && ($user->isRestrictedByEntities() || ($event
             ? (int) $event->created_by !== (int) $user->id
-            : ! $user->hasRole('colaborador'));
+            : ! $user->hasRole('colaborador')));
+
+        // En un evento de varias jornadas los artistas viven dentro de cada jornada.
+        $sessionArtists = collect((array) $this->input('sessions', []))->flatMap(fn ($session) => (array) ($session['interprete_ids'] ?? []))->all();
 
         $this->requireOwnArtistOrFestival(
             $validator,
             (bool) $membershipOnly,
-            array_merge((array) $this->input('interprete_ids', []), [$this->input('interprete_id')]),
+            array_merge((array) $this->input('interprete_ids', []), $sessionArtists, [$this->input('interprete_id')]),
             (array) $this->input('festival_ids', []),
             'interprete_ids'
         );

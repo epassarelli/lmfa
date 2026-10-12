@@ -52,14 +52,18 @@
   <div class="col-md-4">
     <div class="form-group">
       <label for="interprete_principal_id">Intérprete Principal</label>
-      <select name="interprete_principal_id" id="interprete_principal_id" class="form-control select2">
-        <option value="">— Ninguno —</option>
-        @foreach ($interpretes as $interprete)
+      <select name="interprete_principal_id" id="interprete_principal_id" class="form-control select2" @if (! empty($principalRequired)) required @endif>
+        <option value="">{{ ! empty($principalRequired) ? '— Elegí uno de tus artistas —' : '— Ninguno —' }}</option>
+        @foreach ($principalOptions ?? $interpretes as $interprete)
           <option value="{{ $interprete->id }}" {{ old('interprete_principal_id', $news->interprete_id ?? '') == $interprete->id ? 'selected' : '' }}>
             {{ $interprete->interprete }}
           </option>
         @endforeach
       </select>
+      @if (! empty($principalRequired))
+        <small class="form-text text-muted">El principal tiene que ser uno de los artistas que administrás. Los secundarios pueden ser cualquiera.</small>
+      @endif
+      @error('interprete_principal_id') <small class="text-danger d-block">{{ $message }}</small> @enderror
     </div>
   </div>
 

@@ -11,6 +11,14 @@ class ContactMessagesDemoSeederTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Independiente de los mensajes demo ya cargados: se revierte con la transacción.
+        ContactMessage::query()->delete();
+    }
+
     public function test_it_creates_demo_messages_covering_every_status_and_more_than_a_page(): void
     {
         $this->seed(ContactMessagesDemoSeeder::class);

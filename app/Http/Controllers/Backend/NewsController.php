@@ -66,6 +66,29 @@ class NewsController extends Controller
         return view('backend.news.index', compact('news'));
     }
 
+    /**
+     * Opciones del artista principal. Con el acceso por fichas activo, quien no es administrador solo ve
+     * los artistas que administra (más el principal actual si es una noticia propia previa).
+     *
+     * @return array{0: \Illuminate\Support\Collection, 1: bool} [opciones, el principal es obligatorio]
+     */
+    private function principalOptions($all, ?News $news): array
+    {
+        $user = auth()->user();
+
+        if (! $user->isRestrictedByEntities()) {
+            return [$all, false];
+        }
+
+        $allowed = $user->managedInterpreteIds();
+
+        if ($news && (int) $news->created_by === (int) $user->id && $news->interprete_id) {
+            $allowed[] = (int) $news->interprete_id;
+        }
+
+        return [$all->whereIn('id', $allowed)->values(), true];
+    }
+
     public function create()
     {
         $this->authorize('create', News::class);
@@ -73,8 +96,9 @@ class NewsController extends Controller
         $categorias = Categoria::all();
         $interpretes = Interprete::active()->get();
         $news = new News();
+        [$principalOptions, $principalRequired] = $this->principalOptions($interpretes, null);
 
-        return view('backend.news.create', compact('interpretes', 'categorias', 'news'));
+        return view('backend.news.create', compact('interpretes', 'categorias', 'news', 'principalOptions', 'principalRequired'));
     }
 
     public function store(NoticiaRequest $request)
@@ -101,8 +125,9 @@ class NewsController extends Controller
 
         $categorias = Categoria::all();
         $interpretes = Interprete::active()->get();
+        [$principalOptions, $principalRequired] = $this->principalOptions($interpretes, $news);
 
-        return view('backend.news.edit', compact('news', 'interpretes', 'categorias'));
+        return view('backend.news.edit', compact('news', 'interpretes', 'categorias', 'principalOptions', 'principalRequired'));
     }
 
     public function update(NoticiaRequest $request, News $news)

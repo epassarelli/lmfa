@@ -63,14 +63,14 @@ class AlbumController extends Controller
     /**
      * Quien no tiene permiso global de escritura solo elige entre los artistas que administra.
      */
-    private function selectableInterpretes()
+    private function selectableInterpretes(?int $currentInterpreteId = null)
     {
         $user = Auth::user();
 
         return Interprete::active()
             ->when(
                 $user->isScopedToManagedInterpretes('create album') && $user->isScopedToManagedInterpretes('update album'),
-                fn ($query) => $query->whereIn('id', $user->managedInterpreteIds())
+                fn ($query) => $query->where(fn ($q) => $q->whereIn('id', $user->managedInterpreteIds())->when($currentInterpreteId, fn ($q2) => $q2->orWhere('id', $currentInterpreteId)))
             )
             ->get();
     }
@@ -120,7 +120,7 @@ class AlbumController extends Controller
     public function edit(Album $album)
     {
         $action = 'edit';
-        $interpretes = $this->selectableInterpretes();
+        $interpretes = $this->selectableInterpretes($album->interprete_id);
         $interpreteId = $album->interprete_id;
 
         $album_canciones_ids = $album->canciones->pluck('id')->toArray();

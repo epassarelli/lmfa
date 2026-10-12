@@ -22,6 +22,21 @@ class NoticiaRequest extends FormRequest
         $user = $this->user();
         $news = $this->route('news');
 
+        // Con el acceso por fichas activo: el artista PRINCIPAL es obligatorio y tiene que ser uno que
+        // la persona administra; los secundarios pueden ser cualquiera (invitados).
+        if ($user && $user->isRestrictedByEntities()) {
+            $validator->after(function ($validator) use ($user, $news) {
+                $principal = (int) $this->input('interprete_principal_id');
+                $unchangedOwnRecord = $news && (int) $news->created_by === (int) $user->id && $principal === (int) $news->interprete_id;
+
+                if (! $unchangedOwnRecord && (! $principal || ! $user->canManageInterpreteId($principal))) {
+                    $validator->errors()->add('interprete_principal_id', 'El artista principal tiene que ser uno que administrás.');
+                }
+            });
+
+            return;
+        }
+
         $membershipOnly = $user && ! $user->hasRole('administrador') && ($news
             ? (int) $news->created_by !== (int) $user->id
             : ! $user->can('create noticia'));

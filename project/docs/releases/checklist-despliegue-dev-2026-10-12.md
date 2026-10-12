@@ -161,6 +161,7 @@ Solo después de unos días estables y de la validación manual:
   SELECT 'comidas', COALESCE(r.name,'sin rol'), COUNT(*) FROM comidas c LEFT JOIN model_has_roles mhr ON mhr.model_id = c.user_id LEFT JOIN roles r ON r.id = mhr.role_id GROUP BY r.name;
   SELECT 'news', COALESCE(r.name,'sin rol'), COUNT(*) FROM news n LEFT JOIN model_has_roles mhr ON mhr.model_id = n.created_by LEFT JOIN roles r ON r.id = mhr.role_id GROUP BY r.name;
   ```
+- [ ] **Selección acotada (solo con el flag activo):** con una cuenta colaborador que administra un artista, comprobar que en Discos y Canciones solo se ofrece ese artista, que en Noticias el principal solo permite artistas propios (los secundarios, cualquiera), que un Evento exige al menos un artista o festival propio y que Intérpretes lista solo las fichas propias. El administrador sigue viendo y eligiendo todo.
 - [ ] Qué cambia al activar `BACKOFFICE_ACCESS_BY_ENTITIES=true`: quien no administra fichas deja de ver Intérpretes, Discos, Canciones, Festivales, Eventos y Noticias; Mitos y Comidas quedan para administradores y `verificado`. Mis fichas siempre está disponible. Lo ya publicado no cambia.
 - [ ] Activar, `php artisan config:cache`, repetir el smoke con una cuenta colaborador sin fichas, con ficha de artista, con ficha de festival y con `verificado`.
 - [ ] Reversa inmediata: `BACKOFFICE_ACCESS_BY_ENTITIES=false` + `php artisan config:cache`.

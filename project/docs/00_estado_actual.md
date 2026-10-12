@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-13: selección acotada a lo propio (con el flag activo)
+
+- Spec `member-selection-scoping` (decisiones del usuario: 1 sí, 2 listados solo con lo suyo, 3 festivales con la misma lógica). Medición previa con el flag encendido: un colaborador con una ficha veía y creaba Discos/Canciones de cualquier artista, veía todos los Intérpretes y podía crear Noticias/Eventos sin artistas propios. `MemberSelectionScopingTest` (12 casos); suite en base limpia 649 pasan, 0 fallan; en `mfa` solo los 13 previos. Los tests de contacto ya no dependen de que la tabla esté vacía (se vacía dentro de la transacción). **Observación abierta:** con el flag activo un colaborador con una ficha todavía puede crear artistas/festivales nuevos de forma directa (permiso `create interprete/festival`), salteando la solicitud de alta; no se tocó por no estar pedido.
+
 ### Ejecutado 2026-10-13: mensajes de contacto demo y decisión sobre Clasificados
 
 - Seeder local `ContactMessagesDemoSeeder` (solo local/testing, idempotente, prefijo `[DEMO]` en el nombre y dominio `example.test`): 34 mensajes en `mfa` (18 nuevos, 9 leídos, 6 respondidos, 1 spam; incluye HTML para ver el escape, un mensaje largo, uno de 40 días sin responder, dos del mismo remitente y uno de una cuenta registrada; más de una página). Limpieza: `DELETE FROM contact_messages WHERE nombre LIKE '[DEMO]%';`. `ContactMessagesDemoSeederTest` (3). **Avisos Clasificados sigue visible para todos** (decisión del usuario).

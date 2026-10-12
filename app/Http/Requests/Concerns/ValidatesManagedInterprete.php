@@ -20,8 +20,11 @@ trait ValidatesManagedInterprete
                 $user = $this->user();
                 $record = $this->route($content);
 
-                // Quien edita un registro propio (lo creo el) no queda limitado a los artistas que administra.
-                if ($user && $record && (int) $record->user_id === (int) $user->id) {
+                // Quien edita un registro propio (lo creó él) puede seguir editándolo; con el acceso por fichas
+                // activo solo mientras no lo cambie a otro artista que no administra.
+                $ownRecord = $user && $record && (int) $record->user_id === (int) $user->id;
+
+                if ($ownRecord && (! config('backoffice_access.enabled') || (int) $value === (int) $record->interprete_id)) {
                     return;
                 }
 
