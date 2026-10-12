@@ -73,7 +73,7 @@ class InterpreteController extends Controller
       ? Str::slug($payload['slug'])
       : Str::slug($artista->interprete);
     $artista->user_id = Auth::id();
-    $artista->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+    $artista->estado = Auth::user()->canPublish() ? 1 : 0;
 
     $artista->save();
 
@@ -143,7 +143,7 @@ class InterpreteController extends Controller
 
 
 
-    if (Auth::user()->isAdmin() || Auth::user()->hasRole('administrador')) {
+    if (Auth::user()->canPublish()) {
         if (! array_key_exists('estado', $payload)) {
             $interprete->estado = 1;
         }

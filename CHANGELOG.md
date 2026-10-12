@@ -9,6 +9,7 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Camino de confianza para publicar y baja del rol global `prensa`** (spec `roles-trust-ladder-and-cleanup`): nuevo permiso `publish contents` y rol `verificado` (aditivo a colaborador): lo que escribe se publica directo en Discos, Canciones, Eventos, Noticias, Intérpretes y Festivales; el resto sigue en revisión. "Prensa" pasa a modelarse como relación con una ficha. Requiere migración `2026_10_12_100000` (pendiente de ejecución). Modelo documentado en `project/docs/permisos_y_roles.md`.
 - **Rol sugerido al aprobar solicitudes de vínculo** (spec `claim-approval-role-suggestion`): el detalle de la solicitud preselecciona el rol (artista, representante u organizador → responsable; prensa u otra → editor; baja a editor si la ficha ya tiene responsable) y muestra el motivo y alertas (organización inactiva, responsable existente, solicitante ya miembro, alta sin respaldo o con nombres parecidos). Solo orienta: el administrador decide. Mapa en `config/entity_management.php`.
 - **Eventos y noticias de artistas para quien administra su ficha** (spec `entity-member-content-access-events-news`, Etapa 2): un miembro owner/editor activo crea eventos y noticias que incluyan a su artista (puede sumar invitados) y edita aquellos donde administra todos los artistas vinculados o que creó. Todo queda en borrador para revisión: ahora los servicios de Eventos y Noticias nunca publican si el usuario no puede publicar, aunque el request traiga `estado=1`. Listados de Eventos y Noticias limitados a lo propio o editable.
 - **Solicitud de alta de ficha** (spec `entity-creation-requests`): quien no encuentra su artista o festival en Mis fichas puede pedir que se cree, con su relación, mensaje y link de respaldo, viendo antes las fichas con nombre parecido. El administrador crea la ficha mínima sin publicar, la vincula a una existente (duplicado) o rechaza. Requiere migración `2026_10_11_120000` (aplicada en local).
@@ -39,6 +40,7 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 - **Performance de la cartelera**: provincias, resolución de provincia por slug e intérpretes del buscador quedan en caché; se eliminaron consultas sin uso en la ficha. Las consultas de continuidad tienen `limit` en SQL y eager loading.
 
 ### Corregido
+- **Permisos de edición y publicación:** `update album/cancion/noticia` ya no permiten editar contenido ajeno (edita el creador o quien administra el artista); Álbumes y Canciones conservan el creador al editar; el estado de un Festival ya no lo decide el request; `UserPolicy::viewAny` solo para administrador; `isAdmin()` solo reconoce `administrador`.
 
 - **Description del JSON-LD en la cartelera de Eventos:** ahora usa la misma prioridad que la ficha (meta_description, excerpt, body, texto genérico) en lugar de solo `body`, que podía salir vacío. Sin cambios de BD ni de URLs. Spec `event-agenda-description-fallback`.
 

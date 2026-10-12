@@ -37,7 +37,7 @@ class AlbumController extends Controller
 
         $albums = Album::query()
             ->when(
-                $user->hasRole('colaborador') || $user->hasRole('prensa') || $user->isScopedToManagedInterpretes('update album'),
+                $user->hasRole('colaborador') || $user->isScopedToManagedInterpretes('update album'),
                 fn ($query) => $query->ownedOrOfManagedInterprete($user)
             )
             ->with('interprete', 'user', 'images')
@@ -92,7 +92,7 @@ class AlbumController extends Controller
             ? Str::slug($payload['slug'])
             : Str::slug($album->album);
         $album->user_id = Auth::id();
-        $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $album->estado = Auth::user()->canPublish() ? 1 : 0;
         $album->visitas = 0;
         $album->save();
 
@@ -108,7 +108,7 @@ class AlbumController extends Controller
             );
         }
 
-        if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
+        if (Auth::user()->hasRole('colaborador')) {
             $this->sendNotification($album);
         }
 
@@ -140,8 +140,7 @@ class AlbumController extends Controller
         $album->slug = filled($payload['slug'] ?? null)
             ? Str::slug($payload['slug'])
             : Str::slug($album->album);
-        $album->user_id = Auth::id();
-        $album->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $album->estado = Auth::user()->canPublish() ? 1 : 0;
 
         if ($request->hasFile('foto')) {
             $this->imageService->process(

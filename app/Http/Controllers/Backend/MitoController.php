@@ -34,7 +34,7 @@ class MitoController extends Controller
         $search = trim($request->string('search')->toString());
 
         $mitos = Mito::query()
-            ->when($user->hasRole('colaborador') || $user->hasRole('prensa'), function ($query) use ($user) {
+            ->when($user->hasRole('colaborador'), function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
             ->with(['user', 'images'])
@@ -91,7 +91,7 @@ class MitoController extends Controller
             );
         }
 
-        if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
+        if (Auth::user()->hasRole('colaborador')) {
             $this->sendNotification($mito);
         }
 

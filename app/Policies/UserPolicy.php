@@ -13,7 +13,7 @@ class UserPolicy
     public function viewAny(User $user): bool
     {
         //
-        return $user->hasRole(['administrador', 'prensa']);
+        return $user->hasRole('administrador');
     }
 
     /**

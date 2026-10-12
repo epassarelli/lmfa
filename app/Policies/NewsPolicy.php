@@ -27,7 +27,7 @@ class NewsPolicy
 
     public function update(User $user, News $news)
     {
-        return $user->hasRole('administrador') || $user->can('update noticia') || $news->created_by == $user->id || $user->managesAllInterpretes($news->linkedInterpreteIds());
+        return $user->hasRole('administrador') || $news->created_by == $user->id || $user->managesAllInterpretes($news->linkedInterpreteIds());
     }
 
     public function delete(User $user, News $news)

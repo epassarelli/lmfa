@@ -44,7 +44,7 @@ class CancionController extends Controller
 
         $canciones = Cancion::query()
             ->when(
-                $user->hasRole('colaborador') || $user->hasRole('prensa') || $user->isScopedToManagedInterpretes('update cancion'),
+                $user->hasRole('colaborador') || $user->isScopedToManagedInterpretes('update cancion'),
                 fn ($query) => $query->ownedOrOfManagedInterprete($user)
             )
             ->with('interprete:id,interprete', 'user:id,name')
@@ -151,11 +151,11 @@ class CancionController extends Controller
             $cancion->rights_status = $cancion->rights_status ?: 'not_available';
         }
         $cancion->user_id = Auth::id();
-        $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $cancion->estado = Auth::user()->canPublish() ? 1 : 0;
         $cancion->visitas = 0;
         $cancion->save();
 
-        if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
+        if (Auth::user()->hasRole('colaborador')) {
             $this->sendNotification($cancion);
         }
 
@@ -186,8 +186,7 @@ class CancionController extends Controller
             $cancion->lyricist = null;
             $cancion->rights_status = $cancion->rights_status ?: 'not_available';
         }
-        $cancion->user_id = Auth::id();
-        $cancion->estado = Auth::user()->hasRole('administrador') ? 1 : 0;
+        $cancion->estado = Auth::user()->canPublish() ? 1 : 0;
         $cancion->save();
 
         Alert::success('Cancion actualizada', 'La cancion ha sido actualizada con exito.');

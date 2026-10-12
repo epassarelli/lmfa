@@ -23,7 +23,7 @@ class NoticiaRequest extends FormRequest
         $news = $this->route('news');
 
         $membershipOnly = $user && ! $user->hasRole('administrador') && ($news
-            ? ((int) $news->created_by !== (int) $user->id && ! $user->can('update noticia'))
+            ? (int) $news->created_by !== (int) $user->id
             : ! $user->can('create noticia'));
 
         $this->requireOwnArtist($validator, (bool) $membershipOnly, array_merge((array) $this->input('interprete_secundarios', []), [$this->input('interprete_principal_id')]), 'interprete_principal_id');

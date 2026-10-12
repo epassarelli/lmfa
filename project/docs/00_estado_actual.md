@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: camino de confianza, baja del rol prensa y correcciones de permisos
+
+- Spec `roles-trust-ladder-and-cleanup`; modelo en `project/docs/permisos_y_roles.md`. `TrustedPublishingTest` (10 casos); suite completa 513 pasan, 13 fallos previos por datos reales. **Migración `2026_10_12_100000` preparada, NO ejecutada:** crea permiso `publish contents` y rol `verificado`, pasa a colaborador a los usuarios con rol prensa y elimina ese rol (requiere confirmación). Hasta ejecutarla, nadie salvo el administrador publica y los 2 usuarios de prueba con rol prensa quedan sin permisos de creación. Pendiente: colaborador/prensa resuelto; siguen Mitos/Comidas, flag, Etapa 3, delegar aprobaciones al owner y observaciones previas.
+
 ### Implementado en local 2026-10-11: rol sugerido al aprobar (alternativa B)
 
 - Spec `claim-approval-role-suggestion`. `ApprovalRoleSuggestionTest` (7 casos). **No validado:** navegador (alertas en la pantalla de detalle). Resuelto el pendiente 1 de la lista; siguen: colaborador vs prensa, Mitos/Comidas, flag, Etapa 3 y observaciones.

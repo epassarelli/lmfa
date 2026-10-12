@@ -31,7 +31,7 @@ class EventPolicy
      */
     public function create(User $user)
     {
-        return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']) || $user->managedInterpreteIds() !== [];
+        return $user->hasAnyRole(['administrador', 'colaborador']) || $user->managedInterpreteIds() !== [];
     }
 
     /**

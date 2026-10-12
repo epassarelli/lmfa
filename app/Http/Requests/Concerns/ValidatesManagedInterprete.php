@@ -18,7 +18,14 @@ trait ValidatesManagedInterprete
             'exists:interpretes,id',
             function (string $attribute, mixed $value, \Closure $fail) use ($content) {
                 $user = $this->user();
-                $permission = ($this->route($content) ? 'update ' : 'create ').$content;
+                $record = $this->route($content);
+
+                // Quien edita un registro propio (lo creo el) no queda limitado a los artistas que administra.
+                if ($user && $record && (int) $record->user_id === (int) $user->id) {
+                    return;
+                }
+
+                $permission = ($record ? 'update ' : 'create ').$content;
 
                 if ($user && $user->isScopedToManagedInterpretes($permission) && ! $user->canManageInterpreteId((int) $value)) {
                     $fail('No administrás este artista.');

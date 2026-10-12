@@ -41,7 +41,7 @@ class FestivalController extends Controller
         );
 
         $festivales = Festival::query()
-            ->when($user->hasRole(['colaborador', 'prensa']), function ($query) use ($user) {
+            ->when($user->hasRole('colaborador'), function ($query) use ($user) {
                 $query->managedOrLegacyBy($user);
             })
             ->with([
@@ -73,7 +73,7 @@ class FestivalController extends Controller
     public function create()
     {
         $festival = new Festival([
-            'status' => Auth::user()->hasRole('administrador') ? 'published' : 'draft',
+            'status' => Auth::user()->canPublish() ? 'published' : 'draft',
             'published_at' => now(),
         ]);
 
@@ -100,7 +100,7 @@ class FestivalController extends Controller
             app(OrganizationProvisioner::class)->forEntity($festival, Auth::user());
         }
 
-        if (Auth::user()->hasRole(['prensa', 'colaborador'])) {
+        if (Auth::user()->hasRole('colaborador')) {
             $this->sendNotification($festival);
         }
 
@@ -168,6 +168,12 @@ class FestivalController extends Controller
         $title = $data['title'] ?? $festival?->title;
         $body = $data['body'] ?? $festival?->body;
         $status = $data['status'] ?? $festival?->status ?? 'draft';
+
+        // Quien no puede publicar nunca publica: el estado no lo decide el request.
+        if (! Auth::user()?->canPublish()) {
+            $status = 'draft';
+        }
+
         $publishedAt = $data['published_at'] ?? $festival?->published_at;
 
         return array_merge($data, [

@@ -19,7 +19,7 @@ class RadioProgramPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
+        return $user->hasAnyRole(['administrador', 'colaborador']);
     }
 
     public function update(User $user, RadioProgram $program): bool

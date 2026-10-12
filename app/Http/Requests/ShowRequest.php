@@ -23,7 +23,7 @@ class ShowRequest extends FormRequest
 
         $membershipOnly = $user && ! $user->hasRole('administrador') && ($event
             ? (int) $event->created_by !== (int) $user->id
-            : ! $user->hasAnyRole(['prensa', 'colaborador']));
+            : ! $user->hasRole('colaborador'));
 
         $this->requireOwnArtist($validator, (bool) $membershipOnly, array_merge((array) $this->input('interprete_ids', []), [$this->input('interprete_id')]), 'interprete_ids');
     }

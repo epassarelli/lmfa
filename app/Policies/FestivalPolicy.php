@@ -22,7 +22,7 @@ class FestivalPolicy
 
   public function create(User $user)
   {
-    return $user->hasAnyRole(['administrador', 'prensa', 'colaborador']);
+    return $user->hasAnyRole(['administrador', 'colaborador']);
   }
 
   public function update(User $user, Festival $festival)
