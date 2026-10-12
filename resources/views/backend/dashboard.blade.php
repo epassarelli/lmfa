@@ -10,6 +10,20 @@
 
   <section class="content">
     <div class="container-fluid">
+      @if (isset($contadores['mensajes_nuevos']))
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="small-box {{ $contadores['mensajes_nuevos'] > 0 ? 'bg-primary' : 'bg-secondary' }}">
+              <div class="inner">
+                <h3>{{ $contadores['mensajes_nuevos'] }}</h3>
+                <p>{{ $contadores['mensajes_nuevos'] === 1 ? 'Mensaje de contacto nuevo' : 'Mensajes de contacto nuevos' }}</p>
+              </div>
+              <div class="icon"><i class="fas fa-envelope"></i></div>
+              <a href="{{ route('backend.contact-messages.index') }}" class="small-box-footer">Ver mensajes <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+        </div>
+      @endif
       <!-- Small boxes (Stat box) -->
 
       <div class="row">

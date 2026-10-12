@@ -9,7 +9,7 @@ Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se
 | Rama origen | `dev` (varios commits sin push respecto de `origin/dev`; contar con `git log --oneline origin/dev..dev`) |
 | Tamaño | 213 archivos, ≈11.600 líneas agregadas |
 | Rama de despliegue | `main` (se hace *pull* de `main` en el servidor; ver `frontend-assets-deploy.md`) |
-| Migraciones nuevas | 7 (ver sección 3) |
+| Migraciones nuevas | 8 (ver sección 3) |
 | Dependencias (composer/npm) | **sin cambios** |
 | Build del frontend (`public/build`) | **sin cambios por este lote**; `npm run build:verify` pasa (13 assets). Solo cambió una vista pública (cartelera, valor del JSON-LD) sin clases CSS nuevas |
 | Workflows / Docker | solo `ci.yml` (+1 paso: sembrar datos de referencia de tests) |
@@ -45,6 +45,13 @@ Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se
   SELECT COUNT(*) FROM users WHERE points > 0;        -- esperado: 0 (los puntos solo se otorgaban al aprobar contribuciones)
   ```
   - [ ] Si alguna consulta devuelve más de 0: **parar** y avisar; el respaldo completo del paso 2 permite recuperar los datos, y el `down()` de la migración recrea la estructura (no los datos).
+- [ ] **Formulario de contacto:** la tabla `contact_messages` no existía en ninguna migración y puede existir en producción como tabla heredada. Antes de migrar, **solo lectura**:
+  ```sql
+  DESCRIBE contact_messages;                 -- ¿existe? ¿columnas id, nombre, email, asunto, mensaje, fecha_envio?
+  SELECT COUNT(*) FROM contact_messages;     -- anotar cuántos mensajes hay
+  ```
+  - [ ] Si existe con otro esquema (otros nombres de columnas): **parar y avisar** antes de migrar; la migración solo agrega columnas, pero el código espera esas 6 columnas heredadas.
+  - [ ] Confirmar que `MAIL_*` de producción envía correo (el formulario avisa a `CONTACT_NOTIFY_TO`).
 - [ ] Anotar cuántos usuarios tienen rol `prensa`. En local eran 2 de prueba; **si en producción hay usuarios reales con ese rol, la migración los pasa a `colaborador`** (pierden `update album/cancion/noticia/show`, que de todos modos ya no tienen efecto cruzado). Avisarles si corresponde.
 - [ ] Revisar `storage/logs/laravel.log` reciente: línea base de errores antes de desplegar.
 
@@ -60,9 +67,10 @@ Nuevas, en este orden:
 | `2026_10_10_140000_create_entity_claim_requests_table` | Solicitudes de vínculo usuario↔ficha | Bajo |
 | `2026_10_11_120000_add_creation_requests_to_entity_claim_requests` | Solicitudes de alta; `entity_id` pasa a nullable (ALTER) y 4 columnas nuevas | Medio-bajo (ALTER sobre tabla chica) |
 | `2026_10_12_100000_trusted_publishing_role_and_remove_prensa_role` | Crea permiso `publish contents` y rol `verificado`; **pasa usuarios `prensa` a `colaborador` y elimina el rol `prensa`** | **Medio: modifica datos de roles** |
+| `2026_10_13_100000_create_or_extend_contact_messages_table` | Crea `contact_messages` si no existe; si existe (tabla heredada) **solo agrega** las columnas que falten (`status`, `user_id`, `ip_hash`, `read_at`, `answered_at`, `spam_reason`); no modifica ni borra nada | Bajo (aditiva). Los mensajes previos quedan con estado `new` |
 | `2026_10_12_140000_drop_contributions_and_user_points_rank` | **Borra** la tabla `contributions` y las columnas `users.points` / `users.rank` (flujo "Contribuir" retirado) | **Medio: destructiva** (sin datos en producción, confirmado; `down()` recrea la estructura, no los datos) |
 
-- [ ] `php artisan migrate:status` → deben figurar **exactamente esas 7** como *Pending*. Si hay más o menos, parar y revisar.
+- [ ] `php artisan migrate:status` → deben figurar **exactamente esas 8** como *Pending*. Si hay más o menos, parar y revisar.
 - [ ] `php artisan migrate --pretend` → leer el SQL que se ejecutaría (no ejecuta nada).
 - [ ] `php artisan migrate --force` (con el usuario de la aplicación para no crear archivos como root).
 - [ ] `php artisan migrate:status` → 0 pendientes.
@@ -89,9 +97,11 @@ Nuevas, en este orden:
   | `ENTITY_MANAGEMENT_SCOPE_LISTINGS` | `false` (u omitir) | |
   | `ENTITY_CLAIMS_DELEGATE_TO_OWNERS` | `true` (u omitir) | Los owners aprueban editores de su ficha |
   | `SOCIAL_LOGIN_ENABLED` | **no definir** (u omitir/`false`) | Oculta los botones de Google/Facebook |
+  | `CONTACT_NOTIFY_TO` | casilla que recibe los avisos (por defecto la actual) | Aviso de cada mensaje de contacto nuevo |
+  | `CONTACT_SEND_CONFIRMATION` | `true` (o `false` para no escribir a terceros) | Confirmación al remitente |
   - [ ] No copiar el `.env` local ni el `.env.testing`: tienen valores de desarrollo (`.env.testing` apunta a `mfa_test`).
 - [ ] `composer install --no-dev` **no** es necesario (sin cambios de dependencias); correrlo solo si el proceso habitual lo exige.
-- [ ] Frontend: no hay cambios de build. Confirmar `public/build/manifest.json` presente y `public/hot` inexistente.
+- [ ] Frontend: **`public/build` cambió** (3 CSS con hash nuevo + `manifest.json`, por las clases del formulario de contacto): viaja en el commit; confirmar tras el *pull* que `public/build/manifest.json` apunta a archivos existentes (`npm run build:verify` local pasa) y que `public/hot` no existe.
 
 ## 5. Cachés (después de migrar y de actualizar el código)
 
@@ -107,6 +117,7 @@ Nuevas, en este orden:
 - [ ] Home y una página interna → `200`; CSS/JS → `200`.
 - [ ] `/login` y `/register`: **sin** botones de Google/Facebook; formulario de email y contraseña visible.
 - [ ] Botón **Publicar** del menú → lleva al login; tras iniciar sesión cae en `/admin` (con el flag apagado, el dashboard; con el flag encendido y usuario no administrador, Mis fichas).
+- [ ] **Contacto:** `/contacto` carga; el menú **Más → Contacto** y el footer (**Escribinos** y la lista) lo enlazan; enviar un mensaje de prueba → confirmación en pantalla, correo al equipo (con Reply-To del remitente) y, si está activo, confirmación al remitente; aparece en **Backoffice → Mensajes de contacto** (solo administrador) y en el dashboard. Probar también que un segundo envío idéntico no duplica y que un envío inmediato (menos de 4 s) muestra el aviso. Borrar el mensaje de prueba.
 - [ ] `/admin/contribuir` y `/admin/contributions` responden `404`; las páginas de artista, festival, canción y evento ya no muestran "Sugerir corrección".
 - [ ] **Menú de usuario** (esquina superior derecha del backoffice): avatar de iniciales, nombre, rol y botones **Mis datos** / **Salir**. En **Mis datos** (`/admin/mi-cuenta`): cambiar nombre y teléfono, cambiar contraseña (pide la actual; mínimo 8), ver el resumen y suscribirse/darse de baja del newsletter. El email aparece solo lectura. Verificar también que `/admin/users` (crear/editar) muestra el teléfono y exige contraseña de 8 caracteres o más.
 - [ ] Una página de **artista** (home y biografía) y una de **festival** muestran, discreto, "¿Sos este artista o lo representás? / ¿Organizás este festival? Solicitá administrar su ficha"; el enlace pasa por el login y cae en **Mis fichas** con la ficha ya elegida. Las páginas de evento y canción no lo muestran.

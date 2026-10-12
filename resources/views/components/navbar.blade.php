@@ -79,6 +79,7 @@
                 <a href="{{ route('discografias.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Discos</a>
                 <a href="{{ route('canciones.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Canciones</a>
                 <a href="{{ route('classifieds.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Clasificados</a>
+                <a href="{{ route('contacto') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Contacto</a>
               </div>
             </details>
           </li>

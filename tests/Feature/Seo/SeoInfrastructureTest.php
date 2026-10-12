@@ -39,43 +39,43 @@ class SeoInfrastructureTest extends TestCase
     /** @test */
     public function it_redirects_http_non_www_to_the_https_canonical_domain_without_losing_query_string(): void
     {
-        $response = $this->call('GET', 'http://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $response = $this->call('GET', 'http://mifolkloreargentino.com/avisos-clasificados?foo=bar&utm_source=ads');
 
-        $response->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $response->assertRedirect('https://mifolkloreargentino.com/avisos-clasificados?foo=bar&utm_source=ads');
         $this->assertSame(301, $response->getStatusCode());
     }
 
     /** @test */
     public function it_redirects_http_www_to_the_https_canonical_domain_without_losing_query_string(): void
     {
-        $response = $this->call('GET', 'http://www.mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $response = $this->call('GET', 'http://www.mifolkloreargentino.com/avisos-clasificados?foo=bar&utm_source=ads');
 
-        $response->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $response->assertRedirect('https://mifolkloreargentino.com/avisos-clasificados?foo=bar&utm_source=ads');
         $this->assertSame(301, $response->getStatusCode());
     }
 
     /** @test */
     public function it_redirects_https_www_to_the_https_canonical_domain_without_losing_query_string(): void
     {
-        $response = $this->call('GET', 'https://www.mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $response = $this->call('GET', 'https://www.mifolkloreargentino.com/avisos-clasificados?foo=bar&utm_source=ads');
 
-        $response->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $response->assertRedirect('https://mifolkloreargentino.com/avisos-clasificados?foo=bar&utm_source=ads');
         $this->assertSame(301, $response->getStatusCode());
     }
 
     /** @test */
     public function it_redirects_https_com_ar_www_to_the_https_canonical_domain_without_losing_query_string(): void
     {
-        $response = $this->call('GET', 'https://www.mifolkloreargentino.com.ar/contacto?foo=bar&utm_source=ads');
+        $response = $this->call('GET', 'https://www.mifolkloreargentino.com.ar/avisos-clasificados?foo=bar&utm_source=ads');
 
-        $response->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar&utm_source=ads');
+        $response->assertRedirect('https://mifolkloreargentino.com/avisos-clasificados?foo=bar&utm_source=ads');
         $this->assertSame(301, $response->getStatusCode());
     }
 
     /** @test */
     public function it_serves_the_page_normally_when_request_already_uses_the_canonical_host(): void
     {
-        $response = $this->call('GET', '/contacto', [], [], [], [
+        $response = $this->call('GET', '/avisos-clasificados', [], [], [], [
             'HTTP_HOST' => 'mifolkloreargentino.com',
             'HTTPS' => 'on',
         ]);
@@ -127,24 +127,24 @@ class SeoInfrastructureTest extends TestCase
     /** @test */
     public function equivalent_internal_routes_keep_200_on_apex_and_301_on_www(): void
     {
-        $apex = $this->call('GET', '/contacto?foo=bar', [], [], [], [
+        $apex = $this->call('GET', '/avisos-clasificados?foo=bar', [], [], [], [
             'HTTP_HOST' => 'mifolkloreargentino.com',
             'HTTPS' => 'on',
         ]);
 
         $apex->assertOk();
-        $apex->assertSee('href="https://mifolkloreargentino.com/contacto?foo=bar"', false);
+        $apex->assertSee('href="https://mifolkloreargentino.com/avisos-clasificados?foo=bar"', false);
 
-        $www = $this->call('GET', 'https://www.mifolkloreargentino.com/contacto?foo=bar');
+        $www = $this->call('GET', 'https://www.mifolkloreargentino.com/avisos-clasificados?foo=bar');
 
-        $www->assertRedirect('https://mifolkloreargentino.com/contacto?foo=bar');
+        $www->assertRedirect('https://mifolkloreargentino.com/avisos-clasificados?foo=bar');
         $this->assertSame(301, $www->getStatusCode());
     }
 
     /** @test */
     public function it_does_not_redirect_when_proxy_headers_already_indicate_the_canonical_https_request(): void
     {
-        $response = $this->call('GET', '/contacto?foo=bar', [], [], [], [
+        $response = $this->call('GET', '/avisos-clasificados?foo=bar', [], [], [], [
             'HTTP_HOST' => 'internal-origin',
             'HTTPS' => 'off',
             'HTTP_X_FORWARDED_HOST' => 'mifolkloreargentino.com',
@@ -153,19 +153,19 @@ class SeoInfrastructureTest extends TestCase
         ]);
 
         $response->assertOk();
-        $response->assertSee('href="https://mifolkloreargentino.com/contacto?foo=bar"', false);
+        $response->assertSee('href="https://mifolkloreargentino.com/avisos-clasificados?foo=bar"', false);
     }
 
     /** @test */
     public function it_renders_a_single_canonical_tag_and_strips_tracking_parameters_from_it(): void
     {
-        $response = $this->call('GET', '/contacto?page=2&utm_source=ads&foo=bar', [], [], [], [
+        $response = $this->call('GET', '/avisos-clasificados?page=2&utm_source=ads&foo=bar', [], [], [], [
             'HTTP_HOST' => 'mifolkloreargentino.com',
             'HTTPS' => 'on',
         ]);
 
         $response->assertOk();
-        $response->assertSee('href="https://mifolkloreargentino.com/contacto?', false);
+        $response->assertSee('href="https://mifolkloreargentino.com/avisos-clasificados?', false);
         $response->assertSee('page=2', false);
         $response->assertSee('foo=bar', false);
         $response->assertDontSee('utm_source', false);

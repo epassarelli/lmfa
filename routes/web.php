@@ -121,7 +121,7 @@ Route::prefix('enciclopedia')->name('enciclopedia.')->group(function () {
 
 // Contacto
 Route::get('/contacto', [ContactoController::class, 'index'])->name('contacto');
-Route::post('/contacto', [ContactoController::class, 'store'])->name('contacto.store');
+Route::post('/contacto', [ContactoController::class, 'store'])->middleware('throttle:'.config('contact.throttle_per_ip', '5,10'))->name('contacto.store');
 
 // Buscador y compartir
 Route::get('/buscar', [BusquedaController::class, 'index'])->name('buscar');

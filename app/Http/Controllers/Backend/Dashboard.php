@@ -49,6 +49,10 @@ class Dashboard extends Controller
         ];
 
 
+        if ($user->hasRole('administrador') && \Illuminate\Support\Facades\Schema::hasTable('contact_messages')) {
+            $contadores['mensajes_nuevos'] = \App\Models\ContactMessage::query()->status(\App\Models\ContactMessage::NEW)->count();
+        }
+
         return view('backend.dashboard', compact('user', 'roles', 'permissions', 'contadores'));
     }
 }

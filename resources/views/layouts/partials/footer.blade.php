@@ -8,12 +8,22 @@
         <p class="text-gray-300">
           ¡Sigue nuestras redes sociales para estar al día con las últimas noticias, lanzamientos y eventos de música!
         </p>
+        <a href="{{ route('contacto') }}"
+          class="mt-3 inline-flex items-center rounded-lg bg-[#ff661f] px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600">
+          Escribinos
+        </a>
       </div>
 
       <!-- Categorías -->
       <div>
         <p class="text-lg font-semibold text-white mb-2">Otras secciones</p>
         <ul class="space-y-1 text-gray-400">
+          <li>
+            <a href="{{ route('contacto') }}"
+              class="hover:text-white transition-colors {{ request()->routeIs('contacto') ? 'text-white font-semibold' : '' }}">
+              Contacto
+            </a>
+          </li>
           <li>
             <a href="{{ route('legal.privacy') }}"
               class="hover:text-white transition-colors {{ request()->routeIs('legal.privacy') ? 'text-white font-semibold' : '' }}">

@@ -3,58 +3,38 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+/** Confirmación de recepción al remitente (se puede apagar con CONTACT_SEND_CONFIRMATION). */
 class ContactSendEmail extends Mailable
 {
-  use Queueable, SerializesModels;
-  public $contactEmail, $name, $lastName;
-  /**
-   * Create a new message instance.
-   */
-  public function __construct($email, $name, $lastName)
-  {
-    $this->contactEmail = $email;
-    $this->name = $name;
-    $this->lastName = $lastName;
-  }
+    use Queueable, SerializesModels;
 
-  /**
-   * Get the message envelope.
-   */
-  public function envelope(): Envelope
-  {
-    return new Envelope(
-      subject: 'Gracias por contactarnos - Mi Folklore Argentino',
-      to: $this->contactEmail,
-    );
-  }
+    public function __construct(public string $contactEmail, public string $name)
+    {
+    }
 
-  /**
-   * Get the message content definition.
-   */
-  public function content(): Content
-  {
-    return new Content(
-      view: 'emails.contact_confirmation',
-      with: [
-        'name' => $this->name,
-        'lastName' => $this->lastName
-      ]
-    );
-  }
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Gracias por contactarnos - Mi Folklore Argentino',
+            to: [$this->contactEmail],
+        );
+    }
 
-  /**
-   * Get the attachments for the message.
-   *
-   * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-   */
-  public function attachments(): array
-  {
-    return [];
-  }
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.contact_confirmation',
+            with: ['name' => $this->name],
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [];
+    }
 }

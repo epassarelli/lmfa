@@ -461,6 +461,13 @@ return [
             ],
         ],
         [
+            'text' => 'Mensajes de contacto',
+            'url' => 'admin/contact-messages',
+            'icon' => 'fas fa-fw fa-envelope',
+            'can' => 'manage user',
+            'active' => ['admin/contact-messages*'],
+        ],
+        [
             'text' => 'Newsletter',
             'url' => 'admin/newsletter-subscribers',
             'icon' => 'fas fa-fw fa-envelope-open-text',

@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-13: formulario de contacto rehecho y visible
+
+- Spec `contact-form-overhaul`. Diagnóstico: la tabla `contact_messages` no existía (500 al enviar), errores de correo tragados, captcha estático 3+4, sin límites, autorrespondedor a cualquier dirección, sin bandeja, clases Bootstrap en el front y sin enlaces visibles. Ahora: migración defensiva `2026_10_13_100000` (aplicada en `mfa_test`; **pendiente de tu confirmación en `mfa`**), formulario Tailwind con defensas sin captcha, bandeja en el backoffice, enlaces en menú y footer, `public/build` recompilado. `ContactFormTest` (25) + 3 tests de `SeoInfrastructureTest` pasan a otra página de muestra (el canonical de `/contacto` ahora es limpio). Suite en base limpia: 616 pasan, 0 fallan; en `mfa` fallan los 13 previos y los 19 del contacto hasta migrar. **En producción:** verificar `DESCRIBE contact_messages` antes de migrar (puede existir como tabla heredada) y probar el envío real de correo. No validado en navegador.
+
 ### Implementado en local 2026-10-12: menú de usuario con avatar y página "Mis datos"
 
 - Spec `my-account` (etapas 1 y 2). Sin migraciones. `MyAccountTest` (18 casos); suite en base limpia 591 pasan, 0 fallan. Avatar de iniciales (SVG data URI, sin subida), `/admin/mi-cuenta` (nombre, teléfono, contraseña; email solo lectura), resumen de fichas/solicitudes, contenido propio y newsletter; `last_login_at` en cada login; reglas compartidas con el CRUD de Usuarios (contraseña mínima 8, teléfono). **Menú en el sitio público: no se implementó** — las páginas públicas van a caché de página completa decidida antes de iniciar sesión (`PublicPagesCacheProfile`) y un menú personalizado se serviría a anónimos; haría falta un menú hidratado por JS con endpoint sin caché y marca de sesión (complejidad y costo desproporcionados). **Observación:** `lang/vendor/adminlte` en la raíz no se carga (el proyecto usa `resources/lang`); el override efectivo está en `resources/lang/vendor/adminlte/es/menu.php`. No validado en navegador.

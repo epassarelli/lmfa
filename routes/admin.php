@@ -40,6 +40,7 @@ use App\Http\Controllers\Pasarela\PublicationRequestController;
 use App\Http\Controllers\Pasarela\PublicationTemplateController;
 use App\Http\Controllers\Pasarela\SocialAccountController;
 use App\Http\Controllers\Backend\AccountController;
+use App\Http\Controllers\Backend\ContactMessageController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
@@ -124,6 +125,11 @@ Route::middleware(['auth'])->group(function () {
 
     // --- ORGANIZACIONES (administración de fichas, contacto y miembros) ---
     Route::middleware('role:administrador')->group(function () {
+        Route::get('contact-messages', [ContactMessageController::class, 'index'])->name('backend.contact-messages.index');
+        Route::get('contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('backend.contact-messages.show');
+        Route::patch('contact-messages/{contactMessage}/status', [ContactMessageController::class, 'updateStatus'])->name('backend.contact-messages.status');
+        Route::delete('contact-messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('backend.contact-messages.destroy');
+
         Route::get('claims', [EntityClaimRequestController::class, 'index'])->name('backend.claims.index');
         Route::get('claims/{claim}', [EntityClaimRequestController::class, 'show'])->name('backend.claims.show');
         Route::post('claims/{claim}/approve', [EntityClaimRequestController::class, 'approve'])->name('backend.claims.approve');
