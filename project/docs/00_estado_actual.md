@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: registro sin rol, listados acotados, alta directa limitada y Mi panel
+
+Spec `registration-role-and-scoping`. Registro sin rol por defecto (decisión); listados acotados para no administradores; alta directa de artistas/festivales solo admin y verificado con el flag activo; dashboard de no administradores reemplazado por Mi panel. mfa_test: 661 passed, 2 skipped. Sin migraciones. Pendiente: validación visual y, en producción, los 6 usuarios sin rol quedan sin rol.
+
 ### Implementado en local 2026-10-12: tablero "Requiere tu atención" e insignias del sidebar
 
 Spec `admin-attention-dashboard`. `AdminAttentionService` (caché 30 s + invalidación por hooks de modelo), `ModerationQueue`, `PendingBadgeFilter`, nuevo `dashboard.blade.php`, festivales en el Centro de Moderación. Validado en `mfa_test`: 655 passed, 2 skipped. No se corrió `mfa` completa en este ciclo. Sin migraciones. Pendiente: validación visual en navegador.

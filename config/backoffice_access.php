@@ -10,10 +10,10 @@ return [
     // config/entity_management.php) y/o roles ('roles'). Alcanza con cumplir una condición.
     // Las secciones que no aparecen acá no se restringen. Mis fichas siempre está disponible.
     'sections' => [
-        'interpretes' => ['entities' => ['interprete']],
+        'interpretes' => ['entities' => ['interprete'], 'roles' => ['verificado']],
         'discos' => ['entities' => ['interprete']],
         'canciones' => ['entities' => ['interprete']],
-        'festivales' => ['entities' => ['festival']],
+        'festivales' => ['entities' => ['festival'], 'roles' => ['verificado']],
         'eventos' => ['entities' => ['interprete', 'festival']],
         // Contenido editorial: noticias siguen la lógica de fichas; mitos y comidas son del equipo.
         'noticias' => ['entities' => ['interprete'], 'roles' => ['verificado']],

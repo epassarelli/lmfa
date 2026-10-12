@@ -41,7 +41,7 @@ class FestivalController extends Controller
         );
 
         $festivales = Festival::query()
-            ->when($user->hasRole('colaborador'), function ($query) use ($user) {
+            ->when(! $user->hasRole('administrador'), function ($query) use ($user) {
                 $query->managedOrLegacyBy($user);
             })
             ->with([

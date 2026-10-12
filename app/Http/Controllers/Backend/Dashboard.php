@@ -27,10 +27,17 @@ class Dashboard extends Controller
     {
         $user = Auth::user();
 
-        // Con el acceso por fichas activo, el punto de entrada de quien no es administrador es Mis fichas
-        // (el dashboard muestra contadores globales y enlaces a secciones restringidas).
-        if (config('backoffice_access.enabled') && ! $user->hasRole('administrador')) {
-            return redirect()->route('backend.my-entities.index');
+        // Quien no es administrador ve "Mi panel": sus fichas, solicitudes y contenido, no los totales
+        // globales del portal ni enlaces a secciones que no puede abrir.
+        if (! $user->hasRole('administrador')) {
+            $summary = app(\App\Services\AccountSummaryService::class);
+
+            return view('backend.dashboard-member', [
+                'user' => $user,
+                'entities' => $summary->managedEntities($user, 8),
+                'claims' => $summary->claimCounts($user),
+                'content' => $summary->content($user),
+            ]);
         }
 
         $roles = $user->getRoleNames();

@@ -22,7 +22,7 @@ class InterpretePolicy
 
     public function create(User $user)
     {
-        return $user->hasRole('administrador') || $user->can('create interprete');
+        return $user->hasRole('administrador') || ($user->can('create interprete') && $user->canCreateEntityDirectly(['colaborador']));
     }
 
     public function update(User $user, Interprete $interprete)

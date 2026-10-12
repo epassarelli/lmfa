@@ -56,13 +56,15 @@ class ContributionFlowRemovedTest extends TestCase
             ->assertDontSee('Revisar publicaciones');
     }
 
-    public function test_with_the_access_flag_on_non_admins_land_on_my_fichas(): void
+    public function test_non_admins_land_on_their_member_panel_with_or_without_the_flag(): void
     {
-        config(['backoffice_access.enabled' => true]);
+        foreach ([true, false] as $flag) {
+            config(['backoffice_access.enabled' => $flag]);
 
-        $this->actingAs($this->user())->get(route('dashboard'))->assertRedirect(route('backend.my-entities.index'));
-        $this->actingAs($this->user(null))->get(route('dashboard'))->assertRedirect(route('backend.my-entities.index'));
-        $this->actingAs($this->user('administrador'))->get(route('dashboard'))->assertOk();
+            $this->actingAs($this->user())->get(route('dashboard'))->assertOk()->assertSee('data-member-panel', false);
+            $this->actingAs($this->user(null))->get(route('dashboard'))->assertOk()->assertSee('data-member-panel', false);
+            $this->actingAs($this->user('administrador'))->get(route('dashboard'))->assertOk()->assertDontSee('data-member-panel', false);
+        }
     }
 
     public function test_with_the_access_flag_off_the_dashboard_is_unchanged_for_collaborators(): void

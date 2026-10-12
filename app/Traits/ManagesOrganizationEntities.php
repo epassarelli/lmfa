@@ -230,6 +230,23 @@ trait ManagesOrganizationEntities
      * Con el acceso por fichas activo (BACKOFFICE_ACCESS_BY_ENTITIES), quien no es administrador solo
      * actúa sobre los artistas y festivales que administra, aunque su rol tenga permisos globales.
      */
+    /**
+     * Alta directa de artistas y festivales. Con el acceso por fichas activo solo administradores y
+     * verificados; el resto pasa por "Solicitar alta" (con revisión). Sin el flag, rige el rol habitual.
+     *
+     * @param  array<int, string>  $rolesWithoutFlag
+     */
+    public function canCreateEntityDirectly(array $rolesWithoutFlag): bool
+    {
+        if ($this->hasRole('administrador')) {
+            return true;
+        }
+
+        return config('backoffice_access.enabled')
+            ? $this->hasRole('verificado')
+            : $this->hasAnyRole($rolesWithoutFlag);
+    }
+
     public function isRestrictedByEntities(): bool
     {
         return (bool) config('backoffice_access.enabled') && ! $this->hasRole('administrador');
