@@ -10,7 +10,7 @@
       <p class="text-sm font-semibold uppercase tracking-[0.2em] text-[#ff661f]">Informacion legal</p>
       <h1 class="mt-3 text-3xl font-bold text-gray-900">Politica de privacidad</h1>
       <p class="mt-3 max-w-3xl text-base leading-7 text-gray-600">
-        Esta politica explica como Mi Folklore Argentino recibe, utiliza y protege los datos personales cuando navegas el portal, te comunicas con el equipo o inicias sesion con proveedores externos como Facebook.
+        Esta politica explica como Mi Folklore Argentino recibe, utiliza y protege los datos personales cuando navegas el portal, te comunicas con el equipo, te suscribis al newsletter o inicias sesion con proveedores externos como Facebook.
       </p>
     </header>
 
@@ -31,6 +31,9 @@
         <p class="mt-3 leading-7">
           Ademas, el portal puede recibir los datos que envias de forma directa en formularios publicos, por ejemplo en el formulario de contacto o al publicar contenidos y clasificados.
         </p>
+        <p class="mt-3 leading-7">
+          Si te suscribis al newsletter, recibimos tu correo electronico (y, si lo haces desde tu cuenta, lo asociamos a ella). Para poder demostrar tu consentimiento guardamos la fecha de tu solicitud, la fecha en que la confirmaste, el origen de la suscripcion y una huella cifrada (hash) de tu direccion IP; no guardamos la IP en claro. El detalle esta en la seccion 9.
+        </p>
       </section>
 
       <section>
@@ -38,6 +41,8 @@
         <ul class="mt-3 space-y-2 leading-7 text-gray-700">
           <li>Permitir el acceso autenticado al portal mediante proveedores externos.</li>
           <li>Responder consultas enviadas desde el formulario de contacto.</li>
+          <li>Enviarte el newsletter que solicitaste, junto con los correos de confirmacion y baja de ese servicio.</li>
+          <li>Conocer que contenidos del newsletter interesan, mediante contadores agregados de clics que no te identifican.</li>
           <li>Administrar publicaciones, colaboraciones y funciones editoriales del sitio.</li>
           <li>Mejorar la estabilidad tecnica, la seguridad y la medicion general de uso del portal.</li>
         </ul>
@@ -75,6 +80,9 @@
           Puedes solicitar acceso, rectificacion, actualizacion o eliminacion de los datos personales asociados a tu cuenta. Si tu acceso fue realizado con Facebook, tambien puedes gestionar la desvinculacion y la eliminacion desde nuestra pagina de
           <a class="font-semibold text-[#ff661f] hover:underline" href="{{ route('legal.data-deletion') }}">eliminacion de datos</a>.
         </p>
+        <p class="mt-3 leading-7">
+          La Agencia de Acceso a la Informacion Publica, en su caracter de Organo de Control de la Ley 25.326, tiene la atribucion de atender las denuncias y reclamos que interpongan quienes resulten afectados en sus derechos por incumplimiento de las normas vigentes en materia de proteccion de datos personales.
+        </p>
       </section>
 
       <section>
@@ -82,6 +90,16 @@
         <p class="mt-3 leading-7">
           Para ejercer tus derechos, escribe a <a class="font-semibold text-[#ff661f] hover:underline" href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a> indicando el medio con el que te registraste y los datos minimos necesarios para identificar la cuenta. Si la solicitud proviene desde Meta/Facebook, tambien podra procesarse por el callback oficial configurado para la app.
         </p>
+      </section>
+      <section id="newsletter">
+        <h2 class="text-xl font-semibold text-gray-900">9. Newsletter</h2>
+        <ul class="mt-3 space-y-2 leading-7 text-gray-700">
+          <li><strong>Suscripcion con doble confirmacion.</strong> Al pedir la suscripcion te enviamos un correo con un boton de confirmacion. Recien cuando lo confirmas empezas a recibir el newsletter. Si no confirmas, no recibis ninguna edicion; podemos reenviarte el mensaje de confirmacion.</li>
+          <li><strong>Baja en cualquier momento.</strong> Cada edicion incluye un enlace para darte de baja con un clic; tambien podes hacerlo desde tu cuenta (Mis datos). Conservamos tu correo marcado como "baja" unicamente para no volver a escribirte; si preferis que lo eliminemos por completo, pedilo a <a class="font-semibold text-[#ff661f] hover:underline" href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a>.</li>
+          <li><strong>Medicion de enlaces.</strong> Los enlaces de cada edicion pasan por una direccion de este portal que cuenta los clics por enlace de forma agregada y te lleva al contenido. No registramos quien hizo cada clic ni su direccion IP, y no usamos pixeles de apertura ni otras tecnologias para saber si leiste el correo.</li>
+          <li><strong>Direcciones que no existen.</strong> Si el servidor de correo informa que una direccion no existe, la marcamos para no volver a escribirle.</li>
+          <li><strong>Que enviamos.</strong> Un resumen semanal de novedades del portal (noticias, agenda de eventos, discos, canciones y artistas). Cada edicion la revisa y aprueba una persona del equipo antes de enviarse.</li>
+        </ul>
       </section>
     </div>
 

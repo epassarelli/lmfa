@@ -239,6 +239,44 @@ class NewsletterEditionTest extends TestCase
         Mail::assertNothingSent();
     }
 
+    // ---------------- Ritmo de envío ----------------
+
+    public function test_sending_is_paced_and_the_excess_goes_back_to_the_queue(): void
+    {
+        config(['queue.default' => 'database', 'newsletter.max_per_minute' => 2]);
+        \Illuminate\Support\Facades\RateLimiter::clear('newsletter-send');
+
+        $edition = $this->approvedEdition();
+        $edition->update(['status' => 'sent']);
+        $subs = collect(range(1, 3))->map(fn ($i) => $this->subscriber("ritmo{$i}@example.test", 'active', true));
+
+        $released = 0;
+        foreach ($subs as $sub) {
+            $queueJob = \Mockery::mock(\Illuminate\Contracts\Queue\Job::class);
+            $queueJob->shouldReceive('release')->with(30)->andReturnUsing(function () use (&$released) {
+                $released++;
+            });
+
+            $job = new SendNewsletterJob($sub->id, $edition->id);
+            $job->setJob($queueJob);
+            $job->handle();
+        }
+
+        Mail::assertSent(NewsletterEditionMail::class, 2);
+        $this->assertSame(1, $released, 'El tercero excede el tope y vuelve a la cola, sin enviarse ni perderse.');
+        $this->assertSame(0, NewsletterDelivery::where('subscriber_id', $subs[2]->id)->count());
+
+        \Illuminate\Support\Facades\RateLimiter::clear('newsletter-send');
+    }
+
+    public function test_rate_limit_retries_do_not_burn_the_job_attempts(): void
+    {
+        $job = new SendNewsletterJob(1, 1);
+
+        $this->assertSame(0, $job->tries);
+        $this->assertSame(3, $job->maxExceptions);
+        $this->assertGreaterThan(now()->addHours(6), $job->retryUntil());
+    }
     // ---------------- Permisos ----------------
 
     public function test_only_administrators_can_use_the_editions(): void

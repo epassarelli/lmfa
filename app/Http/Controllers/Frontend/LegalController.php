@@ -20,11 +20,11 @@ class LegalController extends Controller
 
     public function privacy()
     {
-        return view('frontend.legal.privacy', $this->pageData(
+        return view('frontend.legal.privacy', array_merge($this->pageData(
             'Politica de privacidad | Mi Folklore Argentino',
-            'Conoce como Mi Folklore Argentino trata los datos personales, el acceso con Facebook, cookies, analitica y solicitudes de eliminacion.',
+            'Conoce como Mi Folklore Argentino trata los datos personales, el acceso con Facebook, el newsletter, cookies, analitica y solicitudes de eliminacion.',
             route('legal.privacy', [], false)
-        ));
+        ), ['lastUpdated' => '13 de octubre de 2026']));
     }
 
     public function terms()
