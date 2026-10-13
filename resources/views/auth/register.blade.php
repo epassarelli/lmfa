@@ -3,6 +3,8 @@
 @section('auth_footer')
     @parent
 
+    <p class="text-center small mt-2 mb-0"><a href="{{ route('publish.guide') }}">¿Cómo funciona publicar en el portal?</a></p>
+
     {{-- Ingreso social oculto mientras no funcione (SOCIAL_LOGIN_ENABLED). --}}
     @if (config('services.social_login.enabled'))
         <hr class="my-3">

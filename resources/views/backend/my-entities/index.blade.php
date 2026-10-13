@@ -48,6 +48,7 @@
         <li><strong>Editor:</strong> edita la ficha y carga contenido relacionado.</li>
         <li><strong>Miembro:</strong> solo lectura.</li>
       </ul>
+      <p class="mb-2">Guía completa con todos los pasos: <a href="{{ route('publish.guide') }}" target="_blank" rel="noopener">Cómo publicar</a>.</p>
       <p class="mb-0">Si el artista o festival no existe, usá «Pedí que la creemos». Un administrador revisa cada solicitud antes de aprobarla; cuando se resuelve te avisamos por email.</p>
     </div>
   </details>

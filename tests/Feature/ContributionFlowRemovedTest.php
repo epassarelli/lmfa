@@ -38,9 +38,9 @@ class ContributionFlowRemovedTest extends TestCase
         $this->get('/admin/contribuir/crear/interprete/1')->assertNotFound();
     }
 
-    public function test_publicar_goes_through_login_and_lands_on_admin(): void
+    public function test_publicar_leads_to_the_guide_and_the_dashboard_still_goes_through_login(): void
     {
-        $this->get('/')->assertOk()->assertSee('href="'.route('dashboard').'"', false);
+        $this->get('/')->assertOk()->assertSee('href="'.route('publish.guide').'"', false);
 
         $this->get(route('dashboard'))->assertRedirect(route('login'));
 

@@ -51,6 +51,7 @@ Route::get('/healthz', [OperationalHealthController::class, 'public'])->name('he
 
 
 // Legales / cumplimiento Meta
+Route::get('/como-publicar', [\App\Http\Controllers\Frontend\PublishGuideController::class, 'show'])->name('publish.guide');
 Route::get('/privacidad', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/condiciones', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('/eliminacion-de-datos', [LegalController::class, 'dataDeletion'])->name('legal.data-deletion');

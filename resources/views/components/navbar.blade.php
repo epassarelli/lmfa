@@ -84,7 +84,7 @@
             </details>
           </li>
           <li class="mt-2 lg:mt-0 lg:ml-1">
-            <a href="{{ route('dashboard') }}" class="inline-flex rounded-md bg-[#ff661f] px-3 py-2 font-semibold text-white transition hover:bg-orange-600">Publicar</a>
+            <a href="{{ route('publish.guide') }}" class="inline-flex rounded-md bg-[#ff661f] px-3 py-2 font-semibold text-white transition hover:bg-orange-600">Publicar</a>
           </li>
         </ul>
 

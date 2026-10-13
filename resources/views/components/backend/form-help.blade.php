@@ -18,6 +18,7 @@
         <li><strong>Qué ves:</strong> {{ $scopeText }}</li>
         <li><strong>Publicación:</strong> {{ $canPublish ? config('backoffice_help.publishing.can') : config('backoffice_help.publishing.cannot') }}</li>
         <li><strong>Obligatorios (<span class="text-danger">*</span>):</strong> {{ implode(', ', $help['required']) }}. El resto es opcional.</li>
+        <li><strong>Guía completa:</strong> <a href="{{ route('publish.guide') }}" target="_blank" rel="noopener">Cómo publicar</a>, paso a paso.</li>
         <li><strong>Imágenes y avanzados:</strong> las medidas recomendadas figuran debajo de cada campo de imagen. «Cómo aparece en Google» es opcional: si lo dejás vacío se completa solo.</li>
       </ul>
     </div>

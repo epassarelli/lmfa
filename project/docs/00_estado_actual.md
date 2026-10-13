@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-12: página pública «Cómo publicar»
+
+Spec `how-to-publish-guide`. `/como-publicar` (controlador `PublishGuideController`, vista `frontend/guia/como-publicar`), enlazada desde menú, pie, registro, Mi panel, Mis fichas y la ayuda de los formularios; en el sitemap estático. mfa_test: 678 passed, 2 skipped. Sin migraciones. Pendiente: revisión editorial del texto de derechos y de cuentas verificadas; no se encontró la página estática original.
+
 ### Implementado en local 2026-10-12: ayuda contextual en el backoffice
 
 Spec `backoffice-contextual-help`. Componentes `x-backend.form-help|list-help|image-hint|seo-box` y textos en `config/backoffice_help.php`, aplicados a los ABM de contenido y a Mis fichas. mfa_test: 674 passed, 2 skipped. Sin migraciones. Ajuste obligatorio de imágenes (recorte/reducción en el navegador con Cropper.js y original acotado en `ImageUploadService`). Pendiente: validación visual con varios roles, prueba manual del editor de imágenes (JS sin test automático) y revisión editorial de los textos.

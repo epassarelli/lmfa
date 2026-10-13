@@ -156,6 +156,7 @@ class SitemapController extends Controller
         $entries = collect([
             $this->entry(route('home')),
             $this->entry(route('contacto')),
+            $this->entry(route('publish.guide')),
             $this->entry(route('noticias.index')),
             $this->entry(route('cartelera.index')),
             $this->entry(route('interpretes.index')),

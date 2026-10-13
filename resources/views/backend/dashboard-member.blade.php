@@ -85,7 +85,7 @@
         </div>
       @endif
 
-      <p class="small text-muted"><a href="{{ route('backend.account.edit') }}">Mis datos</a> · cambiá tu nombre, contraseña y suscripción al newsletter.</p>
+      <p class="small text-muted"><a href="{{ route('publish.guide') }}" target="_blank" rel="noopener">Guía: cómo publicar</a> · <a href="{{ route('backend.account.edit') }}">Mis datos</a> · cambiá tu nombre, contraseña y suscripción al newsletter.</p>
 
     </div>
   </section>

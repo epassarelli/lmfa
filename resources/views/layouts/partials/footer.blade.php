@@ -25,6 +25,12 @@
             </a>
           </li>
           <li>
+            <a href="{{ route('publish.guide') }}"
+              class="hover:text-white transition-colors {{ request()->routeIs('publish.guide') ? 'text-white font-semibold' : '' }}">
+              Cómo publicar
+            </a>
+          </li>
+          <li>
             <a href="{{ route('legal.privacy') }}"
               class="hover:text-white transition-colors {{ request()->routeIs('legal.privacy') ? 'text-white font-semibold' : '' }}">
               Politica de privacidad
