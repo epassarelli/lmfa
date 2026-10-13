@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-13: newsletter, Fase 3 (rama `feature/newsletter`)
+
+Spec `newsletter-clicks-and-bounces`. Clics agregados por enlace con redirección propia, detección de rebotes definitivos al enviar y marcado manual. Migración `2026_10_14_120000` (aplicada en `mfa_test` y en `mfa`). Fuera de alcance por decisión: aperturas (píxel), plantilla con imágenes y rebotes asíncronos leídos de un buzón. mfa_test: 716 passed, 2 skipped. Pendiente: política de privacidad (revisión del titular), SPF/DKIM/DMARC, worker de colas y cron en producción.
+
 ### Implementado en local 2026-10-13: newsletter, Fase 2 (rama `feature/newsletter`)
 
 Spec `newsletter-editorial-control`. Ediciones con borrador automático semanal (nunca envía), selección de contenido, vista previa, envío de prueba, aprobación con contenido congelado, envío inmediato o programado y registro de envíos. Comandos `newsletter:build-draft` (lunes 07:00) y `newsletter:dispatch-scheduled` (cada 15 min, solo aprobadas). 1 migración nueva más (aplicada solo en `mfa_test`; **pendiente en `mfa`**). mfa_test: 704 passed, 2 skipped. Pendiente: Fase 3 (aperturas/clics, rebotes, plantilla con imágenes) y verificación de SPF/DKIM/DMARC.

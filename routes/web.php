@@ -172,6 +172,7 @@ Route::get('/csrf-refresh', [CsrfController::class, 'refresh'])->name('csrf.refr
 
 // Newsletter
 Route::post('/newsletter/subscribe', [\App\Http\Controllers\Frontend\NewsletterController::class, 'subscribe'])->middleware('throttle:5,10')->name('newsletter.subscribe');
+Route::get('/newsletter/c/{edition}/{link}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'click'])->middleware('throttle:120,1')->name('newsletter.click');
 Route::get('/newsletter/confirmar/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'showConfirmation'])->middleware('signed')->name('newsletter.confirm.show');
 Route::post('/newsletter/confirmar/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'confirm'])->middleware(['signed', 'throttle:20,10'])->name('newsletter.confirm');
 Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'showUnsubscribe'])->name('newsletter.unsubscribe');

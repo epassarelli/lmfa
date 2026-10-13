@@ -50,6 +50,7 @@ class NewsletterSubscriberController extends Controller
             'deliverable' => NewsletterSubscriber::deliverable()->count(),
             'unconfirmed' => NewsletterSubscriber::unconfirmed()->count(),
             'unsubscribed' => NewsletterSubscriber::where('status', NewsletterSubscriber::UNSUBSCRIBED)->count(),
+            'bounced' => NewsletterSubscriber::where('status', NewsletterSubscriber::BOUNCED)->count(),
         ];
 
         return view('backend.newsletter.index', compact('subscribers', 'counts'));
@@ -65,6 +66,14 @@ class NewsletterSubscriberController extends Controller
         $this->subscriptions->unsubscribe($subscriber);
 
         return back()->with('success', 'Suscriptor dado de baja.');
+    }
+
+    /** Para direcciones que el administrador sabe inexistentes (p. ej. por un aviso de rechazo recibido). */
+    public function markBounced(NewsletterSubscriber $subscriber)
+    {
+        $this->subscriptions->markBounced($subscriber);
+
+        return back()->with('success', 'Marcada como rebotada: no se le vuelve a escribir.');
     }
 
     public function requestConfirmation(NewsletterSubscriber $subscriber)

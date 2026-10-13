@@ -11,7 +11,7 @@
         {{ session('newsletter_info') }}
       </div>
     @else
-      <p class="text-sm text-gray-600 mb-3">Recibí las novedades del folklore argentino directamente en tu correo. Te pedimos confirmar tu mail para activarlo.</p>
+      <p class="text-sm text-gray-600 mb-3">Recibí las novedades del folklore argentino directamente en tu correo. Te pedimos confirmar tu mail para activarlo. Medimos qué enlaces se abren, sin identificarte.</p>
     @endif
 
     <form method="POST" action="{{ route('newsletter.subscribe') }}" class="space-y-2" data-csrf-refresh>

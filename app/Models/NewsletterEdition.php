@@ -43,6 +43,11 @@ class NewsletterEdition extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
+    public function links(): HasMany
+    {
+        return $this->hasMany(NewsletterLink::class, 'edition_id');
+    }
+
     public function deliveries(): HasMany
     {
         return $this->hasMany(NewsletterDelivery::class, 'edition_key', 'edition_key');

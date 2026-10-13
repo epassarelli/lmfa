@@ -11,6 +11,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Services\NewsletterBounceDetector;
+use App\Services\NewsletterSubscriptionService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 /** Envía una edición aprobada a un suscriptor confirmado, una sola vez. */
@@ -50,6 +53,15 @@ class SendNewsletterJob implements ShouldQueue
         } catch (\Throwable $e) {
             // Libera la reserva para que un reintento pueda enviarlo.
             NewsletterDelivery::query()->where('subscriber_id', $subscriber->id)->where('edition_key', $edition->edition_key)->whereNull('sent_at')->delete();
+
+            // Rechazo definitivo de ESA dirección (no existe): se marca y no se reintenta. Cualquier otro
+            // error (política, límites, caídas) se relanza para reintentar sin tocar a la persona.
+            if (NewsletterBounceDetector::isHardBounce($e)) {
+                app(NewsletterSubscriptionService::class)->markBounced($subscriber);
+                Log::warning('Newsletter: dirección rebotada.', ['subscriber_id' => $subscriber->id, 'error' => $e->getMessage()]);
+
+                return;
+            }
 
             throw $e;
         }

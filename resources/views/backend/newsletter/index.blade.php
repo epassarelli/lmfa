@@ -17,6 +17,7 @@
             <li><strong>Pedir confirmación:</strong> reenvía el correo a una persona. Usalo solo con direcciones que parezcan reales; no escribas a las que sean spam, porque dañan la reputación del envío.</li>
             <li><strong>Eliminar:</strong> borra el registro (para spam o pedidos de borrado). Una baja conserva el registro para no volver a escribirle.</li>
             <li>Quien se dio de baja solo vuelve a estar activo si lo confirma desde su correo.</li>
+            <li><strong>Rebotadas:</strong> direcciones que no existen. Se marcan solas cuando el servidor las rechaza al enviar, o a mano con el botón <i class="fas fa-ban"></i>. No se les vuelve a escribir.</li>
         </ul>
     </div>
 </details>
@@ -24,7 +25,7 @@
 <div class="row">
     <div class="col-md-4"><div class="info-box"><span class="info-box-icon bg-success"><i class="fas fa-check"></i></span><div class="info-box-content"><span class="info-box-text">Reciben el newsletter</span><span class="info-box-number">{{ $counts['deliverable'] }}</span></div></div></div>
     <div class="col-md-4"><div class="info-box"><span class="info-box-icon bg-warning"><i class="fas fa-hourglass-half"></i></span><div class="info-box-content"><span class="info-box-text">Sin confirmar</span><span class="info-box-number">{{ $counts['unconfirmed'] }}</span></div></div></div>
-    <div class="col-md-4"><div class="info-box"><span class="info-box-icon bg-secondary"><i class="fas fa-user-times"></i></span><div class="info-box-content"><span class="info-box-text">Dados de baja</span><span class="info-box-number">{{ $counts['unsubscribed'] }}</span></div></div></div>
+    <div class="col-md-4"><div class="info-box"><span class="info-box-icon bg-secondary"><i class="fas fa-user-times"></i></span><div class="info-box-content"><span class="info-box-text">Dados de baja · Rebotados</span><span class="info-box-number">{{ $counts['unsubscribed'] }} · {{ $counts['bounced'] }}</span></div></div></div>
 </div>
 
 <div class="card card-outline card-primary shadow-sm">
@@ -102,6 +103,12 @@
                             <form method="POST" action="{{ route('backend.newsletter.toggle', $sub) }}" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-warning" title="Dar de baja"><i class="fas fa-fw fa-user-times"></i></button>
+                            </form>
+                        @endif
+                        @if($sub->status !== 'bounced')
+                            <form method="POST" action="{{ route('backend.newsletter.bounced', $sub) }}" class="d-inline" onsubmit="return confirm('¿Marcar como rebotada? No se le va a volver a escribir.');">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-outline-secondary" title="Marcar como rebotada (la dirección no existe)"><i class="fas fa-fw fa-ban"></i></button>
                             </form>
                         @endif
                         <form method="POST" action="{{ route('backend.newsletter.destroy', $sub) }}" class="d-inline" onsubmit="return confirm('¿Eliminar este suscriptor? No se puede deshacer.');">

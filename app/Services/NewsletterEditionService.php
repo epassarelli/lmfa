@@ -13,6 +13,7 @@ use App\Models\NewsletterEdition;
 use App\Models\NewsletterSubscriber;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -172,13 +173,25 @@ class NewsletterEditionService
             throw ValidationException::withMessages(['selection' => 'Elegí al menos un contenido para la edición.']);
         }
 
-        $edition->update([
-            'status' => NewsletterEdition::APPROVED,
-            'snapshot' => $snapshot,
-            'approved_by' => $by->id,
-            'approved_at' => now(),
-            'scheduled_at' => $scheduledAt,
-        ]);
+        DB::transaction(function () use ($edition, $snapshot, $by, $scheduledAt) {
+            // Un enlace propio por ítem, para contar clics (solo contadores, sin datos personales).
+            $edition->links()->delete();
+
+            foreach ($snapshot as $type => $items) {
+                foreach ($items as $index => $item) {
+                    $link = $edition->links()->create(['section' => $type, 'title' => $item['title'], 'url' => $item['url']]);
+                    $snapshot[$type][$index]['link_id'] = $link->id;
+                }
+            }
+
+            $edition->update([
+                'status' => NewsletterEdition::APPROVED,
+                'snapshot' => $snapshot,
+                'approved_by' => $by->id,
+                'approved_at' => now(),
+                'scheduled_at' => $scheduledAt,
+            ]);
+        });
 
         return $edition;
     }
@@ -189,6 +202,7 @@ class NewsletterEditionService
             throw ValidationException::withMessages(['status' => 'Solo se puede volver a borrador una edición aprobada que todavía no se envió.']);
         }
 
+        $edition->links()->delete();
         $edition->update(['status' => NewsletterEdition::DRAFT, 'snapshot' => null, 'approved_by' => null, 'approved_at' => null, 'scheduled_at' => null]);
 
         return $edition;

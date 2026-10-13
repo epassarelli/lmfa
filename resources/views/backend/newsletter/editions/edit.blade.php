@@ -73,6 +73,26 @@
                 <div class="card-footer small text-muted">Contenido congelado al aprobar{{ $edition->approved_at ? ' ('.$edition->approved_at->format('d/m/Y H:i').')' : '' }}{{ $edition->approver ? ' por '.$edition->approver->name : '' }}.</div>
             </div>
         @endif
+
+        @if(! $edition->isDraft())
+            @php($links = $edition->links()->orderByDesc('clicks')->orderBy('id')->get())
+            <div class="card card-outline card-info shadow-sm" data-newsletter-clicks>
+                <div class="card-header"><h3 class="card-title">Clics por enlace</h3><div class="card-tools"><span class="badge badge-info">{{ $links->sum('clicks') }} en total</span></div></div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Contenido</th><th>Sección</th><th class="text-right">Clics</th></tr></thead>
+                        <tbody>
+                            @forelse($links as $link)
+                                <tr><td>{{ $link->title }}</td><td class="text-muted">{{ \App\Models\NewsletterEdition::SECTIONS[$link->section] ?? $link->section }}</td><td class="text-right">{{ $link->clicks }}</td></tr>
+                            @empty
+                                <tr><td colspan="3" class="text-center text-muted">Sin enlaces.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer small text-muted">Cuenta cada vez que se abre un enlace del correo; no identifica a las personas. Algunos filtros de correo abren los enlaces automáticamente y pueden sumar clics de más.</div>
+            </div>
+        @endif
     </div>
 
     <div class="col-lg-4">

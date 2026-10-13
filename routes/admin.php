@@ -195,6 +195,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('newsletter-subscribers', NewsletterSubscriberController::class)->only(['index', 'destroy'])->names('backend.newsletter')->parameters(['newsletter-subscribers' => 'subscriber']);
         Route::post('newsletter-subscribers/{subscriber}/toggle', [NewsletterSubscriberController::class, 'toggleStatus'])->name('backend.newsletter.toggle');
         Route::post('newsletter-subscribers/{subscriber}/confirmation', [NewsletterSubscriberController::class, 'requestConfirmation'])->name('backend.newsletter.confirmation');
+        Route::post('newsletter-subscribers/{subscriber}/bounced', [NewsletterSubscriberController::class, 'markBounced'])->name('backend.newsletter.bounced');
 
         Route::prefix('newsletter-editions')->name('backend.newsletter.editions.')->group(function () {
             $c = \App\Http\Controllers\Backend\NewsletterEditionController::class;

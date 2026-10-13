@@ -30,7 +30,7 @@
                 <ul>
                     @foreach ($sections[$type] as $item)
                         <li>
-                            <a href="{{ $item['url'] }}" class="item-title">{{ $item['title'] }}</a>
+                            <a href="{{ ! empty($item['link_id']) ? route('newsletter.click', [$edition->id, $item['link_id']]) : $item['url'] }}" class="item-title">{{ $item['title'] }}</a>
                             @if (! empty($item['meta'])) <span class="meta"> · {{ $item['meta'] }}</span> @endif
                         </li>
                     @endforeach

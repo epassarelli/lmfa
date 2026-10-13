@@ -83,6 +83,12 @@ class NewsletterSubscriptionService
         ])->save();
     }
 
+    /** Dirección inexistente: no se le vuelve a escribir (ni envíos ni confirmaciones). */
+    public function markBounced(NewsletterSubscriber $subscriber): void
+    {
+        $subscriber->forceFill(['status' => NewsletterSubscriber::BOUNCED])->save();
+    }
+
     public function unsubscribe(NewsletterSubscriber $subscriber): void
     {
         if ($subscriber->status === NewsletterSubscriber::UNSUBSCRIBED) {

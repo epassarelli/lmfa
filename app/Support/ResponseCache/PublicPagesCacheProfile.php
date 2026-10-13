@@ -44,6 +44,7 @@ class PublicPagesCacheProfile extends CacheAllSuccessfulGetRequests
         'buscar*',
         'newsletter/unsubscribe/*',
         'newsletter/confirmar/*',
+        'newsletter/c/*',
         'penias*',
         'radios-de-folklore-argentino*',
         'sitemap-penias.xml',

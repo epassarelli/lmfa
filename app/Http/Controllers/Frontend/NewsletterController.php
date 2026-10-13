@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\NewsletterEdition;
+use App\Models\NewsletterLink;
 use App\Models\NewsletterSubscriber;
 use App\Services\NewsletterSubscriptionService;
 use Illuminate\Http\Request;
@@ -31,6 +33,18 @@ class NewsletterController extends Controller
         $this->subscriptions->request($data['email'], $data['source'] ?? 'web', $request->ip(), auth()->id());
 
         return back()->with('newsletter_success', self::NEUTRAL_MESSAGE);
+    }
+
+    /** Cuenta un clic (solo contador agregado) y redirige a la URL guardada al aprobar la edición. */
+    public function click(Request $request, NewsletterEdition $edition, NewsletterLink $link)
+    {
+        abort_unless($link->edition_id === $edition->id && ! $edition->isDraft(), 404);
+
+        if (! $request->isMethod('HEAD')) {
+            NewsletterLink::whereKey($link->id)->increment('clicks');
+        }
+
+        return redirect()->away($link->url)->header('X-Robots-Tag', 'noindex, nofollow')->header('Cache-Control', 'no-store');
     }
 
     /** El enlace del mail solo muestra el botón: confirmar con un GET lo podrían disparar los filtros de correo. */
