@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-13: newsletter, Fase 1 (rama `feature/newsletter`)
+
+Spec `newsletter-safe-base`. Doble confirmación, constancia de consentimiento, protección de abuso, baja correcta con `List-Unsubscribe`, envío solo a confirmados, registro de envíos, envío automático retirado del scheduler y administración de suscriptores. Corrige además un acceso indebido al listado de suscriptores (cualquier usuario con sesión). 2 migraciones nuevas (aplicadas solo en `mfa_test`; **pendientes en `mfa`**). mfa_test: 695 passed, 2 skipped. Pendiente: Fase 2 (ediciones con vista previa y aprobación) y Fase 3 (métricas, rebotes, plantilla); verificar SPF/DKIM/DMARC y el remitente en producción.
+
 ### Implementado en local 2026-10-12: página pública «Cómo publicar»
 
 Spec `how-to-publish-guide`. `/como-publicar` (controlador `PublishGuideController`, vista `frontend/guia/como-publicar`), enlazada desde menú, pie, registro, Mi panel, Mis fichas y la ayuda de los formularios; en el sitemap estático. mfa_test: 678 passed, 2 skipped. Sin migraciones. Pendiente: revisión editorial del texto de derechos y de cuentas verificadas; no se encontró la página estática original.

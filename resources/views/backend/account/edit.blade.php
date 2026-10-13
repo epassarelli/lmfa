@@ -136,7 +136,8 @@
 
       <div class="card card-outline card-info shadow-sm">
         <div class="card-header"><h3 class="card-title">Newsletter</h3></div>
-        @php($subscribed = $newsletter && $newsletter->status === 'active')
+        @php($subscribed = $newsletter && $newsletter->isDeliverable())
+        @php($awaiting = $newsletter && $newsletter->isUnconfirmed())
         <form action="{{ route('backend.account.newsletter') }}" method="POST">
           @csrf
           @method('PUT')
@@ -145,14 +146,19 @@
               Resumen semanal del portal a <strong>{{ $user->email }}</strong>:
               @if ($subscribed)
                 <span class="badge badge-success">Suscripto</span>
+              @elseif ($awaiting)
+                <span class="badge badge-warning">Falta confirmar</span>
               @else
                 <span class="badge badge-secondary">No suscripto</span>
               @endif
             </p>
+            @if ($awaiting)
+              <p class="small text-muted mb-0">Te enviamos un correo con un botón para confirmar. Revisá también la carpeta de spam. Hasta que lo confirmes no recibís el newsletter.</p>
+            @endif
             <input type="hidden" name="subscribe" value="{{ $subscribed ? 0 : 1 }}">
           </div>
           <div class="card-footer">
-            <button type="submit" class="btn {{ $subscribed ? 'btn-outline-secondary' : 'btn-info' }}">{{ $subscribed ? 'Darme de baja' : 'Suscribirme' }}</button>
+            <button type="submit" class="btn {{ $subscribed ? 'btn-outline-secondary' : 'btn-info' }}">{{ $subscribed ? 'Darme de baja' : ($awaiting ? 'Reenviar el correo de confirmación' : 'Suscribirme') }}</button>
           </div>
         </form>
       </div>

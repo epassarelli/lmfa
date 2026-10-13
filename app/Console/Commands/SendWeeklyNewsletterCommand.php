@@ -2,26 +2,32 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\NewsletterSubscriber;
+use App\Jobs\SendNewsletterJob;
 use App\Models\Album;
 use App\Models\Cancion;
 use App\Models\Interprete;
 use App\Models\News;
-use App\Jobs\SendNewsletterJob;
+use App\Models\NewsletterSubscriber;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
+/**
+ * Resumen semanal. USO MANUAL: ya no está en el scheduler (el envío automático sin revisión se retiró;
+ * la Fase 2 del newsletter lo reincorpora para ediciones aprobadas). Solo escribe a suscriptores
+ * confirmados y no repite la misma edición a la misma persona.
+ */
 class SendWeeklyNewsletterCommand extends Command
 {
-    protected $signature = 'newsletter:send-weekly';
-    protected $description = 'Prepares content from last week and dispatches email jobs to active subscribers.';
+    protected $signature = 'newsletter:send-weekly {--dry-run : Muestra qué se enviaría y a cuántas personas, sin enviar}';
+
+    protected $description = 'Prepara el contenido de la semana pasada y lo envía a los suscriptores confirmados (uso manual).';
 
     public function handle()
     {
         $startOfWeek = Carbon::now()->subWeek()->startOfWeek();
         $endOfWeek = Carbon::now()->subWeek()->endOfWeek();
+        $editionKey = 'weekly-'.$startOfWeek->format('o-\WW');
 
-        // 1. Recolectar Contenido
         $noticias = News::publishedVisible()
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->latest('published_at')
@@ -32,10 +38,20 @@ class SendWeeklyNewsletterCommand extends Command
         $interpretes = Interprete::where('estado', 1)->whereBetween('created_at', [$startOfWeek, $endOfWeek])->latest()->take(2)->get();
 
         $hasContent = $noticias->count() || $discos->count() || $canciones->count() || $interpretes->count();
+        $recipients = NewsletterSubscriber::deliverable()->count();
 
-        if (!$hasContent) {
+        $this->info("Edición {$editionKey}: {$noticias->count()} noticias, {$discos->count()} discos, {$canciones->count()} canciones, {$interpretes->count()} artistas; {$recipients} destinatarios confirmados.");
+
+        if (! $hasContent) {
             $this->info('No hay contenido nuevo de la semana pasada. Abortando envío.');
-            return;
+
+            return self::SUCCESS;
+        }
+
+        if ($this->option('dry-run')) {
+            $this->info('Simulación: no se envió nada.');
+
+            return self::SUCCESS;
         }
 
         $newsData = [
@@ -43,16 +59,18 @@ class SendWeeklyNewsletterCommand extends Command
             'discos' => $discos,
             'canciones' => $canciones,
             'interpretes' => $interpretes,
-            'period' => $startOfWeek->format('d/m') . ' al ' . $endOfWeek->format('d/m/Y')
+            'period' => $startOfWeek->format('d/m').' al '.$endOfWeek->format('d/m/Y'),
+            'edition_key' => $editionKey,
         ];
 
-        // 2. Dispatch Jobs
-        NewsletterSubscriber::active()->chunk(100, function ($subscribers) use ($newsData) {
+        NewsletterSubscriber::deliverable()->chunk(100, function ($subscribers) use ($newsData) {
             foreach ($subscribers as $subscriber) {
                 SendNewsletterJob::dispatch($subscriber, $newsData);
             }
         });
 
         $this->info('Se han despachado los jobs del newsletter.');
+
+        return self::SUCCESS;
     }
 }

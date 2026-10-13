@@ -43,6 +43,7 @@ class PublicPagesCacheProfile extends CacheAllSuccessfulGetRequests
         'csrf-refresh',
         'buscar*',
         'newsletter/unsubscribe/*',
+        'newsletter/confirmar/*',
         'penias*',
         'radios-de-folklore-argentino*',
         'sitemap-penias.xml',

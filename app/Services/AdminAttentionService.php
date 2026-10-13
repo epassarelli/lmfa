@@ -165,7 +165,7 @@ class AdminAttentionService
             ],
             'activity' => [
                 'users' => User::query()->where('created_at', '>=', $since)->count(),
-                'newsletter' => NewsletterSubscriber::query()->where('status', 'active')->where('created_at', '>=', $since)->count(),
+                'newsletter' => NewsletterSubscriber::query()->deliverable()->where('confirmed_at', '>=', $since)->count(),
                 'claims' => EntityClaimRequest::query()->where('created_at', '>=', $since)->count(),
                 'messages' => ContactMessage::query()->where('fecha_envio', '>=', $since)->where('status', '!=', ContactMessage::SPAM)->count(),
                 'events_upcoming' => Event::query()->where('editorial_status', 'published')->whereBetween('start_at', [now(), now()->addDays(7)])->count(),

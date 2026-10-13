@@ -243,16 +243,23 @@ class MyAccountTest extends TestCase
 
     // ---------------- Newsletter ----------------
 
-    public function test_newsletter_subscription_can_be_toggled_from_the_account(): void
+    public function test_newsletter_subscription_from_the_account_needs_email_confirmation(): void
     {
+        \Illuminate\Support\Facades\Mail::fake();
         $user = $this->user();
         $this->actingAs($user);
 
         $this->put(route('backend.account.newsletter'), ['subscribe' => 1])->assertSessionHasNoErrors();
         $sub = NewsletterSubscriber::where('email', $user->email)->firstOrFail();
-        $this->assertSame('active', $sub->status);
+        $this->assertSame('pending', $sub->status);
+        $this->assertNull($sub->confirmed_at);
         $this->assertSame('account', $sub->source);
         $this->assertSame($user->id, (int) $sub->user_id);
+        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\ConfirmNewsletterSubscriptionMail::class);
+        $this->get(route('backend.account.edit'))->assertSee('Falta confirmar');
+
+        // Confirma desde su correo
+        app(\App\Services\NewsletterSubscriptionService::class)->confirm($sub);
         $this->get(route('backend.account.edit'))->assertSee('Suscripto')->assertSee('Darme de baja');
 
         $this->put(route('backend.account.newsletter'), ['subscribe' => 0])->assertSessionHasNoErrors();
@@ -260,12 +267,11 @@ class MyAccountTest extends TestCase
         $this->assertSame('unsubscribed', $sub->status);
         $this->assertNotNull($sub->unsubscribed_at);
 
+        // Volver a suscribirse NO lo reactiva: hay que confirmar de nuevo desde el correo.
         $this->put(route('backend.account.newsletter'), ['subscribe' => 1]);
-        $this->assertSame('active', $sub->fresh()->status);
-        $this->assertNull($sub->fresh()->unsubscribed_at);
+        $this->assertSame('unsubscribed', $sub->fresh()->status);
         $this->assertSame(1, NewsletterSubscriber::where('email', $user->email)->count());
     }
-
     public function test_an_existing_subscription_keeps_its_original_source(): void
     {
         $user = $this->user();

@@ -190,8 +190,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('canciones', CancionController::class)->middleware('backoffice.section:canciones')->names('backend.canciones')->parameters(['canciones' => 'cancion']);
 
     // --- NEWSLETTER Y MODERACIÓN ---
-    Route::resource('newsletter-subscribers', NewsletterSubscriberController::class)->only(['index'])->names('backend.newsletter');
-    Route::post('newsletter-subscribers/{subscriber}/toggle', [NewsletterSubscriberController::class, 'toggleStatus'])->name('backend.newsletter.toggle');
+    // Solo administradores: el listado expone los correos de los suscriptores.
+    Route::middleware('role:administrador')->group(function () {
+        Route::resource('newsletter-subscribers', NewsletterSubscriberController::class)->only(['index', 'destroy'])->names('backend.newsletter')->parameters(['newsletter-subscribers' => 'subscriber']);
+        Route::post('newsletter-subscribers/{subscriber}/toggle', [NewsletterSubscriberController::class, 'toggleStatus'])->name('backend.newsletter.toggle');
+        Route::post('newsletter-subscribers/{subscriber}/confirmation', [NewsletterSubscriberController::class, 'requestConfirmation'])->name('backend.newsletter.confirmation');
+    });
     Route::get('moderation', [ModerationController::class, 'index'])->name('backend.moderation.index');
     Route::post('moderation/{type}/{id}/publish', [ModerationController::class, 'publish'])->name('backend.moderation.publish');
 

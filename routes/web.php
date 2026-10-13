@@ -171,7 +171,10 @@ Route::get('auth/facebook/callback', [SocialiteController::class, 'handleFaceboo
 Route::get('/csrf-refresh', [CsrfController::class, 'refresh'])->name('csrf.refresh');
 
 // Newsletter
-Route::post('/newsletter/subscribe', [\App\Http\Controllers\Frontend\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
-Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
+Route::post('/newsletter/subscribe', [\App\Http\Controllers\Frontend\NewsletterController::class, 'subscribe'])->middleware('throttle:5,10')->name('newsletter.subscribe');
+Route::get('/newsletter/confirmar/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'showConfirmation'])->middleware('signed')->name('newsletter.confirm.show');
+Route::post('/newsletter/confirmar/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'confirm'])->middleware(['signed', 'throttle:20,10'])->name('newsletter.confirm');
+Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'showUnsubscribe'])->name('newsletter.unsubscribe');
+Route::post('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'unsubscribe'])->middleware('throttle:20,10')->name('newsletter.unsubscribe.perform');
 
 Auth::routes();

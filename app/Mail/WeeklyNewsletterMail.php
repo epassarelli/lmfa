@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\NewsletterSubscriber;
+use Illuminate\Mail\Mailables\Headers;
 
 class WeeklyNewsletterMail extends Mailable
 {
@@ -34,6 +35,15 @@ class WeeklyNewsletterMail extends Mailable
         return new Content(
             view: 'mail.newsletter.weekly',
         );
+    }
+
+    /** Baja de un clic desde Gmail/Outlook (List-Unsubscribe + List-Unsubscribe-Post). */
+    public function headers(): Headers
+    {
+        return new Headers(text: [
+            'List-Unsubscribe' => '<'.$this->subscriber->unsubscribeUrl().'>',
+            'List-Unsubscribe-Post' => 'List-Unsubscribe=One-Click',
+        ]);
     }
 
     public function attachments(): array

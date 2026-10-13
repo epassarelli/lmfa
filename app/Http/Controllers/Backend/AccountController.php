@@ -103,18 +103,17 @@ class AccountController extends Controller
         $data = $request->validate(['subscribe' => ['required', 'boolean']]);
         $user = Auth::user();
 
-        $subscriber = NewsletterSubscriber::firstOrNew(['email' => $user->email]);
+        $subscriptions = app(\App\Services\NewsletterSubscriptionService::class);
 
         if ($data['subscribe']) {
-            $subscriber->status = 'active';
-            $subscriber->unsubscribed_at = null;
-            $subscriber->user_id = $user->id;
-            $subscriber->source = $subscriber->exists ? $subscriber->source : 'account';
-            $subscriber->save();
-            $message = 'Quedaste suscripto al newsletter.';
+            // El email de la cuenta no está verificado: se suscribe con doble confirmación, como en el formulario público.
+            $subscriptions->request($user->email, 'account', $request->ip(), $user->id);
+            $message = 'Te enviamos un correo a '.$user->email.' para confirmar tu suscripción. Hasta que lo confirmes no vas a recibir el newsletter.';
         } else {
-            if ($subscriber->exists && $subscriber->status === 'active') {
-                $subscriber->update(['status' => 'unsubscribed', 'unsubscribed_at' => now()]);
+            $subscriber = NewsletterSubscriber::where('email', $user->email)->first();
+
+            if ($subscriber) {
+                $subscriptions->unsubscribe($subscriber);
             }
             $message = 'Te diste de baja del newsletter.';
         }

@@ -11,7 +11,7 @@
         {{ session('newsletter_info') }}
       </div>
     @else
-      <p class="text-sm text-gray-600 mb-3">Recibí las novedades del folklore argentino directamente en tu correo.</p>
+      <p class="text-sm text-gray-600 mb-3">Recibí las novedades del folklore argentino directamente en tu correo. Te pedimos confirmar tu mail para activarlo.</p>
     @endif
 
     <form method="POST" action="{{ route('newsletter.subscribe') }}" class="space-y-2" data-csrf-refresh>
@@ -22,6 +22,10 @@
            copia cacheada -- y el resto de las visitas fallaria con 419. --}}
       <input type="hidden" name="_token" value="">
       <input type="hidden" name="source" value="sidebar">
+      {{-- Campo trampa: las personas no lo ven; los bots suelen completarlo. --}}
+      <div style="position:absolute;left:-10000px" aria-hidden="true">
+        <label>No completar <input type="text" name="company_site" tabindex="-1" autocomplete="off"></label>
+      </div>
       <input type="email" name="email" placeholder="Tu correo electrónico" required
         class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff661f]">
       @error('email')

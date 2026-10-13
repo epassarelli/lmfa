@@ -15,8 +15,9 @@ class Kernel extends ConsoleKernel
     {
         app(OperationalHealthService::class)->recordSchedulerHeartbeat();
 
-        // Newsletter - weekly (Monday 10:00)
-        $schedule->command('newsletter:send-weekly')->weeklyOn(1, '10:00');
+        // Newsletter: el envío semanal automático se retiró (spec newsletter-safe-base). Antes escribía a todos los
+        // suscriptores sin revisión. Hoy es manual (`php artisan newsletter:send-weekly --dry-run`); la Fase 2
+        // vuelve a programarlo solo para ediciones aprobadas.
 
         // PC-09: Event reminders — runs daily at 08:00
         $schedule->job(new \App\Jobs\Publication\EventReminderJob())->dailyAt('08:00');

@@ -3,17 +3,22 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\NewsletterSubscriber;
+use App\Services\NewsletterSubscriptionService;
 use App\Support\BackendListing;
+use Illuminate\Http\Request;
 
 class NewsletterSubscriberController extends Controller
 {
+    public function __construct(private NewsletterSubscriptionService $subscriptions)
+    {
+    }
+
     public function index(Request $request)
     {
         [$sort, $direction] = BackendListing::resolveSort(
             $request,
-            ['email', 'status', 'created_at', 'unsubscribed_at'],
+            ['email', 'status', 'created_at', 'unsubscribed_at', 'confirmed_at'],
             'created_at'
         );
 
@@ -28,7 +33,10 @@ class NewsletterSubscriberController extends Controller
             });
         }
 
-        if ($request->filled('status')) {
+        // «unconfirmed» = pendientes de confirmar (incluye los heredados activos que nunca confirmaron).
+        if ($request->input('status') === 'unconfirmed') {
+            $query->unconfirmed();
+        } elseif ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
@@ -38,16 +46,44 @@ class NewsletterSubscriberController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('backend.newsletter.index', compact('subscribers'));
+        $counts = [
+            'deliverable' => NewsletterSubscriber::deliverable()->count(),
+            'unconfirmed' => NewsletterSubscriber::unconfirmed()->count(),
+            'unsubscribed' => NewsletterSubscriber::where('status', NewsletterSubscriber::UNSUBSCRIBED)->count(),
+        ];
+
+        return view('backend.newsletter.index', compact('subscribers', 'counts'));
     }
 
+    /** Da de baja a un suscriptor activo. Reactivar no se hace desde acá: lo confirma la persona desde su correo. */
     public function toggleStatus(NewsletterSubscriber $subscriber)
     {
-        $subscriber->update([
-            'status' => $subscriber->status === 'active' ? 'unsubscribed' : 'active',
-            'unsubscribed_at' => $subscriber->status === 'active' ? now() : null
-        ]);
+        if (! in_array($subscriber->status, [NewsletterSubscriber::ACTIVE, NewsletterSubscriber::PENDING], true)) {
+            return back()->with('success', 'Para reactivarlo, la persona tiene que confirmar su suscripción desde su correo (usá «Pedir confirmación»).');
+        }
 
-        return back()->with('success', 'Estado del suscriptor actualizado correctamente.');
+        $this->subscriptions->unsubscribe($subscriber);
+
+        return back()->with('success', 'Suscriptor dado de baja.');
+    }
+
+    public function requestConfirmation(NewsletterSubscriber $subscriber)
+    {
+        if ($subscriber->isDeliverable()) {
+            return back()->with('success', 'Esa persona ya confirmó su suscripción.');
+        }
+
+        $sent = $this->subscriptions->sendConfirmation($subscriber);
+
+        return back()->with('success', $sent
+            ? 'Enviamos el correo de confirmación a '.$subscriber->email.'.'
+            : 'No se envió: se pidió hace menos de '.NewsletterSubscriptionService::RESEND_AFTER_MINUTES.' minutos, la dirección rebotó o falló el envío (ver el log).');
+    }
+
+    public function destroy(NewsletterSubscriber $subscriber)
+    {
+        $subscriber->delete();
+
+        return back()->with('success', 'Suscriptor eliminado.');
     }
 }
