@@ -1,17 +1,42 @@
 # 00 - Estado Actual del Proyecto
 
+## Resumen al 2026-10-13
 
-### Implementado en local 2026-10-13: newsletter, Fase 3 (rama `feature/newsletter`)
+**Dónde está el trabajo.** Todo lo desarrollado desde el cierre de `v2.3.1` está integrado en la rama `dev` (local; sin tag nuevo). `main` y producción no lo tienen. Pruebas en la base aislada `mfa_test`: **721 pasan, 0 fallan, 2 omitidos**. La suite completa sobre la base real `mfa` no se corrió en esta tanda (la última tuvo 13 fallos preexistentes por datos reales).
+
+| Frente | Estado | Spec |
+|---|---|---|
+| Organizaciones, fichas, solicitudes de vínculo/alta, revisión delegada | Integrado en `dev`. Acceso por fichas detrás de `BACKOFFICE_ACCESS_BY_ENTITIES` (apagado por defecto) | `organization-entity-management`, `entity-member-content-access*`, `member-selection-scoping` |
+| Roles: `verificado`, baja de `prensa`, registro sin rol, listados acotados, alta directa limitada | Integrado en `dev` | `roles-trust-ladder-and-cleanup`, `registration-role-and-scoping` |
+| Eventos con jornadas y salas | Integrado en `dev` | `event-programs-and-venues` |
+| Flujo «Contribuir» | **Retirado** (migración destructiva pendiente en producción) | `remove-contribuir-flow` |
+| Mis datos (avatar, perfil, sesiones, avisos, eliminación de cuenta) | Integrado en `dev` | `my-account` |
+| Formulario de contacto y bandeja | Integrado en `dev` | `contact-form-overhaul` |
+| Tablero del administrador, Mi panel, insignias del sidebar | Integrado en `dev` | `admin-attention-dashboard` |
+| Ayuda contextual en ABM y ajuste de imágenes (navegador + original acotado en el servidor) | Integrado en `dev`. **El editor de imágenes (JS) no tiene test automático: falta prueba manual** | `backoffice-contextual-help` |
+| Guía pública `/como-publicar` | Integrado en `dev` | `how-to-publish-guide` |
+| Newsletter (doble confirmación, ediciones aprobadas, clics, rebotes, ritmo de envío, privacidad) | Integrado en `dev`; falta configurar correo/DNS/cola en producción | `newsletter-safe-base`, `newsletter-editorial-control`, `newsletter-clicks-and-bounces` |
+
+**Migraciones.** Hay 12 respecto de `main` (lista en `05_migraciones.md`); todas aplicadas en la base local `mfa`, **ninguna en producción**. Dos modifican datos o estructura de forma no trivial (roles/`prensa` y borrado de `contributions`).
+
+**Seguridad corregida en este ciclo.** `/admin/newsletter-subscribers` y sus acciones estaban detrás de `auth` solamente: cualquier usuario con sesión veía los correos de los suscriptores. Ahora son `role:administrador` (con test). Producción lo tiene hasta que se despliegue `dev`.
+
+**Pendiente de decisión o ejecución humana.** Validación manual en el navegador de lo nuevo; revisión legal del texto de privacidad (sección Newsletter); revisión editorial de `/como-publicar` y de `config/backoffice_help.php`; decidir cuándo prender `BACKOFFICE_ACCESS_BY_ENTITIES` y retirar los flags restantes (`configuracion_y_flags.md`); configurar en producción el correo saliente, SPF/DKIM/DMARC, `QUEUE_CONNECTION=database` y el cron (`releases/newsletter-produccion.md`); checklist de despliegue en `releases/checklist-despliegue-dev-2026-10-12.md`.
+
+**Referencias nuevas:** `configuracion_y_flags.md` (qué hace cada variable), `permisos_y_roles.md` (quién puede qué), `editorial/image-upload-guide.md` (medidas y ajuste de imágenes).
+
+
+### Implementado en local 2026-10-13: newsletter, Fase 3 (integrada en `dev`)
 
 Spec `newsletter-clicks-and-bounces`. Clics agregados por enlace con redirección propia, detección de rebotes definitivos al enviar y marcado manual. Migración `2026_10_14_120000` (aplicada en `mfa_test` y en `mfa`). Fuera de alcance por decisión: aperturas (píxel), plantilla con imágenes y rebotes asíncronos leídos de un buzón. mfa_test: 716 passed, 2 skipped. Pendiente: política de privacidad (revisión del titular), SPF/DKIM/DMARC, worker de colas y cron en producción.
 
-### Implementado en local 2026-10-13: newsletter, Fase 2 (rama `feature/newsletter`)
+### Implementado en local 2026-10-13: newsletter, Fase 2 (integrada en `dev`)
 
-Spec `newsletter-editorial-control`. Ediciones con borrador automático semanal (nunca envía), selección de contenido, vista previa, envío de prueba, aprobación con contenido congelado, envío inmediato o programado y registro de envíos. Comandos `newsletter:build-draft` (lunes 07:00) y `newsletter:dispatch-scheduled` (cada 15 min, solo aprobadas). 1 migración nueva más (aplicada solo en `mfa_test`; **pendiente en `mfa`**). mfa_test: 704 passed, 2 skipped. Pendiente: Fase 3 (aperturas/clics, rebotes, plantilla con imágenes) y verificación de SPF/DKIM/DMARC.
+Spec `newsletter-editorial-control`. Ediciones con borrador automático semanal (nunca envía), selección de contenido, vista previa, envío de prueba, aprobación con contenido congelado, envío inmediato o programado y registro de envíos. Comandos `newsletter:build-draft` (lunes 07:00) y `newsletter:dispatch-scheduled` (cada 15 min, solo aprobadas). 1 migración nueva más (aplicada en `mfa_test` y en `mfa` local). mfa_test: 704 passed, 2 skipped al cierre de esa fase. Pendiente: Fase 3 (aperturas/clics, rebotes, plantilla con imágenes) y verificación de SPF/DKIM/DMARC.
 
-### Implementado en local 2026-10-13: newsletter, Fase 1 (rama `feature/newsletter`)
+### Implementado en local 2026-10-13: newsletter, Fase 1 (integrada en `dev`)
 
-Spec `newsletter-safe-base`. Doble confirmación, constancia de consentimiento, protección de abuso, baja correcta con `List-Unsubscribe`, envío solo a confirmados, registro de envíos, envío automático retirado del scheduler y administración de suscriptores. Corrige además un acceso indebido al listado de suscriptores (cualquier usuario con sesión). 2 migraciones nuevas (aplicadas solo en `mfa_test`; **pendientes en `mfa`**). mfa_test: 695 passed, 2 skipped. Pendiente: Fase 2 (ediciones con vista previa y aprobación) y Fase 3 (métricas, rebotes, plantilla); verificar SPF/DKIM/DMARC y el remitente en producción.
+Spec `newsletter-safe-base`. Doble confirmación, constancia de consentimiento, protección de abuso, baja correcta con `List-Unsubscribe`, envío solo a confirmados, registro de envíos, envío automático retirado del scheduler y administración de suscriptores. Corrige además un acceso indebido al listado de suscriptores (cualquier usuario con sesión). 2 migraciones nuevas (aplicadas en `mfa_test` y en `mfa` local; **pendientes en producción**). mfa_test: 695 passed, 2 skipped. Pendiente: Fase 2 (ediciones con vista previa y aprobación) y Fase 3 (métricas, rebotes, plantilla); verificar SPF/DKIM/DMARC y el remitente en producción.
 
 ### Implementado en local 2026-10-12: página pública «Cómo publicar»
 
@@ -585,7 +610,7 @@ responden `404`.
 
 - CRUD y gestion editorial de `Events`, `News` (unificado), `Knowledge Articles`, `Interpretes`, `Albunes`, `Canciones`, `Comidas`, `Festivales`, `Mitos`, `Categorias`, `Tags`, `Clasificados`, `Roles`, `Users` y `Permissions`.
 - Centro de moderacion funcional.
-- Gestion de newsletter funcional.
+- Newsletter con doble confirmacion, ediciones aprobadas por el equipo, envio revisado y programado, clics agregados y manejo de rebotes (ver `releases/newsletter-produccion.md`); falta su configuracion en produccion (correo, DNS, cola).
 - Backend de torneos folkloricos funcional para torneos y partidos.
 
 ### Frontend publico funcional

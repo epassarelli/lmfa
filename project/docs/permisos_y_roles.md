@@ -18,7 +18,7 @@ La relación que declara quien pide el vínculo (artista, representante, organiz
 | `administrador` | Equipo del portal | Todo: publicar, borrar, usuarios, roles, moderación |
 | `colaborador` | Cualquier persona que aporta | Crear contenido (queda en **revisión**); editar lo propio |
 | `verificado` | Persona de confianza (se asigna **además de** `colaborador`) | Todo lo de colaborador, pero lo que escribe (lo propio o de sus fichas) se **publica directo** |
-| (sin rol) | Registrado | Solo "Mis fichas"; si un administrador le aprueba una ficha, gestiona el contenido de esa ficha |
+| (sin rol) | Registrado (el registro **no asigna ningún rol**, por decisión) | Mi panel, Mis fichas, Mis datos y Clasificados; si un administrador le aprueba una ficha, gestiona el contenido de esa ficha. Sus listados se acotan a lo propio |
 
 `verificado` es aditivo: solo aporta el permiso `publish contents`. Asignarlo solo, sin `colaborador`, no habilita crear.
 
@@ -64,7 +64,7 @@ Quien no es administrador elige y carga **solo sobre los artistas que administra
 Un evento tiene artistas y, opcionalmente, festivales. Para editarlo por membresía (si no sos el creador): si tiene festivales, tenés que administrar **todos** (la grilla de artistas se ignora); si no tiene festivales, tenés que administrar **todos** sus artistas. Para crear, alcanza con incluir un artista o un festival que administrás.
 
 ## Entrada desde el sitio público
-El botón **Publicar** del sitio lleva a `/admin`: un visitante pasa por el login y vuelve a `/admin`. No existe otro circuito de aportes (el flujo "Contribuir" se retiró). Con el acceso por fichas activo, quien no es administrador aterriza en **Mis fichas**, desde donde solicita el vínculo o el alta de una ficha.
+El botón **Publicar** del sitio lleva a la guía pública `/como-publicar` (pasos, qué se puede cargar según la ficha, imágenes, derechos y preguntas frecuentes), desde donde se crea la cuenta o se ingresa; quien ya tiene sesión entra a su panel. No existe otro circuito de aportes (el flujo "Contribuir" se retiró). Quien no es administrador aterriza en **Mi panel** (sus fichas, solicitudes, solicitudes por revisar y contenido cargado, con acceso a Mis fichas), con o sin el flag. Con el acceso por fichas activo, desde donde solicita el vínculo o el alta de una ficha.
 
 ## Mis datos (cuenta propia)
 Cualquier usuario con sesión tiene `/admin/mi-cuenta` (botón **Mis datos** en el menú de usuario): edita nombre, teléfono y contraseña; el email es solo lectura. Solo se aceptan esos campos: roles, estado y demás los gestiona el administrador desde Usuarios. No depende del flag de acceso por fichas.
@@ -73,3 +73,13 @@ También permite ver y cerrar las **sesiones abiertas** en otros dispositivos y 
 
 ## Avisos Clasificados
 Siguen siendo visibles para **todos** los usuarios con sesión (decisión del 2026-10-13): no forman parte de las secciones restringidas por el acceso por fichas.
+
+## Listados acotados y alta directa (2026-10-13, spec `registration-role-and-scoping`)
+- **Listados de Festivales, Mitos y Comidas**: cualquier usuario que no sea administrador ve solo lo propio (antes la regla dependía del rol `colaborador`, y una cuenta sin rol veía todo). **Artistas**: se acota para quien no tiene rol y, con el flag de acceso por fichas, para todos los no administradores; un colaborador con el flag apagado conserva el listado completo para poder elegir artistas al cargar discos y canciones.
+- **Alta directa de artistas y festivales** (`User::canCreateEntityDirectly`): con `BACKOFFICE_ACCESS_BY_ENTITIES` activo, solo administradores y `verificado`; el resto usa «Solicitar alta» (con revisión). Con el flag apagado rige el rol habitual. Las secciones Artistas y Festivales suman el rol `verificado`.
+
+## Newsletter (2026-10-13)
+Todo el módulo (suscriptores y ediciones) es **solo para `administrador`**, a nivel de rutas (`role:administrador`). Antes el listado de suscriptores y sus acciones estaban detrás de `auth` solamente: cualquier usuario con sesión veía los correos. Corregido y con test. Ver `releases/newsletter-produccion.md`.
+
+## Ayuda contextual
+Cada ABM explica qué ve cada persona y por qué; los textos reflejan estas reglas y viven en `config/backoffice_help.php`. Si cambia una regla de esta página, actualizar también ese archivo.

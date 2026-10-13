@@ -52,6 +52,13 @@
 - `audit_logs`
 - `user_notifications`
 - `newsletter_subscribers`
+- `newsletter_deliveries`
+- `newsletter_editions`
+- `newsletter_links`
+- `contact_messages`
+- `entity_claim_requests`
+- `organization_entities`
+- `event_programs`
 - `data_deletion_requests`
 
 ### 2.4 Torneos folkloricos
@@ -974,7 +981,9 @@ Notas:
 
 ## 3.15 Contribuciones, moderacion y auditoria
 
-### `contributions` -> `Contribution`
+### `contributions` -> `Contribution` (RETIRADA 2026-10-12)
+
+> El flujo «Publicar / Contribuir» se retiró: la migración `2026_10_12_140000` borra esta tabla y las columnas `users.points` y `users.rank`. Se conserva esta descripción solo como historial.
 
 Campos:
 
@@ -1039,13 +1048,46 @@ Campos:
 
 - `id`
 - `user_id`
-- `email`
+- `email` (único)
 - `name`
-- `status`
-- `token`
+- `status`: `pending` | `active` | `unsubscribed` | `bounced` (por defecto `pending`)
+- `token` (baja y enlaces firmados)
 - `source`
+- `consented_at`, `confirmed_at` (constancia de consentimiento)
+- `consent_ip_hash` (HMAC de la IP; no se guarda la IP)
+- `last_confirmation_sent_at` (límite de un mail de confirmación cada 10 min)
 - `unsubscribed_at`
 - timestamps
+
+Regla: recibe envíos solo si `status = active` **y** `confirmed_at` no es nulo (`NewsletterSubscriber::deliverable()`). Los suscriptores anteriores a la doble confirmación quedan activos sin confirmar.
+
+### `newsletter_editions` -> `NewsletterEdition`
+
+Edición del newsletter: `edition_key` (único, p. ej. `weekly-2026-W41`), `subject`, `intro`, `status` (`draft` | `approved` | `sent`), `period_start`, `period_end`, `selection` (JSON: ids elegidos por sección), `snapshot` (JSON: contenido congelado al aprobar), `scheduled_at`, `approved_by`, `approved_at`, `test_sent_at`, `sent_at`, `recipients_count`, `created_by`, timestamps.
+
+### `newsletter_deliveries` -> `NewsletterDelivery`
+
+Un envío por suscriptor y edición (`subscriber_id`, `edition_key`, `sent_at`; único por par). Evita duplicados y es la base de las métricas.
+
+### `newsletter_links` -> `NewsletterLink`
+
+Enlaces de una edición aprobada con contador agregado de clics: `edition_id`, `section`, `title`, `url`, `clicks`. No guarda quién hizo clic ni la IP.
+
+### `contact_messages` -> `ContactMessage`
+
+Mensajes del formulario de contacto (tabla heredada extendida): `nombre`, `email`, `asunto`, `mensaje`, `fecha_envio` (hace de fecha de creación; sin timestamps), `status` (`new` | `read` | `answered` | `spam`), `user_id`, `ip_hash`, `read_at`, `answered_at`, `spam_reason`.
+
+### `entity_claim_requests` -> `EntityClaimRequest`
+
+Solicitudes de vínculo o de alta de fichas: `user_id`, `kind` (`link` | `create`), `entity_type`, `entity_id` (nulo en altas), `proposed_name`, `relationship`, `message`, `evidence_url`, `proposed_data`, `contact_phone`, `status` (`pending` | `approved` | `rejected` | `cancelled`), `organization_id`, `reviewed_by`, `reviewed_at`, `review_notes`, timestamps.
+
+### `organization_entities` -> `OrganizationEntity`
+
+Vincula una organización con una ficha (`entity_type` + `entity_id`, `is_primary`). Es lo que autoriza la edición por membresía activa (`owner`/`editor`/`member`).
+
+### `event_programs` -> `EventProgram`
+
+Ficha común de un evento con varias jornadas (`title`, `slug`, `excerpt`, `body`, `venue_id`, `ticket_url`, `price_text`, `is_free`, `editorial_status`, `published_at`, `created_by`); cada jornada es un `events` con `program_id`.
 
 ### `data_deletion_requests` -> `DataDeletionRequest`
 

@@ -1,5 +1,24 @@
 # 05 - Migraciones
 
+## Actualización 2026-10-13: migraciones de octubre (12 nuevas respecto de `main`)
+
+Orden de ejecución. Todas se ejecutan con `migrate:status` previo y respaldo; no usar `migrate:fresh`.
+
+- `2026_10_08_120000_create_event_programs`: programas de evento con jornadas.
+- `2026_10_08_130000_create_organization_entities_and_contact_metadata`: vínculo organización↔ficha y metadatos de contacto.
+- `2026_10_10_120000_add_contact_tracking_to_organizations`: seguimiento de contacto de organizaciones.
+- `2026_10_10_140000_create_entity_claim_requests_table`: solicitudes de vínculo.
+- `2026_10_11_120000_add_creation_requests_to_entity_claim_requests`: altas de ficha (`entity_id` pasa a nulable, 4 columnas nuevas).
+- `2026_10_12_100000_trusted_publishing_role_and_remove_prensa_role`: permiso `publish contents`, rol `verificado`; **pasa los usuarios `prensa` a `colaborador` y elimina el rol** (modifica datos).
+- `2026_10_12_140000_drop_contributions_and_user_points_rank`: **destructiva**: borra `contributions` y `users.points/rank`.
+- `2026_10_13_100000_create_or_extend_contact_messages_table`: crea `contact_messages` o agrega solo las columnas que falten (tabla heredada).
+- `2026_10_14_100000_add_double_optin_to_newsletter_subscribers`: estado `pending` en el enum (por defecto `pending`) y columnas de consentimiento; no toca filas.
+- `2026_10_14_100100_create_newsletter_deliveries_table`: registro de envíos por suscriptor y edición.
+- `2026_10_14_110000_create_newsletter_editions_table`: ediciones del newsletter.
+- `2026_10_14_120000_create_newsletter_links_table`: enlaces con contador agregado de clics.
+
+Detalle de riesgos y verificaciones: `releases/checklist-despliegue-dev-2026-10-12.md` (sección 3) y `releases/newsletter-produccion.md`.
+
 ## Actualización 2026-09-08: directorios evergreen desplegados
 
 - `2026_09_02_200000_create_penia_profiles_table`: crea el contrato canónico `penia_profiles`.

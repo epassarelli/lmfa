@@ -1,10 +1,10 @@
 # Newsletter — puesta en producción
 
-Estado: código listo en la rama `feature/newsletter` (Fases 1 a 3). Esta guía cubre lo que **no** se puede resolver desde el código: correo saliente, DNS, cola y primeras pruebas. Nada de esto se ejecutó en producción.
+Estado: código integrado en `dev` (Fases 1 a 3). Esta guía cubre lo que **no** se puede resolver desde el código: correo saliente, DNS, cola y primeras pruebas. Nada de esto se ejecutó en producción.
 
 ## 0. Antes de integrar la rama
 
-- [ ] Aplicar el arreglo de seguridad del listado de suscriptores (ver `hotfix-newsletter-subscribers-admin-only.patch`) en `dev`/`main`, o integrar toda la rama. Sin él, cualquier usuario con sesión ve los correos de los suscriptores.
+- [x] Arreglo de seguridad del listado de suscriptores: **ya está en `dev`** (rutas bajo `role:administrador`, con test). Producción lo recibe al desplegar; hasta entonces cualquier usuario con sesión ve los correos de los suscriptores.
 - [ ] Migraciones nuevas del newsletter (en este orden, todas aditivas; `migrate:status` primero):
   `2026_10_14_100000_add_double_optin_to_newsletter_subscribers`, `2026_10_14_100100_create_newsletter_deliveries_table`, `2026_10_14_110000_create_newsletter_editions_table`, `2026_10_14_120000_create_newsletter_links_table`.
   La primera cambia el enum `status` (agrega `pending`) y no toca filas; los suscriptores existentes quedan activos **sin confirmar**, o sea no reciben nada hasta confirmar.

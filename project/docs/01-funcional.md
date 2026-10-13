@@ -55,7 +55,9 @@ Superficies publicas funcionales:
 
 Flujos funcionales visibles para usuario:
 
-- suscripcion a newsletter;
+- suscripcion a newsletter con doble confirmacion, baja de un clic y envio semanal revisado y aprobado por el equipo (ediciones con vista previa, prueba, aprobacion y envio programado; clics agregados por enlace);
+- pagina publica `/como-publicar` que explica como cargar informacion (cuenta, Mis fichas, aprobacion, carga, revision);
+- panel propio (`Mi panel`) para quien no es administrador: sus fichas, solicitudes y contenido;
 - autenticacion social;
 - colaboraciones UGC;
 - notificaciones basicas asociadas a flujos internos cuando aplica.

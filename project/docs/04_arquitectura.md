@@ -186,3 +186,11 @@ Esto ya no debe tratarse como optimizacion puntual, sino como politica transvers
 ## 10. Historial util conservado
 
 Se conserva como antecedente que la documentacion previa discutia dependencias como Redis/Horizon, n8n o conectores no implementados. Esos puntos pueden existir como vision futura, pero no describen la arquitectura operativa comprobada al 2026-09-01.
+
+## 11. Newsletter, ajuste de imágenes y ayuda contextual (2026-10-13)
+
+- **Newsletter** (`feature/newsletter`, ya en `dev`): `NewsletterSubscriptionService` (alta con doble confirmación, baja, rebotes), `NewsletterEditionService` (borrador, aprobación con contenido congelado, envío/programación), `NewsletterBounceDetector`, `SendNewsletterJob` (reserva por suscriptor y edición, tope por minuto con `RateLimiter`, reintentos), mails `ConfirmNewsletterSubscriptionMail` y `NewsletterEditionMail` (encabezados `List-Unsubscribe`). Comandos programados: `newsletter:build-draft` (lunes 07:00; no envía) y `newsletter:dispatch-scheduled` (cada 15 min; solo ediciones aprobadas). Rutas públicas: `/newsletter/subscribe`, `/newsletter/confirmar/{token}` (firmada), `/newsletter/unsubscribe/{token}` (GET muestra botón, POST da de baja sin CSRF para la baja de un clic), `/newsletter/c/{edición}/{enlace}` (cuenta el clic y redirige). Ninguna de ellas se cachea. Backoffice solo para administradores (`role:administrador`).
+- **Ajuste de imágenes**: en el navegador (componente `x-backend.image-hint` con Cropper.js 1.6.2 desde jsDelivr) se reduce al ancho de la variante más grande del perfil y se pide recorte si cambia la proporción; en el servidor, `ImageUploadService` guarda el «original» acotado a ese ancho y no conserva el archivo sin procesar. Guía: `editorial/image-upload-guide.md`.
+- **Ayuda contextual**: componentes `x-backend.form-help|list-help|image-hint|seo-box` y textos en `config/backoffice_help.php`.
+- **Tablero del administrador**: `AdminAttentionService` (caché de 30 s, invalidación por hooks de modelo) y `ModerationQueue` (definición única de «pendiente de revisión»); insignias del sidebar con `PendingBadgeFilter`.
+- **Configuración**: ver `configuracion_y_flags.md`.

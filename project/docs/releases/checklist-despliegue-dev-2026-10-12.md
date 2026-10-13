@@ -7,9 +7,9 @@ Elaborado contra el estado real del repositorio el 2026-10-12 y actualizado el 2
 | Dato | Valor |
 |---|---|
 | Rama origen | `dev` (varios commits sin push respecto de `origin/dev`; contar con `git log --oneline origin/dev..dev`) |
-| Tamaño | 310 archivos, ≈17.500 líneas agregadas y ≈1.900 quitadas (`git diff --shortstat main..dev`) |
+| Tamaño | ≈370 archivos y ≈22.000 líneas agregadas (`git diff --shortstat main..dev`; recontar al desplegar) |
 | Rama de despliegue | `main` (se hace *pull* de `main` en el servidor; ver `frontend-assets-deploy.md`) |
-| Migraciones nuevas | 8 (ver sección 3) |
+| Migraciones nuevas | **12** (8 de fichas/roles/contacto + 4 del newsletter; ver sección 3) |
 | Dependencias (composer/npm) | **sin cambios**. El editor de imágenes carga Cropper.js 1.6.2 desde `cdn.jsdelivr.net` (igual que Select2): el navegador de quien carga contenido debe poder llegar a ese dominio |
 | Build del frontend (`public/build`) | **CAMBIÓ**: 3 CSS con hash nuevo + `manifest.json` (clases de la guía «Cómo publicar» y del formulario de contacto). Producción no tiene Node: viaja versionado en el commit. `npm run build:verify` pasa (13 assets) |
 | Workflows / Docker | solo `ci.yml` (+1 paso: sembrar datos de referencia de tests) |
@@ -77,7 +77,16 @@ Nuevas, en este orden:
 | `2026_10_13_100000_create_or_extend_contact_messages_table` | Crea `contact_messages` si no existe; si existe (tabla heredada) **solo agrega** las columnas que falten (`status`, `user_id`, `ip_hash`, `read_at`, `answered_at`, `spam_reason`); no modifica ni borra nada | Bajo (aditiva). Los mensajes previos quedan con estado `new` |
 | `2026_10_12_140000_drop_contributions_and_user_points_rank` | **Borra** la tabla `contributions` y las columnas `users.points` / `users.rank` (flujo "Contribuir" retirado) | **Medio: destructiva** (sin datos en producción, confirmado; `down()` recrea la estructura, no los datos) |
 
-- [ ] `php artisan migrate:status` → deben figurar **exactamente esas 8** como *Pending*. Si hay más o menos, parar y revisar.
+- [ ] `php artisan migrate:status` → deben figurar **exactamente esas 12** como *Pending* (las 8 de arriba más las 4 del newsletter de la tabla siguiente). Si hay más o menos, parar y revisar.
+Migraciones del **newsletter** (aditivas; respaldar antes `newsletter_subscribers`):
+
+| Migración | Qué hace | Riesgo |
+|---|---|---|
+| `2026_10_14_100000_add_double_optin_to_newsletter_subscribers` | Agrega el estado `pending` al enum (por defecto `pending`) y columnas de consentimiento (`consented_at`, `confirmed_at`, `consent_ip_hash`, `last_confirmation_sent_at`). **No toca filas**: los suscriptores existentes quedan activos *sin confirmar* y no reciben envíos hasta confirmar | Bajo (ALTER sobre tabla chica) |
+| `2026_10_14_100100_create_newsletter_deliveries_table` | Registro de envíos | Bajo |
+| `2026_10_14_110000_create_newsletter_editions_table` | Ediciones | Bajo |
+| `2026_10_14_120000_create_newsletter_links_table` | Enlaces con contador de clics | Bajo |
+
 - [ ] `php artisan migrate --pretend` → leer el SQL que se ejecutaría (no ejecuta nada).
 - [ ] `php artisan migrate --force` (con el usuario de la aplicación para no crear archivos como root).
 - [ ] `php artisan migrate:status` → 0 pendientes.
@@ -94,7 +103,7 @@ Nuevas, en este orden:
 
 ## 4. Código y entorno
 
-- [ ] Integrar `dev` en `main` por el flujo de revisión habitual y esperar el **CI en verde** (debe correr la suite completa; en local, base limpia `mfa_test`: **678 pasan, 0 fallan, 2 omitidos**). La suite completa sobre la base real `mfa` no se corrió en esta tanda (la última tuvo 13 fallos preexistentes por datos reales).
+- [ ] Integrar `dev` en `main` por el flujo de revisión habitual y esperar el **CI en verde** (debe correr la suite completa; en local, base limpia `mfa_test`: **721 pasan, 0 fallan, 2 omitidos**). La suite completa sobre la base real `mfa` no se corrió en esta tanda (la última tuvo 13 fallos preexistentes por datos reales).
 - [ ] Primer push de `dev`: **mirar el resultado del CI antes de integrar a `main`**. Es la primera vez que corre el paso nuevo `Seed reference data for tests`; si falla, corregirlo antes de seguir.
 - [ ] Servidor: `git pull` de `main`.
 - [ ] `.env` de producción:
@@ -104,6 +113,9 @@ Nuevas, en este orden:
   | `ENTITY_CLAIMS_DELEGATE_TO_OWNERS` | `true` (u omitir) | Los owners aprueban editores de su ficha |
   | ~~`ENTITY_MANAGEMENT_SCOPE_LISTINGS`~~ | **eliminada** | Si existe en el `.env` de producción, se ignora; se puede borrar |
   | `SOCIAL_LOGIN_ENABLED` | **no definir** (u omitir/`false`) | Oculta los botones de Google/Facebook |
+  | `NEWSLETTER_MAX_PER_MINUTE` | `60` (ajustar al límite del proveedor de correo) | Tope de envíos del newsletter por minuto |
+  | `QUEUE_CONNECTION` | **`database`** | El newsletter y las publicaciones usan la cola; verificar el cron del programador (`schedule:run` cada minuto) |
+  | `MAIL_FROM_ADDRESS` / `MAIL_*` | Casilla real del dominio y credenciales del proveedor | El valor por defecto `hello@example.com` no sirve. Ver `newsletter-produccion.md` |
   | `CONTACT_NOTIFY_TO` | casilla que recibe los avisos (por defecto la actual) | Aviso de cada mensaje de contacto nuevo |
   | `CONTACT_SEND_CONFIRMATION` | `true` (o `false` para no escribir a terceros) | Confirmación al remitente |
   - [ ] No copiar el `.env` local ni el `.env.testing`: tienen valores de desarrollo (`.env.testing` apunta a `mfa_test`).
@@ -124,6 +136,8 @@ Nuevas, en este orden:
 - [ ] Home y una página interna → `200`; CSS/JS → `200`.
 - [ ] `/login` y `/register`: **sin** botones de Google/Facebook; formulario de email y contraseña visible.
 - [ ] Botón **Publicar** del menú → lleva a la guía `/como-publicar` (pasos, botones «Crear mi cuenta» / «Ya tengo cuenta», sin estilos rotos: revisar tablas, números de pasos y preguntas desplegables). «Ya tengo cuenta» → login → panel (administrador: dashboard; el resto: **Mi panel**).
+- [ ] **Newsletter** (detalle completo en `newsletter-produccion.md`): `/admin/newsletter-subscribers` y `/admin/newsletter-editions` con un usuario **sin rol** → 403 (arreglo de seguridad); suscribirse desde el sidebar → llega el correo de confirmación → confirmar → «Activo»; armar un borrador, vista previa, **prueba** a una casilla propia (SPF/DKIM/DMARC en PASS en «Mostrar original»); aprobar y enviar solo a tu cuenta; un clic en un enlace suma; baja desde el correo.
+- [ ] `/privacidad` muestra la sección «9. Newsletter» y la fecha «13 de octubre de 2026» (**texto pendiente de revisión legal del titular**).
 - [ ] `/como-publicar` figura en `/sitemap-estaticas.xml`, no tiene `noindex` y el *canonical* apunta a `https://mifolkloreargentino.com/como-publicar`. Enlazada desde el pie, `/register`, Mi panel, Mis fichas y la ayuda de los formularios.
 - [ ] **Contacto:** `/contacto` carga; el menú **Más → Contacto** y el footer (**Escribinos** y la lista) lo enlazan; enviar un mensaje de prueba → confirmación en pantalla, correo al equipo (con Reply-To del remitente) y, si está activo, confirmación al remitente; aparece en **Backoffice → Mensajes de contacto** (solo administrador) y en el dashboard. Probar también que un segundo envío idéntico no duplica y que un envío inmediato (menos de 4 s) muestra el aviso. Borrar el mensaje de prueba.
 - [ ] `/admin/contribuir` y `/admin/contributions` responden `404`; las páginas de artista, festival, canción y evento ya no muestran "Sugerir corrección".
