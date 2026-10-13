@@ -1,25 +1,28 @@
-# Checklist de despliegue a producción — acumulado de `dev` (2026-10-12)
+# Checklist de despliegue a producción — acumulado de `dev` (actualizado 2026-10-13)
 
-Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se ejecutó en producción**: lo corre la persona responsable del despliegue, paso a paso, marcando cada casilla. Si algún comando difiere del entorno real (por ejemplo, no hay Docker en producción), usar el equivalente del servidor y anotar la diferencia.
+Elaborado contra el estado real del repositorio el 2026-10-12 y actualizado el 2026-10-13 con el tablero del administrador, Mi panel, la ayuda contextual, el ajuste de imágenes y la guía pública «Cómo publicar». **Nada de esto se ejecutó en producción**: lo corre la persona responsable del despliegue, paso a paso, marcando cada casilla. Si algún comando difiere del entorno real (por ejemplo, no hay Docker en producción), usar el equivalente del servidor y anotar la diferencia.
 
 ## 0. Qué se despliega
 
 | Dato | Valor |
 |---|---|
 | Rama origen | `dev` (varios commits sin push respecto de `origin/dev`; contar con `git log --oneline origin/dev..dev`) |
-| Tamaño | 213 archivos, ≈11.600 líneas agregadas |
+| Tamaño | 310 archivos, ≈17.500 líneas agregadas y ≈1.900 quitadas (`git diff --shortstat main..dev`) |
 | Rama de despliegue | `main` (se hace *pull* de `main` en el servidor; ver `frontend-assets-deploy.md`) |
 | Migraciones nuevas | 8 (ver sección 3) |
-| Dependencias (composer/npm) | **sin cambios** |
-| Build del frontend (`public/build`) | **sin cambios por este lote**; `npm run build:verify` pasa (13 assets). Solo cambió una vista pública (cartelera, valor del JSON-LD) sin clases CSS nuevas |
+| Dependencias (composer/npm) | **sin cambios**. El editor de imágenes carga Cropper.js 1.6.2 desde `cdn.jsdelivr.net` (igual que Select2): el navegador de quien carga contenido debe poder llegar a ese dominio |
+| Build del frontend (`public/build`) | **CAMBIÓ**: 3 CSS con hash nuevo + `manifest.json` (clases de la guía «Cómo publicar» y del formulario de contacto). Producción no tiene Node: viaja versionado en el commit. `npm run build:verify` pasa (13 assets) |
 | Workflows / Docker | solo `ci.yml` (+1 paso: sembrar datos de referencia de tests) |
 
-**Funcionalidad incluida** (detalle en `CHANGELOG.md` → `[Unreleased]`): organizaciones y fichas (vínculo, alta, revisión delegada al responsable), contenido de artistas y festivales para sus administradores (discos, canciones, eventos, noticias), eventos con jornadas y salas, rol `verificado` y baja del rol `prensa`, correcciones de permisos, acceso por fichas (detrás de un flag, apagado), login sin botones sociales, description del JSON-LD de la cartelera. **Se elimina el flujo público "Publicar / Contribuir"** (`/admin/contribuir` y su moderación): "Publicar" lleva a `/admin`.
+**Funcionalidad incluida** (detalle en `CHANGELOG.md` → `[Unreleased]`): organizaciones y fichas (vínculo, alta, revisión delegada al responsable), contenido de artistas y festivales para sus administradores (discos, canciones, eventos, noticias), eventos con jornadas y salas, rol `verificado` y baja del rol `prensa`, correcciones de permisos, acceso por fichas (detrás de un flag, apagado), login sin botones sociales, description del JSON-LD de la cartelera, **tablero del administrador «Requiere tu atención» con insignias en el sidebar**, **Mi panel** para quien no es administrador, listados acotados a lo propio y alta directa de artistas/festivales limitada (admin y verificado) con el flag activo, **ayuda contextual en cada ABM** (obligatorios, medidas de imagen, SEO en lenguaje simple), **ajuste obligatorio de imágenes** (recorte/reducción en el navegador y original acotado en el servidor), **guía pública `/como-publicar`**, formulario de contacto con bandeja, «Mis datos». **Se elimina el flujo público "Publicar / Contribuir"** (`/admin/contribuir` y su moderación): "Publicar" lleva a `/admin`.
 
 ## 1. Antes de empezar (decisiones y pruebas pendientes de **vos**)
 
-- [ ] Validar a mano en local (navegador) los flujos de la sección 8. Nunca se probaron visualmente; solo hay tests automáticos.
-- [ ] Decidir si el despliegue activa o no el flag `BACKOFFICE_ACCESS_BY_ENTITIES`. **Recomendado: desplegar con el flag APAGADO** y activarlo en una segunda etapa (sección 10).
+- [ ] Validar a mano en local (navegador) los flujos de la sección 8 **y** lo nuevo: tablero de administrador, Mi panel (con rol colaborador, `verificado` y sin rol), ayudas de los formularios, **editor de imágenes** (el JavaScript no tiene test automático), página `/como-publicar`. Nada de esto se vio visualmente; solo hay tests automáticos.
+- [ ] Revisar y aprobar el **texto editorial** de `/como-publicar` (derechos y cuentas verificadas son propuesta) y los textos de `config/backoffice_help.php`.
+- [ ] `.env` local tiene `BACKOFFICE_ACCESS_BY_ENTITIES=true`: lo probado en el navegador fue con el flag **prendido**. Para validar el estado con el que se despliega (apagado), probar también con `false`.
+- [ ] Decidir si el despliegue activa o no el flag `BACKOFFICE_ACCESS_BY_ENTITIES`. **Recomendado: desplegar con el flag APAGADO** y activarlo en una segunda etapa (sección 10). Hay decisión pendiente de **eliminar los flags** (`BACKOFFICE_ACCESS_BY_ENTITIES`, `ENTITY_CLAIMS_DELEGATE_TO_OWNERS`, `CONTACT_SEND_CONFIRMATION`, `SOCIAL_LOGIN_ENABLED`) una vez elegido el camino; no es requisito para este despliegue.
+- [ ] Saber qué cambia **aunque el flag esté apagado**: (a) los usuarios que no son administradores ven **Mi panel** en lugar del dashboard anterior; (b) los listados de Festivales, Mitos y Comidas se acotan a lo propio para cualquier no administrador, y el de Artistas para quien no tiene rol; (c) el botón «Publicar» del menú lleva a `/como-publicar`; (d) el registro sigue sin asignar rol (quien se registra solo ve Mis fichas, Mis datos y Clasificados).
 - [ ] Avisar al equipo/colaboradores si corresponde (sección 11).
 - [ ] Elegir ventana de bajo tráfico. Duración estimada del paso de base de datos: minutos.
 
@@ -52,6 +55,10 @@ Elaborado contra el estado real del repositorio el 2026-10-12. **Nada de esto se
   ```
   - [ ] Si existe con otro esquema (otros nombres de columnas): **parar y avisar** antes de migrar; la migración solo agrega columnas, pero el código espera esas 6 columnas heredadas.
   - [ ] Confirmar que `MAIL_*` de producción envía correo (el formulario avisa a `CONTACT_NOTIFY_TO`).
+- [ ] Anotar cuántos usuarios **no tienen ningún rol** (en local eran 6 al 2026-10-12). Siguen sin rol: es el comportamiento acordado. Consulta de solo lectura:
+  ```sql
+  SELECT COUNT(*) AS sin_rol FROM users u WHERE NOT EXISTS (SELECT 1 FROM model_has_roles m WHERE m.model_id = u.id);
+  ```
 - [ ] Anotar cuántos usuarios tienen rol `prensa`. En local eran 2 de prueba; **si en producción hay usuarios reales con ese rol, la migración los pasa a `colaborador`** (pierden `update album/cancion/noticia/show`, que de todos modos ya no tienen efecto cruzado). Avisarles si corresponde.
 - [ ] Revisar `storage/logs/laravel.log` reciente: línea base de errores antes de desplegar.
 
@@ -87,7 +94,7 @@ Nuevas, en este orden:
 
 ## 4. Código y entorno
 
-- [ ] Integrar `dev` en `main` por el flujo de revisión habitual y esperar el **CI en verde** (debe correr la suite completa; en local, base limpia: 560 pasan, 0 fallan, 2 omitidos).
+- [ ] Integrar `dev` en `main` por el flujo de revisión habitual y esperar el **CI en verde** (debe correr la suite completa; en local, base limpia `mfa_test`: **678 pasan, 0 fallan, 2 omitidos**). La suite completa sobre la base real `mfa` no se corrió en esta tanda (la última tuvo 13 fallos preexistentes por datos reales).
 - [ ] Primer push de `dev`: **mirar el resultado del CI antes de integrar a `main`**. Es la primera vez que corre el paso nuevo `Seed reference data for tests`; si falla, corregirlo antes de seguir.
 - [ ] Servidor: `git pull` de `main`.
 - [ ] `.env` de producción:
@@ -95,12 +102,13 @@ Nuevas, en este orden:
   |---|---|---|
   | `BACKOFFICE_ACCESS_BY_ENTITIES` | `false` (u omitir) | Activar recién en la etapa 2 |
   | `ENTITY_CLAIMS_DELEGATE_TO_OWNERS` | `true` (u omitir) | Los owners aprueban editores de su ficha |
+  | ~~`ENTITY_MANAGEMENT_SCOPE_LISTINGS`~~ | **eliminada** | Si existe en el `.env` de producción, se ignora; se puede borrar |
   | `SOCIAL_LOGIN_ENABLED` | **no definir** (u omitir/`false`) | Oculta los botones de Google/Facebook |
   | `CONTACT_NOTIFY_TO` | casilla que recibe los avisos (por defecto la actual) | Aviso de cada mensaje de contacto nuevo |
   | `CONTACT_SEND_CONFIRMATION` | `true` (o `false` para no escribir a terceros) | Confirmación al remitente |
   - [ ] No copiar el `.env` local ni el `.env.testing`: tienen valores de desarrollo (`.env.testing` apunta a `mfa_test`).
 - [ ] `composer install --no-dev` **no** es necesario (sin cambios de dependencias); correrlo solo si el proceso habitual lo exige.
-- [ ] Frontend: **`public/build` cambió** (3 CSS con hash nuevo + `manifest.json`, por las clases del formulario de contacto): viaja en el commit; confirmar tras el *pull* que `public/build/manifest.json` apunta a archivos existentes (`npm run build:verify` local pasa) y que `public/hot` no existe.
+- [ ] Frontend: **`public/build` cambió** (3 CSS con hash nuevo + `manifest.json`, por las clases del formulario de contacto y de la guía «Cómo publicar»): viaja en el commit; confirmar tras el *pull* que `public/build/manifest.json` apunta a archivos existentes (`npm run build:verify` local pasa) y que `public/hot` no existe.
 
 ## 5. Cachés (después de migrar y de actualizar el código)
 
@@ -115,7 +123,8 @@ Nuevas, en este orden:
 
 - [ ] Home y una página interna → `200`; CSS/JS → `200`.
 - [ ] `/login` y `/register`: **sin** botones de Google/Facebook; formulario de email y contraseña visible.
-- [ ] Botón **Publicar** del menú → lleva al login; tras iniciar sesión cae en `/admin` (con el flag apagado, el dashboard; con el flag encendido y usuario no administrador, Mis fichas).
+- [ ] Botón **Publicar** del menú → lleva a la guía `/como-publicar` (pasos, botones «Crear mi cuenta» / «Ya tengo cuenta», sin estilos rotos: revisar tablas, números de pasos y preguntas desplegables). «Ya tengo cuenta» → login → panel (administrador: dashboard; el resto: **Mi panel**).
+- [ ] `/como-publicar` figura en `/sitemap-estaticas.xml`, no tiene `noindex` y el *canonical* apunta a `https://mifolkloreargentino.com/como-publicar`. Enlazada desde el pie, `/register`, Mi panel, Mis fichas y la ayuda de los formularios.
 - [ ] **Contacto:** `/contacto` carga; el menú **Más → Contacto** y el footer (**Escribinos** y la lista) lo enlazan; enviar un mensaje de prueba → confirmación en pantalla, correo al equipo (con Reply-To del remitente) y, si está activo, confirmación al remitente; aparece en **Backoffice → Mensajes de contacto** (solo administrador) y en el dashboard. Probar también que un segundo envío idéntico no duplica y que un envío inmediato (menos de 4 s) muestra el aviso. Borrar el mensaje de prueba.
 - [ ] `/admin/contribuir` y `/admin/contributions` responden `404`; las páginas de artista, festival, canción y evento ya no muestran "Sugerir corrección".
 - [ ] **Mis datos, etapa 3** (sin migración): verificar `SESSION_DRIVER` en producción (la tarjeta **Sesiones activas** solo aparece con `database`); crear dos sesiones (dos navegadores), **Cerrar las otras sesiones** con la contraseña y confirmar que la otra se desloguea; cambiar la contraseña y ver que cierra las demás; aprobar/rechazar una solicitud de prueba y confirmar que llega el correo al solicitante (con el rol o el motivo); con una **cuenta de prueba** (nunca una real) probar **Eliminar mi cuenta** (contraseña + `ELIMINAR`): queda como "Usuario eliminado N", no puede volver a ingresar y su contenido sigue publicado sin su nombre. Una cuenta administradora no puede eliminarse desde ahí.
@@ -127,8 +136,12 @@ Nuevas, en este orden:
 ## 7. Smoke test con sesión
 
 - [ ] **Administrador:** entra al backoffice; ve Usuarios y Roles → Organizaciones y Solicitudes de vínculo; la lista de roles no incluye `prensa` y sí `verificado`.
+- [ ] **Tablero del administrador:** «Requiere tu atención» con 4 tarjetas (solicitudes de ficha, mensajes sin leer, contenido a revisar, clasificados por moderar); colores según antigüedad (3 días ámbar, 7 rojo); insignias en el sidebar (Centro de Moderación, Mensajes de contacto, Solicitudes de vínculo, Usuarios y Roles, Avisos Clasificados); alertas solo si existen; **festivales en borrador** visibles y publicables en el Centro de Moderación. Resolver un pendiente y comprobar que el número baja en menos de ~30 s (caché).
+- [ ] **Mi panel** con un colaborador (con y sin fichas) y con un usuario **sin rol**: muestra Mis fichas, solicitudes, contenido cargado; sin fichas ofrece «Solicitar una ficha»; no muestra totales globales. Un usuario sin rol no ve registros ajenos en los listados.
+- [ ] **Ayuda contextual:** abrir el alta de Artista, Disco, Canción, Festival, Evento, Noticia, Mito, Comida y Clasificado: cuadro «¿Cómo funciona esto?» (qué ves, publicación, obligatorios), medidas de imagen debajo del campo y bloque «Cómo aparece en Google (opcional)». Los listados muestran «¿Por qué veo estos registros y no otros?».
+- [ ] **Editor de imágenes** (con internet y acceso a `cdn.jsdelivr.net`): foto horizontal grande a un festival → se reduce sola a 1600×900; foto vertical a un festival → abre el recorte 16:9 (probar confirmar y cancelar); horizontal a un artista → pide recorte vertical; imagen muy pesada; varias a la vez en Clasificados; probar en el celular. Si el CDN no carga, el formulario sigue funcionando sin recorte.
 - [ ] **Colaborador existente:** inicia sesión sin errores; ve "Mis fichas".
-- [ ] Un usuario sin rol puede registrarse por email y contraseña.
+- [ ] Un usuario sin rol puede registrarse por email y contraseña; queda **sin rol** (comportamiento acordado) y ve Mi panel.
 
 ## 8. Validación manual por flujo (con cuentas de prueba reales de producción)
 
@@ -178,6 +191,7 @@ Solo después de unos días estables y de la validación manual:
 | Error general tras el *pull* | Volver `main` al commit anotado, `optimize:clear` + `permission:cache-reset`, cachear de nuevo |
 | Restricciones inesperadas de acceso | `BACKOFFICE_ACCESS_BY_ENTITIES=false` + `config:cache` (no requiere tocar datos) |
 | Problema con la delegación | `ENTITY_CLAIMS_DELEGATE_TO_OWNERS=false` + `config:cache` |
+| Editor de imágenes falla o el CDN no responde | El formulario sigue subiendo sin recorte; si hace falta, volver al commit anterior de las vistas |
 | Problema con roles/permisos | Restaurar el backup de la base (el `down()` de la migración de roles no reasigna usuarios) |
 | Login | Reponer botones sociales con `SOCIAL_LOGIN_ENABLED=true` (solo si el login social funciona) |
 
@@ -185,5 +199,9 @@ Solo después de unos días estables y de la validación manual:
 
 - 2 tests omitidos de larga data (`NoticiasBugFixTest` entre ellos).
 - `RolesAndPermissionsSeeder` histórico está desfasado (aún crea el rol `prensa`): no ejecutarlo en entornos con datos; evaluar retirarlo.
+- Con el flag apagado, un colaborador sin fichas todavía puede crear Mitos y Comidas directo (observación abierta).
+- `app:assign-default-role` quedó sin uso y asigna el rol por id fijo.
+- El servidor no limita el peso de la imagen de noticias ni restringe formatos de la de eventos; las medidas de imagen se validan solo en el navegador.
+- No se encontró la página estática original que explicaba cómo enviar información: `/como-publicar` la reemplaza.
 - Mitos y Comidas son solo de administradores y `verificado`. El flujo "Contribuir" ya no existe: si aparece demanda de aportes de colaboradores, habría que diseñar un camino nuevo dentro del circuito de fichas y revisión.
 - Cierre de versión: pasar `[Unreleased]` del CHANGELOG a una versión (`v2.4.0` sugerida, a decidir) y archivar las specs de OpenSpec una vez validado en producción. `openspec/` está en `.gitignore`: las specs se versionaron con `git add -f`.
