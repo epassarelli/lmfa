@@ -470,9 +470,12 @@ return [
         ],
         [
             'text' => 'Newsletter',
-            'url' => 'admin/newsletter-subscribers',
             'icon' => 'fas fa-fw fa-envelope-open-text',
             'can' => 'manage user',
+            'submenu' => [
+                ['text' => 'Ediciones', 'url' => 'admin/newsletter-editions', 'icon' => 'far fa-fw fa-paper-plane'],
+                ['text' => 'Suscriptores', 'url' => 'admin/newsletter-subscribers', 'icon' => 'far fa-fw fa-address-book'],
+            ],
         ],
         [
             'text' => 'Usuarios y Roles',

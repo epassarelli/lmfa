@@ -4,6 +4,7 @@
 
 @section('content_header')
     <h1>Suscriptores del Newsletter</h1>
+    <a href="{{ route('backend.newsletter.editions.index') }}" class="btn btn-sm btn-outline-primary mt-2"><i class="far fa-paper-plane mr-1"></i> Ir a las ediciones</a>
 @stop
 
 @section('content')

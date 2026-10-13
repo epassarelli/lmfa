@@ -195,6 +195,20 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('newsletter-subscribers', NewsletterSubscriberController::class)->only(['index', 'destroy'])->names('backend.newsletter')->parameters(['newsletter-subscribers' => 'subscriber']);
         Route::post('newsletter-subscribers/{subscriber}/toggle', [NewsletterSubscriberController::class, 'toggleStatus'])->name('backend.newsletter.toggle');
         Route::post('newsletter-subscribers/{subscriber}/confirmation', [NewsletterSubscriberController::class, 'requestConfirmation'])->name('backend.newsletter.confirmation');
+
+        Route::prefix('newsletter-editions')->name('backend.newsletter.editions.')->group(function () {
+            $c = \App\Http\Controllers\Backend\NewsletterEditionController::class;
+            Route::get('/', [$c, 'index'])->name('index');
+            Route::post('/', [$c, 'store'])->name('store');
+            Route::get('{edition}/edit', [$c, 'edit'])->name('edit');
+            Route::put('{edition}', [$c, 'update'])->name('update');
+            Route::get('{edition}/preview', [$c, 'preview'])->name('preview');
+            Route::post('{edition}/test', [$c, 'test'])->middleware('throttle:10,10')->name('test');
+            Route::post('{edition}/approve', [$c, 'approve'])->name('approve');
+            Route::post('{edition}/unapprove', [$c, 'unapprove'])->name('unapprove');
+            Route::post('{edition}/send', [$c, 'send'])->name('send');
+            Route::delete('{edition}', [$c, 'destroy'])->name('destroy');
+        });
     });
     Route::get('moderation', [ModerationController::class, 'index'])->name('backend.moderation.index');
     Route::post('moderation/{type}/{id}/publish', [ModerationController::class, 'publish'])->name('backend.moderation.publish');

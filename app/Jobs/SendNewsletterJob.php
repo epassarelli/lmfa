@@ -2,8 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Mail\WeeklyNewsletterMail;
+use App\Mail\NewsletterEditionMail;
 use App\Models\NewsletterDelivery;
+use App\Models\NewsletterEdition;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,55 +13,47 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
+/** Envía una edición aprobada a un suscriptor confirmado, una sola vez. */
 class SendNewsletterJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $subscriber;
-    public $newsData;
-
-    public function __construct(NewsletterSubscriber $subscriber, array $newsData)
+    public function __construct(public int $subscriberId, public int $editionId)
     {
-        $this->subscriber = $subscriber;
-        $this->newsData = $newsData;
     }
 
     public function handle(): void
     {
-        // Solo confirmados y activos (puede haberse dado de baja entre el despacho y el envío).
-        if (! $this->subscriber->fresh()?->isDeliverable()) {
+        $edition = NewsletterEdition::find($this->editionId);
+        $subscriber = NewsletterSubscriber::find($this->subscriberId);
+
+        // Solo ediciones aprobadas/enviadas con contenido congelado, y solo confirmados activos
+        // (puede haberse dado de baja entre el despacho y el envío).
+        if (! $edition || ! $subscriber || $edition->isDraft() || $edition->snapshot === null || ! $subscriber->isDeliverable()) {
             return;
         }
 
-        $editionKey = $this->newsData['edition_key'] ?? null;
+        // Reserva el envío: si ya existe (reintento o doble despacho) no se manda dos veces.
+        $reserved = NewsletterDelivery::query()->insertOrIgnore([
+            'subscriber_id' => $subscriber->id,
+            'edition_key' => $edition->edition_key,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        // Reserva el envío: si ya existe (comando repetido o job reintentado) no se manda dos veces.
-        if ($editionKey) {
-            $reserved = NewsletterDelivery::query()->insertOrIgnore([
-                'subscriber_id' => $this->subscriber->id,
-                'edition_key' => $editionKey,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            if ($reserved === 0) {
-                return;
-            }
+        if ($reserved === 0) {
+            return;
         }
 
         try {
-            Mail::to($this->subscriber->email)->send(new WeeklyNewsletterMail($this->subscriber, $this->newsData));
+            Mail::to($subscriber->email)->send(new NewsletterEditionMail($edition, $subscriber, $edition->snapshot));
         } catch (\Throwable $e) {
             // Libera la reserva para que un reintento pueda enviarlo.
-            if ($editionKey) {
-                NewsletterDelivery::query()->where('subscriber_id', $this->subscriber->id)->where('edition_key', $editionKey)->whereNull('sent_at')->delete();
-            }
+            NewsletterDelivery::query()->where('subscriber_id', $subscriber->id)->where('edition_key', $edition->edition_key)->whereNull('sent_at')->delete();
 
             throw $e;
         }
 
-        if ($editionKey) {
-            NewsletterDelivery::query()->where('subscriber_id', $this->subscriber->id)->where('edition_key', $editionKey)->update(['sent_at' => now()]);
-        }
+        NewsletterDelivery::query()->where('subscriber_id', $subscriber->id)->where('edition_key', $edition->edition_key)->update(['sent_at' => now()]);
     }
 }

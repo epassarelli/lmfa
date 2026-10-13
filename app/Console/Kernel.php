@@ -15,9 +15,10 @@ class Kernel extends ConsoleKernel
     {
         app(OperationalHealthService::class)->recordSchedulerHeartbeat();
 
-        // Newsletter: el envío semanal automático se retiró (spec newsletter-safe-base). Antes escribía a todos los
-        // suscriptores sin revisión. Hoy es manual (`php artisan newsletter:send-weekly --dry-run`); la Fase 2
-        // vuelve a programarlo solo para ediciones aprobadas.
+        // Newsletter (spec newsletter-editorial-control): el lunes se arma el BORRADOR (no envía nada) y cada 15
+        // minutos se despachan únicamente las ediciones APROBADAS por un administrador cuya hora programada llegó.
+        $schedule->command('newsletter:build-draft')->weeklyOn(1, '07:00')->withoutOverlapping();
+        $schedule->command('newsletter:dispatch-scheduled')->everyFifteenMinutes()->withoutOverlapping();
 
         // PC-09: Event reminders — runs daily at 08:00
         $schedule->job(new \App\Jobs\Publication\EventReminderJob())->dailyAt('08:00');

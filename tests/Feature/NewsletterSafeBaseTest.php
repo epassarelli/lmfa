@@ -180,63 +180,30 @@ class NewsletterSafeBaseTest extends TestCase
         $this->assertContains('newsletter/unsubscribe/*', $except);
     }
 
-    public function test_the_weekly_mail_declares_one_click_unsubscribe(): void
+    public function test_the_newsletter_mail_declares_one_click_unsubscribe(): void
     {
         $sub = $this->subscriber('headers@example.test', 'active', true);
-        $mail = new WeeklyNewsletterMail($sub, ['noticias' => collect(), 'discos' => collect(), 'canciones' => collect(), 'interpretes' => collect(), 'period' => 'x']);
+        $edition = \App\Models\NewsletterEdition::create([
+            'edition_key' => 'test-headers', 'subject' => 'Asunto', 'status' => 'approved',
+            'period_start' => now()->subWeek()->toDateString(), 'period_end' => now()->toDateString(),
+        ]);
 
-        $headers = $mail->headers()->text;
+        $headers = (new \App\Mail\NewsletterEditionMail($edition, $sub, []))->headers()->text;
 
         $this->assertSame('<'.route('newsletter.unsubscribe', $sub->token).'>', $headers['List-Unsubscribe']);
         $this->assertSame('List-Unsubscribe=One-Click', $headers['List-Unsubscribe-Post']);
     }
 
-    // ---------------- Envío ----------------
+    // ---------------- Programación ----------------
 
-    public function test_the_weekly_command_only_writes_to_confirmed_subscribers_and_never_twice(): void
-    {
-        Interprete::create([
-            'interprete' => 'Artista nuevo '.uniqid(), 'slug' => 'artista-news-'.uniqid(), 'biografia' => '<p>Bio</p>', 'estado' => 1,
-        ])->forceFill(['created_at' => now()->subWeek()])->save();
-
-        $this->subscriber('ok@example.test', 'active', true);
-        $this->subscriber('pendiente@example.test', 'pending');
-        $this->subscriber('heredado@example.test', 'active', false);
-        $this->subscriber('baja@example.test', 'unsubscribed', true);
-        $this->subscriber('rebota@example.test', 'bounced', true);
-
-        $this->artisan('newsletter:send-weekly')->assertSuccessful();
-
-        Mail::assertSent(WeeklyNewsletterMail::class, 1);
-        Mail::assertSent(WeeklyNewsletterMail::class, fn ($mail) => $mail->hasTo('ok@example.test'));
-
-        $this->artisan('newsletter:send-weekly')->assertSuccessful();
-        Mail::assertSent(WeeklyNewsletterMail::class, 1); // la misma edición no se repite
-
-        $this->assertSame(1, \App\Models\NewsletterDelivery::count());
-        $this->assertNotNull(\App\Models\NewsletterDelivery::first()->sent_at);
-    }
-
-    public function test_dry_run_sends_nothing(): void
-    {
-        Interprete::create([
-            'interprete' => 'Artista seco '.uniqid(), 'slug' => 'artista-dry-'.uniqid(), 'biografia' => '<p>Bio</p>', 'estado' => 1,
-        ])->forceFill(['created_at' => now()->subWeek()])->save();
-        $this->subscriber('ok2@example.test', 'active', true);
-
-        $this->artisan('newsletter:send-weekly --dry-run')->expectsOutputToContain('Simulación')->assertSuccessful();
-
-        Mail::assertNothingSent();
-        $this->assertSame(0, \App\Models\NewsletterDelivery::count());
-    }
-
-    public function test_the_automatic_weekly_send_is_no_longer_scheduled(): void
+    public function test_nothing_is_scheduled_that_sends_without_approval(): void
     {
         $commands = collect(app(Schedule::class)->events())->map(fn ($event) => (string) $event->command)->implode(' ');
 
         $this->assertStringNotContainsString('newsletter:send-weekly', $commands);
+        $this->assertStringContainsString('newsletter:build-draft', $commands);
+        $this->assertStringContainsString('newsletter:dispatch-scheduled', $commands);
     }
-
     // ---------------- Backoffice ----------------
 
     public function test_only_administrators_can_see_or_manage_subscribers(): void

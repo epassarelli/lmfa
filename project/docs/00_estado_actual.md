@@ -1,6 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
 
+### Implementado en local 2026-10-13: newsletter, Fase 2 (rama `feature/newsletter`)
+
+Spec `newsletter-editorial-control`. Ediciones con borrador automático semanal (nunca envía), selección de contenido, vista previa, envío de prueba, aprobación con contenido congelado, envío inmediato o programado y registro de envíos. Comandos `newsletter:build-draft` (lunes 07:00) y `newsletter:dispatch-scheduled` (cada 15 min, solo aprobadas). 1 migración nueva más (aplicada solo en `mfa_test`; **pendiente en `mfa`**). mfa_test: 704 passed, 2 skipped. Pendiente: Fase 3 (aperturas/clics, rebotes, plantilla con imágenes) y verificación de SPF/DKIM/DMARC.
+
 ### Implementado en local 2026-10-13: newsletter, Fase 1 (rama `feature/newsletter`)
 
 Spec `newsletter-safe-base`. Doble confirmación, constancia de consentimiento, protección de abuso, baja correcta con `List-Unsubscribe`, envío solo a confirmados, registro de envíos, envío automático retirado del scheduler y administración de suscriptores. Corrige además un acceso indebido al listado de suscriptores (cualquier usuario con sesión). 2 migraciones nuevas (aplicadas solo en `mfa_test`; **pendientes en `mfa`**). mfa_test: 695 passed, 2 skipped. Pendiente: Fase 2 (ediciones con vista previa y aprobación) y Fase 3 (métricas, rebotes, plantilla); verificar SPF/DKIM/DMARC y el remitente en producción.
