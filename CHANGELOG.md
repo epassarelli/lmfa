@@ -7,6 +7,12 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [2.4.1] — 2026-10-14
+
+### Corregido
+
+- **Suscripción al newsletter desde el sidebar fallaba con error 419**: la ruta `/csrf-refresh` (que entrega el token CSRF a los formularios de páginas cacheadas) devolvía 404 porque la ruta comodín `/{interprete:slug}` estaba registrada antes y la capturaba; el formulario enviaba el token vacío. Error preexistente del sitio, detectado al probar en producción. La ruta se registra ahora antes de los comodines y hay tests de regresión (`CsrfRefreshRouteTest`).
+
 ## [2.4.0] — 2026-10-13
 
 ### Agregado

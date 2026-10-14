@@ -51,6 +51,11 @@ Route::get('/healthz', [OperationalHealthController::class, 'public'])->name('he
 
 
 // Legales / cumplimiento Meta
+// Token CSRF fresco para forms que viven en paginas con full-page cache
+// (ver App\Support\ResponseCache\PublicPagesCacheProfile).
+// IMPORTANTE: va ANTES de Route::get('/{interprete:slug}'); si se registra despues, esa ruta comodin la captura y devuelve 404.
+Route::get('/csrf-refresh', [CsrfController::class, 'refresh'])->name('csrf.refresh');
+
 Route::get('/como-publicar', [\App\Http\Controllers\Frontend\PublishGuideController::class, 'show'])->name('publish.guide');
 Route::get('/privacidad', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/condiciones', [LegalController::class, 'terms'])->name('legal.terms');
@@ -165,10 +170,6 @@ Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->nam
 Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 Route::get('auth/facebook', [SocialiteController::class, 'redirectToFacebook'])->name('auth.facebook');
 Route::get('auth/facebook/callback', [SocialiteController::class, 'handleFacebookCallback']);
-
-// Token CSRF fresco para forms que viven en paginas con full-page cache
-// (ver App\Support\ResponseCache\PublicPagesCacheProfile)
-Route::get('/csrf-refresh', [CsrfController::class, 'refresh'])->name('csrf.refresh');
 
 // Newsletter
 Route::post('/newsletter/subscribe', [\App\Http\Controllers\Frontend\NewsletterController::class, 'subscribe'])->middleware('throttle:5,10')->name('newsletter.subscribe');

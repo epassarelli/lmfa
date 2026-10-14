@@ -1,8 +1,8 @@
 # 00 - Estado Actual del Proyecto
 
-## Resumen al 2026-10-13
+## Resumen al 2026-10-14 (v2.4.1)
 
-**Dónde está el trabajo.** Todo lo desarrollado desde el cierre de `v2.3.1` está integrado en la rama `dev` (local; sin tag nuevo). `main` y producción no lo tienen. Pruebas en la base aislada `mfa_test`: **721 pasan, 0 fallan, 2 omitidos**. La suite completa sobre la base real `mfa` no se corrió en esta tanda (la última tuvo 13 fallos preexistentes por datos reales).
+**Dónde está el trabajo.** Todo lo desarrollado desde el cierre de `v2.3.1` está integrado en la rama `dev` (local; sin tag nuevo). `main` y producción no lo tienen. Pruebas en la base aislada `mfa_test`: **725 pasan, 0 fallan, 2 omitidos**. La suite completa sobre la base real `mfa` no se corrió en esta tanda (la última tuvo 13 fallos preexistentes por datos reales).
 
 | Frente | Estado | Spec |
 |---|---|---|

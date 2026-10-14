@@ -136,6 +136,7 @@ Migraciones del **newsletter** (aditivas; respaldar antes `newsletter_subscriber
 - [ ] Home y una página interna → `200`; CSS/JS → `200`.
 - [ ] `/login` y `/register`: **sin** botones de Google/Facebook; formulario de email y contraseña visible.
 - [ ] Botón **Publicar** del menú → lleva a la guía `/como-publicar` (pasos, botones «Crear mi cuenta» / «Ya tengo cuenta», sin estilos rotos: revisar tablas, números de pasos y preguntas desplegables). «Ya tengo cuenta» → login → panel (administrador: dashboard; el resto: **Mi panel**).
+- [ ] `GET /csrf-refresh` responde `200` con `{"token":"…"}` (si da 404, el formulario de suscripción del sidebar falla con 419).
 - [ ] **Newsletter** (detalle completo en `newsletter-produccion.md`): `/admin/newsletter-subscribers` y `/admin/newsletter-editions` con un usuario **sin rol** → 403 (arreglo de seguridad); suscribirse desde el sidebar → llega el correo de confirmación → confirmar → «Activo»; armar un borrador, vista previa, **prueba** a una casilla propia (SPF/DKIM/DMARC en PASS en «Mostrar original»); aprobar y enviar solo a tu cuenta; un clic en un enlace suma; baja desde el correo.
 - [ ] `/privacidad` muestra la sección «9. Newsletter» y la fecha «13 de octubre de 2026» (**texto pendiente de revisión legal del titular**).
 - [ ] `/como-publicar` figura en `/sitemap-estaticas.xml`, no tiene `noindex` y el *canonical* apunta a `https://mifolkloreargentino.com/como-publicar`. Enlazada desde el pie, `/register`, Mi panel, Mis fichas y la ayuda de los formularios.
