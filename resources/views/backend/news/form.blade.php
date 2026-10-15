@@ -10,7 +10,7 @@
 
   <div class="col-md-6">
     <div class="form-group">
-      <label for="slug">Dirección web</label>
+      <label for="slug">Slug / URL Amigable</label>
       <small class="form-text text-muted">Se completa sola desde el título. Es parte del enlace público.</small>
       <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $news->slug ?? '') }}" required>
       @error('slug') <small class="text-danger">{{ $message }}</small> @enderror

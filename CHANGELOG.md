@@ -7,6 +7,10 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Cambiado
+
+- **Se restaura la etiqueta «Slug» en los formularios del backoffice** (en Noticias, «Slug / URL Amigable»): en v2.4.0 se había renombrado a «Dirección web». Se conservan las ayudas debajo del campo.
+
 ## [2.4.1] — 2026-10-14
 
 ### Corregido

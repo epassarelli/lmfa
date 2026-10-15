@@ -5,7 +5,7 @@
   </div>
 
   <div class="col-md-4">
-    <x-input name="slug" label="Dirección web" :value="$interprete->slug ?? ''" required />
+    <x-input name="slug" label="Slug" :value="$interprete->slug ?? ''" required />
     <small class="form-text text-muted" style="margin-top:-12px">Se completa sola desde el nombre. Es parte del enlace público: cambiala solo si hace falta.</small>
   </div>
 

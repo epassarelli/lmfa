@@ -10,7 +10,7 @@
 
   <div class="col-md-4">
     <div class="form-group">
-      <label for="slug">Dirección web</label>
+      <label for="slug">Slug</label>
       <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $festival->slug ?? '') }}">
       <small class="form-text text-muted">Se completa sola desde el título. Cambiala solo si hace falta: forma parte del enlace público.</small>
       @error('slug') <small class="text-danger">{{ $message }}</small> @enderror

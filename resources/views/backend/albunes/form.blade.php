@@ -19,7 +19,7 @@
       <div class="col-md-6">
         @if (Auth::user()->hasRole('administrador'))
           <div class="form-group">
-            <label for="slug">Dirección web</label>
+            <label for="slug">Slug</label>
             <input type="text" name="slug" id="slug" class="form-control"
               value="{{ old('slug', $album->slug ?? '') }}" required>
             @error('slug')
