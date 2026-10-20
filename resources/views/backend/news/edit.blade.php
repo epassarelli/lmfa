@@ -6,10 +6,14 @@
     <h1><i class="fas fa-edit mr-2"></i>Editar Noticia: {{ $news->title }}</h1>
 @stop
 
+@section('css')
+    @include('backend.partials.styles._compact-form')
+@stop
+
 @section('content')
 <div class="row">
-    <div class="col-md-11 mx-auto">
-        <form action="{{ route('backend.news.update', $news) }}" method="POST" enctype="multipart/form-data">
+    <div class="col-12">
+        <form action="{{ route('backend.news.update', $news) }}" method="POST" enctype="multipart/form-data" class="form-compact">
             @csrf
             @method('PUT')
 
@@ -38,6 +42,7 @@
     @include('backend.partials.scripts._ckeditor')
     @include('backend.partials.scripts._slug')
     @include('backend.partials.scripts._select2')
+    @include('backend.partials.scripts._tooltips')
     <script>
         $(document).ready(function () {
             $('.custom-file-input').on('change', function() {

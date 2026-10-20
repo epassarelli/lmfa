@@ -1,38 +1,59 @@
-<x-backend.form-help section="festival" :open="! isset($festival->id)" />
+<x-backend.form-help section="festival" />
+@php
+  $selectedNews = old('news_ids', isset($festival) ? $festival->noticias->pluck('id')->all() : []);
+  $selectedEvents = old('event_ids', isset($festival) ? $festival->events->pluck('id')->all() : []);
+  $selectedArtists = old('interprete_ids', isset($festival) ? $festival->interpretes->pluck('id')->all() : []);
+  $selectedKnowledge = old('knowledge_article_ids', isset($festival) ? $festival->knowledgeArticles->pluck('id')->all() : []);
+  $currentImage = isset($festival) ? $festival->images->first() : null;
+  $legacyImage = isset($festival) && ! $currentImage && $festival->featured_image_path ? $festival->featured_image_path : null;
+@endphp
 <div class="row">
-  <div class="col-md-8">
+  {{-- Fila 1 (grilla de 12): Título 4 · Slug 2 · Publicación 3 · Estado 3 --}}
+  <div class="col-md-12 col-xl-4">
     <div class="form-group">
-      <label for="title">Titulo del Festival <span class="text-danger">*</span></label>
+      <label for="title">Título del Festival <span class="text-danger">*</span></label>
       <input type="text" name="title" id="title" class="form-control" value="{{ old('title', $festival->title ?? '') }}" onkeyup="autocompleteSlug(this, '#slug')" required>
       @error('title') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-6 col-xl-2">
     <div class="form-group">
       <label for="slug">Slug</label>
+      <x-backend.help-tip text="Opcional. Se completa sola desde el título. Cambiala solo si hace falta: forma parte del enlace público." />
       <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $festival->slug ?? '') }}">
-      <small class="form-text text-muted">Se completa sola desde el título. Cambiala solo si hace falta: forma parte del enlace público.</small>
       @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
-  <div class="col-md-12">
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
-      <label for="excerpt">Bajada</label>
-      <textarea name="excerpt" id="excerpt" class="form-control" rows="3">{{ old('excerpt', $festival->excerpt ?? '') }}</textarea>
-      @error('excerpt') <small class="text-danger">{{ $message }}</small> @enderror
+      <label for="published_at">Fecha de publicación</label>
+      <x-backend.help-tip text="Opcional." />
+      <input type="datetime-local" name="published_at" id="published_at" class="form-control"
+        value="{{ old('published_at', optional($festival->published_at)->format('Y-m-d\TH:i')) }}">
+      @error('published_at') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
-  <div class="col-md-12">
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
-      <label for="editor">Contenido <span class="text-danger">*</span></label>
-      <textarea name="body" id="editor" class="form-control" rows="10" required data-ckeditor-profile="editorial-body">{{ old('body', $festival->body ?? '') }}</textarea>
-      @error('body') <small class="text-danger">{{ $message }}</small> @enderror
+      <label for="status">Estado</label>
+      @if (auth()->user()->canPublish())
+      <select name="status" id="status" class="form-control">
+        @foreach (['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'] as $value => $label)
+          <option value="{{ $value }}" @selected(old('status', $festival->status ?? 'draft') === $value)>{{ $label }}</option>
+        @endforeach
+      </select>
+      @else
+      <input type="hidden" name="status" value="draft">
+      <input type="text" class="form-control" value="Borrador (lo publica el equipo)" disabled>
+      @endif
+      @error('status') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
+  {{-- Fila 2: Provincia 4 · Localidad 4 · Mes 4 --}}
   <div class="col-md-4">
     <div class="form-group">
       <label for="province_id">Provincia <span class="text-danger">*</span></label>
@@ -78,88 +99,8 @@
     </div>
   </div>
 
-  <div class="col-md-6">
-    <div class="form-group">
-      <label for="foto">Imagen destacada</label>
-      <input type="file" name="foto" id="foto" class="form-control" accept="image/jpeg,image/png,image/webp">
-      <x-backend.image-hint profile="festival" />
-      @if (isset($festival) && $festival->images->isNotEmpty())
-        <div class="mt-2 text-center">
-          <x-optimized-image :image="$festival->images->first()" variant="card" style="max-height: 80px;" class="img-thumbnail" />
-        </div>
-      @elseif (isset($festival) && $festival->featured_image_path)
-        <div class="mt-2">
-          <img src="{{ asset('storage/' . $festival->featured_image_path) }}" alt="Foto de {{ $festival->title }}" style="max-height: 80px;">
-        </div>
-      @endif
-      @error('foto') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-  </div>
-
-  <div class="col-md-3">
-    <div class="form-group">
-      <label for="published_at">Fecha de publicacion</label>
-      <input type="datetime-local" name="published_at" id="published_at" class="form-control"
-        value="{{ old('published_at', optional($festival->published_at)->format('Y-m-d\TH:i')) }}">
-      @error('published_at') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-  </div>
-
-  <div class="col-md-3">
-    <div class="form-group">
-      <label for="status">Estado</label>
-      @if (auth()->user()->canPublish())
-      <select name="status" id="status" class="form-control" required>
-        @foreach (['draft' => 'Borrador', 'published' => 'Publicado', 'archived' => 'Archivado'] as $value => $label)
-          <option value="{{ $value }}" @selected(old('status', $festival->status ?? 'draft') === $value)>{{ $label }}</option>
-        @endforeach
-      </select>
-      @else
-      <input type="hidden" name="status" value="draft">
-      <input type="text" class="form-control" value="Borrador (lo publica el equipo)" disabled>
-      @endif
-      @error('status') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-  </div>
-
-  <x-backend.seo-box noun="este festival">
-
-  <div class="col-md-6">
-    <div class="form-group">
-      <label for="seo_title">Título en Google</label>
-      <input type="text" name="seo_title" id="seo_title" class="form-control" maxlength="255" value="{{ old('seo_title', $festival->seo_title ?? '') }}">
-      <small class="form-text text-muted">Si queda vacío, se usa el título del festival.</small>
-      @error('seo_title') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="form-group">
-      <label for="meta_description">Resumen en Google</label>
-      <textarea name="meta_description" id="meta_description" class="form-control" rows="3" maxlength="320">{{ old('meta_description', $festival->meta_description ?? '') }}</textarea>
-      <small class="form-text text-muted">Hasta 320 letras. Si queda vacío, se arma con la bajada o el contenido.</small>
-      @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-  </div>
-
-  <div class="col-md-12">
-    <div class="form-group">
-      <label for="image_alt">Descripción de la imagen</label>
-      <input type="text" name="image_alt" id="image_alt" class="form-control" maxlength="255" value="{{ old('image_alt', $festival->image_alt ?? '') }}">
-      <small class="form-text text-muted">Dice qué se ve en la foto (la leen los lectores de pantalla y Google). Si queda vacío, se usa el título.</small>
-      @error('image_alt') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-  </div>
-  </x-backend.seo-box>
-
-  @php
-    $selectedNews = old('news_ids', isset($festival) ? $festival->noticias->pluck('id')->all() : []);
-    $selectedEvents = old('event_ids', isset($festival) ? $festival->events->pluck('id')->all() : []);
-    $selectedArtists = old('interprete_ids', isset($festival) ? $festival->interpretes->pluck('id')->all() : []);
-    $selectedKnowledge = old('knowledge_article_ids', isset($festival) ? $festival->knowledgeArticles->pluck('id')->all() : []);
-  @endphp
-
-  <div class="col-md-6">
+  {{-- Fila 3: Noticias 3 · Eventos 3 · Artistas 3 · Enciclopedia 3 --}}
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
       <label for="news_ids">Noticias relacionadas</label>
       <select name="news_ids[]" id="news_ids" class="form-control select2" data-placeholder="Seleccionar noticias" multiple>
@@ -171,7 +112,7 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
       <label for="event_ids">Eventos relacionados</label>
       <select name="event_ids[]" id="event_ids" class="form-control select2" data-placeholder="Seleccionar eventos" multiple>
@@ -183,7 +124,7 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
       <label for="interprete_ids">Artistas relacionados</label>
       <select name="interprete_ids[]" id="interprete_ids" class="form-control select2" data-placeholder="Seleccionar artistas" multiple>
@@ -195,10 +136,10 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
-      <label for="knowledge_article_ids">Entradas de Enciclopedia relacionadas</label>
-      <select name="knowledge_article_ids[]" id="knowledge_article_ids" class="form-control select2" data-placeholder="Seleccionar articulos" multiple>
+      <label for="knowledge_article_ids">Entradas de Enciclopedia</label>
+      <select name="knowledge_article_ids[]" id="knowledge_article_ids" class="form-control select2" data-placeholder="Seleccionar artículos" multiple>
         @foreach ($relatedKnowledgeArticles as $item)
           <option value="{{ $item->id }}" @selected(in_array($item->id, $selectedKnowledge))>{{ $item->title }}</option>
         @endforeach
@@ -206,4 +147,71 @@
       @error('knowledge_article_ids') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
+
+  {{-- Fila 4: Bajada 8 · Imagen destacada 4 --}}
+  <div class="col-md-12 col-xl-8">
+    <div class="form-group">
+      <label for="excerpt">Bajada</label>
+      <textarea name="excerpt" id="excerpt" class="form-control" rows="3">{{ old('excerpt', $festival->excerpt ?? '') }}</textarea>
+      @error('excerpt') <small class="text-danger">{{ $message }}</small> @enderror
+    </div>
+  </div>
+
+  <div class="col-md-12 col-xl-4">
+    <div class="form-group">
+      <label for="foto">Imagen destacada</label>
+      <x-backend.image-hint profile="festival" mode="tip" />
+      <div class="d-flex align-items-start">
+        @if($currentImage)
+          <x-optimized-image :image="$currentImage" variant="card" style="height: 36px; width: auto;" class="img-thumbnail mr-2" />
+        @elseif($legacyImage)
+          <img src="{{ asset('storage/' . $legacyImage) }}" alt="Foto de {{ $festival->title }}" style="height: 36px; width: auto;" class="img-thumbnail mr-2">
+        @endif
+        <div class="custom-file flex-grow-1">
+          <input type="file" name="foto" class="custom-file-input" id="foto" accept="image/jpeg,image/png,image/webp">
+          <label class="custom-file-label" for="foto">{{ ($currentImage || $legacyImage) ? 'Elegir nueva imagen...' : 'Elegir imagen...' }}</label>
+        </div>
+      </div>
+      <x-backend.image-hint profile="festival" mode="warnings" />
+      @error('foto') <small class="text-danger">{{ $message }}</small> @enderror
+    </div>
+  </div>
+
+  {{-- Fila 5: Contenido 12 --}}
+  <div class="col-12">
+    <div class="form-group">
+      <label for="editor">Contenido <span class="text-danger">*</span></label>
+      <textarea name="body" id="editor" class="form-control" rows="10" required data-ckeditor-profile="editorial-body">{{ old('body', $festival->body ?? '') }}</textarea>
+      @error('body') <small class="text-danger">{{ $message }}</small> @enderror
+    </div>
+  </div>
+
+  <x-backend.seo-box noun="este festival">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="seo_title">Título en Google</label>
+        <x-backend.help-tip text="Si queda vacío, se usa el título del festival." />
+        <input type="text" name="seo_title" id="seo_title" class="form-control" maxlength="255" value="{{ old('seo_title', $festival->seo_title ?? '') }}">
+        @error('seo_title') <small class="text-danger">{{ $message }}</small> @enderror
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="meta_description">Resumen en Google</label>
+        <x-backend.help-tip text="Hasta 320 letras. Si queda vacío, se arma con la bajada o el contenido." />
+        <textarea name="meta_description" id="meta_description" class="form-control" rows="2" maxlength="320">{{ old('meta_description', $festival->meta_description ?? '') }}</textarea>
+        @error('meta_description') <small class="text-danger">{{ $message }}</small> @enderror
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="image_alt">Descripción de la imagen</label>
+        <x-backend.help-tip text="Dice qué se ve en la foto (la leen los lectores de pantalla y Google). Si queda vacío, se usa el título." />
+        <input type="text" name="image_alt" id="image_alt" class="form-control" maxlength="255" value="{{ old('image_alt', $festival->image_alt ?? '') }}">
+        @error('image_alt') <small class="text-danger">{{ $message }}</small> @enderror
+      </div>
+    </div>
+  </x-backend.seo-box>
 </div>

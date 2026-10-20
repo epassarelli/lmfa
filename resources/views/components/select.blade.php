@@ -1,4 +1,4 @@
-@props(['name', 'label' => null, 'options' => [], 'selected' => '', 'required' => false])
+@props(['name', 'label' => null, 'options' => [], 'selected' => '', 'required' => false, 'help' => null])
 
 <div class="form-group">
   <label for="{{ $name }}">
@@ -7,6 +7,7 @@
       <span class="text-danger">*</span>
     @endif
   </label>
+  @if ($help)<x-backend.help-tip :text="$help" />@endif
   <select name="{{ $name }}" id="{{ $name }}" class="form-control {{ $attributes->get('class') }}"
     {{ $required ? 'required' : '' }} {{ $attributes->except('class') }}>
     @foreach ($options as $key => $option)

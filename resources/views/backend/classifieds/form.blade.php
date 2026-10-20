@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-  <x-backend.form-help section="classified" :open="! isset($classified)" />
+  <x-backend.form-help section="classified" />
   <div class="card">
     <div class="card-body">
       <form action="{{ isset($classified) ? route('backend.classifieds.update', $classified) : route('backend.classifieds.store') }}"

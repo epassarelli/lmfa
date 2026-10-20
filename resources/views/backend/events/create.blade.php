@@ -6,11 +6,15 @@
     <h1><i class="fas fa-calendar-plus mr-2"></i>{{ $event->program_id ? 'Agregar jornada al evento' : 'Crear Nuevo Evento' }}</h1>
 @stop
 
+@section('css')
+    @include('backend.partials.styles._compact-form')
+@stop
+
 @section('content')
 @if($errors->any())<div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
 <div class="row">
-    <div class="col-md-10 mx-auto">
-        <form action="{{ route('backend.events.store') }}" method="POST" enctype="multipart/form-data">
+    <div class="col-12">
+        <form action="{{ route('backend.events.store') }}" method="POST" enctype="multipart/form-data" class="form-compact">
             @csrf
             @if($event->program_id)<p class="alert alert-info">Esta jornada forma parte de un evento. <a href="{{ route('backend.event-programs.edit', $event->program_id) }}">Volver a sus datos comunes y jornadas</a>.</p>@endif
             @if(!$event->program_id)
@@ -37,28 +41,13 @@
             </fieldset>
             @endif
 
-            <div class="card card-outline card-info">
-                <div class="card-header">
-                    <h3 class="card-title">Imagen Destacada</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="imagen_destacada">Seleccionar Imagen</label>
-                        <div class="custom-file">
-                            <input type="file" name="imagen_destacada" class="custom-file-input" id="imagen_destacada" accept="image/*">
-                            <label class="custom-file-label" for="imagen_destacada">Elegir archivo...</label>
-                        </div>
-                        <x-backend.image-hint profile="event" />
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary shadow-sm">
-                        <i class="fas fa-save mr-1"></i> Guardar Evento
-                    </button>
-                    <a href="{{ route('backend.events.index') }}" class="btn btn-default float-right">
-                        Cancelar
-                    </a>
-                </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary shadow-sm">
+                    <i class="fas fa-save mr-1"></i> Guardar Evento
+                </button>
+                <a href="{{ route('backend.events.index') }}" class="btn btn-default float-right">
+                    Cancelar
+                </a>
             </div>
         </form>
     </div>
@@ -67,6 +56,7 @@
 
 @section('js')
     @include('backend.partials.scripts._select2')
+    @include('backend.partials.scripts._tooltips')
     @include('backend.partials.scripts._ckeditor')
     @include('backend.events._venue_script')
     @include('backend.events._sessions_script')

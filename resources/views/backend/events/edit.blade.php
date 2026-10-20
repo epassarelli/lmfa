@@ -6,6 +6,10 @@
     <h1><i class="fas fa-edit mr-2"></i>{{ $event->program_id ? 'Editar jornada' : 'Editar evento' }}: {{ $event->title }}</h1>
 @stop
 
+@section('css')
+    @include('backend.partials.styles._compact-form')
+@stop
+
 @section('content')
 @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 @if(!$event->program_id)
@@ -13,8 +17,8 @@
 <form method="POST" action="{{ route('backend.events.sessions', $event) }}">@csrf<button class="btn btn-outline-primary">Agregar jornadas al evento</button></form></div></div>
 @endif
 <div class="row">
-    <div class="col-md-10 mx-auto">
-        <form action="{{ route('backend.events.update', $event) }}" method="POST" enctype="multipart/form-data">
+    <div class="col-12">
+        <form action="{{ route('backend.events.update', $event) }}" method="POST" enctype="multipart/form-data" class="form-compact">
             @csrf
             @method('PUT')
 
@@ -27,44 +31,13 @@
                 </div>
             </div>
 
-            <div class="card card-outline card-info">
-                <div class="card-header">
-                    <h3 class="card-title">Imagen Destacada</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            @if ($event->images->isNotEmpty())
-                                <p><strong>Imagen actual:</strong></p>
-                                <x-optimized-image :image="$event->images->first()" variant="card" class="img-thumbnail shadow-sm mb-3" style="max-height: 200px;" />
-                            @else
-                                <div class="alert alert-light border text-muted">
-                                    <i class="fas fa-image fa-2x mb-2 d-block"></i>
-                                    Sin imagen cargada.
-                                </div>
-                            @endif
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label for="imagen_destacada">Cambiar Imagen</label>
-                                <div class="custom-file">
-                                    <input type="file" name="imagen_destacada" class="custom-file-input" id="imagen_destacada" accept="image/*">
-                                    <label class="custom-file-label" for="imagen_destacada">Elegir nuevo archivo...</label>
-                                </div>
-                                <small class="text-muted">Si no elegís un archivo, se mantiene la imagen actual.</small>
-                                <x-backend.image-hint profile="event" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer text-right">
-                    <a href="{{ route('backend.events.index') }}" class="btn btn-default mr-2">
-                        Cancelar
-                    </a>
-                    <button type="submit" class="btn btn-primary shadow-sm">
-                        <i class="fas fa-save mr-1"></i> Actualizar Cambios
-                    </button>
-                </div>
+            <div class="mb-3 text-right">
+                <a href="{{ route('backend.events.index') }}" class="btn btn-default mr-2">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary shadow-sm">
+                    <i class="fas fa-save mr-1"></i> Actualizar Cambios
+                </button>
             </div>
         </form>
     </div>
@@ -73,6 +46,7 @@
 
 @section('js')
     @include('backend.partials.scripts._select2')
+    @include('backend.partials.scripts._tooltips')
     @include('backend.partials.scripts._ckeditor')
     @include('backend.events._venue_script')
     <script>

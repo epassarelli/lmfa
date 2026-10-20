@@ -5,6 +5,7 @@
     'required' => false,
     'editor' => false,
     'editorProfile' => null,
+    'help' => null,
 ])
 
 <div class="form-group">
@@ -12,6 +13,7 @@
         {{ $label ?? ucfirst($name) }}
         @if ($required)<span class="text-danger">*</span>@endif
     </label>
+    @if ($help)<x-backend.help-tip :text="$help" />@endif
     <textarea name="{{ $name }}" id="{{ $editor ? 'editor' : $name }}" class="form-control" rows="5" @if($required) required @endif @if($editorProfile) data-ckeditor-profile="{{ $editorProfile }}" @endif>{{ old($name, $value) }}</textarea>
     @error($name)
         <div class="text-danger">{{ $message }}</div>

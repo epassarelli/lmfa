@@ -1,4 +1,4 @@
-<x-backend.form-help section="cancion" :open="! isset($cancion->id)" />
+<x-backend.form-help section="cancion" />
 <div class="row">
 
   <div class="col md-6">

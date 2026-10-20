@@ -1,4 +1,5 @@
-@props(['section', 'open' => false])
+{{-- La ayuda siempre arranca contraída: la persona la abre si quiere leerla. --}}
+@props(['section'])
 @php
   $help = config("backoffice_help.sections.$section");
   $user = auth()->user();
@@ -10,7 +11,7 @@
   $scopeText = $isAdmin ? $help['scope']['admin'] : ($openList ? $help['scope']['member_open'] : $help['scope']['member']);
 @endphp
 @if ($help)
-  <details class="callout callout-info mb-3" data-form-help="{{ $section }}" @if ($open) open @endif>
+  <details class="callout callout-info mb-3" data-form-help="{{ $section }}">
     <summary class="font-weight-bold" style="cursor:pointer"><i class="fas fa-question-circle mr-1"></i> ¿Cómo funciona esto?</summary>
     <div class="mt-2 small">
       <p class="mb-2">{{ $help['what'] }}</p>

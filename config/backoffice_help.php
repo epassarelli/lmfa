@@ -72,7 +72,7 @@ return [
                 'admin' => 'Ves todas las noticias.',
                 'member' => 'Ves las noticias que cargaste vos y las vinculadas a fichas que administrás.',
             ],
-            'required' => ['Título', 'Categoría', 'Cuerpo de la noticia', 'Imagen destacada (al crear)', 'Fecha de publicación'],
+            'required' => ['Título', 'Slug (se completa solo desde el título)', 'Categoría', 'Cuerpo de la noticia', 'Imagen principal (al crear)'],
         ],
         'mito' => [
             'what' => 'Un mito o leyenda del folklore, contado en tus palabras o con su fuente.',

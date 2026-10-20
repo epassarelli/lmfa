@@ -1,6 +1,7 @@
-<x-backend.form-help section="news" :open="! isset($news->id)" />
+<x-backend.form-help section="news" />
 <div class="row">
-  <div class="col-md-6">
+  {{-- Fila 1 (grilla de 12): Título 4 · Slug 4 · Fecha 2 · Estado 2 --}}
+  <div class="col-md-6 col-xl-4">
     <div class="form-group">
       <label for="titulo">Título de la Noticia <span class="text-danger">*</span></label>
       <input type="text" name="titulo" id="titulo" class="form-control" value="{{ old('titulo', $news->title ?? '') }}" onkeyup="autocompleteSlug(this, '#slug')" required>
@@ -8,16 +9,45 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-6 col-xl-4">
     <div class="form-group">
       <label for="slug">Slug / URL Amigable</label>
-      <small class="form-text text-muted">Se completa sola desde el título. Es parte del enlace público.</small>
+      <x-backend.help-tip text="Se completa sola desde el título. Es parte del enlace público." />
       <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $news->slug ?? '') }}" required>
       @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
-  <div class="col-md-6">
+  @if(Auth::user()->canPublish())
+  <div class="col-md-6 col-xl-2">
+    <div class="form-group">
+      <label for="publicar">Fecha de Publicación</label>
+      <x-backend.help-tip text="Opcional. Si la dejás vacía y la noticia está activa, se publica con la fecha y hora actuales." />
+      <input type="datetime-local" name="publicar" id="publicar" class="form-control"
+        value="{{ old('publicar', isset($news) && $news->published_at ? $news->published_at->format('Y-m-d\TH:i') : '') }}">
+    </div>
+  </div>
+
+  <div class="col-md-6 col-xl-2">
+    <div class="form-group">
+      <label for="estado" class="form-label">Estado</label>
+      <select name="estado" class="form-control" id="estado">
+        <option value="1" {{ old('estado', $news->estado ?? '') == 1 ? 'selected' : '' }}>Activo (Público)</option>
+        <option value="0" {{ old('estado', $news->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo (Borrador)</option>
+      </select>
+    </div>
+  </div>
+  @else
+    <input type="hidden" name="estado" value="0">
+    <div class="col-md-12 col-xl-4">
+        <div class="alert alert-info py-2 mb-2">
+            <i class="fas fa-info-circle mr-2"></i> Tu noticia será revisada por un moderador antes de ser publicada.
+        </div>
+    </div>
+  @endif
+
+  {{-- Fila 2: Categoría 3 · Imagen 3 · Intérprete principal 3 · Secundarios 3 --}}
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
       <label for="categoria_id">Categoría <span class="text-danger">*</span></label>
       <select name="categoria_id" id="categoria_id" class="form-control" required>
@@ -32,29 +62,25 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
       <label for="foto">Imagen principal @unless (isset($news->id)) <span class="text-danger">*</span> @endunless</label>
+      <x-backend.image-hint profile="news" mode="tip" />
       <div class="custom-file">
         <input type="file" name="foto" id="foto" class="custom-file-input" accept="image/jpeg,image/png,image/webp" @unless (isset($news->id)) required @endunless>
         <label class="custom-file-label" for="foto">Elegir imagen...</label>
       </div>
-      <x-backend.image-hint profile="news" />
+      <x-backend.image-hint profile="news" mode="warnings" />
       @error('foto') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 
-  <div class="col-md-12">
-    <div class="form-group">
-      <label for="noticia">Cuerpo de la noticia <span class="text-danger">*</span></label>
-      <textarea name="noticia" id="editor" class="form-control" rows="10" data-ckeditor-profile="editorial-body">{{ old('noticia', $news->body ?? '') }}</textarea>
-      @error('noticia') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-  </div>
-
-  <div class="col-md-4">
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
       <label for="interprete_principal_id">Intérprete Principal</label>
+      @if (! empty($principalRequired))
+        <x-backend.help-tip text="El principal tiene que ser uno de los artistas que administrás. Los secundarios pueden ser cualquiera." />
+      @endif
       <select name="interprete_principal_id" id="interprete_principal_id" class="form-control select2" @if (! empty($principalRequired)) required @endif>
         <option value="">{{ ! empty($principalRequired) ? '— Elegí uno de tus artistas —' : '— Ninguno —' }}</option>
         @foreach ($principalOptions ?? $interpretes as $interprete)
@@ -63,14 +89,11 @@
           </option>
         @endforeach
       </select>
-      @if (! empty($principalRequired))
-        <small class="form-text text-muted">El principal tiene que ser uno de los artistas que administrás. Los secundarios pueden ser cualquiera.</small>
-      @endif
       @error('interprete_principal_id') <small class="text-danger d-block">{{ $message }}</small> @enderror
     </div>
   </div>
 
-  <div class="col-md-8">
+  <div class="col-md-6 col-xl-3">
     <div class="form-group">
       <label for="interprete_secundarios">Intérpretes Secundarios</label>
       <select name="interprete_secundarios[]" id="interprete_secundarios" class="form-control select2" multiple>
@@ -84,30 +107,12 @@
     </div>
   </div>
 
-  @if(Auth::user()->canPublish())
-  <div class="col-md-4">
+  {{-- Fila 3: cuerpo, 12 columnas --}}
+  <div class="col-12">
     <div class="form-group">
-      <label for="publicar">Fecha de Publicación <span class="text-danger">*</span></label>
-      <input type="datetime-local" name="publicar" id="publicar" class="form-control"
-        value="{{ old('publicar', isset($news) && $news->published_at ? $news->published_at->format('Y-m-d\TH:i') : '') }}" required>
+      <label for="noticia">Cuerpo de la noticia <span class="text-danger">*</span></label>
+      <textarea name="noticia" id="editor" class="form-control" rows="10" data-ckeditor-profile="editorial-body">{{ old('noticia', $news->body ?? '') }}</textarea>
+      @error('noticia') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
-
-  <div class="col-md-4">
-    <div class="form-group">
-      <label for="estado" class="form-label">Estado</label>
-      <select name="estado" class="form-control" id="estado" required>
-        <option value="1" {{ old('estado', $news->estado ?? '') == 1 ? 'selected' : '' }}>Activo (Público)</option>
-        <option value="0" {{ old('estado', $news->estado ?? '') == 0 ? 'selected' : '' }}>Inactivo (Borrador)</option>
-      </select>
-    </div>
-  </div>
-  @else
-    <input type="hidden" name="estado" value="0">
-    <div class="col-md-8">
-        <div class="alert alert-info mt-4">
-            <i class="fas fa-info-circle mr-2"></i> Tu noticia será revisada por un moderador antes de ser publicada.
-        </div>
-    </div>
-  @endif
 </div>

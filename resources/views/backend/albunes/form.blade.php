@@ -1,4 +1,4 @@
-<x-backend.form-help section="album" :open="! isset($album->id)" />
+<x-backend.form-help section="album" />
 <div class="row">
 
   <div class="col-md-8">

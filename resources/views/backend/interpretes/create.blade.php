@@ -6,9 +6,13 @@
   <span>Interpretes</span>
 @endsection
 
+@section('css')
+  @include('backend.partials.styles._compact-form')
+@endsection
+
 @section('content')
 
-  <form action="{{ route('backend.interpretes.store') }}" method="POST" enctype="multipart/form-data">
+  <form action="{{ route('backend.interpretes.store') }}" method="POST" enctype="multipart/form-data" class="form-compact">
     @csrf
 
     <div class="card">
@@ -37,5 +41,13 @@
   @include('backend.partials.scripts._ckeditor')
   @include('backend.partials.scripts._slug')
   @include('backend.partials.scripts._select2')
+  @include('backend.partials.scripts._tooltips')
+  <script>
+    $(document).ready(function () {
+      $('.custom-file-input').on('change', function () {
+        $(this).next('.custom-file-label').addClass('selected').text($(this).val().split('\\').pop());
+      });
+    });
+  </script>
 @endsection
 

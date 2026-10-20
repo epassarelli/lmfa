@@ -1,4 +1,4 @@
-<x-backend.form-help section="mito" :open="! isset($mito)" />
+<x-backend.form-help section="mito" />
 <div class="form-group">
   <label for="titulo">Título del Mito</label>
   <input type="text" name="titulo" id="titulo" class="form-control" value="{{ old('titulo', $mito->titulo ?? '') }}"

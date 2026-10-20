@@ -76,7 +76,8 @@ class BackofficeHelpTest extends TestCase
         }
 
         $html = $this->actingAs($this->user('administrador'))->get(route('backend.festivales.create'))->getContent();
-        $this->assertStringContainsString('desde <strong>1600 × 900 px</strong>', $html);
+        // La sugerencia de medidas vive en el tooltip del ícono de ayuda (texto plano en el atributo title).
+        $this->assertStringContainsString('desde 1600 × 900 px', $html);
         $this->assertStringContainsString('data-min-w="1600"', $html);
         $this->assertStringContainsString('data-max-mb="5"', $html);
     }
