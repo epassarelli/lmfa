@@ -39,6 +39,7 @@ antigravity/
 !/project/docs/
 !/project/docs/**/*.md
 AGENTS.md
+CLAUDE.md
 backlog.json
 
 # Temporales de tests
