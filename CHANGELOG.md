@@ -9,6 +9,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Cambiado
 
+- **Centro de Moderación reordenado** (spec `moderation-center-order-and-collapse`): las tarjetas siguen el orden Eventos, Jornadas, Noticias, Intérpretes, Discos, Canciones, Festivales y Lugares; "Otros" se separa en tres tarjetas; todas se contraen/expanden y arrancan contraídas (el título conserva el contador); las que no tienen pendientes no se muestran y, si no hay ninguno, aparece un aviso. Festivales, Jornadas y Lugares pasan a la misma tabla que Noticias (Festivales suma la columna Provincia). Al publicar queda abierta la tarjeta correspondiente. Se corrige que el «Autor» de los intérpretes salía siempre vacío (faltaba la relación `user`) y los N+1 de autores. Sin migraciones. Peñas y radios siguen fuera de la cola de moderación.
+
 - **Se restaura la etiqueta «Slug» en los formularios del backoffice** (en Noticias, «Slug / URL Amigable»): en v2.4.0 se había renombrado a «Dirección web». Se conservan las ayudas debajo del campo.
 
 ## [2.4.1] — 2026-10-14
