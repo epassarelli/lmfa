@@ -48,7 +48,7 @@ return [
                 'admin' => 'Ves todas las canciones.',
                 'member' => 'Ves las canciones que cargaste vos y las de los artistas que administrás.',
             ],
-            'required' => ['Canción (título)', 'Intérprete', 'Disco'],
+            'required' => ['Canción (título)', 'Intérprete'],
         ],
         'festival' => [
             'what' => 'Un festival o fiesta tradicional: cuándo y dónde se hace, su historia y los artistas que pasan por él.',

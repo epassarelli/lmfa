@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 @section('title', $venue->exists ? 'Editar lugar' : 'Nuevo lugar')
-@section('content_header')<h1>{{ $venue->exists ? 'Editar lugar' : 'Nuevo lugar' }}</h1>@stop
+@section('content_header')<x-backend.form-header :mode="$venue->exists ? 'edit' : 'create'">{{ $venue->exists ? 'Editar lugar' : 'Nuevo lugar' }}</x-backend.form-header>@stop
 @section('content')
 @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 @if($errors->any())<div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
@@ -18,7 +18,7 @@
   <div class="col-md-4 form-group"><label for="status">Estado</label><select id="status" name="status" class="form-control">@foreach(['active' => 'Activo', 'pending' => 'Pendiente de revisión', 'inactive' => 'Inactivo'] as $value => $label)<option value="{{ $value }}" @selected(old('status', $venue->status ?? 'active') === $value)>{{ $label }}</option>@endforeach</select></div>
   </div>
   <div class="form-group"><label for="description">Descripción</label><textarea id="description" name="description" class="form-control" rows="3">{{ old('description', $venue->description) }}</textarea></div>
-</div><div class="card-footer"><button class="btn btn-primary">Guardar lugar</button><a href="{{ route('backend.venues.index') }}" class="btn btn-default">Volver</a></div>
+</div><div class="card-footer"><x-backend.form-actions :back="route('backend.venues.index')" /></div>
 </form>
 @stop
 @section('js') @include('backend.partials.scripts._select2') @stop

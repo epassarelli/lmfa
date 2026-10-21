@@ -3,7 +3,7 @@
 @section('title', 'Editar Noticia')
 
 @section('content_header')
-    <h1><i class="fas fa-edit mr-2"></i>Editar Noticia: {{ $news->title }}</h1>
+    <x-backend.form-header mode="edit">Editar Noticia: {{ $news->title }}</x-backend.form-header>
 @stop
 
 @section('css')
@@ -24,14 +24,9 @@
                 <div class="card-body">
                     @include('backend.news.form')
                 </div>
-                <div class="card-footer text-right">
-                    <a href="{{ route('backend.news.index') }}" class="btn btn-default mr-2">
-                        Regresar
-                    </a>
-                    <button type="submit" class="btn btn-primary shadow-sm">
-                        <i class="fas fa-save mr-1"></i> Actualizar Noticia
-                    </button>
-                </div>
+                <div class="card-footer">
+        <x-backend.form-actions :back="route('backend.news.index')" />
+      </div>
             </div>
         </form>
     </div>

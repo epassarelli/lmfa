@@ -3,7 +3,7 @@
 @section('title', 'Editar Evento')
 
 @section('content_header')
-    <h1><i class="fas fa-edit mr-2"></i>{{ $event->program_id ? 'Editar jornada' : 'Editar evento' }}: {{ $event->title }}</h1>
+    <x-backend.form-header mode="edit">{{ $event->program_id ? 'Editar jornada' : 'Editar evento' }}: {{ $event->title }}</x-backend.form-header>
 @stop
 
 @section('css')
@@ -31,13 +31,8 @@
                 </div>
             </div>
 
-            <div class="mb-3 text-right">
-                <a href="{{ route('backend.events.index') }}" class="btn btn-default mr-2">
-                    Cancelar
-                </a>
-                <button type="submit" class="btn btn-primary shadow-sm">
-                    <i class="fas fa-save mr-1"></i> Actualizar Cambios
-                </button>
+            <div class="mb-3">
+                <x-backend.form-actions :back="route('backend.events.index')" />
             </div>
         </form>
     </div>

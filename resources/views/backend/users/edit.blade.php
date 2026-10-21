@@ -3,12 +3,12 @@
 @section('title', 'Editar Usuario')
 
 @section('content_header')
-  <h1><i class="fas fa-user-edit mr-2"></i>Editar Usuario: {{ $user->name }}</h1>
+  <x-backend.form-header mode="edit">Editar Usuario: {{ $user->name }}</x-backend.form-header>
 @stop
 
 @section('content')
   <div class="row">
-    <div class="col-md-10 mx-auto">
+    <div class="col-12">
       @if (session('success'))
         <div class="alert alert-success">
           {{ session('success') }}
@@ -33,13 +33,8 @@
           <div class="card-body">
             @include('backend.users._form')
           </div>
-          <div class="card-footer text-right">
-            <a href="{{ route('users.index') }}" class="btn btn-default mr-2">
-              Cancelar
-            </a>
-            <button type="submit" class="btn btn-primary shadow-sm">
-              <i class="fas fa-save mr-1"></i> Guardar Cambios
-            </button>
+          <div class="card-footer">
+            <x-backend.form-actions :back="route('users.index')" />
           </div>
         </div>
       </form>

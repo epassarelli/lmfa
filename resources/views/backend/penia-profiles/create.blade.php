@@ -3,17 +3,20 @@
 @section('title', 'Crear Peña')
 
 @section('content_header')
-  <h1>Crear Peña</h1>
+  <x-backend.form-header mode="create">Crear Peña</x-backend.form-header>
+@stop
+
+@section('css')
+  @include('backend.partials.styles._compact-form')
 @stop
 
 @section('content')
-  <form method="POST" action="{{ route('backend.penia-profiles.store') }}">
+  <form method="POST" action="{{ route('backend.penia-profiles.store') }}" class="form-compact">
     @csrf
     <div class="card card-outline card-primary shadow-sm">
       <div class="card-body">@include('backend.penia-profiles.form')</div>
       <div class="card-footer">
-        <button class="btn btn-primary">Guardar</button>
-        <a class="btn btn-default" href="{{ route('backend.penia-profiles.index') }}">Cancelar</a>
+        <x-backend.form-actions :back="route('backend.penia-profiles.index')" />
       </div>
     </div>
   </form>
@@ -23,4 +26,5 @@
   @include('backend.partials.scripts._ckeditor')
   @include('backend.partials.scripts._slug')
   @include('backend.partials.scripts._select2')
+  @include('backend.partials.scripts._tooltips')
 @stop

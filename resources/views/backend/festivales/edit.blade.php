@@ -3,7 +3,7 @@
 @section('title', 'Editar Festival')
 
 @section('content_header')
-  <h1>Editar Festival</h1>
+  <x-backend.form-header mode="edit">Editar Festival: {{ $festival->title }}</x-backend.form-header>
 @stop
 
 @section('css')
@@ -19,8 +19,7 @@
         @include('backend.festivales.form')
       </div>
       <div class="card-footer">
-        <button type="submit" class="btn btn-primary">Actualizar</button>
-        <a href="{{ route('backend.festivales.index') }}" class="btn btn-default">Cancelar</a>
+        <x-backend.form-actions :back="route('backend.festivales.index')" />
       </div>
     </div>
   </form>

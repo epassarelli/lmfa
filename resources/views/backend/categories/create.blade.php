@@ -3,17 +3,18 @@
 @section('title', 'Nueva Categoría')
 
 @section('content_header')
-    <h1>Crear Categoría</h1>
+    <x-backend.form-header mode="create">Crear Categoría</x-backend.form-header>
 @stop
 
 @section('content')
 <div class="card">
-    <div class="card-body">
-        <form action="{{ route('backend.categories.store') }}" method="POST">
+    <form action="{{ route('backend.categories.store') }}" method="POST">
+        <div class="card-body">
             @include('backend.categories.form')
-            <button type="submit" class="btn btn-primary mt-3">Guardar</button>
-            <a href="{{ route('backend.categories.index') }}" class="btn btn-default mt-3">Cancelar</a>
-        </form>
-    </div>
+        </div>
+        <div class="card-footer">
+            <x-backend.form-actions :back="route('backend.categories.index')" />
+        </div>
+    </form>
 </div>
 @stop

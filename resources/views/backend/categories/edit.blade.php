@@ -3,20 +3,20 @@
 @section('title', 'Editar Categoría')
 
 @section('content_header')
-    <h1>Editar Categoría: {{ $category->name }}</h1>
+    <x-backend.form-header mode="edit">Editar Categoría: {{ $category->name }}</x-backend.form-header>
 @stop
 
 @section('content')
 <div class="card">
-    <div class="card-body">
-        <form action="{{ route('backend.categories.update', $category) }}" method="POST">
-            @csrf
-            @method('PUT')
+    <form action="{{ route('backend.categories.update', $category) }}" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="card-body">
             @include('backend.categories.form')
-
-            <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
-            <a href="{{ route('backend.categories.index') }}" class="btn btn-default mt-3">Cancelar</a>
-        </form>
-    </div>
+        </div>
+        <div class="card-footer">
+            <x-backend.form-actions :back="route('backend.categories.index')" />
+        </div>
+    </form>
 </div>
 @stop

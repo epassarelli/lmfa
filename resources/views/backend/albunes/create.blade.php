@@ -3,12 +3,16 @@
 @section('title', 'Crear Álbum')
 
 @section('content_header')
-  <h1>Crear Álbum</h1>
+  <x-backend.form-header mode="create">Crear Álbum</x-backend.form-header>
+@stop
+
+@section('css')
+  @include('backend.partials.styles._compact-form')
 @stop
 
 @section('content')
 
-  <form action="{{ route('backend.discos.store') }}" method="POST" enctype="multipart/form-data">
+  <form action="{{ route('backend.discos.store') }}" method="POST" enctype="multipart/form-data" class="form-compact">
     @csrf
 
     <div class="card">
@@ -17,15 +21,7 @@
       </div>
 
       <div class="card-footer">
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-save"></i> Guardar
-        </button>
-        <button type="reset" class="btn btn-secondary">
-          <i class="fas fa-undo"></i> Reset
-        </button>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary">
-          <i class="fas fa-arrow-left"></i> Volver al listado
-        </a>
+        <x-backend.form-actions :back="route('backend.discos.index')" />
       </div>
 
     </div>
@@ -34,6 +30,13 @@
 @stop
 
 @section('js')
+  @include('backend.partials.scripts._select2')
+  @include('backend.partials.scripts._tooltips')
+  <script>
+    $(document).on('change', '.custom-file-input', function () {
+      $(this).next('.custom-file-label').addClass('selected').text($(this).val().split('\\').pop());
+    });
+  </script>
   <script>
     $(function() {
       @if ($errors->any())

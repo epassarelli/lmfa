@@ -3,7 +3,7 @@
 @section('title', 'Editar Interprete')
 
 @section('content_header')
-  <span>Editar Interprete</span>
+  <x-backend.form-header mode="edit">Editar Intérprete: {{ $interprete->interprete }}</x-backend.form-header>
 @endsection
 
 @section('css')
@@ -22,15 +22,7 @@
       </div>
 
       <div class="card-footer">
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-save"></i> Guardar
-        </button>
-        <button type="reset" class="btn btn-secondary">
-          <i class="fas fa-undo"></i> Reset
-        </button>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary">
-          <i class="fas fa-arrow-left"></i> Volver al listado
-        </a>
+        <x-backend.form-actions :back="route('backend.interpretes.index')" />
       </div>
 
     </div>

@@ -3,7 +3,7 @@
 @section('title', isset($classified) ? 'Editar aviso clasificado' : 'Nuevo aviso clasificado')
 
 @section('content_header')
-  <h1>{{ isset($classified) ? 'Editar aviso clasificado' : 'Nuevo aviso clasificado' }}</h1>
+  <x-backend.form-header :mode="isset($classified) ? 'edit' : 'create'">{{ isset($classified) ? 'Editar aviso clasificado' : 'Nuevo aviso clasificado' }}</x-backend.form-header>
 @endsection
 
 @section('content')
@@ -118,8 +118,9 @@
           @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a href="{{ route('backend.classifieds.index') }}" class="btn btn-secondary">Cancelar</a>
+        <div class="mt-3">
+          <x-backend.form-actions :back="route('backend.classifieds.index')" />
+        </div>
       </form>
     </div>
   </div>

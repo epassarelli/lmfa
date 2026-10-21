@@ -3,7 +3,7 @@
 @section('title', 'Nueva Noticia')
 
 @section('content_header')
-    <h1><i class="fas fa-plus-circle mr-2"></i>Crear Nueva Noticia</h1>
+    <x-backend.form-header mode="create">Crear Nueva Noticia</x-backend.form-header>
 @stop
 
 @section('css')
@@ -24,13 +24,8 @@
                     @include('backend.news.form')
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save mr-1"></i> Publicar Noticia
-                    </button>
-                    <a href="{{ route('backend.news.index') }}" class="btn btn-default float-right">
-                        Cancelar
-                    </a>
-                </div>
+        <x-backend.form-actions :back="route('backend.news.index')" />
+      </div>
             </div>
         </form>
     </div>

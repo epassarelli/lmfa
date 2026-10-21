@@ -3,7 +3,7 @@
 @section('title', 'Nuevo Evento')
 
 @section('content_header')
-    <h1><i class="fas fa-calendar-plus mr-2"></i>{{ $event->program_id ? 'Agregar jornada al evento' : 'Crear Nuevo Evento' }}</h1>
+    <x-backend.form-header mode="create">{{ $event->program_id ? 'Agregar jornada al evento' : 'Crear Nuevo Evento' }}</x-backend.form-header>
 @stop
 
 @section('css')
@@ -42,12 +42,7 @@
             @endif
 
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary shadow-sm">
-                    <i class="fas fa-save mr-1"></i> Guardar Evento
-                </button>
-                <a href="{{ route('backend.events.index') }}" class="btn btn-default float-right">
-                    Cancelar
-                </a>
+                <x-backend.form-actions :back="route('backend.events.index')" />
             </div>
         </form>
     </div>

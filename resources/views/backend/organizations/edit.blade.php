@@ -3,11 +3,11 @@
 @section('metaTitle', 'Editar organización')
 
 @section('content_header')
-  <h1>{{ $organization->name }}
+  <x-backend.form-header mode="edit">Editar organización: {{ $organization->name }}
     @if ($organization->status !== 'active')
       <span class="badge badge-secondary">Inactiva</span>
     @endif
-  </h1>
+  </x-backend.form-header>
 @stop
 
 @section('content')
@@ -28,8 +28,7 @@
         @include('backend.organizations._form')
       </div>
       <div class="card-footer">
-        <button type="submit" class="btn btn-success"><i class="fas fa-save mr-1"></i> Guardar cambios</button>
-        <a href="{{ route('backend.organizations.index') }}" class="btn btn-outline-secondary">Volver al listado</a>
+        <x-backend.form-actions :back="route('backend.organizations.index')" />
       </div>
     </div>
   </form>
