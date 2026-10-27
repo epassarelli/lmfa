@@ -3,12 +3,16 @@
 @section('title', 'Editar Interprete')
 
 @section('content_header')
-  <span>Editar Interprete</span>
+  <x-backend.form-header mode="edit">Editar Intérprete: {{ $interprete->interprete }}</x-backend.form-header>
+@endsection
+
+@section('css')
+  @include('backend.partials.styles._compact-form')
 @endsection
 
 @section('content')
 
-  <form action="{{ route('backend.interpretes.update', $interprete->id) }}" method="POST" enctype="multipart/form-data">
+  <form action="{{ route('backend.interpretes.update', $interprete->id) }}" method="POST" enctype="multipart/form-data" class="form-compact">
     @csrf
     @method('PUT')
 
@@ -18,15 +22,7 @@
       </div>
 
       <div class="card-footer">
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-save"></i> Guardar
-        </button>
-        <button type="reset" class="btn btn-secondary">
-          <i class="fas fa-undo"></i> Reset
-        </button>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary">
-          <i class="fas fa-arrow-left"></i> Volver al listado
-        </a>
+        <x-backend.form-actions :back="route('backend.interpretes.index')" />
       </div>
 
     </div>
@@ -38,4 +34,12 @@
   @include('backend.partials.scripts._ckeditor')
   @include('backend.partials.scripts._slug')
   @include('backend.partials.scripts._select2')
+  @include('backend.partials.scripts._tooltips')
+  <script>
+    $(document).ready(function () {
+      $('.custom-file-input').on('change', function () {
+        $(this).next('.custom-file-label').addClass('selected').text($(this).val().split('\\').pop());
+      });
+    });
+  </script>
 @endsection

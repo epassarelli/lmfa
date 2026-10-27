@@ -4,18 +4,18 @@
 @section('title', 'Nueva Etiqueta')
 
 @section('content_header')
-    <h1>Crear Etiqueta</h1>
+    <x-backend.form-header mode="create">Crear Etiqueta</x-backend.form-header>
 @stop
 
 @section('content')
 <div class="card">
-    <div class="card-body">
-        <form action="{{ route('backend.tags.store') }}" method="POST">
+    <form action="{{ route('backend.tags.store') }}" method="POST">
+        <div class="card-body">
             @include('backend.tags.form')
-
-            <button type="submit" class="btn btn-primary mt-3">Guardar Etiqueta</button>
-            <a href="{{ route('backend.tags.index') }}" class="btn btn-default mt-3">Cancelar</a>
-        </form>
-    </div>
+        </div>
+        <div class="card-footer">
+            <x-backend.form-actions :back="route('backend.tags.index')" />
+        </div>
+    </form>
 </div>
 @stop

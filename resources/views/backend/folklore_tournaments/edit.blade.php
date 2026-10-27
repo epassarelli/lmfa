@@ -3,12 +3,7 @@
 @section('title', 'Editar torneo')
 
 @section('content_header')
-  <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="fas fa-edit mr-2"></i>Editar {{ $tournament->name }}</h1>
-    <a href="{{ route('backend.folklore-tournaments.show', $tournament) }}" class="btn btn-secondary">
-      <i class="fas fa-arrow-left mr-1"></i> Volver
-    </a>
-  </div>
+  <x-backend.form-header mode="edit">Editar torneo: {{ $tournament->name }}</x-backend.form-header>
 @stop
 
 @section('content')
@@ -21,10 +16,8 @@
         @include('backend.folklore_tournaments.form')
       </div>
 
-      <div class="card-footer text-right">
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-save mr-1"></i> Guardar torneo
-        </button>
+      <div class="card-footer">
+        <x-backend.form-actions :back="route('backend.folklore-tournaments.show', $tournament)" />
       </div>
     </form>
   </div>

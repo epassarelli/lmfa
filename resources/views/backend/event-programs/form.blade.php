@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 @section('title', $program->exists ? 'Editar evento' : 'Nuevo evento con jornadas')
-@section('content_header')<h1>{{ $program->exists ? 'Editar evento' : 'Nuevo evento con jornadas' }}</h1>@stop
+@section('content_header')<x-backend.form-header :mode="$program->exists ? 'edit' : 'create'">{{ $program->exists ? 'Editar evento' : 'Nuevo evento con jornadas' }}</x-backend.form-header>@stop
 @section('content')
 @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 @if($errors->any())<div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
@@ -32,7 +32,7 @@
   <template id="session-template">@include('backend.event-programs._session', ['index' => '__INDEX__', 'session' => []])</template>
 </div></div>
 @endif
-<div class="mb-4"><button class="btn btn-primary">{{ $program->exists ? 'Guardar datos comunes' : 'Crear evento y jornadas' }}</button><a href="{{ route('backend.events.index') }}" class="btn btn-default">Volver</a></div>
+<div class="mb-4"><x-backend.form-actions :back="route('backend.events.index')" /></div>
 </form>
 @if($program->exists)
 <div class="card"><div class="card-header"><h2 class="card-title">Jornadas del evento</h2><div class="card-tools"><a href="{{ route('backend.events.create', ['program_id' => $program->id]) }}" class="btn btn-success btn-sm">Agregar jornada</a>@if($program->isPublished()) <a href="{{ route('event-programs.show', $program->slug) }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">Ver ficha pública</a>@endif</div></div>

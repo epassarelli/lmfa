@@ -7,6 +7,25 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [2.5.0] — 2026-10-27
+
+### Cambiado
+
+- **Backoffice: el ABM de Radios (emisoras/señales y programas) vuelve a ser accesible desde el menú lateral**: existía completo (rutas, controladores, vistas, políticas) pero nunca se le había agregado la entrada «Radios» al menú. Se suma la sección `radios` a `config/backoffice_access.php` con el mismo criterio que Peñas (visible para todos con el acceso por fichas apagado; solo administradores con el flag activo). Las rutas no cambian.
+- **Encabezado y botones estándar en todos los formularios del backoffice**: cada pantalla de Crear/Editar usa el mismo `<h1>` con ícono de crear (`fa-plus-circle`) o editar (`fa-edit`) y los botones Guardar, Reset y Volver al listado (componentes `form-header` y `form-actions`). Alcanza a Noticias, Eventos, Jornadas, Lugares, Artistas, Discos, Canciones, Festivales, Comidas, Mitos, Peñas, Clasificados, Categorías, Etiquetas, Enciclopedia, Organizaciones, Usuarios, Roles, Permisos, Radios (programas y señales) y Torneos. «Volver al listado» ahora lleva siempre al listado de la entidad. Usuarios y Enciclopedia pasan a ancho completo. Excepciones: «Mis datos» y la edición del newsletter. Un test vigila que ninguna vista nueva se salte el estándar.
+- **Formularios del backoffice compactos (Noticias, Eventos, Intérpretes, Festivales, Comidas, Discos, Canciones, Mitos, Peñas, Emisoras y Programas de radio)**: grilla de 12 columnas desde 1200 px (2 en tablet, 1 en móvil) a ancho completo, controles y selectores más bajos (clase opt-in `.form-compact`), texto largo y editor al final. Las ayudas de campo pasan a ícono `?` con tooltip (componente `help-tip`; las medidas de imagen con `image-hint mode="tip"`). La ayuda general «¿Cómo funciona esto?» arranca siempre contraída. En Eventos, Resumen e Imagen destacada comparten fila y el bloque «Crear un lugar nuevo» tiene fondo gris propio. Se corrigen asteriscos de obligatorios que no coincidían con la validación del servidor (fecha y estado en Noticias; estado en Eventos; slug y estado en Intérpretes; estado en Festivales; slug y estado en Comidas, Mitos, Discos y Canciones). En Canciones la ayuda decía que el Disco era obligatorio y el servidor no lo exige. En Discos y Canciones el intérprete pasa a Select2 (lista larga) y el panel de canciones del disco se reordena en dos columnas; en Peñas todos los campos tienen ahora `id` y su etiqueta asociada. `x-input`, `x-select` y `x-textarea` aceptan la opción `help`. Sin cambios de comportamiento, rutas ni migraciones.
+
+- **Centro de Moderación reordenado** (spec `moderation-center-order-and-collapse`): las tarjetas siguen el orden Eventos, Jornadas, Noticias, Intérpretes, Discos, Canciones, Festivales y Lugares; "Otros" se separa en tres tarjetas; todas se contraen/expanden y arrancan contraídas (el título conserva el contador); las que no tienen pendientes no se muestran y, si no hay ninguno, aparece un aviso. Festivales, Jornadas y Lugares pasan a la misma tabla que Noticias (Festivales suma la columna Provincia). Al publicar queda abierta la tarjeta correspondiente. Se corrige que el «Autor» de los intérpretes salía siempre vacío (faltaba la relación `user`) y los N+1 de autores. Sin migraciones. Peñas y radios siguen fuera de la cola de moderación.
+
+### Corregido
+
+- **Se restaura la etiqueta «Slug» en los formularios del backoffice** (en Noticias, «Slug / URL Amigable»): en v2.4.0 se había renombrado a «Dirección web». Se conservan las ayudas debajo del campo.
+
+### Notas de despliegue
+
+- Sin migraciones ni cambios de rutas públicas.
+- Cambian `config/adminlte.php`, `config/backoffice_access.php` y varias vistas Blade del backoffice: después de desplegar, regenerar las cachés (`php artisan config:cache` y `php artisan view:clear`) para que aparezca la entrada «Radios» en el menú y se vean los formularios nuevos.
+
 ## [2.4.1] — 2026-10-14
 
 ### Corregido

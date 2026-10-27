@@ -23,5 +23,6 @@ return [
         'copa' => ['roles' => []],
         'enciclopedia' => ['roles' => []],
         'penas' => ['roles' => []],
+        'radios' => ['roles' => []],
     ],
 ];

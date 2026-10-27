@@ -3,12 +3,12 @@
 @section('title', 'Nuevo artículo de enciclopedia')
 
 @section('content_header')
-  <h1><i class="fas fa-plus-circle mr-2"></i>Nuevo artículo de enciclopedia</h1>
+  <x-backend.form-header mode="create">Nuevo artículo de enciclopedia</x-backend.form-header>
 @stop
 
 @section('content')
   <div class="row">
-    <div class="col-md-11 mx-auto">
+    <div class="col-12">
       <form action="{{ route('backend.knowledge-articles.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="card card-outline card-success">
@@ -19,10 +19,7 @@
             @include('backend.knowledge_articles.form')
           </div>
           <div class="card-footer">
-            <button type="submit" class="btn btn-primary">
-              <i class="fas fa-save mr-1"></i> Guardar artículo
-            </button>
-            <a href="{{ route('backend.knowledge-articles.index') }}" class="btn btn-default float-right">Cancelar</a>
+            <x-backend.form-actions :back="route('backend.knowledge-articles.index')" />
           </div>
         </div>
       </form>

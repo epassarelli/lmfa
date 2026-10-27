@@ -1,5 +1,9 @@
 # 00 - Estado Actual del Proyecto
 
+## Novedad 2026-10-20: Centro de Moderación reordenado (implementado en local, sin tag)
+
+Spec `moderation-center-order-and-collapse`. Orden Eventos, Jornadas, Noticias, Intérpretes, Discos, Canciones, Festivales y Lugares; tarjetas contraídas por defecto y contraíbles; las vacías no se muestran; Festivales/Jornadas/Lugares con la tabla de Noticias; al publicar queda abierta la tarjeta correspondiente. Nuevo `Interprete::user()` (el «Autor» salía vacío). Validado en `mfa_test` con `ModerationCenterTest` (6 tests) y los tests vecinos (30 pasan en total). **Pendiente:** revisión visual en navegador. **Fuera de alcance, sin hacer:** peñas y radios en la cola de moderación (las radios no tienen campo de estado). Sin migraciones.
+
 ## Resumen al 2026-10-14 (v2.4.1)
 
 **Dónde está el trabajo.** Todo lo desarrollado desde el cierre de `v2.3.1` está integrado en la rama `dev` (local; sin tag nuevo). `main` y producción no lo tienen. Pruebas en la base aislada `mfa_test`: **725 pasan, 0 fallan, 2 omitidos**. La suite completa sobre la base real `mfa` no se corrió en esta tanda (la última tuvo 13 fallos preexistentes por datos reales).

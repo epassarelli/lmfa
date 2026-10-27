@@ -6,6 +6,7 @@
     'required' => false,
     'min' => null,
     'max' => null,
+    'help' => null,
 ])
 
 <div class="form-group">
@@ -15,6 +16,7 @@
       <span class="text-danger">*</span>
     @endif
   </label>
+  @if ($help)<x-backend.help-tip :text="$help" />@endif
   <input type="{{ $type }}" name="{{ $name }}" id="{{ $name }}" class="form-control"
     value="{{ old($name, $value) }}" {{ $required ? 'required' : '' }}
     @if ($min) min="{{ $min }}" @endif

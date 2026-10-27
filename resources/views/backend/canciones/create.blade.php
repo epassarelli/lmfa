@@ -3,32 +3,30 @@
 @section('title', 'Crear Canción')
 
 @section('content_header')
-  <h1>Crear Canción</h1>
+  <x-backend.form-header mode="create">Crear Canción</x-backend.form-header>
+@stop
+
+@section('css')
+  @include('backend.partials.styles._compact-form')
 @stop
 
 @section('content')
-  <form action="{{ route('backend.canciones.store') }}" method="POST">
+  <form action="{{ route('backend.canciones.store') }}" method="POST" class="form-compact">
     @csrf
     <div class="card">
       <div class="card-body">
         @include('backend.canciones.form')
       </div>
       <div class="card-footer">
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-save"></i> Guardar
-        </button>
-        <button type="reset" class="btn btn-secondary">
-          <i class="fas fa-undo"></i> Reset
-        </button>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary">
-          <i class="fas fa-arrow-left"></i> Volver al listado
-        </a>
+        <x-backend.form-actions :back="route('backend.canciones.index')" />
       </div>
     </div>
   </form>
 @stop
 
 @section('js')
+  @include('backend.partials.scripts._select2')
+  @include('backend.partials.scripts._tooltips')
   <script>
     $(function() {
       @if ($errors->any())

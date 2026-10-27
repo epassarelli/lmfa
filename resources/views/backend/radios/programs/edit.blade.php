@@ -1,4 +1,22 @@
 @extends('adminlte::page')
 @section('title', 'Editar programa')
-@section('content_header')<h1>Editar programa</h1>@stop
-@section('content')<div class="card card-primary"><form method="POST" action="{{ route('backend.radios.programs.update',$program) }}">@csrf @method('PUT')<div class="card-body">@include('backend.radios.programs.form')</div><div class="card-footer"><button class="btn btn-primary">Guardar cambios</button></div></form></div>@stop
+@section('content_header')
+  <x-backend.form-header mode="edit">Editar programa</x-backend.form-header>
+@stop
+@section('css')
+  @include('backend.partials.styles._compact-form')
+@stop
+
+@section('content')
+<div class="card card-primary">
+  <form method="POST" action="{{ route('backend.radios.programs.update', $program) }}" class="form-compact">
+    @csrf @method('PUT')
+    <div class="card-body">@include('backend.radios.programs.form')</div>
+    <div class="card-footer"><x-backend.form-actions :back="route('backend.radios.programs.index')" /></div>
+  </form>
+</div>
+@stop
+
+@section('js')
+  @include('backend.partials.scripts._tooltips')
+@stop

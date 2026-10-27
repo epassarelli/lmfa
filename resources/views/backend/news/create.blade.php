@@ -3,13 +3,17 @@
 @section('title', 'Nueva Noticia')
 
 @section('content_header')
-    <h1><i class="fas fa-plus-circle mr-2"></i>Crear Nueva Noticia</h1>
+    <x-backend.form-header mode="create">Crear Nueva Noticia</x-backend.form-header>
+@stop
+
+@section('css')
+    @include('backend.partials.styles._compact-form')
 @stop
 
 @section('content')
 <div class="row">
-    <div class="col-md-11 mx-auto">
-        <form action="{{ route('backend.news.store') }}" method="POST" enctype="multipart/form-data">
+    <div class="col-12">
+        <form action="{{ route('backend.news.store') }}" method="POST" enctype="multipart/form-data" class="form-compact">
             @csrf
 
             <div class="card card-outline card-success">
@@ -20,13 +24,8 @@
                     @include('backend.news.form')
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save mr-1"></i> Publicar Noticia
-                    </button>
-                    <a href="{{ route('backend.news.index') }}" class="btn btn-default float-right">
-                        Cancelar
-                    </a>
-                </div>
+        <x-backend.form-actions :back="route('backend.news.index')" />
+      </div>
             </div>
         </form>
     </div>
@@ -37,6 +36,7 @@
     @include('backend.partials.scripts._ckeditor')
     @include('backend.partials.scripts._slug')
     @include('backend.partials.scripts._select2')
+    @include('backend.partials.scripts._tooltips')
     <script>
         $(document).ready(function () {
             $('.custom-file-input').on('change', function() {

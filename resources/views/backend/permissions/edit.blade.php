@@ -1,18 +1,25 @@
 @extends('adminlte::page')
 
-@section('metaTitle', 'Listado de Noticias')
+@section('title', 'Editar Permiso')
+
+@section('content_header')
+  <x-backend.form-header mode="edit">Editar Permiso: {{ $permission->name }}</x-backend.form-header>
+@stop
 
 @section('content')
-  <div class="container">
-    <h1>Editar Permiso</h1>
+  <div class="card">
     <form action="{{ route('permissions.update', $permission->id) }}" method="POST">
       @csrf
       @method('PUT')
-      <div class="form-group">
-        <label for="name">Nombre del Permiso</label>
-        <input type="text" name="name" class="form-control" value="{{ $permission->name }}" required>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="name">Nombre del Permiso</label>
+          <input type="text" name="name" id="name" class="form-control" value="{{ $permission->name }}" required>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">Guardar</button>
+      <div class="card-footer">
+        <x-backend.form-actions :back="route('permissions.index')" />
+      </div>
     </form>
   </div>
 @endsection

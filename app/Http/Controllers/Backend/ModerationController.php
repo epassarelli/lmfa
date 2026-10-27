@@ -30,6 +30,12 @@ class ModerationController extends Controller
         'festival'   => \App\Models\Festival::class,
     ];
 
+    // Tarjeta del índice que queda expandida tras publicar cada tipo.
+    private const CARD_KEYS = [
+        'news' => 'news', 'event' => 'events', 'event-program' => 'programs',
+        'interprete' => 'interpretes', 'album' => 'albumes', 'cancion' => 'canciones', 'festival' => 'festivales',
+    ];
+
     public function publish(string $type, int $id)
     {
         $modelClass = self::PUBLISHABLE[$type] ?? null;
@@ -58,22 +64,28 @@ class ModerationController extends Controller
         app(\App\Services\AdminAttentionService::class)->forget();
 
         return redirect()->route('backend.moderation.index')
-            ->with('success', 'Contenido publicado correctamente.');
+            ->with('success', 'Contenido publicado correctamente.')
+            ->with('open', self::CARD_KEYS[$type] ?? null);
     }
 
     public function index()
     {
         // Las definiciones de "pendiente" viven en ModerationQueue (las comparte el tablero).
-        $news = \App\Support\ModerationQueue::news()->with('user')->get();
-        $events = \App\Support\ModerationQueue::events()->with('user')->get();
-        $programs = \App\Support\ModerationQueue::programs()->with('creator')->get();
-        $pendingVenues = \App\Support\ModerationQueue::venues()->with('provincia')->get();
+        $queue = \App\Support\ModerationQueue::class;
+        $news = $queue::news()->with('user')->get();
+        $events = $queue::events()->with('user')->get();
+        $programs = $queue::programs()->with('creator')->get();
+        $pendingVenues = $queue::venues()->with('provincia')->get();
 
-        $interpretes = \App\Support\ModerationQueue::interpretes()->get();
-        $albunes = \App\Support\ModerationQueue::albums()->get();
-        $canciones = \App\Support\ModerationQueue::canciones()->get();
-        $festivales = \App\Support\ModerationQueue::festivales()->get();
+        $interpretes = $queue::interpretes()->with('user')->get();
+        $albunes = $queue::albums()->with('user')->get();
+        $canciones = $queue::canciones()->with('user')->get();
+        $festivales = $queue::festivales()->with(['user', 'provincia'])->get();
 
-        return view('backend.moderation.index', compact('news', 'events', 'programs', 'pendingVenues', 'interpretes', 'albunes', 'canciones', 'festivales'));
+        $total = $news->count() + $events->count() + $programs->count() + $pendingVenues->count()
+            + $interpretes->count() + $albunes->count() + $canciones->count() + $festivales->count();
+        $open = session('open');
+
+        return view('backend.moderation.index', compact('news', 'events', 'programs', 'pendingVenues', 'interpretes', 'albunes', 'canciones', 'festivales', 'total', 'open'));
     }
 }

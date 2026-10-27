@@ -7,169 +7,115 @@
 @stop
 
 @section('content')
+@php $dash = fn ($v) => $v ?: '-'; @endphp
 <div class="row">
-    <div class="col-12"><div class="card card-info card-outline"><div class="card-header"><h2 class="card-title">Eventos con jornadas pendientes ({{ $programs->count() }})</h2></div><div class="card-body">
-      <p class="text-muted">La ficha del evento y cada jornada se revisan por separado.</p>
-      @foreach($programs as $program)<p>{{ $program->title }} — {{ $program->creator?->name }} <a class="btn btn-sm btn-primary" href="{{ route('backend.event-programs.edit', $program) }}">Revisar evento y jornadas</a></p>@endforeach
-    </div></div></div>
-    <div class="col-12"><div class="card card-warning card-outline"><div class="card-header"><h2 class="card-title">Lugares propuestos ({{ $pendingVenues->count() }})</h2></div><div class="card-body">
-      @foreach($pendingVenues as $venue)<p>{{ $venue->name }} — {{ $venue->city }} / {{ $venue->provincia?->nombre }} <a class="btn btn-sm btn-primary" href="{{ route('backend.venues.edit', $venue) }}">Revisar y activar lugar</a></p>@endforeach
-    </div></div></div>
-    <div class="col-12"><div class="card card-success card-outline"><div class="card-header"><h2 class="card-title">Festivales en borrador ({{ $festivales->count() }})</h2></div><div class="card-body">
-      @forelse($festivales as $festival)
-        <p class="mb-2">
-          {{ $festival->title }}
-          <a class="btn btn-sm btn-primary ml-2" href="{{ route('backend.festivales.edit', $festival) }}">Revisar</a>
-          <form action="{{ route('backend.moderation.publish', ['type' => 'festival', 'id' => $festival->id]) }}" method="POST" class="d-inline ml-1">@csrf<button type="submit" class="btn btn-sm btn-success">Publicar</button></form>
-        </p>
-      @empty
-        <p class="text-muted mb-0">No hay festivales en borrador.</p>
-      @endforelse
-    </div></div></div>
-    <!-- Noticias -->
-    <div class="col-md-12">
-        <div class="card card-warning card-outline">
-            <div class="card-header">
-                <h3 class="card-title">Noticias Pendientes ({{ $news->count() }})</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Título</th>
-                            <th>Autor</th>
-                            <th>Fecha Carga</th>
-                            <th style="width: 150px">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($news as $item)
-                        <tr>
-                            <td>{{ $item->title }}</td>
-                            <td>{{ $item->user?->name ?? 'Sistema' }}</td>
-                            <td>{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
-                            <td>
-                                <a href="{{ route('backend.news.edit', $item) }}" class="btn btn-xs btn-primary"><i class="fas fa-eye"></i> Revisar</a>
-                                <form action="{{ route('backend.moderation.publish', ['type' => 'news', 'id' => $item->id]) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-xs btn-success"><i class="fas fa-check"></i> Publicar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="4" class="text-center text-muted">No hay noticias pendientes.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+    @if($total === 0)
+        <div class="col-12">
+            <div class="alert alert-light border text-muted">No hay contenido pendiente de moderación.</div>
         </div>
-    </div>
+    @endif
 
-    <!-- Eventos -->
-    <div class="col-md-12">
-        <div class="card card-info card-outline">
-            <div class="card-header">
-                <h3 class="card-title">Eventos Pendientes ({{ $events->count() }})</h3>
-            </div>
-            <div class="card-body p-0">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Evento</th>
-                            <th>Autor</th>
-                            <th>Fecha Evento</th>
-                            <th style="width: 150px">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($events as $item)
-                        <tr>
-                            <td>{{ $item->title }}</td>
-                            <td>{{ $item->user?->name ?? 'Sistema' }}</td>
-                            <td>{{ $item->start_at?->format('d/m/Y') }}</td>
-                            <td>
-                                <a href="{{ route('backend.events.edit', $item) }}" class="btn btn-xs btn-primary"><i class="fas fa-eye"></i> Revisar</a>
-                                <form action="{{ route('backend.moderation.publish', ['type' => 'event', 'id' => $item->id]) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-xs btn-success"><i class="fas fa-check"></i> Publicar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="4" class="text-center text-muted">No hay eventos pendientes.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    @if($events->isNotEmpty())
+        <x-backend.moderation-card key="events" title="Eventos Pendientes" color="info" :count="$events->count()" :open="$open === 'events'" :columns="['Evento', 'Autor', 'Fecha Evento']">
+            @foreach($events as $item)
+                <tr>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ $item->user?->name ?? 'Sistema' }}</td>
+                    <td>{{ $item->start_at?->format('d/m/Y') ?? '-' }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.events.edit', $item)" type="event" :id="$item->id" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
 
-    <!-- Otros -->
-    <div class="col-md-12">
-        <div class="card card-secondary card-outline">
-            <div class="card-header">
-                <h3 class="card-title">Otros Contenidos (Interpretes, Discos, Canciones)</h3>
-            </div>
-            <div class="card-body p-0">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Tipo</th>
-                            <th>Nombre</th>
-                            <th>Autor</th>
-                            <th style="width: 150px">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($interpretes as $item)
-                        <tr>
-                            <td><span class="badge badge-success">Artista</span></td>
-                            <td>{{ $item->interprete }}</td>
-                            <td>{{ $item->user?->name }}</td>
-                            <td>
-                                <a href="{{ route('backend.interpretes.edit', $item) }}" class="btn btn-xs btn-primary">Revisar</a>
-                                <form action="{{ route('backend.moderation.publish', ['type' => 'interprete', 'id' => $item->id]) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-xs btn-success">Publicar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                        @foreach($albunes as $item)
-                        <tr>
-                            <td><span class="badge badge-info">Disco</span></td>
-                            <td>{{ $item->album }}</td>
-                            <td>{{ $item->user?->name }}</td>
-                            <td>
-                                <a href="{{ route('backend.discos.edit', $item) }}" class="btn btn-xs btn-primary">Revisar</a>
-                                <form action="{{ route('backend.moderation.publish', ['type' => 'album', 'id' => $item->id]) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-xs btn-success">Publicar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                        @foreach($canciones as $item)
-                        <tr>
-                            <td><span class="badge badge-dark">Letra</span></td>
-                            <td>{{ $item->cancion }}</td>
-                            <td>{{ $item->user?->name }}</td>
-                            <td>
-                                <a href="{{ route('backend.canciones.edit', $item) }}" class="btn btn-xs btn-primary">Revisar</a>
-                                <form action="{{ route('backend.moderation.publish', ['type' => 'cancion', 'id' => $item->id]) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-xs btn-success">Publicar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    @if($programs->isNotEmpty())
+        <x-backend.moderation-card key="programs" title="Jornadas de Eventos Pendientes" color="info" :count="$programs->count()" :open="$open === 'programs'" :columns="['Jornada', 'Autor']">
+            @foreach($programs as $program)
+                <tr>
+                    <td>{{ $program->title }}</td>
+                    <td>{{ $program->creator?->name ?? 'Sistema' }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.event-programs.edit', $program)" reviewLabel="Revisar evento y jornadas" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
+
+    @if($news->isNotEmpty())
+        <x-backend.moderation-card key="news" title="Noticias Pendientes" color="warning" :count="$news->count()" :open="$open === 'news'" :columns="['Título', 'Autor', 'Fecha Carga']">
+            @foreach($news as $item)
+                <tr>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ $item->user?->name ?? 'Sistema' }}</td>
+                    <td>{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.news.edit', $item)" type="news" :id="$item->id" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
+
+    @if($interpretes->isNotEmpty())
+        <x-backend.moderation-card key="interpretes" title="Intérpretes Pendientes" color="success" :count="$interpretes->count()" :open="$open === 'interpretes'" :columns="['Intérprete', 'Autor', 'Fecha Carga']">
+            @foreach($interpretes as $item)
+                <tr>
+                    <td>{{ $item->interprete }}</td>
+                    <td>{{ $item->user?->name ?? 'Sistema' }}</td>
+                    <td>{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.interpretes.edit', $item)" type="interprete" :id="$item->id" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
+
+    @if($albunes->isNotEmpty())
+        <x-backend.moderation-card key="albumes" title="Discos Pendientes" color="info" :count="$albunes->count()" :open="$open === 'albumes'" :columns="['Disco', 'Autor', 'Fecha Carga']">
+            @foreach($albunes as $item)
+                <tr>
+                    <td>{{ $item->album }}</td>
+                    <td>{{ $item->user?->name ?? 'Sistema' }}</td>
+                    <td>{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.discos.edit', $item)" type="album" :id="$item->id" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
+
+    @if($canciones->isNotEmpty())
+        <x-backend.moderation-card key="canciones" title="Canciones Pendientes" color="secondary" :count="$canciones->count()" :open="$open === 'canciones'" :columns="['Canción', 'Autor', 'Fecha Carga']">
+            @foreach($canciones as $item)
+                <tr>
+                    <td>{{ $item->cancion }}</td>
+                    <td>{{ $item->user?->name ?? 'Sistema' }}</td>
+                    <td>{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.canciones.edit', $item)" type="cancion" :id="$item->id" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
+
+    @if($festivales->isNotEmpty())
+        <x-backend.moderation-card key="festivales" title="Festivales en Borrador" color="success" :count="$festivales->count()" :open="$open === 'festivales'" :columns="['Título', 'Autor', 'Provincia', 'Fecha Carga']">
+            @foreach($festivales as $item)
+                <tr>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ $item->user?->name ?? 'Sistema' }}</td>
+                    <td>{{ $item->provincia?->nombre ?? '-' }}</td>
+                    <td>{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.festivales.edit', $item)" type="festival" :id="$item->id" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
+
+    @if($pendingVenues->isNotEmpty())
+        <x-backend.moderation-card key="venues" title="Lugares Propuestos" color="warning" :count="$pendingVenues->count()" :open="$open === 'venues'" :columns="['Lugar', 'Ciudad / Provincia']">
+            @foreach($pendingVenues as $venue)
+                <tr>
+                    <td>{{ $venue->name }}</td>
+                    <td>{{ $dash(trim(($venue->city ?? '').' / '.($venue->provincia?->nombre ?? ''), ' /')) }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.venues.edit', $venue)" reviewLabel="Revisar y activar" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
 </div>
 @stop

@@ -3,12 +3,12 @@
 @section('title', 'Editar artículo de enciclopedia')
 
 @section('content_header')
-  <h1><i class="fas fa-edit mr-2"></i>Editar artículo: {{ $article->title }}</h1>
+  <x-backend.form-header mode="edit">Editar artículo: {{ $article->title }}</x-backend.form-header>
 @stop
 
 @section('content')
   <div class="row">
-    <div class="col-md-11 mx-auto">
+    <div class="col-12">
       <form action="{{ route('backend.knowledge-articles.update', $article) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -44,10 +44,7 @@
               @endif
             </div>
             <div>
-              <a href="{{ route('backend.knowledge-articles.index') }}" class="btn btn-default mr-2">Regresar</a>
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save mr-1"></i> Actualizar artículo
-              </button>
+              <x-backend.form-actions :back="route('backend.knowledge-articles.index')" />
             </div>
           </div>
         </div>

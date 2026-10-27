@@ -3,13 +3,17 @@
 @section('title', 'Editar Noticia')
 
 @section('content_header')
-    <h1><i class="fas fa-edit mr-2"></i>Editar Noticia: {{ $news->title }}</h1>
+    <x-backend.form-header mode="edit">Editar Noticia: {{ $news->title }}</x-backend.form-header>
+@stop
+
+@section('css')
+    @include('backend.partials.styles._compact-form')
 @stop
 
 @section('content')
 <div class="row">
-    <div class="col-md-11 mx-auto">
-        <form action="{{ route('backend.news.update', $news) }}" method="POST" enctype="multipart/form-data">
+    <div class="col-12">
+        <form action="{{ route('backend.news.update', $news) }}" method="POST" enctype="multipart/form-data" class="form-compact">
             @csrf
             @method('PUT')
 
@@ -20,14 +24,9 @@
                 <div class="card-body">
                     @include('backend.news.form')
                 </div>
-                <div class="card-footer text-right">
-                    <a href="{{ route('backend.news.index') }}" class="btn btn-default mr-2">
-                        Regresar
-                    </a>
-                    <button type="submit" class="btn btn-primary shadow-sm">
-                        <i class="fas fa-save mr-1"></i> Actualizar Noticia
-                    </button>
-                </div>
+                <div class="card-footer">
+        <x-backend.form-actions :back="route('backend.news.index')" />
+      </div>
             </div>
         </form>
     </div>
@@ -38,6 +37,7 @@
     @include('backend.partials.scripts._ckeditor')
     @include('backend.partials.scripts._slug')
     @include('backend.partials.scripts._select2')
+    @include('backend.partials.scripts._tooltips')
     <script>
         $(document).ready(function () {
             $('.custom-file-input').on('change', function() {

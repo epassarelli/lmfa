@@ -1,11 +1,23 @@
-@props(['profile'])
+{{-- mode: "full" (texto visible debajo del campo), "tip" (solo el ícono con tooltip, para ponerlo dentro de la etiqueta)
+     o "warnings" (solo el espacio de avisos; se usa junto con "tip"). --}}
+@props(['profile', 'mode' => 'full'])
 @php
   $spec = config("backoffice_help.images.$profile");
   // Ancho máximo útil = variante más grande del perfil de imágenes (más no se puede mostrar).
   $outW = $spec ? (int) collect(config("image_profiles.{$spec['profile']}.variants"))->flatMap(fn ($v) => $v['sizes'] ?? [])->max() : 0;
   $outH = $spec ? (int) round($outW * $spec['ratio'][1] / $spec['ratio'][0]) : 0;
 @endphp
-@if ($spec)
+@if ($spec && $mode === 'warnings')
+  <small class="d-block" data-image-hint-warning></small>
+@elseif ($spec)
+  @if ($mode === 'tip')
+    <span class="text-info ml-1" style="cursor:help" data-image-hint="{{ $profile }}" tabindex="0" role="img"
+      data-toggle="tooltip" data-placement="top"
+      title="Sugerido: {{ $spec['shape'] }}, desde {{ $spec['min_w'] }} × {{ $spec['min_h'] }} px (más chica puede verse borrosa). Si es más grande, se reduce sola a {{ $outW }} px de ancho; si tiene otra proporción, vas a poder recortarla antes de subirla. JPG, PNG o WebP, hasta {{ $spec['max_mb'] }} MB. {{ $spec['tip'] }}"
+      aria-label="Ayuda sobre la imagen"
+      data-min-w="{{ $spec['min_w'] }}" data-min-h="{{ $spec['min_h'] }}" data-ratio="{{ $spec['ratio'][0] }}:{{ $spec['ratio'][1] }}"
+      data-out-w="{{ $outW }}" data-out-h="{{ $outH }}" data-max-mb="{{ $spec['max_mb'] }}"><i class="fas fa-question-circle"></i></span>
+  @else
   <small class="form-text text-muted" data-image-hint="{{ $profile }}"
     data-min-w="{{ $spec['min_w'] }}" data-min-h="{{ $spec['min_h'] }}" data-ratio="{{ $spec['ratio'][0] }}:{{ $spec['ratio'][1] }}"
     data-out-w="{{ $outW }}" data-out-h="{{ $outH }}" data-max-mb="{{ $spec['max_mb'] }}">
@@ -14,6 +26,7 @@
     vas a poder recortarla antes de subirla. JPG, PNG o WebP, hasta {{ $spec['max_mb'] }} MB. {{ $spec['tip'] }}
     <span class="d-block" data-image-hint-warning></span>
   </small>
+  @endif
   @once
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
@@ -120,7 +133,10 @@
           while (node && !input) { input = node.querySelector('input[type="file"]'); node = node.parentElement; }
           if (!input) { return; }
 
-          var out = hint.querySelector('[data-image-hint-warning]');
+          // En modo "tip" el aviso vive aparte, en el mismo grupo del campo.
+          var group = hint.closest('.form-group');
+          var out = hint.querySelector('[data-image-hint-warning]') || (group && group.querySelector('[data-image-hint-warning]'));
+          if (!out) { return; }
           var num = function (k) { return parseFloat(hint.dataset[k]); };
           var ratio = hint.dataset.ratio.split(':').map(Number), target = ratio[0] / ratio[1];
           var maxBytes = num('maxMb') * 1048576;
