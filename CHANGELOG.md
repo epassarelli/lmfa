@@ -7,6 +7,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [2.5.0] — 2026-10-27
+
 ### Cambiado
 
 - **Backoffice: el ABM de Radios (emisoras/señales y programas) vuelve a ser accesible desde el menú lateral**: existía completo (rutas, controladores, vistas, políticas) pero nunca se le había agregado la entrada «Radios» al menú. Se suma la sección `radios` a `config/backoffice_access.php` con el mismo criterio que Peñas (visible para todos con el acceso por fichas apagado; solo administradores con el flag activo). Las rutas no cambian.
@@ -15,7 +17,14 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 - **Centro de Moderación reordenado** (spec `moderation-center-order-and-collapse`): las tarjetas siguen el orden Eventos, Jornadas, Noticias, Intérpretes, Discos, Canciones, Festivales y Lugares; "Otros" se separa en tres tarjetas; todas se contraen/expanden y arrancan contraídas (el título conserva el contador); las que no tienen pendientes no se muestran y, si no hay ninguno, aparece un aviso. Festivales, Jornadas y Lugares pasan a la misma tabla que Noticias (Festivales suma la columna Provincia). Al publicar queda abierta la tarjeta correspondiente. Se corrige que el «Autor» de los intérpretes salía siempre vacío (faltaba la relación `user`) y los N+1 de autores. Sin migraciones. Peñas y radios siguen fuera de la cola de moderación.
 
+### Corregido
+
 - **Se restaura la etiqueta «Slug» en los formularios del backoffice** (en Noticias, «Slug / URL Amigable»): en v2.4.0 se había renombrado a «Dirección web». Se conservan las ayudas debajo del campo.
+
+### Notas de despliegue
+
+- Sin migraciones ni cambios de rutas públicas.
+- Cambian `config/adminlte.php`, `config/backoffice_access.php` y varias vistas Blade del backoffice: después de desplegar, regenerar las cachés (`php artisan config:cache` y `php artisan view:clear`) para que aparezca la entrada «Radios» en el menú y se vean los formularios nuevos.
 
 ## [2.4.1] — 2026-10-14
 
