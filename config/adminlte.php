@@ -415,6 +415,28 @@ return [
             'icon' => 'fas fa-fw fa-store',
         ],
         [
+            'text' => 'Radios',
+            'icon' => 'fas fa-fw fa-broadcast-tower',
+            'can' => 'backoffice-section.radios',
+            'active' => [
+                'admin/radios*',
+            ],
+            'submenu' => [
+                [
+                    'text' => 'Emisoras (señales)',
+                    'url' => 'admin/radios/signals',
+                    'icon' => 'fas fa-fw fa-broadcast-tower',
+                    'active' => ['admin/radios/signals*'],
+                ],
+                [
+                    'text' => 'Programas',
+                    'url' => 'admin/radios/programs',
+                    'icon' => 'fas fa-fw fa-microphone-alt',
+                    'active' => ['admin/radios/programs*'],
+                ],
+            ],
+        ],
+        [
             'text' => 'Salas / Lugares',
             'url' => 'admin/venues',
             'icon' => 'fas fa-fw fa-map-marker-alt',
