@@ -7,6 +7,24 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Agregado
+
+- **Publicaciones sociales por contenido y destino** (`social-publication-ledger-n8n`): registro sobre la Pasarela existente con habilitación explícita, reservas exclusivas, snapshots, confirmación idempotente y bloqueo de resultados inciertos para evitar reenvíos. Piloto para Noticias/Eventos y la Página institucional de Facebook; sin republicación automática de éxitos.
+- **API y panel de operación**: `/api/v1/social-publications` con PAT dedicado, permisos acotados y límites de uso; `/admin/social-publications` para habilitar contenidos y conciliar resultados con auditoría. Comandos de inventario, backfill dry-run, recuperación de reservas, provisión de operador sin rol administrador y exportación privada de credencial n8n.
+- **Placas editoriales v4**: fuentes del catálogo de doce diseños aprobados y renderer GD para Noticias/Agenda, PNG privado 1080×1350 y verificación SHA256 antes del envío. Subida del archivo desde n8n sin hosting adicional, IA ni dependencias nuevas. Fuentes tipográficas configuradas por entorno; no se redistribuyen fuentes del sistema.
+- **Borradores de n8n**: Noticias con horario preparado de 10:00 Argentina y Eventos manual sin programación, ambos bloqueados e inactivos. Guía de activación y preflight CLI de solo lectura incluidos.
+
+### Corregido
+
+- Los jobs de Pasarela reconocen `success` y `published`, respetan el ejecutor n8n y bloquean un segundo publicador para la misma Página aunque existan cuentas sociales duplicadas. Nuevos payloads y errores de conectores comunes se guardan saneados, sin tokens.
+- Eliminar al solicitante conserva el historial de publicaciones mediante autor nullable y `ON DELETE SET NULL`.
+
+### Validación y despliegue
+
+- **Implementado y validado en local el 2026-11-10**: 76 tests Feature pasan (228 assertions) y seis escenarios completos de n8n contra un simulador privado. Sin publicaciones externas ni activación diaria.
+- Migración aditiva `2026_11_10_100000_add_social_publication_ledger.php` aplicada con autorización en las bases locales existentes `mfa` y `mfa_test`. En producción revisar `migrate:status` y autorizar su aplicación por separado; no ejecutar rollback automático del historial.
+- Despliegue en Hostinger a cargo del usuario. Pendientes: API productiva, fuentes privadas, operador/PAT real e importación en n8n, verificación del token de Página, contenido habilitado y publicación de prueba autorizada. Instrucciones: `resources/integrations/n8n/ACTIVATION.md`. Sin cambios de rutas públicas, slugs ni SEO.
+
 ## [2.5.0] — 2026-10-27
 
 ### Cambiado

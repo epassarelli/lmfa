@@ -158,6 +158,8 @@ class PublicationRequestController extends Controller
             abort(404);
         }
 
+        abort_if(app(\App\Services\Publication\SocialPublicationGuard::class)->managed($target), 409, 'Este destino se administra desde Publicaciones en redes.');
+
         if ($target->status !== 'failed') {
             return back()->with('error', 'Solo se pueden reintentar targets con estado fallido.');
         }

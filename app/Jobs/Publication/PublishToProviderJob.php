@@ -31,7 +31,7 @@ class PublishToProviderJob implements ShouldQueue
             return;
         }
 
-        if ($target->status === 'published') {
+        if (in_array($target->status, ['success', 'published']) || app(\App\Services\Publication\SocialPublicationGuard::class)->managed($target)) {
             Log::info("[PublishToProviderJob] Target #{$this->targetId} already published, skipping.");
             return;
         }
@@ -53,7 +53,7 @@ class PublishToProviderJob implements ShouldQueue
             if ($result['success']) {
                 Log::info("[PublishToProviderJob] Published target #{$this->targetId} via {$target->provider}.");
             } else {
-                Log::warning("[PublishToProviderJob] Failed target #{$this->targetId}: " . ($result['error'] ?? $result['error_message'] ?? 'unknown'));
+                Log::warning("[PublishToProviderJob] Failed target #{$this->targetId}: " . 'Consultar el intento saneado');
                 // Ensure target is marked failed if connector returned early without recording an attempt
                 $target->refresh();
                 if ($target->status === 'processing') {
@@ -63,7 +63,7 @@ class PublishToProviderJob implements ShouldQueue
 
         } catch (\Exception $e) {
             $target->update(['status' => 'failed']);
-            Log::error("[PublishToProviderJob] Exception for target #{$this->targetId}: {$e->getMessage()}");
+            Log::error("[PublishToProviderJob] Exception for target #{$this->targetId}: " . get_class($e));
             throw $e; // Let Laravel retry if attempts remain
         }
     }
@@ -71,9 +71,9 @@ class PublishToProviderJob implements ShouldQueue
     public function failed(\Throwable $exception): void
     {
         $target = PublicationTarget::find($this->targetId);
-        if ($target) {
+        if ($target && !in_array($target->status, ['success', 'published']) && !app(\App\Services\Publication\SocialPublicationGuard::class)->managed($target)) {
             $target->update(['status' => 'failed']);
         }
-        Log::error("[PublishToProviderJob] FINAL FAILURE target #{$this->targetId}: " . $exception->getMessage());
+        Log::error("[PublishToProviderJob] FINAL FAILURE target #{$this->targetId}: " . get_class($exception));
     }
 }

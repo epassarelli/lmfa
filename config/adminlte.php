@@ -294,6 +294,7 @@ return [
     */
 
     'menu' => [
+        ['text' => 'Publicaciones en redes', 'url' => 'admin/social-publications', 'icon' => 'fas fa-share-alt', 'can' => 'manage_users'],
         [
             'text' => 'Mis fichas',
             'url' => 'admin/mis-fichas',

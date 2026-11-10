@@ -1,0 +1,36 @@
+{
+  "catalog_version": "1.0.0",
+  "status": "draft_for_review",
+  "identity": {
+    "id": "mfa-editorial-v1", "width": 1080, "height": 1350,
+    "background": "#111E30", "white": "#F3F6FA", "muted": "#B4C3D4",
+    "sky": "#9ACBF0", "gold": "#E7C569", "line": "#344358",
+    "font": "Segoe UI", "title_max_font": 76, "title_min_font": 52,
+    "brand_lines": ["Mi Folklore", "Argentino"],
+    "tagline": "CULTURA QUE NOS ENCUENTRA", "domain": "mifolkloreargentino.com"
+  },
+  "policy": {
+    "active_templates": [],
+    "unknown_type": "block_for_review",
+    "overflow": "block_for_review_no_truncation",
+    "missing_required_data": "block_for_review",
+    "content_contract": "Normalized design fields. API adapters and editorial eligibility remain pending.",
+    "fixed_elements": ["brand", "palette", "font", "margins", "section", "footer", "dimensions"],
+    "variable_elements": ["headline", "details", "note"],
+    "publication": "disabled"
+  },
+  "templates": [
+    {"id":"mfa-noticias-v1","type":"news","api_resource":"news","section":"NOTICIAS","category":"ACTUALIDAD","accent":"#9ACBF0","required":["headline"],"cta":"LEÉ LA NOTA COMPLETA EN EL PORTAL","sample":{"headline":"Nuevas voces para nuestra música de raíz","details":["ACTUALIDAD CULTURAL","PANORAMA FEDERAL"],"note":"Una noticia de ejemplo para mostrar la identidad de la sección."}},
+    {"id":"mfa-agenda-v1","type":"events","api_resource":"events","section":"AGENDA","category":"PRÓXIMOS ENCUENTROS","accent":"#E7C569","required":["headline","details"],"cta":"CONSULTÁ EL EVENTO EN EL PORTAL","sample":{"headline":"Encuentro de música y danzas de raíz","details":["21 NOV 2026 · 20:30 H","CIUDAD DE EJEMPLO"],"note":"Consultá lugar, fecha e información del encuentro en la web."}},
+    {"id":"mfa-artistas-v1","type":"artists","api_resource":"artists","section":"ARTISTAS","category":"NUESTRAS VOCES","accent":"#9ACBF0","required":["headline"],"cta":"CONOCÉ SU HISTORIA EN EL PORTAL","sample":{"headline":"Una voz, un camino, una historia para descubrir","details":["ARTISTA DE EJEMPLO","TRAYECTORIA Y MÚSICA"],"note":"Biografía y vínculos para recorrer el universo de cada artista."}},
+    {"id":"mfa-festivales-v1","type":"festivals","api_resource":"festivals","section":"FESTIVALES","category":"IDENTIDAD Y ENCUENTRO","accent":"#E7C569","required":["headline"],"cta":"DESCUBRÍ EL FESTIVAL EN EL PORTAL","sample":{"headline":"Una fiesta que reúne nuestras tradiciones","details":["FESTIVAL DE EJEMPLO","FICHA CULTURAL"],"note":"Historias y tradiciones que dan identidad a cada encuentro."}},
+    {"id":"mfa-enciclopedia-v1","type":"knowledge-articles","api_resource":"knowledge-articles","section":"ENCICLOPEDIA","category":"SABERES DE NUESTRA TIERRA","accent":"#9ACBF0","required":["headline"],"cta":"EXPLORÁ EL ARTÍCULO EN EL PORTAL","sample":{"headline":"La zamba: un recorrido por su universo cultural","details":["MÚSICA Y DANZA","PARA SEGUIR APRENDIENDO"],"note":"Un ejemplo de lectura cultural para descubrir y compartir."}},
+    {"id":"mfa-recetas-v1","type":"foods","api_resource":"foods","section":"RECETAS","category":"SABORES QUE NOS REÚNEN","accent":"#E7C569","required":["headline"],"cta":"ENCONTRÁ LA RECETA EN EL PORTAL","sample":{"headline":"Locro criollo para compartir en la mesa","details":["COCINA TRADICIONAL","SABORES ARGENTINOS"],"note":"Una receta para reencontrarse con los sabores de nuestra cocina."}},
+    {"id":"mfa-mitos-v1","type":"myths","api_resource":"myths","section":"MITOS Y LEYENDAS","category":"RELATOS DE NUESTRA TIERRA","accent":"#9ACBF0","required":["headline"],"cta":"LEÉ EL RELATO EN EL PORTAL","sample":{"headline":"Relatos que viajan de generación en generación","details":["RELATO DE EJEMPLO","TRADICIÓN ORAL"],"note":"Historias para acercarse al patrimonio narrativo de cada región."}},
+    {"id":"mfa-discos-v1","type":"albums","api_resource":"albums","section":"DISCOS","category":"NUESTRO ARCHIVO MUSICAL","accent":"#9ACBF0","required":["headline"],"cta":"EXPLORÁ LA FICHA EN EL PORTAL","sample":{"headline":"Un disco, muchas historias por descubrir","details":["ÁLBUM DE EJEMPLO","ARTISTA DE EJEMPLO"],"note":"Ficha discográfica y créditos disponibles en el archivo de MFA."}},
+    {"id":"mfa-canciones-v1","type":"songs","api_resource":"songs","section":"CANCIONES","category":"MEMORIA MUSICAL","accent":"#E7C569","required":["headline"],"rights_gate":"metadata_only_no_lyrics_or_audio","cta":"CONOCÉ LA FICHA EN EL PORTAL","sample":{"headline":"Una canción también cuenta nuestra historia","details":["CANCIÓN DE EJEMPLO","FICHA Y CRÉDITOS"],"note":"Descubrí la obra y los créditos que forman parte de nuestra memoria musical."}},
+    {"id":"mfa-penias-v1","type":"penia-profiles","api_resource":"penia-profiles","section":"PEÑAS","category":"ESPACIOS PARA ENCONTRARNOS","accent":"#E7C569","required":["headline"],"operational_gate":"pending_validation","cta":"CONOCÉ LA PEÑA EN EL PORTAL","sample":{"headline":"Un lugar para compartir música y encuentro","details":["PEÑA DE EJEMPLO","LOCALIDAD DE EJEMPLO"],"note":"Una propuesta para encontrarse alrededor de la música y la danza."}},
+    {"id":"mfa-radios-v1","type":"radio-signals","api_resource":"radio-signals","section":"RADIOS","category":"EL FOLKLORE SE ESCUCHA","accent":"#9ACBF0","required":["headline"],"operational_gate":"pending_validation","cta":"ENCONTRÁ CÓMO ESCUCHAR EN MFA","sample":{"headline":"La música de raíz también tiene su señal","details":["RADIO DE EJEMPLO","DIRECTORIO DE RADIOS"],"note":"Señales y canales de escucha a través de las fichas del portal."}},
+    {"id":"mfa-programas-v1","type":"radio-programs","api_resource":"radio-programs","section":"PROGRAMAS","category":"VOCES AL AIRE","accent":"#9ACBF0","required":["headline","details"],"operational_gate":"pending_validation","cta":"CONSULTÁ LA PROGRAMACIÓN EN MFA","sample":{"headline":"Un espacio para escuchar nuestras voces","details":["PROGRAMA DE EJEMPLO","DÍA Y HORARIO DE EJEMPLO"],"note":"Descubrí su propuesta y encontrá la programación en la ficha."}}
+  ]
+}

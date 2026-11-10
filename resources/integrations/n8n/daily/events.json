@@ -1,0 +1,420 @@
+{
+  "name": "MFA - Eventos - Facebook manual (sin programación)",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false,
+    "timezone": "America/Argentina/Buenos_Aires"
+  },
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Inicio manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "gate",
+      "name": "Configuración y bloqueo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const config={api_base_url:'https://mifolkloreargentino.com/api/v1',content_kind:'events',allow_publish:false}; if(!config.allow_publish) throw new Error('Publicación bloqueada: completar credencial dedicada, despliegue y prueba autorizada antes de habilitar'); return [{json:config}];"
+      }
+    },
+    {
+      "id": "candidates",
+      "name": "Candidatos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "parameters": {
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/candidates?provider=facebook&content_kind=events&per_page=1' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      }
+    },
+    {
+      "id": "choose",
+      "name": "Preparar reserva",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const candidate=$json.data?.[0]; if (!candidate) return []; const key='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.floor(Math.random()*16);return (c==='x'?r:(r&3)|8).toString(16)}); return [{json:{...candidate,request_key:key}}];"
+      }
+    },
+    {
+      "id": "claim",
+      "name": "Reservar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/claims' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Idempotency-Key",
+              "value": "={{ $json.request_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { content_kind:$json.content_kind,content_id:$json.content_id,provider:'facebook',destination_key:$json.destination_key,n8n_execution_id:$execution.id } }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      }
+    },
+    {
+      "id": "render",
+      "name": "Generar PNG privado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/' + $json.target_id + '/render' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {attempt_id:$json.attempt_id,lease:$json.lease} }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      }
+    },
+    {
+      "id": "prepare",
+      "name": "Validar placa",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const c=$('Reservar').item.json; if(c.replayed||!c.lease) throw new Error('Reserva repetida: no enviar'); if(!$json.asset_base64||!$json.asset_reference?.startsWith('sha256:')||!/^[a-f0-9]{64}$/.test($json.asset_sha256||'')) throw new Error('PNG privado inválido'); return [{json:{...c,asset_reference:$json.asset_reference,asset_sha256:$json.asset_sha256},binary:{data:{data:$json.asset_base64,mimeType:'image/png',fileName:'mfa-'+c.target_id+'.png'}}}];"
+      }
+    },
+    {
+      "id": "begin",
+      "name": "Autorizar un envío",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/' + $json.target_id + '/begin' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {attempt_id:$json.attempt_id,lease:$json.lease,content_hash:$json.payload.content_hash,asset_reference:$json.asset_reference,asset_sha256:$json.asset_sha256} }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "name": "Meta - UN solo POST",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        0
+      ],
+      "retryOnFail": false,
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v27.0/145931542128207/photos",
+        "authentication": "predefinedCredentialType",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "source",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $('Reservar').item.json.payload.copy }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        },
+        "nodeCredentialType": "facebookGraphApi"
+      }
+    },
+    {
+      "id": "classify",
+      "name": "Clasificar resultado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const c=$('Reservar').item.json; const status=Number($json.statusCode||0); const post=$json.body?.post_id; const base={target_id:c.target_id,attempt_id:c.attempt_id,lease:c.lease}; if(status>=200 && status<300 && /^145931542128207_[0-9]+$/.test(post||'')) return [{json:{...base,outcome:'success',external_post_id:post}}]; if(status>=400 && status<500 && status!==408 && $json.body?.error) return [{json:{...base,outcome:'definitive_failure',error_code:'META_REJECTED',provider_http_status:status,failure_evidence:'provider_rejected'}}]; return [{json:{...base,outcome:'uncertain',error_code:'META_OUTCOME_UNKNOWN'}}];"
+      }
+    },
+    {
+      "id": "result",
+      "name": "Confirmar resultado - solo callback",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2200,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/' + $json.target_id + '/result' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      }
+    },
+    {
+      "id": "binary",
+      "name": "Conservar archivo tras begin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1650,
+        0
+      ],
+      "parameters": {
+        "jsCode": "if(!$json.may_send) throw new Error('Begin no autorizó el envío'); return [{json:$json,binary:$('Validar placa').item.binary}];"
+      }
+    },
+    {
+      "id": "note",
+      "name": "Estado y próximos pasos",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -330
+      ],
+      "parameters": {
+        "width": 750,
+        "height": 260,
+        "content": "## Eventos: listo para conectar, NO activado\nHorario propuesto: 18:00 Argentina.\n1. Desplegar API ledger/render revisada.\n2. Credencial PAT dedicada + Meta existente.\n3. Habilitar contenido y autorizar una prueba.\n4. Revisar PNG, copy e ID; recién después publicar workflow.\nNo cambiar allow_publish antes de cumplir esos pasos. Sin IA, hosting extra ni variables de pago.\nMeta sin reintento; callback reintentable. Si no hay candidato, no publica."
+      }
+    }
+  ],
+  "connections": {
+    "Inicio manual": {
+      "main": [
+        [
+          {
+            "node": "Configuración y bloqueo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Candidatos": {
+      "main": [
+        [
+          {
+            "node": "Preparar reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar reserva": {
+      "main": [
+        [
+          {
+            "node": "Reservar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reservar": {
+      "main": [
+        [
+          {
+            "node": "Generar PNG privado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar placa": {
+      "main": [
+        [
+          {
+            "node": "Autorizar un envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Autorizar un envío": {
+      "main": [
+        [
+          {
+            "node": "Conservar archivo tras begin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meta - UN solo POST": {
+      "main": [
+        [
+          {
+            "node": "Clasificar resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificar resultado": {
+      "main": [
+        [
+          {
+            "node": "Confirmar resultado - solo callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuración y bloqueo": {
+      "main": [
+        [
+          {
+            "node": "Candidatos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar PNG privado": {
+      "main": [
+        [
+          {
+            "node": "Validar placa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conservar archivo tras begin": {
+      "main": [
+        [
+          {
+            "node": "Meta - UN solo POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "tags": [],
+  "id": "MfaEventsDaily01"
+}

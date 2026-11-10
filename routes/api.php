@@ -61,3 +61,5 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::apiResource('radio-programs', \App\Http\Controllers\Api\RadioProgramController::class)->except(['index', 'show']);
     });
 });
+
+require __DIR__.'/social-publications.php';

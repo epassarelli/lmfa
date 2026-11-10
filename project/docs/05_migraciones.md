@@ -713,3 +713,7 @@ Las migraciones del proyecto ya no representan un MVP hipotético sino una evolu
 - varias tandas recientes de índices por performance.
 
 Quien trabaje sobre este repositorio debe asumir una estrategia de **evolución segura sobre un esquema híbrido**, no una reescritura desde cero.
+
+## 2026-11-10 — social-publication-ledger-n8n
+
+Migración `2026_11_10_100000_add_social_publication_ledger.php`, autorizada tras migrate:status y aplicada por path en las bases locales existentes mfa/mfa_test. Agrega habilitaciones por destino y ledger/lease/snapshot/resultados a Pasarela, índice único de intentos y autor nullable SET NULL. Down intencionalmente bloqueado para preservar evidencia; reversión por migración revisada. Recuperación del primer ALTER MariaDB y validaciones documentadas en social-publication-implementation.md. Sin backfill con escrituras ni operación productiva.

@@ -114,3 +114,17 @@ Se mantiene como antecedente valido que:
 - la serializacion todavia no esta completamente unificada;
 - `/artists`, `/albums`, `/foods` y `/myths` siguen mapeando a tablas/modelos historicos;
 - Enciclopedia sigue siendo la referencia mas madura para contratos editoriales modernos.
+
+## Publicaciones sociales — piloto local
+
+Base `/api/v1/social-publications`. PAT Sanctum real sin wildcard y operador NO administrador en allowlist con permisos `social-publications:read` / `social-publications:execute`. No acepta cookie como sustituto ni token Ingesta. Rate limit lectura 60/min y mutación 30/min; respuestas privadas sin cache.
+
+- GET `/candidates`: content_kind news/events, provider facebook, destination_key configurado, per_page 1..50. Puede devolver menos filas que per_page al descartar contenido retirado/vencido; metadata total refiere habilitaciones reservables antes de la validación editorial final.
+- POST `/claims`: content_kind, content_id, provider facebook, destination_key y opcional n8n_execution_id. Header Idempotency-Key UUID. 201 con lease una sola vez; replay 200 sin lease. Conflicto 409.
+- POST `/{target}/begin`: attempt_id, lease, content_hash, asset_reference HTTPS y asset_sha256. Autoriza un solo envío; replay 409.
+- POST `/{target}/result`: attempt_id, lease, outcome success/definitive_failure/uncertain; éxito exige external_post_id `<PAGE>_<POST>`. Fallo seguro exige error_code normalizado, provider_http_status 4xx distinto de 408 y failure_evidence provider_rejected. No se reciben payloads de Meta ni mensajes de error crudos.
+- GET `/{target}`: estado/evidencia allowlist sin secretos.
+
+Bandera por defecto apagada: candidates/claims/begin 503; estado y callbacks de envíos iniciados siguen disponibles. La API no habilita contenidos ni hace llamadas externas. Contrato operativo y casos de pérdida de respuesta: `resources/integrations/n8n/README.md`. Solo News/Eventos y la Página institucional en este MVP.
+
+Actualización render binario 2026-11-10: POST `/{target}/render` exige attempt_id y lease del intento reservado; devuelve PNG base64 1080x1350, SHA256 y referencia sha256:<digest>. Rate limit 10/min, requiere execute y bandera activa; respuesta privada. `begin` acepta esta referencia además de HTTPS legacy y verifica archivo privado/hash/relación con render del mismo intento. La salida se sube multipart desde n8n, sin hosting público adicional. Fecha/lugar verificados de eventos se incluyen en snapshot y hash; fonts privadas se configuran por entorno.

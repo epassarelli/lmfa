@@ -216,3 +216,9 @@ Route::middleware(['auth'])->group(function () {
 
 
 });
+
+Route::prefix('social-publications')->middleware('role:administrador')->name('social-publications.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'index'])->name('index');
+    Route::post('/eligibility', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'eligibility'])->name('eligibility');
+    Route::post('/{target}/resolve', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'resolve'])->whereNumber('target')->name('resolve');
+});

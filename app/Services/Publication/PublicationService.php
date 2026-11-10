@@ -59,7 +59,7 @@ class PublicationService
         }
 
         // 2. Redes propias del publicador
-        if ($request->wants_own_social) {
+        if ($request->wants_own_social && $request->requester) {
             /** @var \App\Models\User $requester */
             $requester = $request->requester;
 
@@ -123,6 +123,7 @@ class PublicationService
             ->get();
 
         foreach ($targets as $target) {
+            if (app(SocialPublicationGuard::class)->managed($target)) { continue; }
             $delay = $target->scheduled_at
                 ? now()->diffInSeconds($target->scheduled_at, false)
                 : 0;

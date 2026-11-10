@@ -48,7 +48,9 @@ abstract class BaseConnector
         array $payload,
         array $result
     ): PublicationAttempt {
-        $attemptNumber = $target->attempts()->count() + 1;
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($target, $payload, $result) {
+        $target = PublicationTarget::lockForUpdate()->findOrFail($target->id);
+        $attemptNumber = ((int) $target->attempts()->max('attempt_number')) + 1;
 
         $status = $result['success'] ? 'success' : 'failed';
 
@@ -59,14 +61,15 @@ abstract class BaseConnector
             'attempt_number'         => $attemptNumber,
             'started_at'             => now(),
             'finished_at'            => now(),
-            'request_payload_json'   => $payload,
-            'response_payload_json'  => $result['response'] ?? null,
+            'request_payload_json'   => \App\Services\Publication\PublicationPayloadSanitizer::clean($payload),
+            'response_payload_json'  => \App\Services\Publication\PublicationPayloadSanitizer::clean($result['response'] ?? null),
             'external_post_id'       => $result['external_post_id'] ?? null,
             'external_url'           => $result['external_url'] ?? null,
             'status'                 => $status,
             'error_code'             => $result['error_code'] ?? null,
-            'error_message'          => $result['error_message'] ?? null,
+            'error_message'          => \App\Services\Publication\PublicationPayloadSanitizer::clean($result['error_message'] ?? null),
             'is_retryable'           => $result['is_retryable'] ?? false,
         ]);
+        });
     }
 }

@@ -17,12 +17,19 @@ class PublicationTarget extends Model
         'template_variant',
         'scheduled_at',
         'status',
-        'priority'
+        'priority', 'ledger_content_kind', 'ledger_content_id', 'destination_key', 'executor',
+        'published_at', 'external_post_id', 'external_url', 'lease_token_hash', 'lease_expires_at',
+        'retry_after', 'attempts_count', 'last_error_code', 'last_error_message', 'content_hash',
+        'payload_snapshot_json', 'template_id', 'template_catalog_version', 'asset_sha256', 'asset_reference'
     ];
 
     protected $casts = [
         'scheduled_at' => 'datetime',
+        'published_at' => 'datetime', 'lease_expires_at' => 'datetime', 'retry_after' => 'datetime',
+        'payload_snapshot_json' => 'array',
     ];
+
+    protected $hidden = ['lease_token_hash'];
 
     public function request()
     {

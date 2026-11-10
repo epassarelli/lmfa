@@ -1,0 +1,427 @@
+{
+  "catalog_version": "4.0.0",
+  "status": "draft_for_review",
+  "identity": {
+    "id": "mfa-editorial-v4",
+    "width": 1080,
+    "height": 1350,
+    "background": "#14171C",
+    "white": "#FFFFFF",
+    "muted": "#B4C3D4",
+    "sky": "#9ACBF0",
+    "gold": "#E7C569",
+    "line": "#344358",
+    "font": "Segoe UI",
+    "title_max_font": 80,
+    "title_min_font": 52,
+    "brand_lines": [
+      "Mi Folklore",
+      "Argentino"
+    ],
+    "tagline": "CULTURA QUE NOS ENCUENTRA",
+    "domain": "mifolkloreargentino.com"
+  },
+  "policy": {
+    "active_templates": [],
+    "unknown_type": "block_for_review",
+    "overflow": "block_for_review_no_truncation",
+    "missing_required_data": "block_for_review",
+    "content_contract": "Normalized design fields. API adapters and editorial eligibility remain pending.",
+    "fixed_elements": [
+      "brand",
+      "palette",
+      "font",
+      "margins",
+      "section",
+      "footer",
+      "dimensions"
+    ],
+    "variable_elements": [
+      "headline",
+      "details",
+      "note"
+    ],
+    "publication": "disabled"
+  },
+  "templates": [
+    {
+      "id": "mfa-noticias-v4",
+      "type": "news",
+      "api_resource": "news",
+      "section": "NOTICIAS",
+      "category": "ACTUALIDAD",
+      "accent": "#F48B43",
+      "required": [
+        "headline"
+      ],
+      "cta": "LEÉ LA NOTA COMPLETA EN EL PORTAL",
+      "sample": {
+        "headline": "Diez discos muestran la diversidad del folklore argentino publicado en 2026",
+        "details": [
+          "LANZAMIENTOS",
+          "NOTICIA DEL PORTAL"
+        ],
+        "note": "Una selección reciente reúne obras de distintas provincias y generaciones, desde el chamamé y la chacarera hasta homenajes, rescates y registros en vivo."
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "news",
+        "id": 833,
+        "slug": "diez-discos-folklore-argentino-2026",
+        "status": "published",
+        "publication_mode": "portal_only",
+        "headline": "Diez discos muestran la diversidad del folklore argentino publicado en 2026",
+        "details": [
+          "LANZAMIENTOS",
+          "NOTICIA DEL PORTAL"
+        ],
+        "note": "Una selección reciente reúne obras de distintas provincias y generaciones, desde el chamamé y la chacarera hasta homenajes, rescates y registros en vivo."
+      }
+    },
+    {
+      "id": "mfa-agenda-v4",
+      "type": "events",
+      "api_resource": "events",
+      "section": "AGENDA",
+      "category": "PRÓXIMOS ENCUENTROS",
+      "accent": "#F0C64F",
+      "required": [
+        "headline",
+        "details"
+      ],
+      "cta": "CONSULTÁ EL EVENTO EN EL PORTAL",
+      "sample": {
+        "headline": "Semana de la Tradición reunirá cinco días de folklore y formación en Salta",
+        "details": [
+          "DEL 10 AL 14 DE NOVIEMBRE DE 2026",
+          "SALTA CAPITAL"
+        ],
+        "note": "Música, danza, talleres, conversatorios y una gala de cierre con Emanuel Ayala."
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "events",
+        "id": 392,
+        "slug": "semana-tradicion-2026-salta-agenda-gala",
+        "status": "published",
+        "publication_mode": "portal_only",
+        "headline": "Semana de la Tradición reunirá cinco días de folklore y formación en Salta",
+        "details": [
+          "DEL 10 AL 14 DE NOVIEMBRE DE 2026",
+          "SALTA CAPITAL"
+        ],
+        "note": "Música, danza, talleres, conversatorios y una gala de cierre con Emanuel Ayala.",
+        "start_at": "2026-11-10T11:00:00Z",
+        "end_at": "2026-11-14T21:00:00Z",
+        "selection": "Last page 24 of 359 records, after first-page historical dates were rejected as upcoming events; no hour inferred"
+      }
+    },
+    {
+      "id": "mfa-artistas-v4",
+      "type": "artists",
+      "api_resource": "artists",
+      "section": "ARTISTAS",
+      "category": "NUESTRAS VOCES",
+      "accent": "#72B8F4",
+      "required": [
+        "headline"
+      ],
+      "cta": "CONOCÉ SU HISTORIA EN EL PORTAL",
+      "sample": {
+        "headline": "Aca Seca Trío",
+        "details": [
+          "JUAN QUINTERO · ANDRÉS BEEUWSAERT",
+          "MARIANO CANTERO"
+        ],
+        "note": "Trío argentino formado por Juan Quintero, Andrés Beeuwsaert y Mariano Cantero, referente de la canción folklórica contemporánea por sus arreglos, voces e improvisación."
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "artists",
+        "id": 481,
+        "slug": "aca-seca-trio",
+        "status": "active",
+        "headline": "Aca Seca Trío",
+        "details": [
+          "JUAN QUINTERO · ANDRÉS BEEUWSAERT",
+          "MARIANO CANTERO"
+        ],
+        "note": "Trío argentino formado por Juan Quintero, Andrés Beeuwsaert y Mariano Cantero, referente de la canción folklórica contemporánea por sus arreglos, voces e improvisación."
+      }
+    },
+    {
+      "id": "mfa-festivales-v4",
+      "type": "festivals",
+      "api_resource": "festivals",
+      "section": "FESTIVALES",
+      "category": "IDENTIDAD Y ENCUENTRO",
+      "accent": "#F07178",
+      "required": [
+        "headline"
+      ],
+      "cta": "DESCUBRÍ EL FESTIVAL EN EL PORTAL",
+      "sample": {
+        "headline": "Fiesta Nacional de los Jardines",
+        "details": [
+          "VILLA LA ANGOSTURA · NEUQUÉN",
+          "FICHA CULTURAL"
+        ],
+        "note": "Jardines, carrozas, música, gastronomía y actividades culturales."
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "festivals",
+        "id": 15,
+        "slug": "fiesta-nacional-de-los-jardines",
+        "status": "returned_by_published_only",
+        "headline": "Fiesta Nacional de los Jardines",
+        "details": [
+          "VILLA LA ANGOSTURA · NEUQUÉN",
+          "FICHA CULTURAL"
+        ],
+        "note": "Jardines, carrozas, música, gastronomía y actividades culturales.",
+        "selection": "Permanent cultural profile, not an announcement of a dated edition"
+      }
+    },
+    {
+      "id": "mfa-enciclopedia-v4",
+      "type": "knowledge-articles",
+      "api_resource": "knowledge-articles",
+      "section": "ENCICLOPEDIA",
+      "category": "SABERES DE NUESTRA TIERRA",
+      "accent": "#B29AF5",
+      "required": [
+        "headline"
+      ],
+      "cta": "EXPLORÁ EL ARTÍCULO EN EL PORTAL",
+      "sample": {
+        "headline": "Danzas folklóricas para principiantes: guía para empezar a bailar",
+        "details": [
+          "DANZAS FOLKLÓRICAS",
+          "GUÍA PARA EMPEZAR"
+        ],
+        "note": "Guía para aprender danzas folklóricas argentinas desde cero: gato, chacarera, zamba, ritmo, figuras y práctica."
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "knowledge-articles",
+        "id": 61,
+        "slug": "danzas-folkloricas-para-principiantes",
+        "status": "published",
+        "headline": "Danzas folklóricas para principiantes: guía para empezar a bailar",
+        "details": [
+          "DANZAS FOLKLÓRICAS",
+          "GUÍA PARA EMPEZAR"
+        ],
+        "note": "Guía para aprender danzas folklóricas argentinas desde cero: gato, chacarera, zamba, ritmo, figuras y práctica."
+      }
+    },
+    {
+      "id": "mfa-recetas-v4",
+      "type": "foods",
+      "api_resource": "foods",
+      "section": "RECETAS",
+      "category": "SABORES QUE NOS REÚNEN",
+      "accent": "#C19A76",
+      "required": [
+        "headline"
+      ],
+      "cta": "ENCONTRÁ LA RECETA EN EL PORTAL",
+      "sample": {
+        "headline": "Locro",
+        "details": [
+          "RECETAS",
+          "FICHA EN EL PORTAL"
+        ],
+        "note": ""
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "foods",
+        "id": 16,
+        "slug": "locro",
+        "status": "active",
+        "headline": "Locro",
+        "details": [
+          "RECETAS",
+          "FICHA EN EL PORTAL"
+        ],
+        "note": "",
+        "selection": "Search locro; missing excerpt preserved as empty, no invented ingredients or cooking times"
+      }
+    },
+    {
+      "id": "mfa-mitos-v4",
+      "type": "myths",
+      "api_resource": "myths",
+      "section": "MITOS Y LEYENDAS",
+      "category": "RELATOS DE NUESTRA TIERRA",
+      "accent": "#58C5BA",
+      "required": [
+        "headline"
+      ],
+      "cta": "LEÉ EL RELATO EN EL PORTAL",
+      "sample": {
+        "headline": "El Cacuy",
+        "details": [
+          "MITOS Y LEYENDAS",
+          "RELATO DEL ARCHIVO"
+        ],
+        "note": "La leyenda del Cacuy o Kakuy: transformación, versiones santiagueñas y vigencia de un relato fundamental del folklore del Noroeste."
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "myths",
+        "id": 258,
+        "slug": "el-cacuy",
+        "status": "active",
+        "headline": "El Cacuy",
+        "details": [
+          "MITOS Y LEYENDAS",
+          "RELATO DEL ARCHIVO"
+        ],
+        "note": "La leyenda del Cacuy o Kakuy: transformación, versiones santiagueñas y vigencia de un relato fundamental del folklore del Noroeste."
+      }
+    },
+    {
+      "id": "mfa-discos-v4",
+      "type": "albums",
+      "api_resource": "albums",
+      "section": "DISCOS",
+      "category": "NUESTRO ARCHIVO MUSICAL",
+      "accent": "#ABD06E",
+      "required": [
+        "headline"
+      ],
+      "cta": "EXPLORÁ LA FICHA EN EL PORTAL",
+      "sample": {
+        "headline": "Gracias a la vida",
+        "details": [
+          "ABEL PINTOS",
+          "2025"
+        ],
+        "note": ""
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "albums",
+        "id": 750,
+        "slug": "gracias-a-la-vida",
+        "status": "active",
+        "headline": "Gracias a la vida",
+        "details": [
+          "ABEL PINTOS",
+          "2025"
+        ],
+        "note": "",
+        "selection": "Name, artist and year read from API; no additional discography verification claimed"
+      }
+    },
+    {
+      "id": "mfa-canciones-v4",
+      "type": "songs",
+      "api_resource": "songs",
+      "section": "CANCIONES",
+      "category": "MEMORIA MUSICAL",
+      "accent": "#EB9BC5",
+      "required": [
+        "headline"
+      ],
+      "rights_gate": "metadata_only_no_lyrics_or_audio",
+      "cta": "CONOCÉ LA FICHA EN EL PORTAL",
+      "sample": {
+        "headline": "Renacer",
+        "details": [
+          "HECTOR LAGORIA",
+          "FICHA DE CANCIÓN"
+        ],
+        "note": ""
+      },
+      "sample_origin": "api",
+      "source": {
+        "resource": "songs",
+        "id": 4862,
+        "slug": "renacer",
+        "status": "active",
+        "headline": "Renacer",
+        "details": [
+          "HECTOR LAGORIA",
+          "FICHA DE CANCIÓN"
+        ],
+        "note": "",
+        "rights_status": null,
+        "selection": "Metadata only, no lyrics, audio or rights approval"
+      }
+    },
+    {
+      "id": "mfa-penias-v4",
+      "type": "penia-profiles",
+      "api_resource": "penia-profiles",
+      "section": "PEÑAS",
+      "category": "ESPACIOS PARA ENCONTRARNOS",
+      "accent": "#71D7A0",
+      "required": [
+        "headline"
+      ],
+      "operational_gate": "pending_validation",
+      "cta": "CONOCÉ LA PEÑA EN EL PORTAL",
+      "sample": {
+        "headline": "Un lugar para compartir música y encuentro",
+        "details": [
+          "PEÑA DE EJEMPLO",
+          "LOCALIDAD DE EJEMPLO"
+        ],
+        "note": "Una propuesta para encontrarse alrededor de la música y la danza."
+      },
+      "sample_origin": "simulation",
+      "source": null
+    },
+    {
+      "id": "mfa-radios-v4",
+      "type": "radio-signals",
+      "api_resource": "radio-signals",
+      "section": "RADIOS",
+      "category": "EL FOLKLORE SE ESCUCHA",
+      "accent": "#62D6E6",
+      "required": [
+        "headline"
+      ],
+      "operational_gate": "pending_validation",
+      "cta": "ENCONTRÁ CÓMO ESCUCHAR EN MFA",
+      "sample": {
+        "headline": "La música de raíz también tiene su señal",
+        "details": [
+          "RADIO DE EJEMPLO",
+          "DIRECTORIO DE RADIOS"
+        ],
+        "note": "Señales y canales de escucha a través de las fichas del portal."
+      },
+      "sample_origin": "simulation",
+      "source": null
+    },
+    {
+      "id": "mfa-programas-v4",
+      "type": "radio-programs",
+      "api_resource": "radio-programs",
+      "section": "PROGRAMAS",
+      "category": "VOCES AL AIRE",
+      "accent": "#8598F4",
+      "required": [
+        "headline",
+        "details"
+      ],
+      "operational_gate": "pending_validation",
+      "cta": "CONSULTÁ LA PROGRAMACIÓN EN MFA",
+      "sample": {
+        "headline": "Un espacio para escuchar nuestras voces",
+        "details": [
+          "PROGRAMA DE EJEMPLO",
+          "DÍA Y HORARIO DE EJEMPLO"
+        ],
+        "note": "Descubrí su propuesta y encontrá la programación en la ficha."
+      },
+      "sample_origin": "simulation",
+      "source": null
+    }
+  ]
+}
