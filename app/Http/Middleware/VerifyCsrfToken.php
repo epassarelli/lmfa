@@ -14,5 +14,6 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'deleteuserdata',
         'newsletter/unsubscribe/*', // baja de un clic (RFC 8058); la autoriza el token de la URL
+        'reactivacion/baja/*', // baja de un clic (RFC 8058); la autoriza la firma de la URL
     ];
 }

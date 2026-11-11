@@ -197,6 +197,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('newsletter-subscribers/{subscriber}/confirmation', [NewsletterSubscriberController::class, 'requestConfirmation'])->name('backend.newsletter.confirmation');
         Route::post('newsletter-subscribers/{subscriber}/bounced', [NewsletterSubscriberController::class, 'markBounced'])->name('backend.newsletter.bounced');
 
+        Route::prefix('reactivacion-usuarios')->name('backend.reengagement.')->group(function () {
+            $c = \App\Http\Controllers\Backend\ReengagementController::class;
+            Route::get('/', [$c, 'index'])->name('index');
+            Route::get('preview', [$c, 'preview'])->name('preview');
+            Route::post('test', [$c, 'test'])->middleware('throttle:10,10')->name('test');
+            Route::post('send', [$c, 'send'])->middleware('throttle:5,10')->name('send');
+        });
+
         Route::prefix('newsletter-editions')->name('backend.newsletter.editions.')->group(function () {
             $c = \App\Http\Controllers\Backend\NewsletterEditionController::class;
             Route::get('/', [$c, 'index'])->name('index');
