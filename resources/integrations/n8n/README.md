@@ -2,7 +2,7 @@
 
 ## Estado
 
-Implementación local del portal. Facebook institucional y tipos `news` / `events` exclusivamente. Los exports de `daily/` permanecen inactivos/bloqueados por seguridad al importar. La instancia de Noticias fue activada por el usuario a las11:00 Argentina el2026-11-11, tras una publicación real833 verificada; Eventos sigue manual. Primero se probaron seis escenarios con simulador privado. Estado y pasos vigentes en `ACTIVATION.md`. El export original `mfa-social-publications.inactive.json` se conserva como referencia inicial; usar los nuevos borradores. Instagram y otras redes quedan para otra etapa.
+Implementación local del portal. Facebook institucional y tipos `news` / `events` exclusivamente. Los exports de `daily/` permanecen inactivos/bloqueados por seguridad al importar. La instancia de Noticias fue activada por el usuario a las11:00 Argentina el2026-11-11, tras una publicación real833 verificada; Eventos sigue manual. Primero se probaron seis escenarios con simulador privado. Estado y pasos vigentes en `ACTIVATION.md`. El export original `mfa-social-publications.inactive.json` se conserva como referencia inicial; usar los nuevos borradores. Instagram Noticias quedó implementado localmente, inactivo y pendiente de deploy/prueba real (guía `INSTAGRAM.md`); otras redes quedan para otra etapa.
 
 Las 12 piezas v4 tienen aprobación visual del usuario; esa aprobación no habilita contenidos ni autoriza publicaciones. El catálogo conserva su estado histórico de borrador; el registro operativo de templates permitidos para el piloto está en `config/social_publication.php` (Noticias y Agenda).
 
