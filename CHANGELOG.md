@@ -7,6 +7,11 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Agregado
+
+- **Discos: estado desde la edición y portada contenida** (`discos-estado-en-edicion`): quien puede publicar elige Activo/Inactivo en crear/editar Discos (antes cada guardado lo activaba y solo se podía cambiar desde Moderación); quien no puede publicar sigue dejando el disco inactivo. Sin `estado` en el pedido, el publicador conserva el comportamiento previo (activo). La miniatura de portada pasa a un contenedor fijo de 56 px que ya no desborda el campo de subida. Sin migraciones ni cambios de URLs; 6 tests nuevos.
+- **Propuestas de discos desde Spotify** (`discos-spotify-propuestas`): spec y tarea programada local diaria (un artista por corrida) que crea discos inactivos por `POST /api/v1/albums` para aprobarlos en Moderación. Piloto solo en local; sin cambios de código de la aplicación.
+
 ## [2.6.0] — 2026-11-11
 
 ### Agregado

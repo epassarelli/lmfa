@@ -1,6 +1,7 @@
 <x-backend.form-help section="album" />
 @php
   $isAdmin = Auth::user()->hasRole('administrador');
+  $canPublish = Auth::user()->canPublish();
   $currentImage = isset($album) ? $album->images->first() : null;
   $legacyImage = isset($album) && ! $currentImage && $album->foto ? $album->foto : null;
 @endphp
@@ -97,13 +98,30 @@
     </div>
   @endif
 
-  {{-- Fila 3: Resumen 8 · Foto 4 --}}
-  <div class="col-md-12 col-xl-8">
+  {{-- Fila 3: Resumen 6 · Estado 2 (solo quien puede publicar; si no, Resumen 8) · Foto 4 --}}
+  <div class="col-md-12 {{ $canPublish ? 'col-xl-6' : 'col-xl-8' }}">
     <div class="form-group">
       <label for="excerpt">Resumen editorial</label>
       <textarea name="excerpt" id="excerpt" rows="3" class="form-control">{{ old('excerpt', $album->excerpt ?? '') }}</textarea>
     </div>
   </div>
+
+  @if ($canPublish)
+    <div class="col-md-6 col-xl-2">
+      <div class="form-group">
+        <label for="estado">Estado</label>
+        <x-backend.help-tip text="Activo: el disco se ve en el portal. Inactivo: queda como borrador y aparece en Moderación." />
+        <select name="estado" id="estado" class="form-control">
+          @php $estadoActual = (int) old('estado', $album->estado ?? 1); @endphp
+          <option value="1" {{ $estadoActual === 1 ? 'selected' : '' }}>Activo</option>
+          <option value="0" {{ $estadoActual === 0 ? 'selected' : '' }}>Inactivo</option>
+        </select>
+        @error('estado')
+          <div class="text-danger">{{ $message }}</div>
+        @enderror
+      </div>
+    </div>
+  @endif
 
   <div class="col-md-12 col-xl-4">
     <div class="form-group">
@@ -111,9 +129,13 @@
       <x-backend.image-hint profile="album" mode="tip" />
       <div class="d-flex align-items-start">
         @if ($currentImage)
-          <x-optimized-image :image="$currentImage" variant="main" style="height: 36px; width: auto;" class="img-thumbnail mr-2" />
+          <div class="album-cover-thumb mr-2 flex-shrink-0" style="width: 56px;">
+            <x-optimized-image :image="$currentImage" variant="main" class="img-thumbnail img-fluid" />
+          </div>
         @elseif ($legacyImage)
-          <img src="{{ asset('storage/albunes/' . $legacyImage) }}" alt="Foto de {{ $album->album }}" style="height: 36px; width: auto;" class="img-thumbnail mr-2">
+          <div class="album-cover-thumb mr-2 flex-shrink-0" style="width: 56px;">
+            <img src="{{ asset('storage/albunes/' . $legacyImage) }}" alt="Foto de {{ $album->album }}" class="img-thumbnail img-fluid">
+          </div>
         @endif
         <div class="custom-file flex-grow-1">
           <input type="file" name="foto" class="custom-file-input" id="foto" accept="image/jpeg,image/png,image/webp">

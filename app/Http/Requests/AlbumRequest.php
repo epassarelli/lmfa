@@ -29,6 +29,7 @@ class AlbumRequest extends FormRequest
       'meta_description' => 'nullable|string|max:320',
       'image_alt' => 'nullable|string|max:255',
       'spotify' => 'nullable|string',
+      'estado' => 'nullable|boolean',
       'interprete_id' => $this->interpreteRules('album'),
       'foto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
     ];
