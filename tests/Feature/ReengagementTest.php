@@ -39,7 +39,11 @@ class ReengagementTest extends TestCase
         $user = User::factory()->create(array_merge(['status' => 'active'], $attrs));
 
         // Los atributos que la fábrica no conoce se fijan directo para controlar fechas y baja.
-        DB::table('users')->where('id', $user->id)->update(array_intersect_key($attrs, array_flip(['created_at', 'last_login_at', 'reengagement_opt_out_at'])));
+        $dates = array_intersect_key($attrs, array_flip(['created_at', 'last_login_at', 'reengagement_opt_out_at']));
+
+        if ($dates !== []) {
+            DB::table('users')->where('id', $user->id)->update($dates);
+        }
 
         return $user->fresh();
     }

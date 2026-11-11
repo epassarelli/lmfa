@@ -1,6 +1,6 @@
 # Spec: mail de reactivación de usuarios (envío manual desde el backoffice)
 
-Estado: alcance definido por el usuario en el chat (2026-11-11); **la migración requiere confirmación explícita antes de aplicarse** (ver «Base de datos»). Sin envío a usuarios reales por iniciativa del agente.
+Estado: implementada y validada en local (2026-11-12); migración aplicada en las bases locales con autorización del usuario; producción pendiente. Sin envío a usuarios reales por iniciativa del agente.
 
 ## Contexto y problema
 Hay ~449 usuarios activos y muy pocos ingresan. El login con Google/Facebook hoy no funciona, de modo que quienes se registraron por esa vía no pueden entrar. Se quiere un mail de «te extrañamos» que cuente las ventajas de la comunidad (gestión de contenidos, newsletter) y ofrezca recuperar la contraseña.

@@ -9,6 +9,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Reactivación de usuarios** (`reactivacion-usuarios`): pantalla de administrador para disparar a mano el mail «te extrañamos» (variante «tu cuenta te espera» para quienes nunca ingresaron), con vista previa, prueba al propio correo, confirmación e historial. Un mail por usuario cada 30 días como máximo, envío en cola con tope por minuto, baja firmada de un clic y botón para recuperar la contraseña. Aviso en el menú, el tablero y la pantalla cuando pasan 30 días desde la última tanda. Migración aditiva `2026_11_12_100000_add_reengagement_mail_support`; 7 tests nuevos. Pendiente deploy, migración en producción y revisión del texto.
+
 - **Home: enlace a todas las noticias y cuatro bloques de catálogo** (`home-bloques-catalogo`): botón «Ver todas las noticias» y, en lugar de los destacados únicos, bloques de 4 con próximos eventos, últimos intérpretes, festivales más visitados y últimos discos, cada uno con enlace a su sección. Consultas acotadas y cacheadas 10 min (`home:bloques`, invalidada al guardar contenido). Sin migraciones ni cambios de URLs; 3 tests nuevos.
 
 - **Home: 24 noticias, sin contador y sin imágenes de relleno** (`home-noticias-sin-fallback`): la Home muestra 24 noticias (antes 6), reemplaza el contador de contenidos por una bajada fija y elimina la consulta `home:totales`. `x-noticia-card` muestra imagen solo si la noticia tiene una propia (sin fallback genérico ni foto del intérprete) en todos los listados. Sin migraciones ni cambios de URLs; 4 tests nuevos.
