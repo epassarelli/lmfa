@@ -8,9 +8,7 @@
     <section class="mb-6 rounded bg-white p-2 shadow-sm">
       <h1 class="mb-4 border-b-2 border-[#ff661f] text-xl font-semibold text-gray-900">{{ $h1 }}</h1>
       <p class="text-base text-gray-700">
-        Ya reunimos <strong>{{ $totales['noticias'] }}</strong> noticias, <strong>{{ $totales['artistas'] }}</strong> artistas,
-        <strong>{{ $totales['discos'] }}</strong> discos, <strong>{{ $totales['festivales'] }}</strong> festivales y
-        <strong>{{ $totales['recetas'] }}</strong> recetas del folklore argentino.
+        Noticias, artistas, discos, festivales y recetas del folklore argentino, en un archivo que crece todos los días.
       </p>
     </section>
 

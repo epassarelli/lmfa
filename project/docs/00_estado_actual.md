@@ -1,5 +1,9 @@
 # 00 - Estado Actual del Proyecto
 
+## Novedad 2026-11-11: Home con 24 noticias, sin contador y sin imágenes de relleno
+
+Pedido del usuario: la Home pasa de 6 a 24 noticias, se reemplaza el contador de contenidos por una bajada fija (se elimina la consulta `home:totales`) y `x-noticia-card` solo muestra imagen cuando la noticia tiene una propia (media o legado); sin fallback genérico ni foto del intérprete relacionado, en todos los listados que usan la tarjeta. Implementado local; validación: 4 tests nuevos (`HomeNewsCardsTest`) y suite completa en mfa_test sin fallos nuevos (falla previa ajena en `BackofficeSidebarTest`, orden alfabético del menú). Sin migraciones, rutas ni URLs cambiadas; SEO: H1 y metadescripción intactos. Performance: menos requests de imagen y una consulta menos; no medido en producción. Pendiente deploy humano. Spec `project/docs/specs/home-noticias-sin-fallback.md`.
+
 ## Novedad 2026-11-11: conexión Instagram preparada, automatización pendiente
 
 Credencial IG renovada tras reingreso de contraseña del usuario: Meta válido/Nunca para token ampliado, token de Página derivado y guardado en credencial IG exclusivamente. GET real desde n8n HTTP200 confirmó cuenta17841400312117345 / mifolkloreargentino y enlace web MFA. Bloqueo de credencial resuelto; continúan pendientes deploy humano y prueba833 ya autorizada condicionalmente. No hay publicación Instagram real todavía.

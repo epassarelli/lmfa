@@ -5,8 +5,13 @@
   'imageSizes' => '(max-width: 768px) 100vw, 50vw',
 ])
 
+@inject('editorialImageResolver', 'App\\Services\\EditorialImageResolver')
+
 @php
   use Illuminate\Support\Str;
+
+  // Solo se muestra imagen si la noticia tiene una propia: sin relleno genérico ni foto del intérprete.
+  $tieneImagenPropia = $editorialImageResolver->resolve($noticia, false)->isOwn();
 
   $interpretePrincipal = $noticia->interprete ?? null;
   $url = $interpretePrincipal
@@ -15,16 +20,18 @@
 @endphp
 
 <article class="bg-white shadow-md rounded overflow-hidden hover:shadow-lg transition-all duration-200 mb-4">
-  <a href="{{ $url }}">
-    <x-editorial-image
-      :entity="$noticia"
-      variant="card"
-      class="w-full h-48 object-cover"
-      :loading="$imageLoading"
-      :fetchpriority="$imageFetchpriority"
-      :sizes="$imageSizes"
-    />
-  </a>
+  @if ($tieneImagenPropia)
+    <a href="{{ $url }}">
+      <x-editorial-image
+        :entity="$noticia"
+        variant="card"
+        class="w-full h-48 object-cover"
+        :loading="$imageLoading"
+        :fetchpriority="$imageFetchpriority"
+        :sizes="$imageSizes"
+      />
+    </a>
+  @endif
   <div class="p-4">
     <h3 class="text-lg font-semibold text-gray-800 hover:text-[#ff661f] transition-colors mb-2">
       <a href="{{ $url }}">{{ $noticia->titulo }}</a>

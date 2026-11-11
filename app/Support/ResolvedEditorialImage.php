@@ -20,6 +20,12 @@ final class ResolvedEditorialImage
         return $this->media !== null;
     }
 
+    /** Imagen propia de la entidad (no heredada de una relación ni de relleno). */
+    public function isOwn(): bool
+    {
+        return in_array($this->sourceType, ['own_media', 'own_legacy'], true);
+    }
+
     public function isFallback(): bool
     {
         return $this->sourceType === 'fallback';

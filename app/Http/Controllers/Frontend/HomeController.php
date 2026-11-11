@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
+    private const NEWS_LIMIT = 24;
+
     public function index()
     {
         $ultimasNoticias = Cache::remember('home:ultimas-noticias', now()->addMinutes(10), function () {
@@ -20,7 +22,7 @@ class HomeController extends Controller
                 ->with(['categoria:id,nombre', 'images', 'interprete:id,interprete,slug,foto', 'interprete.images'])
                 ->latest('published_at')
                 ->latest('created_at')
-                ->take(6)
+                ->take(self::NEWS_LIMIT)
                 ->get();
         });
 
@@ -33,16 +35,6 @@ class HomeController extends Controller
             ];
         });
 
-        $totales = Cache::remember('home:totales', now()->addHours(1), function () {
-            return [
-                'noticias' => News::publishedVisible()->count(),
-                'artistas' => Interprete::where('estado', 1)->count(),
-                'discos' => Album::where('estado', 1)->count(),
-                'festivales' => Festival::publishedVisible()->count(),
-                'recetas' => Comida::where('estado', 1)->count(),
-            ];
-        });
-
         $seo = SeoMetadata::home();
 
         return view('frontend.home', [
@@ -51,7 +43,6 @@ class HomeController extends Controller
             'h1' => $seo['h1'],
             'ultimasNoticias' => $ultimasNoticias,
             'destacados' => $destacados,
-            'totales' => $totales,
         ]);
     }
 }
