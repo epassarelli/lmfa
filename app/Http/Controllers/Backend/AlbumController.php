@@ -92,7 +92,7 @@ class AlbumController extends Controller
             ? Str::slug($payload['slug'])
             : Str::slug($album->album);
         $album->user_id = Auth::id();
-        $album->estado = Auth::user()->canPublish() ? 1 : 0;
+        $album->estado = $this->resolveEstado($request);
         $album->visitas = 0;
         $album->save();
 
@@ -140,7 +140,7 @@ class AlbumController extends Controller
         $album->slug = filled($payload['slug'] ?? null)
             ? Str::slug($payload['slug'])
             : Str::slug($album->album);
-        $album->estado = Auth::user()->canPublish() ? 1 : 0;
+        $album->estado = $this->resolveEstado($request);
 
         if ($request->hasFile('foto')) {
             $this->imageService->process(
@@ -187,6 +187,19 @@ class AlbumController extends Controller
         Alert::success('Album eliminado', 'El album se ha eliminado con exito.');
 
         return redirect()->route('backend.discos.index');
+    }
+
+    /**
+     * Quien no puede publicar siempre deja el disco inactivo (queda en Moderación).
+     * Quien puede publicar elige el estado en el formulario; si no lo envía, queda activo (comportamiento previo).
+     */
+    private function resolveEstado(AlbumRequest $request): int
+    {
+        if (! Auth::user()->canPublish()) {
+            return 0;
+        }
+
+        return $request->filled('estado') ? (int) $request->boolean('estado') : 1;
     }
 
     private function sendNotification(Album $album)

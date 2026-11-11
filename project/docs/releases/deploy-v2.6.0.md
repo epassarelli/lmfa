@@ -7,7 +7,8 @@ Estado: **preparado en `dev`, no mergeado a `main` ni desplegado**. Nada de esto
 2. **Menús** (`menus-backoffice-y-front`): «Centro de Moderación» primero en el backoffice, «Publicaciones en redes» en «Astronomía y audiencia»; Discos y Canciones en el NAV público detrás de Festivales.
 3. **Radios** (`radios-edit-and-moderation`): edición corregida (error 500) y borradores de radios en el Centro de Moderación.
 4. **Reactivación de usuarios** (`reactivacion-usuarios`): pantalla de administrador, mail con baja firmada, aviso a los 30 días. Checklist propio: `reactivacion-usuarios-deploy.md`.
-5. **n8n**: export del workflow Facebook+Instagram encadenado y su guía (documentación; no afecta al portal).
+5. **Discos** (`discos-estado-en-edicion`): selector de estado en la edición para quien puede publicar y portada contenida en el formulario. Sin migraciones. La spec `discos-spotify-propuestas` es solo documentación (la tarea diaria de Spotify no forma parte del release).
+6. **n8n**: export del workflow Facebook+Instagram encadenado y su guía (documentación; no afecta al portal).
 
 Sin cambios de `composer.lock`/dependencias ni variables de entorno obligatorias (opcionales de la reactivación: `REENGAGEMENT_INACTIVITY_DAYS`, `REENGAGEMENT_COOLDOWN_DAYS`, `REENGAGEMENT_MAX_PER_MINUTE`). **No incluye Matecito** (rama `matecito`, pendiente de perfil).
 
