@@ -5,9 +5,12 @@
 <div class="card card-outline card-primary shadow-sm">
   <div class="card-header"><h3 class="card-title">Directorio evergreen</h3><div class="card-tools"><a class="btn btn-success btn-sm" href="{{ route('backend.radios.signals.create') }}">Crear señal</a></div></div>
   <div class="card-body">
+    @role('administrador')
+      <div class="alert alert-info">Las radios en borrador se revisan y publican desde el <a href="{{ route('backend.moderation.index') }}#mod-radios">Centro de Moderación</a>.</div>
+    @endrole
     <form class="row mb-3" method="GET">
       <div class="col-md-3 mb-2"><input class="form-control" name="search" value="{{ request('search') }}" placeholder="Buscar señal"></div>
-      <div class="col-md-2 mb-2"><select class="form-control" name="status"><option value="">Estado</option>@foreach(['draft','approved','published','archived'] as $status)<option value="{{ $status }}" @selected(request('status') === $status)>{{ $status }}</option>@endforeach</select></div>
+      <div class="col-md-2 mb-2"><select class="form-control" name="status"><option value="">Estado</option>@foreach(['approved','published','archived'] as $status)<option value="{{ $status }}" @selected(request('status') === $status)>{{ $status }}</option>@endforeach</select></div>
       <div class="col-md-2 mb-2"><select class="form-control" name="verification"><option value="">Verificación</option>@foreach(['pending','verified','outdated'] as $status)<option value="{{ $status }}" @selected(request('verification') === $status)>{{ $status }}</option>@endforeach</select></div>
       <div class="col-md-2 mb-2"><select class="form-control select2" name="province_id"><option value="">Provincia</option>@foreach($provincias as $province)<option value="{{ $province->id }}" @selected((int) request('province_id') === $province->id)>{{ $province->nombre }}</option>@endforeach</select></div>
       <div class="col-md-1 mb-2"><select class="form-control" name="mode"><option value="">Emisión</option>@foreach(['air'=>'Aire','web'=>'Web','streaming'=>'Stream'] as $value => $label)<option value="{{ $value }}" @selected(request('mode') === $value)>{{ $label }}</option>@endforeach</select></div>

@@ -1,5 +1,11 @@
 # 00 - Estado Actual del Proyecto
 
+## Novedad 2026-11-11: edición y moderación de radios, cerrado en rama local
+
+Rama `codex/radios-edicion-moderacion` creada desde `dev` por pedido explícito. Corregido HTTP 500 reproducido al volver al formulario tras rechazar una publicación incompleta: fuentes multilineales del old input eran string y la vista ejecutaba implode esperando array. Ahora muestra validación y conserva los valores enviados. Radios canónicas draft fuera del ABM y dentro de tarjeta propia del Centro de Moderación; revisión y publicación mediante el servicio existente, sin omitir verificación vigente ni canales activos. Contadores de tablero/sidebar alineados e invalidados tras escrituras; guardar draft como admin vuelve al Centro. Encabezado de edición incluye nombre y wrappers de formularios col-12.
+
+Validación: **42 tests / 297 assertions pasan**, transacciones en `mfa_test`, sin migraciones ni modificaciones de la base local de contenidos. Caché temporal de vistas para sortear permisos previos del caché habitual, sin cambiar permisos. Spec trazable `project/docs/specs/radios-edit-and-moderation.md`, copia OpenSpec local. Implementación local `done`; commit de cierre autorizado por el usuario. Sin merge a dev, push/despliegue ni modificación de las 50 fichas productivas. Una consulta adicional de conteo cacheada, relaciones de moderación precargadas; sin cambios de frontend público, URLs o SEO. Pendiente deploy autorizado y comprobación productiva del circuito actualizado.
+
 ## Release v2.6.0 preparado — 2026-11-11 (listo para desplegar; no desplegado)
 
 Lo que cambia frente a `main`: Home (24 noticias, enlace «Ver todas las noticias», cuatro bloques de catálogo, sin contador) y tarjetas de noticia sin imagen de relleno. Sin migraciones, dependencias ni variables nuevas; `public/build` recompilado y verificado (`npm run build:verify`, 13 assets). Matecito queda aparte en la rama `matecito` y no forma parte del release. Checklist de despliegue y reversa: `project/docs/releases/deploy-v2.6.0-home.md`. Pendientes humanos: merge a `main`, push, subir `public/build` completo, `bash scripts/post-deploy.sh` y validación visual en producción. Sin medición de performance real.
