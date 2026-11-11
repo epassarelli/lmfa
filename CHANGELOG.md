@@ -24,6 +24,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Corregido
 
+- **Estilos rotos en local por `public/hot` obsoleto**: el archivo de Vite dev apuntaba a `[::1]:5173`, puerto hoy ocupado por otro contenedor, y el response cache conservó el HTML con esas etiquetas. Se eliminó `public/hot` (ignorado por git), se limpió response/view cache y se documentó el diagnóstico en `project/docs/04_arquitectura.md`. Sin cambios de código ni de producción.
+
 - Los jobs de Pasarela reconocen `success` y `published`, respetan el ejecutor n8n y bloquean un segundo publicador para la misma Página aunque existan cuentas sociales duplicadas. Nuevos payloads y errores de conectores comunes se guardan saneados, sin tokens.
 - Eliminar al solicitante conserva el historial de publicaciones mediante autor nullable y `ON DELETE SET NULL`.
 

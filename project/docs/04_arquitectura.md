@@ -120,6 +120,8 @@ Las rutas públicas, navegación y sitemaps se condicionan por `FEATURE_PENIA_DI
 
 Vite es una dependencia de build, no de runtime. El servidor productivo actual no dispone de NPM: `npm ci && npm run build` debe ejecutarse localmente o en CI y el deploy debe incluir completos `public/build/manifest.json` y `public/build/assets/*`. No subir `public/build` deja las vistas sin CSS/JS.
 
+**Desarrollo local con Vite (diagnóstico de estilos rotos):** `npm run dev` crea `public/hot` (ignorado por git) y Laravel pasa a cargar los assets desde ese servidor (`http://[::1]:5173`). Si el servidor se apaga, o el puerto 5173 pasa a estar ocupado por otro proceso/contenedor (p. ej. otro proyecto en Docker), la página queda sin estilos. Solución: borrar `public/hot` y, como el response cache de Spatie guarda el HTML con las etiquetas de Vite dev, ejecutar `docker compose exec --user www-data app php artisan responsecache:clear` y `view:clear`. Nunca desplegar `public/hot`.
+
 ## 6. Integraciones reales
 
 Conectores implementados en el codigo:
