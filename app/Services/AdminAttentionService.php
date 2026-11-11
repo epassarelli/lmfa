@@ -94,7 +94,7 @@ class AdminAttentionService
 
         $reviewDetail = collect($d['review']['items'])->map(fn ($n, $label) => "$label $n")->implode(' · ');
 
-        return [
+        $cards = [
             [
                 'key' => 'claims', 'title' => 'Solicitudes de ficha', 'count' => $d['claims']['count'],
                 'color' => $this->urgency($d['claims']['count'], $d['claims']['oldest']),
@@ -120,6 +120,18 @@ class AdminAttentionService
                 'url' => route('backend.classifieds.index'), 'icon' => 'fas fa-bullhorn',
             ],
         ];
+
+        // Solo aparece cuando pasaron 30 días desde la última tanda y hay a quién escribirle.
+        if (($d['reengagement']['count'] ?? 0) > 0) {
+            $cards[] = [
+                'key' => 'reengagement', 'title' => 'Reactivar usuarios', 'count' => $d['reengagement']['count'],
+                'color' => 'warning',
+                'detail' => 'Corresponde enviar una nueva tanda del mail «te extrañamos»',
+                'url' => route('backend.reengagement.index'), 'icon' => 'fas fa-user-clock',
+            ];
+        }
+
+        return $cards;
     }
 
     private function compute(): array
@@ -156,6 +168,7 @@ class AdminAttentionService
             'contacts' => ['count' => (int) $contacts->total, 'oldest' => $this->timestamp($contacts->oldest)],
             'review' => ['total' => $review['total'], 'items' => array_filter($review['items']), 'oldest' => null],
             'classifieds' => ['count' => (int) $classifieds->total, 'oldest' => $this->timestamp($classifieds->oldest)],
+            'reengagement' => ['count' => Schema::hasTable('reengagement_mail_sends') ? app(ReengagementService::class)->pendingCount() : 0, 'oldest' => null],
             'alerts' => $this->alerts(),
             'organizations' => [
                 'prospects' => (int) $organizations->prospects,

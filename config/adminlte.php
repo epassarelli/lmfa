@@ -501,6 +501,14 @@ return [
             ],
         ],
         [
+            'text' => 'Reactivación de usuarios',
+            'pending' => 'reengagement',
+            'url' => 'admin/reactivacion-usuarios',
+            'icon' => 'fas fa-fw fa-user-clock',
+            'can' => 'manage user',
+            'active' => ['admin/reactivacion-usuarios*'],
+        ],
+        [
             'text' => 'Usuarios y Roles',
             'pending' => 'claims',
             'icon' => 'fas fa-fw fa-user-shield',

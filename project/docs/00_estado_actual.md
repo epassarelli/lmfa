@@ -14,6 +14,10 @@ Lo que cambia frente a `main`: Home (24 noticias, enlace «Ver todas las noticia
 
 Pedido del usuario: en el backoffice se intercambian «Centro de Moderación» (primero del menú) y «Publicaciones en redes» (sección Astronomía y audiencia); en el NAV público «Discos» y «Canciones» pasan a enlaces principales detrás de «Festivales». Implementado local en la rama `feature/menus-backoffice-front` (desde `dev`); validación: 2 tests nuevos, `BackofficeSidebarTest` en verde y pruebas de navegación/Home en verde; además se actualizó el test de presupuesto de performance al nuevo límite de 24 noticias. Sin migraciones ni URLs nuevas. Pendiente merge a `dev` y deploy humano. Spec `project/docs/specs/menus-backoffice-y-front.md`.
 
+## Novedad 2026-11-12: reactivación de usuarios por mail, implementada en local
+
+Pedido del usuario: mail «te extrañamos» a usuarios inactivos (más de 30 días) y a los que nunca ingresaron, con ventajas de la comunidad, recuperar contraseña y baja, disparado a mano desde el backoffice con aviso a los 30 días. Rama `feature/reactivacion-usuarios`. Migración aditiva aplicada en las bases locales `mfa` y `mfa_test` (autorizada por el usuario). Validación: 7 tests nuevos (58 assertions) y 267 pruebas vecinas en verde (tablero, menú, newsletter, login); único fallo, el previo de orden del menú que corrige la rama de menús. No se envió ningún mail real. Dato clave: 442 de 449 usuarios activos no tienen `last_login_at`. Pendiente: merge, migración y deploy en producción, revisión del texto y envío por el administrador. Checklist `project/docs/releases/reactivacion-usuarios-deploy.md`; spec `project/docs/specs/reactivacion-usuarios.md`. Próxima tarea: arreglar el login con Google/Facebook.
+
 
 ## Novedad 2026-11-11: Home con enlace a todas las noticias y cuatro bloques de catálogo
 

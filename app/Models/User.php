@@ -58,6 +58,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_verified_publisher' => 'boolean',
         'last_login_at' => 'datetime',
+        'reengagement_opt_out_at' => 'datetime',
     ];
 
     /**

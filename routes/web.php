@@ -179,4 +179,8 @@ Route::post('/newsletter/confirmar/{token}', [\App\Http\Controllers\Frontend\New
 Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'showUnsubscribe'])->name('newsletter.unsubscribe');
 Route::post('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\Frontend\NewsletterController::class, 'unsubscribe'])->middleware('throttle:20,10')->name('newsletter.unsubscribe.perform');
 
+// Baja de los mails de reactivación: URL firmada; la baja de un clic de los clientes de correo hace POST a la misma URL.
+Route::get('/reactivacion/baja/{user}', [\App\Http\Controllers\Frontend\ReengagementUnsubscribeController::class, 'show'])->middleware(['signed', 'throttle:20,10'])->name('reengagement.unsubscribe');
+Route::post('/reactivacion/baja/{user}', [\App\Http\Controllers\Frontend\ReengagementUnsubscribeController::class, 'perform'])->middleware(['signed', 'throttle:20,10'])->name('reengagement.unsubscribe.perform');
+
 Auth::routes();
