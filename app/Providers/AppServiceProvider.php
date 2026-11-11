@@ -71,6 +71,7 @@ class AppServiceProvider extends ServiceProvider
 
         $clear = function ($model) {
             \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            Cache::forget(\App\Http\Controllers\Frontend\HomeController::BLOCKS_CACHE_KEY);
             if ($model instanceof \App\Models\Event || $model instanceof \App\Models\EventProgram || $model instanceof \App\Models\Venue) {
                 Cache::forget(\App\Services\Events\EventDetailService::UPCOMING_PROVINCES_CACHE_KEY);
                 Cache::forget('festivales:index:related-events');

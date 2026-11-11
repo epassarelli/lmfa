@@ -9,6 +9,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Home: enlace a todas las noticias y cuatro bloques de catálogo** (`home-bloques-catalogo`): botón «Ver todas las noticias» y, en lugar de los destacados únicos, bloques de 4 con próximos eventos, últimos intérpretes, festivales más visitados y últimos discos, cada uno con enlace a su sección. Consultas acotadas y cacheadas 10 min (`home:bloques`, invalidada al guardar contenido). Sin migraciones ni cambios de URLs; 3 tests nuevos.
+
 - **Home: 24 noticias, sin contador y sin imágenes de relleno** (`home-noticias-sin-fallback`): la Home muestra 24 noticias (antes 6), reemplaza el contador de contenidos por una bajada fija y elimina la consulta `home:totales`. `x-noticia-card` muestra imagen solo si la noticia tiene una propia (sin fallback genérico ni foto del intérprete) en todos los listados. Sin migraciones ni cambios de URLs; 4 tests nuevos.
 
 - **Instagram Noticias** (`social-publication-instagram-news`): ledger independiente por red, JPEG v4 público por hash, registro del contenedor y permalink verificado. Cola IG basada en éxitos Facebook, sin reenvíos ciegos ante incertidumbre. Workflow n8n manual/inactivo y bloqueado para prueba833. Implementado local, pendiente deploy/token de larga duración y prueba real; sin migraciones ni IA paga. Validación:61 tests/298 assertions y siete escenarios n8n privados. Guía `resources/integrations/n8n/INSTAGRAM.md`.

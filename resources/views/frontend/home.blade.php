@@ -33,25 +33,49 @@
       </div>
     @endforeach
 
-    @if (array_filter($destacados))
-      <section class="mb-8">
-        <h2 class="mb-3 text-lg font-semibold text-gray-800">Destacados del catálogo</h2>
+    <div class="mb-10 text-center">
+      <a href="{{ route('noticias.index') }}"
+        class="inline-flex items-center rounded-lg bg-[#ff661f] px-5 py-3 font-semibold text-white transition hover:bg-orange-700">
+        Ver todas las noticias
+      </a>
+    </div>
+
+    @php
+      $secciones = [
+        ['clave' => 'eventos', 'titulo' => 'Próximos eventos', 'ruta' => route('cartelera.index'), 'enlace' => 'Ver la cartelera completa'],
+        ['clave' => 'interpretes', 'titulo' => 'Últimos intérpretes', 'ruta' => route('interpretes.index'), 'enlace' => 'Ver todos los intérpretes'],
+        ['clave' => 'festivales', 'titulo' => 'Festivales más visitados', 'ruta' => route('festivales.index'), 'enlace' => 'Ver todos los festivales'],
+        ['clave' => 'discos', 'titulo' => 'Últimos discos', 'ruta' => route('discografias.index'), 'enlace' => 'Ver todas las discografías'],
+      ];
+    @endphp
+
+    @foreach ($secciones as $seccion)
+      @continue($catalogo[$seccion['clave']]->isEmpty())
+      <section class="mb-8" data-home-block="{{ $seccion['clave'] }}">
+        <div class="mb-3 flex items-baseline justify-between gap-4 border-b-2 border-[#ff661f]">
+          <h2 class="text-lg font-semibold text-gray-800">{{ $seccion['titulo'] }}</h2>
+          <a href="{{ $seccion['ruta'] }}" class="text-sm text-[#ff661f] hover:underline">{{ $seccion['enlace'] }}</a>
+        </div>
         <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-          @if ($destacados['artista'])
-            <x-biografia-card :interprete="$destacados['artista']" />
-          @endif
-          @if ($destacados['disco'])
-            <x-disco-card :disco="$destacados['disco']" />
-          @endif
-          @if ($destacados['festival'])
-            <x-festival-card :festival="$destacados['festival']" />
-          @endif
-          @if ($destacados['receta'])
-            <x-receta-card :receta="$destacados['receta']" />
-          @endif
+          @foreach ($catalogo[$seccion['clave']] as $item)
+            @switch($seccion['clave'])
+              @case('eventos')
+                <x-show-card :show="$item" :event-title="true" />
+                @break
+              @case('interpretes')
+                <x-biografia-card :interprete="$item" />
+                @break
+              @case('festivales')
+                <x-festival-card :festival="$item" />
+                @break
+              @case('discos')
+                <x-disco-card :disco="$item" />
+                @break
+            @endswitch
+          @endforeach
         </div>
       </section>
-    @endif
+    @endforeach
 
     <section class="mb-4 rounded bg-white p-2 shadow-sm cv-auto">
       <p class="text-lg text-gray-700">{{ $metaDescription }}</p>
