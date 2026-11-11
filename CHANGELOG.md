@@ -9,10 +9,14 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
-- **Publicaciones sociales por contenido y destino** (`social-publication-ledger-n8n`): registro sobre la Pasarela existente con habilitación explícita, reservas exclusivas, snapshots, confirmación idempotente y bloqueo de resultados inciertos para evitar reenvíos. Piloto para Noticias/Eventos y la Página institucional de Facebook; sin republicación automática de éxitos.
+- **Publicaciones sociales por contenido y destino** (`social-publication-ledger-n8n`): registro sobre la Pasarela existente con selección automática para Noticias (habilitación explícita para Eventos), reservas exclusivas, snapshots, confirmación idempotente y bloqueo de resultados inciertos para evitar reenvíos. Piloto para Noticias/Eventos y la Página institucional de Facebook; sin republicación automática de éxitos.
 - **API y panel de operación**: `/api/v1/social-publications` con PAT dedicado, permisos acotados y límites de uso; `/admin/social-publications` para habilitar contenidos y conciliar resultados con auditoría. Comandos de inventario, backfill dry-run, recuperación de reservas, provisión de operador sin rol administrador y exportación privada de credencial n8n.
 - **Placas editoriales v4**: fuentes del catálogo de doce diseños aprobados y renderer GD para Noticias/Agenda, PNG privado 1080×1350 y verificación SHA256 antes del envío. Subida del archivo desde n8n sin hosting adicional, IA ni dependencias nuevas. Fuentes tipográficas configuradas por entorno; no se redistribuyen fuentes del sistema.
-- **Borradores de n8n**: Noticias con horario preparado de 10:00 Argentina y Eventos manual sin programación, ambos bloqueados e inactivos. Guía de activación y preflight CLI de solo lectura incluidos.
+- **Borradores de n8n**: Exports seguros inactivos por defecto: Noticias a las11:00 Argentina y Eventos manual sin programación. Instancia n8n: Noticias activada a las11:00 por autorización expresa del usuario el2026-11-11, después de una prueba real verificada. Guía de activación y preflight CLI de solo lectura incluidos.
+
+### Cambiado
+
+- **Noticias sin habilitación manual** (pedido2026-11-11): una por ejecución desde la siguiente a833, orden ID ascendente, activa/visible según el estado público del portal y sin envío anterior al destino. El claim registra automáticamente elegibilidad/historial sin cambiar publication_mode. Excluye éxitos, envíos en curso/inciertos y reservas vigentes; recupera reservas pre-begin vencidas y respeta backoff/límite de envíos. Eventos sigue manual. Sin migraciones nuevas ni cambios de contrato/credencial de n8n; requiere desplegar PHP/config y regenerar caché para que rija en producción.
 
 ### Corregido
 
@@ -21,9 +25,9 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Validación y despliegue
 
-- **Implementado y validado en local el 2026-11-10**: 76 tests Feature pasan (228 assertions) y seis escenarios completos de n8n contra un simulador privado. Sin publicaciones externas ni activación diaria.
+- **Implementado y validado en local el 2026-11-10**: 76 tests Feature pasan (228 assertions) y seis escenarios completos de n8n contra un simulador privado. En esa validación local no se publicaron contenidos ni se activó la programación.
 - Migración aditiva `2026_11_10_100000_add_social_publication_ledger.php` aplicada con autorización en las bases locales existentes `mfa` y `mfa_test`. En producción revisar `migrate:status` y autorizar su aplicación por separado; no ejecutar rollback automático del historial.
-- Despliegue en Hostinger a cargo del usuario. Pendientes: API productiva, fuentes privadas, operador/PAT real e importación en n8n, verificación del token de Página, contenido habilitado y publicación de prueba autorizada. Instrucciones: `resources/integrations/n8n/ACTIVATION.md`. Sin cambios de rutas públicas, slugs ni SEO.
+- **Prueba productiva autorizada el 2026-11-11**: usuario desplegó/migró en Hostinger y configuró fuentes/operador; PAT dedicado y token de Página verificados. Publicada una noticia833 con imagen/copy aprobados: Facebook HTTP200, post145931542128207_1618780120285817 y registro del portal success con un envío. La noticia ya no aparece en candidatos. Noticias diaria activada a las11:00 Argentina por autorización expresa del usuario; workflow horario activo; actualización posterior elimina la cola manual de Noticias al desplegar la nueva selección. Eventos manual. Instrucciones: `resources/integrations/n8n/ACTIVATION.md`. Sin cambios de rutas públicas, slugs ni SEO.
 
 ## [2.5.0] — 2026-10-27
 

@@ -2,7 +2,7 @@
 
 ## Estado
 
-Implementación local del portal. Facebook institucional y tipos `news` / `events` exclusivamente. Los borradores de `daily/` ya están importados en n8n, inactivos y bloqueados. Solo Noticias tiene horario preparado; Eventos es manual por elección del usuario. El flujo fue ejecutado contra simulador privado sin Facebook. Estado y pasos vigentes en `ACTIVATION.md`. El export original `mfa-social-publications.inactive.json` se conserva como referencia inicial; usar los nuevos borradores. Instagram y otras redes quedan para otra etapa.
+Implementación local del portal. Facebook institucional y tipos `news` / `events` exclusivamente. Los exports de `daily/` permanecen inactivos/bloqueados por seguridad al importar. La instancia de Noticias fue activada por el usuario a las11:00 Argentina el2026-11-11, tras una publicación real833 verificada; Eventos sigue manual. Primero se probaron seis escenarios con simulador privado. Estado y pasos vigentes en `ACTIVATION.md`. El export original `mfa-social-publications.inactive.json` se conserva como referencia inicial; usar los nuevos borradores. Instagram y otras redes quedan para otra etapa.
 
 Las 12 piezas v4 tienen aprobación visual del usuario; esa aprobación no habilita contenidos ni autoriza publicaciones. El catálogo conserva su estado histórico de borrador; el registro operativo de templates permitidos para el piloto está en `config/social_publication.php` (Noticias y Agenda).
 
@@ -14,7 +14,7 @@ Las 12 piezas v4 tienen aprobación visual del usuario; esa aprobación no habil
 4. Los borradores de `daily/` configuran API, tipo y bloqueo en el nodo Code «Configuración y bloqueo». No requieren variables de pago. Mantener allow_publish=false hasta completar despliegue, credenciales y prueba autorizada.
 5. El renderer GD v4 está implementado en el portal: POST /{target}/render devuelve asset_base64, SHA256 y referencia sha256:<digest>. n8n convierte a binario y envía source multipart a Meta. No requiere alojamiento público ni abrir puertos. Configurar las fuentes editoriales privadas antes de desplegar; el renderer Windows histórico no es el utilizado por estos borradores.
 6. Vincular credencial PAT en nodos de API y credencial Meta separada en el nodo Meta. Ninguna credencial está embebida o vinculada por ID en el export.
-7. Verificar `APP_URL` público correcto, fuentes editoriales, derechos de imágenes, token Meta, inexistencia de jobs legacy en vuelo y un contenido público vigente habilitado explícitamente. Noticias/Eventos `portal_only` requieren override individual.
+7. Verificar `APP_URL` público correcto, fuentes editoriales, derechos de imágenes, token Meta, inexistencia de jobs legacy en vuelo y un contenido público vigente habilitado explícitamente. Noticias automática incorpora portal_only bajo la política global autorizada; Eventos sigue requiriendo override individual.
 8. Activar la bandera local solo tras validar todo lo anterior. La migración no cambia `.env`, permisos, credenciales, contenidos ni tareas programadas.
 9. Obtener autorización para una publicación concreta antes de ejecutar el flujo contra Meta. Luego evaluar horario y activación diaria por separado.
 
@@ -55,3 +55,7 @@ No habilitar guardado de datos de ejecuciones de n8n: claims contienen lease en 
 ## Alcance y costo
 
 Sin IA, tokens de IA, Canva pago ni dependencias nuevas. Render determinista sobre las plantillas aprobadas. Se agregan consultas autenticadas paginadas y pequeñas transacciones; candidatos carga contenidos por lote, no por fila. No se alteran rutas públicas, slugs, canonical ni SEO. El estado local no acredita despliegue ni resultados de tráfico.
+
+## Selección sin intervención por noticia (actualización pendiente de deploy)
+
+El usuario pidió selección automática: después de desplegar la actualización, candidates toma News activa/visible, ID>833 y orden ascendente sin consultar un opt-in manual. Claim registra el seguimiento automáticamente. Una por ejecución; éxitos y estados inseguros no se repiten. El workflow existente de las11no requiere reimportación ni cambios de credencial. Desplegar PHP/config/vista y regenerar config:cache/view:clear; sin migraciones. Eventos manual. Hasta ese deploy, la API productiva aún conserva su comportamiento anterior.

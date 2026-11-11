@@ -287,7 +287,7 @@
       "parameters": {
         "width": 750,
         "height": 260,
-        "content": "## Eventos: listo para conectar, NO activado\nHorario propuesto: 18:00 Argentina.\n1. Desplegar API ledger/render revisada.\n2. Credencial PAT dedicada + Meta existente.\n3. Habilitar contenido y autorizar una prueba.\n4. Revisar PNG, copy e ID; recién después publicar workflow.\nNo cambiar allow_publish antes de cumplir esos pasos. Sin IA, hosting extra ni variables de pago.\nMeta sin reintento; callback reintentable. Si no hay candidato, no publica."
+        "content": "## Eventos: listo para conectar, NO activado\nHorario propuesto: 18:00 Argentina.\n1. Desplegar API ledger/render revisada.\n2. Credencial PAT dedicada + Meta existente.\n3. Noticias: activas en portal desdeID834, sin habilitación manual; Eventos sigue manual.\n4. Revisar PNG, copy e ID; recién después publicar workflow.\nNo cambiar allow_publish antes de cumplir esos pasos. Sin IA, hosting extra ni variables de pago.\nMeta sin reintento; callback reintentable. Si no hay candidato, no publica."
       }
     }
   ],

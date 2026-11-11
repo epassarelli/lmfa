@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const source = JSON.parse(fs.readFileSync(path.join(__dirname, 'mfa-social-publications.inactive.json'), 'utf8'));
 const output = path.join(__dirname, 'daily'); fs.mkdirSync(output, {recursive:true});
-for (const [kind,label,hour,id] of [['news','Noticias',10,'MfaNewsDailyV401'],['events','Eventos',18,'MfaEventsDaily01']]) {
+for (const [kind,label,hour,id] of [['news','Noticias',11,'MfaNewsDailyV401'],['events','Eventos',18,'MfaEventsDaily01']]) {
   const w = structuredClone(source);
   w.id=id; w.name=`MFA - ${label} - Facebook diario (pendiente activación)`;
   w.settings.timezone='America/Argentina/Buenos_Aires';
@@ -35,7 +35,7 @@ for (const [kind,label,hour,id] of [['news','Noticias',10,'MfaNewsDailyV401'],['
       node.credentials = {httpHeaderAuth:{id:'MfaSocialPortal1',name:'MFA - Publicaciones Portal'}};
     }
   }
-  w.nodes.push({id:'note',name:'Estado y próximos pasos',type:'n8n-nodes-base.stickyNote',typeVersion:1,position:[200,-330],parameters:{width:750,height:260,content:`## ${label}: listo para conectar, NO activado\nHorario propuesto: ${hour}:00 Argentina.\n1. Desplegar API ledger/render revisada.\n2. Credencial PAT dedicada + Meta existente.\n3. Habilitar contenido y autorizar una prueba.\n4. Revisar PNG, copy e ID; recién después publicar workflow.\nNo cambiar allow_publish antes de cumplir esos pasos. Sin IA, hosting extra ni variables de pago.\nMeta sin reintento; callback reintentable. Si no hay candidato, no publica.`}});
+  w.nodes.push({id:'note',name:'Estado y próximos pasos',type:'n8n-nodes-base.stickyNote',typeVersion:1,position:[200,-330],parameters:{width:750,height:260,content:`## ${label}: listo para conectar, NO activado\nHorario propuesto: ${hour}:00 Argentina.\n1. Desplegar API ledger/render revisada.\n2. Credencial PAT dedicada + Meta existente.\n3. Noticias: activas en portal desdeID834, sin habilitación manual; Eventos sigue manual.\n4. Revisar PNG, copy e ID; recién después publicar workflow.\nNo cambiar allow_publish antes de cumplir esos pasos. Sin IA, hosting extra ni variables de pago.\nMeta sin reintento; callback reintentable. Si no hay candidato, no publica.`}});
   fs.writeFileSync(path.join(output,`${kind}.json`),JSON.stringify(w,null,2)+'\n');
 }
 console.log('Generados dos workflows diarios inactivos, con bloqueo y PNG multipart.');

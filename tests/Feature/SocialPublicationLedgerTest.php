@@ -26,6 +26,7 @@ class SocialPublicationLedgerTest extends TestCase
         }
         Queue::fake(); Http::fake(); Http::preventStrayRequests();
         config(['social_publication.enabled' => true]);
+        config(['social_publication.news_automatic' => false]);
         $this->actor = User::factory()->create();
         $this->actingAs($this->actor);
         $this->news = News::create(['title' => 'Prueba editorial', 'slug' => 'prueba-'.Str::uuid(), 'body' => 'Texto interno que no se exporta', 'excerpt' => 'Resumen público', 'editorial_status' => 'published', 'publication_mode' => 'portal_only', 'created_by' => $this->actor->id]);

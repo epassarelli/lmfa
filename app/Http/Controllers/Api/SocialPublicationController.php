@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\{News, Event, PublicationTarget, SocialPublicationEligibility};
-use App\Services\Publication\{SocialPublicationGuard, SocialPublicationLedgerService};
+use App\Services\Publication\{AutomaticNewsPublication, SocialPublicationGuard, SocialPublicationLedgerService};
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 
@@ -18,6 +18,16 @@ class SocialPublicationController extends Controller
     {
         $this->active();
         $data = $request->validate(['content_kind' => 'nullable|in:news,events', 'per_page' => 'nullable|integer|min:1|max:50', 'provider' => 'nullable|in:facebook']);
+        if (config('social_publication.news_automatic') && ($data['content_kind'] ?? 'news') === 'news') {
+            $automatic = app(AutomaticNewsPublication::class);
+            $page = $automatic->candidates()->select(['news.id', 'news.title', 'news.slug', 'news.excerpt',
+                'news.editorial_status', 'news.publication_mode', 'news.published_at', 'news.estado'])
+                ->paginate($data['per_page'] ?? 15);
+            $page->setCollection($page->getCollection()->map(fn ($news) =>
+                ['provider' => 'facebook', 'destination_key' => config('social_publication.destination')]
+                + $this->ledger->snapshot($automatic->eligibility($news), $news)));
+            return response()->json($page);
+        }
         $query = SocialPublicationEligibility::where('enabled', true)->where('destination_key', config('social_publication.destination'))
             ->when($data['content_kind'] ?? null, fn ($q, $kind) => $q->where('content_kind', $kind))
             ->whereExists(function ($q) {

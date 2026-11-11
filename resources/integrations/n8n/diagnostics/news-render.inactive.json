@@ -1,0 +1,204 @@
+{
+  "name": "MFA - Noticias - Placa real sin publicar",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false,
+    "timezone": "America/Argentina/Buenos_Aires"
+  },
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Inicio manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "gate",
+      "name": "Configuración y bloqueo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{api_base_url:'https://mifolkloreargentino.com/api/v1',preview_only:true}}];"
+      }
+    },
+    {
+      "id": "candidates",
+      "name": "Candidatos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "parameters": {
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/candidates?provider=facebook&content_kind=news&per_page=1' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      }
+    },
+    {
+      "id": "choose",
+      "name": "Preparar reserva",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const candidate=$json.data?.[0]; if (!candidate) return []; const key='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.floor(Math.random()*16);return (c==='x'?r:(r&3)|8).toString(16)}); return [{json:{...candidate,request_key:key}}];"
+      }
+    },
+    {
+      "id": "claim",
+      "name": "Reservar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/claims' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Idempotency-Key",
+              "value": "={{ $json.request_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { content_kind:$json.content_kind,content_id:$json.content_id,provider:'facebook',destination_key:$json.destination_key,n8n_execution_id:$execution.id } }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      }
+    },
+    {
+      "id": "render",
+      "name": "Generar PNG privado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/' + $json.target_id + '/render' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {attempt_id:$json.attempt_id,lease:$json.lease} }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Inicio manual": {
+      "main": [
+        [
+          {
+            "node": "Configuración y bloqueo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Candidatos": {
+      "main": [
+        [
+          {
+            "node": "Preparar reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar reserva": {
+      "main": [
+        [
+          {
+            "node": "Reservar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reservar": {
+      "main": [
+        [
+          {
+            "node": "Generar PNG privado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuración y bloqueo": {
+      "main": [
+        [
+          {
+            "node": "Candidatos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar PNG privado": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "tags": [],
+  "id": "MfaNewsRender01"
+}

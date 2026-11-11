@@ -3,11 +3,12 @@
 @section('content_header')<h1>Publicaciones en redes</h1>@stop
 @section('content')
 <div class="alert alert-info">Destino: {{ config('social_publication.destination') }}. Automatización: {{ config('social_publication.enabled') ? 'habilitada' : 'pausada' }}. Las fechas se muestran en hora argentina.</div>
+@if(config('social_publication.news_automatic'))<div class="alert alert-info">Noticias se seleccionan automáticamente desde el ID {{ config('social_publication.news_after_id') + 1 }}, por orden de ID: publicadas y visibles en el portal, sin envío previo al destino. No requieren habilitación manual. Para retirar una noticia de esta selección, desactivala en el portal. Eventos conserva habilitación manual.</div>@endif
 @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
 @if($errors->any())<div class="alert alert-danger">{{ $errors->first() }}</div>@endif
 <div class="card"><div class="card-header">Habilitar o retirar un contenido</div><div class="card-body">
 <form method="POST" action="{{ route('social-publications.eligibility') }}">@csrf
-<div class="row"><div class="col-md-3"><label for="kind">Tipo</label><select id="kind" name="content_kind" class="form-control"><option value="news">Noticia</option><option value="events">Evento</option></select></div>
+<div class="row"><div class="col-md-3"><label for="kind">Tipo</label><select id="kind" name="content_kind" class="form-control">@unless(config('social_publication.news_automatic'))<option value="news">Noticia</option>@endunless<option value="events">Evento</option></select></div>
 <div class="col-md-3"><label for="content-id">ID del contenido</label><input id="content-id" type="number" name="content_id" min="1" required class="form-control"></div>
 <div class="col-md-3"><label for="enabled">Acción</label><select id="enabled" name="enabled" class="form-control"><option value="1">Habilitar</option><option value="0">Retirar</option></select></div></div>
 <label class="mt-3"><input type="checkbox" name="portal_only_override" value="1"> Autorizo expresamente publicar en redes aunque el contenido indique «solo portal».</label><br>

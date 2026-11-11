@@ -44,7 +44,7 @@ class SocialPublicationLedgerService
     {
         return DB::transaction(function () use ($kind, $id, $enabled, $override, $actor) {
             $this->identity($kind, $id);
-            ($kind === 'news' ? News::class : Event::class)::findOrFail($id);
+            ($kind === 'news' ? News::class : Event::class)::lockForUpdate()->findOrFail($id);
             $e = SocialPublicationEligibility::firstOrCreate($this->identity($kind, $id));
             $e = SocialPublicationEligibility::lockForUpdate()->findOrFail($e->id);
             $old = $e->only(['enabled', 'portal_only_override']);
@@ -74,6 +74,18 @@ class SocialPublicationLedgerService
     public function claim(string $kind, int $id, string $key, ?string $execution): array
     {
         return DB::transaction(function () use ($kind, $id, $key, $execution) {
+            $this->identity($kind, $id);
+            ($kind === 'news' ? News::class : Event::class)::lockForUpdate()->findOrFail($id);
+            if ($kind === 'news' && config('social_publication.news_automatic')) {
+                app(AutomaticNewsPublication::class)->activeQuery()->whereKey($id)->firstOrFail();
+                $existing = SocialPublicationEligibility::where($this->identity($kind, $id))->first();
+                $cancelled = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)
+                    ->where('provider', 'facebook')->where('destination_key', config('social_publication.destination'))->where('status', 'cancelled')->exists();
+                if (!$existing || !$existing->enabled || !$existing->portal_only_override || $cancelled) {
+                    abort_unless(auth()->id(), 403, 'Falta operador autenticado.');
+                    $this->enable($kind, $id, true, true, auth()->id());
+                }
+            }
             $e = SocialPublicationEligibility::where($this->identity($kind, $id))->lockForUpdate()->firstOrFail();
             $target = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)->where('provider', 'facebook')->where('destination_key', $e->destination_key)->lockForUpdate()->firstOrFail();
             $replay = PublicationAttempt::where('request_key', $key)->first();
@@ -98,6 +110,7 @@ class SocialPublicationLedgerService
     private function locked(int $id, array $data): array
     {
         $identity = PublicationTarget::where('executor', 'n8n')->where('destination_key', config('social_publication.destination'))->findOrFail($id);
+        ($identity->ledger_content_kind === 'news' ? News::class : Event::class)::lockForUpdate()->find($identity->ledger_content_id);
         SocialPublicationEligibility::where($this->identity($identity->ledger_content_kind, $identity->ledger_content_id))->lockForUpdate()->firstOrFail();
         $target = PublicationTarget::where('executor', 'n8n')->where('destination_key', config('social_publication.destination'))->lockForUpdate()->findOrFail($id);
         $attempt = $target->attempts()->lockForUpdate()->findOrFail($data['attempt_id']);

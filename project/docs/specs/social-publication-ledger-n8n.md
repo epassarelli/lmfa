@@ -2,7 +2,11 @@
 
 Copia versionable de los requerimientos y decisiones aprobados. OpenSpec original permanece ignorado por la configuración vigente; no se altera .gitignore. Este documento conserva la trazabilidad para revisar el código del release. Estado operativo: recursos/integrations/n8n/ACTIVATION.md y project/docs/social-publication-implementation.md. No autoriza despliegues ni publicaciones.
 
-## Requerimientos aprobados
+## Regla vigente autorizada 2026-11-11: Noticias automática
+
+El usuario reemplazó expresamente la habilitación manual de Noticias: una por ejecución, ID mayor a833, orden ascendente y estado público canónico publishedVisible/isPublished del mismo portal. No se agrega el campo legacy estado como filtro distinto del frontend. El historial del destino excluye éxitos y bloquea envíos en curso/inciertos; reservas pre-begin vencidas se recuperan sin acción manual. GET no crea marcas; claim bootstrappea y audita bajo política autorizada, sin modificar publication_mode (incluye portal_only por esta autorización global). Eventos permanece manual. Se mantienen horario11 Argentina y formato HTTP de n8n. Nueva lógica preparada localmente: requiere despliegue y regenerar config del portal; no requiere migraciones ni importar/reprogramar n8n.
+
+## Requerimientos aprobados (base histórica; la regla vigente anterior reemplaza el opt-in de Noticias)
 
 # Requerimientos funcionales y trazabilidad
 
