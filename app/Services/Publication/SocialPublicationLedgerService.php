@@ -7,10 +7,17 @@ use Illuminate\Support\Facades\DB;
 
 class SocialPublicationLedgerService
 {
+    public function __construct(protected string $provider = 'facebook') {}
+
+    protected function destination(): string
+    {
+        return config($this->provider === 'instagram' ? 'social_publication.instagram_destination' : 'social_publication.destination');
+    }
+
     public function identity(string $kind, int $id): array
     {
         abort_unless(in_array($kind, ['news', 'events'], true), 422, 'Tipo no permitido.');
-        return ['content_kind' => $kind, 'content_id' => $id, 'provider' => 'facebook', 'destination_key' => config('social_publication.destination')];
+        return ['content_kind' => $kind, 'content_id' => $id, 'provider' => $this->provider, 'destination_key' => $this->destination()];
     }
 
     public function snapshot(SocialPublicationEligibility $e, ?\Illuminate\Database\Eloquent\Model $loaded = null): array
@@ -36,6 +43,10 @@ class SocialPublicationLedgerService
             $payload += ['event_start_at' => $content->start_at?->toIso8601String(), 'event_end_at' => $content->end_at?->toIso8601String(),
                 'event_timezone' => $content->timezone ?: 'America/Argentina/Buenos_Aires', 'event_city' => trim(strip_tags($content->city ?? ''))];
         }
+        if ($this->provider === 'instagram') {
+            abort_unless($e->content_kind === 'news', 422);
+            abort_if(mb_strlen($payload['copy']) > 2200, 422, 'Caption supera2200 caracteres.');
+        }
         $payload['content_hash'] = hash('sha256', json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         return $payload;
     }
@@ -52,13 +63,13 @@ class SocialPublicationLedgerService
                 $enabled ? 'enabled_by' : 'disabled_by' => $actor, $enabled ? 'enabled_at' : 'disabled_at' => now()])->save();
             if ($enabled) {
                 $this->snapshot($e);
-                abort_if(app(SocialPublicationGuard::class)->legacyExists($kind, $id), 409, 'Revisar historial legacy antes de habilitar.');
+                abort_if(app(SocialPublicationGuard::class)->legacyExists($kind, $id, $this->provider, $this->destination()), 409, 'Revisar historial legacy antes de habilitar.');
             }
-            $target = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)->where('provider', 'facebook')->where('destination_key', $e->destination_key)->lockForUpdate()->first();
+            $target = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)->where('provider', $this->provider)->where('destination_key', $e->destination_key)->lockForUpdate()->first();
             if (!$target) {
                 $request = PublicationRequest::create(['content_type' => $kind === 'news' ? News::class : Event::class, 'content_id' => $id,
                     'requested_by' => $actor, 'mode' => 'social_ledger', 'status' => 'pending']);
-                $target = $request->targets()->create(['ledger_content_kind' => $kind, 'ledger_content_id' => $id, 'provider' => 'facebook',
+                $target = $request->targets()->create(['ledger_content_kind' => $kind, 'ledger_content_id' => $id, 'provider' => $this->provider,
                     'destination_key' => $e->destination_key, 'executor' => 'n8n', 'status' => $enabled ? 'pending' : 'cancelled']);
             } elseif (!$enabled && in_array($target->status, ['pending', 'reserved', 'failed'])) {
                 $target->attempts()->where('status', 'reserved')->update(['status' => 'cancelled', 'finished_at' => now()]);
@@ -77,17 +88,18 @@ class SocialPublicationLedgerService
             $this->identity($kind, $id);
             ($kind === 'news' ? News::class : Event::class)::lockForUpdate()->findOrFail($id);
             if ($kind === 'news' && config('social_publication.news_automatic')) {
-                app(AutomaticNewsPublication::class)->activeQuery()->whereKey($id)->firstOrFail();
+                app(AutomaticNewsPublication::class)->activeQuery($this->provider)->whereKey($id)->firstOrFail();
+                if ($this->provider === 'instagram') { abort_unless(app(AutomaticNewsPublication::class)->facebookPublished($id), 409, 'Falta publicación Facebook confirmada.'); }
                 $existing = SocialPublicationEligibility::where($this->identity($kind, $id))->first();
                 $cancelled = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)
-                    ->where('provider', 'facebook')->where('destination_key', config('social_publication.destination'))->where('status', 'cancelled')->exists();
+                    ->where('provider', $this->provider)->where('destination_key', $this->destination())->where('status', 'cancelled')->exists();
                 if (!$existing || !$existing->enabled || !$existing->portal_only_override || $cancelled) {
                     abort_unless(auth()->id(), 403, 'Falta operador autenticado.');
                     $this->enable($kind, $id, true, true, auth()->id());
                 }
             }
             $e = SocialPublicationEligibility::where($this->identity($kind, $id))->lockForUpdate()->firstOrFail();
-            $target = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)->where('provider', 'facebook')->where('destination_key', $e->destination_key)->lockForUpdate()->firstOrFail();
+            $target = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)->where('provider', $this->provider)->where('destination_key', $e->destination_key)->lockForUpdate()->firstOrFail();
             $replay = PublicationAttempt::where('request_key', $key)->first();
             if ($replay) {
                 abort_unless($replay->publication_target_id === $target->id, 409, 'Clave usada para otro contenido.');
@@ -95,7 +107,7 @@ class SocialPublicationLedgerService
             }
             $this->expireLocked($target);
             abort_unless(in_array($target->status, ['pending', 'failed']) && $target->attempts_count < 3 && (!$target->retry_after || $target->retry_after->isPast()), 409, 'Destino no reservable.');
-            abort_if(app(SocialPublicationGuard::class)->legacyExists($kind, $id), 409, 'Existe historial legacy.');
+            abort_if(app(SocialPublicationGuard::class)->legacyExists($kind, $id, $this->provider, $this->destination()), 409, 'Existe historial legacy.');
             $payload = $this->snapshot($e);
             $lease = bin2hex(random_bytes(32));
             $expires = now()->addSeconds(config('social_publication.lease_seconds'));
@@ -109,10 +121,10 @@ class SocialPublicationLedgerService
 
     private function locked(int $id, array $data): array
     {
-        $identity = PublicationTarget::where('executor', 'n8n')->where('destination_key', config('social_publication.destination'))->findOrFail($id);
+        $identity = PublicationTarget::where('executor', 'n8n')->where('destination_key', $this->destination())->findOrFail($id);
         ($identity->ledger_content_kind === 'news' ? News::class : Event::class)::lockForUpdate()->find($identity->ledger_content_id);
         SocialPublicationEligibility::where($this->identity($identity->ledger_content_kind, $identity->ledger_content_id))->lockForUpdate()->firstOrFail();
-        $target = PublicationTarget::where('executor', 'n8n')->where('destination_key', config('social_publication.destination'))->lockForUpdate()->findOrFail($id);
+        $target = PublicationTarget::where('executor', 'n8n')->where('destination_key', $this->destination())->lockForUpdate()->findOrFail($id);
         $attempt = $target->attempts()->lockForUpdate()->findOrFail($data['attempt_id']);
         abort_unless($target->lease_token_hash && hash_equals($target->lease_token_hash, hash('sha256', $data['lease'])), 409, 'Reserva inválida.');
         abort_unless($attempt->id === $target->attempts()->max('id'), 409, 'Intento reemplazado.');
@@ -130,11 +142,12 @@ class SocialPublicationLedgerService
             if (str_starts_with($data['asset_reference'], 'sha256:')) {
                 $hash = $data['asset_sha256'];
                 abort_unless($data['asset_reference'] === 'sha256:'.$hash && preg_match('/^[a-f0-9]{64}$/D', $hash), 422, 'Huella inválida.');
-                $path = \Illuminate\Support\Facades\Storage::disk('local')->path('social-publications/assets/'.$hash.'.png');
+                $path = \Illuminate\Support\Facades\Storage::disk('local')->path('social-publications/assets/'.$hash.($this->provider === 'instagram' ? '.jpg' : '.png'));
                 abort_unless(is_file($path) && hash_equals($hash, hash_file('sha256', $path)), 422, 'Placa ausente o alterada.');
                 $rendered = $attempt->request_payload_json ?? [];
                 abort_unless(($rendered['asset_sha256'] ?? null) === $hash, 409, 'La placa no corresponde al render de este intento.');
             } else {
+            abort_if($this->provider === 'instagram', 422, 'Instagram exige placa generada por este intento.');
             $url = parse_url($data['asset_reference']);
             abort_unless(($url['scheme'] ?? '') === 'https' && in_array($url['host'] ?? '', config('social_publication.asset_hosts'), true) && (!isset($url['port']) || $url['port'] === 443) && empty($url['query']) && empty($url['fragment']), 422, 'Asset no permitido.');
             abort_if(isset($url['user']) || isset($url['pass']), 422);
@@ -155,8 +168,14 @@ class SocialPublicationLedgerService
             $outcome = $data['outcome'];
             $post = $data['external_post_id'] ?? null;
             if ($outcome === 'success') {
+                if ($this->provider === 'instagram') {
+                    abort_unless(is_string($post) && preg_match('/^[0-9]{5,32}$/D', $post), 422);
+                    abort_unless(preg_match('~^https://www\.instagram\.com/(?:p|reel)/[A-Za-z0-9_-]+/$~D', $data['external_url'] ?? ''), 422);
+                    abort_unless(!empty($attempt->request_payload_json['instagram_container_id']), 409, 'Falta contenedor registrado.');
+                } else {
                 $page = substr($target->destination_key, strlen('facebook:page:'));
                 abort_unless(is_string($post) && preg_match('/^'.preg_quote($page, '/').'_[0-9]+$/D', $post), 422, 'ID de publicación no corresponde a la Página.');
+                }
             }
             $fingerprint = hash('sha256', json_encode([$outcome, $post, $data['error_code'] ?? null]));
             if ($attempt->outcome_fingerprint === $fingerprint) {
@@ -166,11 +185,15 @@ class SocialPublicationLedgerService
             abort_if(in_array($target->status, ['success', 'published']) || !in_array($target->status, ['processing', 'uncertain']), 409, 'Resultado cerrado.');
             $state = ['success' => 'success', 'definitive_failure' => 'failed', 'uncertain' => 'uncertain'][$outcome];
             $target->update(['status' => $state, 'external_post_id' => $outcome === 'success' ? $post : null,
-                'external_url' => $outcome === 'success' ? 'https://www.facebook.com/'.$post : null, 'published_at' => $outcome === 'success' ? now() : null,
+                'external_url' => $outcome === 'success' ? ($this->provider === 'instagram' ? $data['external_url'] : 'https://www.facebook.com/'.$post) : null, 'published_at' => $outcome === 'success' ? now() : null,
                 'retry_after' => $state === 'failed' ? now()->addSeconds([60, 300, 1800][min(2, $target->attempts_count - 1)]) : null,
                 'last_error_code' => $data['error_code'] ?? null, 'last_error_message' => $state === 'success' ? null : 'Revisar el intento y conciliar antes de reenviar.']);
             $attempt->update(['status' => $state, 'finished_at' => now(), 'external_post_id' => $target->external_post_id, 'external_url' => $target->external_url,
                 'outcome_fingerprint' => $fingerprint, 'is_retryable' => $state === 'failed' && $target->attempts_count < 3, 'error_code' => $target->last_error_code]);
+            if ($this->provider === 'instagram' && $state === 'uncertain' && is_string($post) && preg_match('/^[0-9]{5,32}$/D', $post)) {
+                // Preserve an observed remote ID when permalink verification failed, without claiming success.
+                $attempt->update(['request_payload_json' => ($attempt->request_payload_json ?? []) + ['instagram_observed_media_id' => $post]]);
+            }
             $this->aggregate($target);
             return $this->status($target);
         });
@@ -184,13 +207,28 @@ class SocialPublicationLedgerService
             abort_unless($target->status === 'reserved' && $attempt->status === 'reserved' && $target->lease_expires_at->isFuture(), 409);
             return $target->payload_snapshot_json;
         });
-        $asset = app(SocialPublicationRenderer::class)->render($snapshot);
+        $asset = app(SocialPublicationRenderer::class)->render($snapshot, $this->provider === 'instagram' ? 'jpeg' : 'png');
         DB::transaction(function () use ($id, $data, $asset, $snapshot) {
             [$target, $attempt] = $this->locked($id, $data);
             abort_unless($target->status === 'reserved' && $target->lease_expires_at->isFuture(), 409);
             $attempt->update(['request_payload_json' => $snapshot + ['asset_sha256' => $asset['asset_sha256'], 'asset_reference' => $asset['asset_reference']]]);
         });
         return $asset;
+    }
+
+    public function instagramContainer(int $id, array $data): array
+    {
+        abort_unless($this->provider === 'instagram', 404);
+        return DB::transaction(function () use ($id, $data) {
+            [$target, $attempt] = $this->locked($id, $data);
+            abort_unless($target->status === 'processing' && $attempt->status === 'processing' && $target->lease_expires_at->isFuture(), 409);
+            $e = SocialPublicationEligibility::where($this->identity($target->ledger_content_kind, $target->ledger_content_id))->firstOrFail();
+            abort_unless(hash_equals($target->content_hash, $this->snapshot($e)['content_hash']), 409, 'Contenido modificado o retirado.');
+            $payload = $attempt->request_payload_json ?? [];
+            abort_if(isset($payload['instagram_container_id']) && $payload['instagram_container_id'] !== $data['container_id'], 409, 'Contenedor distinto.');
+            $attempt->update(['request_payload_json' => $payload + ['instagram_container_id' => $data['container_id']]]);
+            return ['target_id' => $id, 'container_id' => $data['container_id'], 'may_publish' => true];
+        });
     }
 
     public function expireLocked(PublicationTarget $target): void

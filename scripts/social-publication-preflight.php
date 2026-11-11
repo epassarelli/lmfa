@@ -16,6 +16,8 @@ $checks = [
     'targets_extended' => $schema::hasColumn('publication_targets', 'destination_key'),
     'attempts_extended' => $schema::hasColumn('publication_attempts', 'request_key'),
     'enabled' => (bool) config('social_publication.enabled'),
+    'instagram_enabled' => (bool) config('social_publication.instagram_enabled'),
+    'instagram_route_registered' => Illuminate\Support\Facades\Route::has('social-publications.asset'),
     'operator_count' => count(config('social_publication.operators', [])),
     'public_app_url_is_https' => str_starts_with(config('app.url'), 'https://'),
 ];

@@ -10,7 +10,7 @@ use Illuminate\Database\QueryException;
 
 class SocialPublicationController extends Controller
 {
-    public function __construct(private SocialPublicationLedgerService $ledger) {}
+    public function __construct(protected SocialPublicationLedgerService $ledger) {}
 
     private function active(): void { abort_unless(config('social_publication.enabled'), 503, 'Automatización pausada.'); }
 
@@ -81,7 +81,7 @@ class SocialPublicationController extends Controller
     public function result(Request $request, int $target)
     {
         $data = $request->validate(['attempt_id' => 'required|integer|min:1', 'lease' => 'required|string|size:64',
-            'outcome' => 'required|in:success,definitive_failure,uncertain', 'external_post_id' => 'required_if:outcome,success|nullable|string|max:128',
+            'outcome' => 'required|in:success,definitive_failure,uncertain', 'external_url' => 'nullable|string|max:512', 'external_post_id' => 'required_if:outcome,success|nullable|string|max:128',
             'error_code' => 'required_if:outcome,definitive_failure|nullable|regex:/^[A-Z0-9_]{1,64}$/',
             'provider_http_status' => 'required_if:outcome,definitive_failure|nullable|integer|min:400|max:499|not_in:408',
             'failure_evidence' => 'required_if:outcome,definitive_failure|nullable|in:provider_rejected']);

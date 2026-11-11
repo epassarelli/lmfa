@@ -1,0 +1,915 @@
+{
+  "id": "MfaInstagramNews01",
+  "name": "MFA - Noticias - Instagram (bloqueado hasta deploy y prueba)",
+  "active": false,
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Inicio manual IG",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "Configuración y bloqueo",
+      "name": "Configuración y bloqueo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        210,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const c={api_base_url:'https://mifolkloreargentino.com/api/v1',allow_publish:false,test_news_id:833}; if(!c.allow_publish) throw new Error('Instagram bloqueado hasta deploy, credencial vigente y prueba autorizada'); return [{json:c}];"
+      }
+    },
+    {
+      "id": "Candidatos IG",
+      "name": "Candidatos IG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      },
+      "retryOnFail": false,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/instagram' + '/candidates?content_kind=news&provider=instagram&per_page=1' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "Preparar reserva IG",
+      "name": "Preparar reserva IG",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        630,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const c=$json.data?.[0]; if(!c)return []; const test=$('Configuración y bloqueo').first().json.test_news_id; if(test && c.content_id!==test) throw new Error('Prueba limitada a noticia833'); const request_key='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.floor(Math.random()*16);return(c==='x'?r:(r&3)|8).toString(16)});return [{json:{...c,request_key}}];"
+      }
+    },
+    {
+      "id": "Reservar IG",
+      "name": "Reservar IG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        840,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      },
+      "retryOnFail": false,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/instagram' + '/claims' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {content_kind:'news',content_id:$json.content_id,provider:'instagram',destination_key:$json.destination_key,n8n_execution_id:$execution.id} }}",
+        "options": {
+          "timeout": 30000
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Idempotency-Key",
+              "value": "={{ $json.request_key }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "Validar reserva IG",
+      "name": "Validar reserva IG",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1050,
+        0
+      ],
+      "parameters": {
+        "jsCode": "if($json.replayed||!$json.lease)throw new Error('Reserva repetida: no enviar');return $input.all();"
+      }
+    },
+    {
+      "id": "Generar JPEG",
+      "name": "Generar JPEG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1260,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      },
+      "retryOnFail": false,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/instagram' + '/' + $('Reservar IG').first().json.target_id + '/render' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {attempt_id:$('Reservar IG').first().json.attempt_id,lease:$('Reservar IG').first().json.lease} }}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "Validar JPEG",
+      "name": "Validar JPEG",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1470,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const a=$json; if(a.mime_type!=='image/jpeg'||a.width!==1080||a.height!==1350||!a.asset_url?.startsWith('https://mifolkloreargentino.com/api/v1/social-publication-assets/')||!a.asset_reference?.startsWith('sha256:'))throw new Error('Placa IG inválida');return [{json:{asset_url:a.asset_url,asset_reference:a.asset_reference,asset_sha256:a.asset_sha256}}];"
+      }
+    },
+    {
+      "id": "Iniciar intento IG",
+      "name": "Iniciar intento IG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1680,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      },
+      "retryOnFail": false,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/instagram' + '/' + $('Reservar IG').first().json.target_id + '/begin' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {...{attempt_id:$('Reservar IG').first().json.attempt_id,lease:$('Reservar IG').first().json.lease},content_hash:$('Reservar IG').first().json.payload.content_hash,asset_reference:$json.asset_reference,asset_sha256:$json.asset_sha256} }}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "Validar inicio IG",
+      "name": "Validar inicio IG",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1890,
+        0
+      ],
+      "parameters": {
+        "jsCode": "if(!$json.may_send)throw new Error('Begin no autorizó');return $input.all();"
+      }
+    },
+    {
+      "id": "Crear contenedor IG",
+      "name": "Crear contenedor IG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2100,
+        0
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qaekI4MYP9zPCJe7",
+          "name": "MFA - Instagram Publicaciones"
+        }
+      },
+      "retryOnFail": false,
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v27.0/17841400312117345/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {image_url:$('Validar JPEG').first().json.asset_url,caption:$('Reservar IG').first().json.payload.copy} }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "Contenedor creado",
+      "name": "Contenedor creado",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2310,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Contenedor creado",
+              "leftValue": "={{ $json.statusCode===200 && /^[0-9]{5,32}$/.test($json.body?.id||'') }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "Estado contenedor IG",
+      "name": "Estado contenedor IG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2520,
+        0
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qaekI4MYP9zPCJe7",
+          "name": "MFA - Instagram Publicaciones"
+        }
+      },
+      "retryOnFail": false,
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://graph.facebook.com/v27.0/' + $('Crear contenedor IG').first().json.body.id + '?fields=id,status_code' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "Contenedor listo",
+      "name": "Contenedor listo",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2730,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Contenedor listo",
+              "leftValue": "={{ $json.statusCode===200 && $json.body?.status_code==='FINISHED' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "Control de espera",
+      "name": "Control de espera",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2940,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const n=$('Estado contenedor IG').all(0,$runIndex)?.[0]?.json||$json;return [{json:{...n,wait_again:$runIndex<5 && n.statusCode===200 && n.body?.status_code==='IN_PROGRESS'}}];"
+      }
+    },
+    {
+      "id": "Esperar procesamiento",
+      "name": "Esperar procesamiento",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3150,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Esperar procesamiento",
+              "leftValue": "={{ $json.wait_again===true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "wait",
+      "name": "Esperar cinco segundos",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3100,
+        300
+      ],
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      }
+    },
+    {
+      "id": "Registrar contenedor IG",
+      "name": "Registrar contenedor IG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3570,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      },
+      "retryOnFail": false,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/instagram' + '/' + $('Reservar IG').first().json.target_id + '/container' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {...{attempt_id:$('Reservar IG').first().json.attempt_id,lease:$('Reservar IG').first().json.lease},container_id:$('Crear contenedor IG').first().json.body.id} }}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "Validar autorización IG",
+      "name": "Validar autorización IG",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3780,
+        0
+      ],
+      "parameters": {
+        "jsCode": "if(!$json.may_publish)throw new Error('Portal no autorizó publicar');return $input.all();"
+      }
+    },
+    {
+      "id": "Publicar IG UNA vez",
+      "name": "Publicar IG UNA vez",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3990,
+        0
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qaekI4MYP9zPCJe7",
+          "name": "MFA - Instagram Publicaciones"
+        }
+      },
+      "retryOnFail": false,
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v27.0/17841400312117345/media_publish",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {creation_id:$('Registrar contenedor IG').first().json.container_id} }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "Publicación confirmada",
+      "name": "Publicación confirmada",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4200,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "Publicación confirmada",
+              "leftValue": "={{ $json.statusCode===200 && /^[0-9]{5,32}$/.test($json.body?.id||'') }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "Permalink IG",
+      "name": "Permalink IG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4410,
+        0
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qaekI4MYP9zPCJe7",
+          "name": "MFA - Instagram Publicaciones"
+        }
+      },
+      "retryOnFail": false,
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://graph.facebook.com/v27.0/' + $('Publicar IG UNA vez').first().json.body.id + '?fields=id,permalink,media_type,caption' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "Resultado verificado IG",
+      "name": "Resultado verificado IG",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4620,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const b=$json.body||{};const id=$('Publicar IG UNA vez').first().json.body.id;const ok=$json.statusCode===200&&b.id===id&&new RegExp('^https://www[.]instagram[.]com/(p|reel)/[A-Za-z0-9_-]+/$').test(b.permalink||'');return [{json:{outcome:ok?'success':'uncertain',external_post_id:id,...(ok?{external_url:b.permalink}:{})}}];"
+      }
+    },
+    {
+      "id": "Resultado incierto IG",
+      "name": "Resultado incierto IG",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4830,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{outcome:'uncertain'}}];"
+      }
+    },
+    {
+      "id": "Registrar resultado",
+      "name": "Registrar resultado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5040,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MfaSocialPortal1",
+          "name": "MFA - Publicaciones Portal"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuración y bloqueo').first().json.api_base_url + '/social-publications/instagram' + '/' + $('Reservar IG').first().json.target_id + '/result' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {...{attempt_id:$('Reservar IG').first().json.attempt_id,lease:$('Reservar IG').first().json.lease},...$json} }}",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Inicio manual IG": {
+      "main": [
+        [
+          {
+            "node": "Configuración y bloqueo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuración y bloqueo": {
+      "main": [
+        [
+          {
+            "node": "Candidatos IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Candidatos IG": {
+      "main": [
+        [
+          {
+            "node": "Preparar reserva IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar reserva IG": {
+      "main": [
+        [
+          {
+            "node": "Reservar IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reservar IG": {
+      "main": [
+        [
+          {
+            "node": "Validar reserva IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar reserva IG": {
+      "main": [
+        [
+          {
+            "node": "Generar JPEG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar JPEG": {
+      "main": [
+        [
+          {
+            "node": "Validar JPEG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar JPEG": {
+      "main": [
+        [
+          {
+            "node": "Iniciar intento IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Iniciar intento IG": {
+      "main": [
+        [
+          {
+            "node": "Validar inicio IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar inicio IG": {
+      "main": [
+        [
+          {
+            "node": "Crear contenedor IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear contenedor IG": {
+      "main": [
+        [
+          {
+            "node": "Contenedor creado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contenedor creado": {
+      "main": [
+        [
+          {
+            "node": "Estado contenedor IG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resultado incierto IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estado contenedor IG": {
+      "main": [
+        [
+          {
+            "node": "Contenedor listo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contenedor listo": {
+      "main": [
+        [
+          {
+            "node": "Registrar contenedor IG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Control de espera",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Control de espera": {
+      "main": [
+        [
+          {
+            "node": "Esperar procesamiento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar procesamiento": {
+      "main": [
+        [
+          {
+            "node": "Esperar cinco segundos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resultado incierto IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar cinco segundos": {
+      "main": [
+        [
+          {
+            "node": "Estado contenedor IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar contenedor IG": {
+      "main": [
+        [
+          {
+            "node": "Validar autorización IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar autorización IG": {
+      "main": [
+        [
+          {
+            "node": "Publicar IG UNA vez",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar IG UNA vez": {
+      "main": [
+        [
+          {
+            "node": "Publicación confirmada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicación confirmada": {
+      "main": [
+        [
+          {
+            "node": "Permalink IG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resultado incierto IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Permalink IG": {
+      "main": [
+        [
+          {
+            "node": "Resultado verificado IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resultado verificado IG": {
+      "main": [
+        [
+          {
+            "node": "Registrar resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resultado incierto IG": {
+      "main": [
+        [
+          {
+            "node": "Registrar resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "America/Argentina/Buenos_Aires",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false
+  }
+}

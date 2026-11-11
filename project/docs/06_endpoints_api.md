@@ -1,5 +1,11 @@
 # 06 - Endpoints API
 
+## Extensión Instagram Noticias (2026-11-11, implementada local; pendiente deploy)
+
+Mismo operador PAT limitado y middleware de publicaciones; bandera Instagram apagada por defecto. `/api/v1/social-publications/instagram`: GET `candidates`, POST `claims`, POST `{target}/render`, POST `{target}/begin`, POST `{target}/container`, POST `{target}/result` y GET `{target}`. Cola de noticias públicas con éxito Facebook, independientes por destino IG. `container` recibe attempt_id, lease y container_id y vuelve a comprobar el snapshot antes de autorizar media_publish. `result` admite media_id numérico y permalink Instagram real en external_url; callbacks/status siguen disponibles al pausar para conciliar.
+
+GET público `/api/v1/social-publication-assets/{sha256}.jpg`: solo JPEG generado, hash de64 caracteres hexadecimales, sin acceso a otros archivos; noindex, image/jpeg y caché de24h, sin regenerar la imagen. APIs autenticadas no-store. Guía completa de contrato/despliegue: `resources/integrations/n8n/INSTAGRAM.md`; no implica activación productiva.
+
 > Estado real de la API versionada al **2026-09-08**.
 > Describe la superficie vigente y sus restricciones, alineada con `00_estado_actual.md`.
 

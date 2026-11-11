@@ -9,6 +9,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Agregado
 
+- **Instagram Noticias** (`social-publication-instagram-news`): ledger independiente por red, JPEG v4 público por hash, registro del contenedor y permalink verificado. Cola IG basada en éxitos Facebook, sin reenvíos ciegos ante incertidumbre. Workflow n8n manual/inactivo y bloqueado para prueba833. Implementado local, pendiente deploy/token de larga duración y prueba real; sin migraciones ni IA paga. Validación:61 tests/298 assertions y siete escenarios n8n privados. Guía `resources/integrations/n8n/INSTAGRAM.md`.
+
 - **Publicaciones sociales por contenido y destino** (`social-publication-ledger-n8n`): registro sobre la Pasarela existente con selección automática para Noticias (habilitación explícita para Eventos), reservas exclusivas, snapshots, confirmación idempotente y bloqueo de resultados inciertos para evitar reenvíos. Piloto para Noticias/Eventos y la Página institucional de Facebook; sin republicación automática de éxitos.
 - **API y panel de operación**: `/api/v1/social-publications` con PAT dedicado, permisos acotados y límites de uso; `/admin/social-publications` para habilitar contenidos y conciliar resultados con auditoría. Comandos de inventario, backfill dry-run, recuperación de reservas, provisión de operador sin rol administrador y exportación privada de credencial n8n.
 - **Placas editoriales v4**: fuentes del catálogo de doce diseños aprobados y renderer GD para Noticias/Agenda, PNG privado 1080×1350 y verificación SHA256 antes del envío. Subida del archivo desde n8n sin hosting adicional, IA ni dependencias nuevas. Fuentes tipográficas configuradas por entorno; no se redistribuyen fuentes del sistema.

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 
 class SocialPublicationRenderer
 {
-    public function render(array $payload): array
+    public function render(array $payload, string $format = 'png'): array
     {
         abort_unless(extension_loaded('gd'), 503, 'GD no está disponible.');
         $regular = config('social_publication.font_regular');
@@ -80,11 +80,15 @@ class SocialPublicationRenderer
             $box(73, 1166, 934, 2, $accent);
             $label($template['cta'], 71, 1195, 23, $white, true);
             $label('mifolkloreargentino.com', 71, 1238, 26, $accent);
-            ob_start(); imagepng($image, null, 6); $png = ob_get_clean();
+            abort_unless(in_array($format, ['png', 'jpeg'], true), 422);
+            ob_start();
+            if ($format === 'jpeg') { imagejpeg($image, null, 94); } else { imagepng($image, null, 6); }
+            $png = ob_get_clean();
+            $extension = $format === 'jpeg' ? 'jpg' : 'png';
             $hash = hash('sha256', $png);
-            $path = 'social-publications/assets/'.$hash.'.png';
+            $path = 'social-publications/assets/'.$hash.'.'.$extension;
             abort_unless(Storage::disk('local')->put($path, $png), 503, 'No se pudo conservar la placa.');
-            return ['asset_reference' => 'sha256:'.$hash, 'asset_sha256' => $hash, 'asset_base64' => base64_encode($png), 'mime_type' => 'image/png', 'width' => 1080, 'height' => 1350];
+            return ($format === 'jpeg' ? ['asset_url' => route('social-publications.asset', ['hash' => $hash])] : []) + ['asset_reference' => 'sha256:'.$hash, 'asset_sha256' => $hash, 'asset_base64' => base64_encode($png), 'mime_type' => $format === 'jpeg' ? 'image/jpeg' : 'image/png', 'width' => 1080, 'height' => 1350];
         } finally { imagedestroy($image); }
     }
 }
