@@ -45,7 +45,7 @@ Sin cambios de `composer.lock`/dependencias ni variables de entorno obligatorias
 Volver al commit anterior de `main` (con su `public/build`), correr `bash scripts/post-deploy.sh` y, si hace falta, `migrate:rollback --step=1`. Las cachés `home:*` caducan solas en 10 minutos.
 
 ## 6. Resultado de la corrida de integración
-Ver `project/docs/00_estado_actual.md` (sección «Release v2.6.0»).
+Suite completa sobre el estado final de `dev`: 842 pasan, 7 omitidos, 0 fallos (5.139 assertions), 2026-11-12. Detalle en `project/docs/00_estado_actual.md` (sección «Release v2.6.0»).
 
 ## 7. Observaciones
 - «Inactivo» usa `last_login_at`, que se empezó a registrar hace poco: 442 de 449 usuarios figuran como «nunca ingresó»; la primera tanda es en su mayoría una invitación a activar la cuenta.
