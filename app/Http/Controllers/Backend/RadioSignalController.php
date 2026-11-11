@@ -23,6 +23,7 @@ class RadioSignalController extends Controller
     public function index(Request $request)
     {
         $signals = RadioSignal::query()->with(['provincia', 'verifier'])->withCount('programs')
+            ->where('editorial_status', '!=', 'draft')
             ->when(! Auth::user()->hasRole('administrador'), fn ($query) => $query->where('created_by', Auth::id()))
             ->when($request->filled('status'), fn ($query) => $query->where('editorial_status', $request->input('status')))
             ->when($request->filled('verification'), fn ($query) => $query->where('verification_status', $request->input('verification')))
@@ -43,9 +44,9 @@ class RadioSignalController extends Controller
 
     public function store(RadioSignalRequest $request)
     {
-        $this->radios->saveSignal(new RadioSignal(), $request->validated() + ['created_by' => Auth::id()]);
+        $signal = $this->radios->saveSignal(new RadioSignal(), $request->validated() + ['created_by' => Auth::id()]);
 
-        return redirect()->route('backend.radios.signals.index')->with('success', 'Señal creada.');
+        return $this->savedRedirect($signal, 'Señal creada.');
     }
 
     public function edit(RadioSignal $radioSignal)
@@ -57,7 +58,7 @@ class RadioSignalController extends Controller
     {
         $this->radios->saveSignal($radioSignal, $request->validated());
 
-        return redirect()->route('backend.radios.signals.index')->with('success', 'Señal actualizada.');
+        return $this->savedRedirect($radioSignal, 'Señal actualizada.');
     }
 
     public function destroy(RadioSignal $radioSignal)
@@ -101,5 +102,18 @@ class RadioSignalController extends Controller
         $canManageEditorialState = Auth::user()->hasRole('administrador');
 
         return compact('signal', 'canManageEditorialState') + ['provincias' => Provincia::orderBy('nombre')->get(), 'localities' => Locality::orderBy('name')->get(), 'users' => $canManageEditorialState ? User::orderBy('name')->limit(200)->get(['id', 'name']) : collect()];
+    }
+
+    private function savedRedirect(RadioSignal $signal, string $message)
+    {
+        if ($signal->editorial_status === 'draft') {
+            if (Auth::user()->hasRole('administrador')) {
+                return redirect()->route('backend.moderation.index')->with('success', $message)->with('open', 'radios');
+            }
+
+            return redirect()->route('backend.radios.signals.edit', $signal)->with('success', $message);
+        }
+
+        return redirect()->route('backend.radios.signals.index')->with('success', $message);
     }
 }

@@ -7,6 +7,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [2.6.0] — 2026-11-11
+
 ### Agregado
 
 - **Home: enlace a todas las noticias y cuatro bloques de catálogo** (`home-bloques-catalogo`): botón «Ver todas las noticias» y, en lugar de los destacados únicos, bloques de 4 con próximos eventos, últimos intérpretes, festivales más visitados y últimos discos, cada uno con enlace a su sección. Consultas acotadas y cacheadas 10 min (`home:bloques`, invalidada al guardar contenido). Sin migraciones ni cambios de URLs; 3 tests nuevos.
@@ -22,6 +24,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Cambiado
 
+- **Noticias Facebook→Instagram11:00**: encadenamiento autorizado y activado en el workflow diario existente. IG usa el mismo content_id después del callback FB success; sin otro scheduler ni segundo envío FB ante fallo IG. Cuatro escenarios n8n privados correctos; versión activa/publicada y horario Argentina comprobados tras reinicio. Sin nuevas publicaciones de prueba ni cambios PHP/BD.
+
 - **Noticias sin habilitación manual** (pedido2026-11-11): una por ejecución desde la siguiente a833, orden ID ascendente, activa/visible según el estado público del portal y sin envío anterior al destino. El claim registra automáticamente elegibilidad/historial sin cambiar publication_mode. Excluye éxitos, envíos en curso/inciertos y reservas vigentes; recupera reservas pre-begin vencidas y respeta backoff/límite de envíos. Eventos sigue manual. Sin migraciones nuevas ni cambios de contrato/credencial de n8n; requiere desplegar PHP/config y regenerar caché para que rija en producción.
 
 ### Corregido
@@ -31,7 +35,15 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 - Los jobs de Pasarela reconocen `success` y `published`, respetan el ejecutor n8n y bloquean un segundo publicador para la misma Página aunque existan cuentas sociales duplicadas. Nuevos payloads y errores de conectores comunes se guardan saneados, sin tokens.
 - Eliminar al solicitante conserva el historial de publicaciones mediante autor nullable y `ON DELETE SET NULL`.
 
+### Notas de despliegue
+
+- **Qué se despliega (frente a `main`):** solo la Home (24 noticias, enlace «Ver todas las noticias», cuatro bloques de catálogo, sin contador) y las tarjetas de noticia sin imagen de relleno. Sin migraciones, sin cambios de `composer.lock`/dependencias, sin rutas ni variables de entorno nuevas.
+- **Build:** `public/build` recompilado (3 CSS con hash nuevo + `manifest.json`); producción no tiene Node, deben subirse completos. Ver `project/docs/releases/deploy-v2.6.0-home.md`.
+- **Tras el deploy:** `bash scripts/post-deploy.sh` (limpia y regenera cachés y el response cache).
+
 ### Validación y despliegue
+
+- **Instagram en producción (2026-11-11)**: usuario desplegó y habilitó la API; prueba833 autorizada publicada y verificada, media17964203609999673 / permalinkhttps://www.instagram.com/p/Dfm52_xlrID/. Ledger IG success/1envío y exclusión posterior de candidatos; historial Facebook preservado. Workflow de prueba bloqueado al finalizar; programación IG pendiente de activación. Sin migraciones nuevas.
 
 - **Implementado y validado en local el 2026-11-10**: 76 tests Feature pasan (228 assertions) y seis escenarios completos de n8n contra un simulador privado. En esa validación local no se publicaron contenidos ni se activó la programación.
 - Migración aditiva `2026_11_10_100000_add_social_publication_ledger.php` aplicada con autorización en las bases locales existentes `mfa` y `mfa_test`. En producción revisar `migrate:status` y autorizar su aplicación por separado; no ejecutar rollback automático del historial.

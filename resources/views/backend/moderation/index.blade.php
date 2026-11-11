@@ -7,6 +7,9 @@
 @stop
 
 @section('content')
+@if($errors->any())
+    <div class="alert alert-danger" role="alert"><strong>No se pudo publicar.</strong><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+@endif
 @php $dash = fn ($v) => $v ?: '-'; @endphp
 <div class="row">
     @if($total === 0)
@@ -101,6 +104,20 @@
                     <td>{{ $item->provincia?->nombre ?? '-' }}</td>
                     <td>{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                     <x-backend.moderation-actions :edit="route('backend.festivales.edit', $item)" type="festival" :id="$item->id" />
+                </tr>
+            @endforeach
+        </x-backend.moderation-card>
+    @endif
+
+    @if($radios->isNotEmpty())
+        <x-backend.moderation-card key="radios" title="Radios en Borrador" color="info" :count="$radios->count()" :open="$open === 'radios'" :columns="['Título', 'Autor', 'Provincia', 'Fecha Carga']">
+            @foreach($radios as $item)
+                <tr>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ $item->creator?->name ?? 'Sistema' }}</td>
+                    <td>{{ $item->provincia?->nombre ?? '-' }}</td>
+                    <td>{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                    <x-backend.moderation-actions :edit="route('backend.radios.signals.edit', $item)" type="radio" :id="$item->id" />
                 </tr>
             @endforeach
         </x-backend.moderation-card>

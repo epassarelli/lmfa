@@ -28,12 +28,14 @@ class ModerationController extends Controller
         'album'      => \App\Models\Album::class,
         'cancion'    => \App\Models\Cancion::class,
         'festival'   => \App\Models\Festival::class,
+        'radio'      => \App\Models\RadioSignal::class,
     ];
 
     // Tarjeta del índice que queda expandida tras publicar cada tipo.
     private const CARD_KEYS = [
         'news' => 'news', 'event' => 'events', 'event-program' => 'programs',
         'interprete' => 'interpretes', 'album' => 'albumes', 'cancion' => 'canciones', 'festival' => 'festivales',
+        'radio' => 'radios',
     ];
 
     public function publish(string $type, int $id)
@@ -55,6 +57,10 @@ class ModerationController extends Controller
             app(\App\Services\EventService::class)->updateEvent($model, ['editorial_status' => 'published', 'approved_by' => auth()->id(), 'approved_at' => now()]);
         } elseif ($type === 'event-program') {
             app(\App\Services\EventProgramService::class)->save(array_merge($model->only(['title', 'body', 'excerpt', 'venue_id', 'ticket_url', 'price_text', 'is_free']), ['editorial_status' => 'published']), null, $model);
+        } elseif ($type === 'radio') {
+            $this->authorize('publish', $model);
+            session()->flash('open', 'radios');
+            app(\App\Services\RadioDirectoryService::class)->publishSignal($model);
         } elseif ($type === 'festival') {
             $model->update(['status' => 'published', 'published_at' => $model->published_at ?? now()]);
         } else {
@@ -81,11 +87,12 @@ class ModerationController extends Controller
         $albunes = $queue::albums()->with('user')->get();
         $canciones = $queue::canciones()->with('user')->get();
         $festivales = $queue::festivales()->with(['user', 'provincia'])->get();
+        $radios = $queue::radios()->with(['creator', 'provincia'])->orderBy('created_at')->get();
 
         $total = $news->count() + $events->count() + $programs->count() + $pendingVenues->count()
-            + $interpretes->count() + $albunes->count() + $canciones->count() + $festivales->count();
+            + $interpretes->count() + $albunes->count() + $canciones->count() + $festivales->count() + $radios->count();
         $open = session('open');
 
-        return view('backend.moderation.index', compact('news', 'events', 'programs', 'pendingVenues', 'interpretes', 'albunes', 'canciones', 'festivales', 'total', 'open'));
+        return view('backend.moderation.index', compact('news', 'events', 'programs', 'pendingVenues', 'interpretes', 'albunes', 'canciones', 'festivales', 'radios', 'total', 'open'));
     }
 }

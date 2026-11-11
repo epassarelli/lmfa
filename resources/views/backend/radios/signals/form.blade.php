@@ -1,6 +1,8 @@
 @php
   $channels = old('channels', $signal->listeningChannels->map(fn ($channel) => $channel->only(['id','label','channel_type','platform','frequency_band','frequency','url','is_primary','is_active']))->all());
   $modes = old('transmission_modes', $signal->transmission_modes ?: ['streaming']);
+  $sources = old('source_urls', $signal->source_urls ?? []);
+  $sourcesText = is_array($sources) ? implode(PHP_EOL, $sources) : (is_string($sources) ? $sources : '');
 @endphp
 
 @if($errors->any())<div class="alert alert-danger"><strong>No se pudo guardar.</strong><ul class="mb-0 mt-2">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
@@ -47,7 +49,7 @@
 <h6 class="text-muted text-uppercase font-weight-bold border-bottom pb-1 mb-2 mt-2">Fuentes, imagen y SEO</h6>
 <div class="row">
   {{-- Fuentes 6 · Imagen 3 · Texto alternativo 3 --}}
-  <div class="col-md-12 col-xl-6 form-group"><label for="source_urls">Fuentes oficiales o verificables <span class="text-danger">*</span></label><x-backend.help-tip text="Una URL por línea." /><textarea id="source_urls" class="form-control" name="source_urls" rows="3" required>{{ implode(PHP_EOL, old('source_urls', $signal->source_urls ?? [])) }}</textarea></div>
+  <div class="col-md-12 col-xl-6 form-group"><label for="source_urls">Fuentes oficiales o verificables <span class="text-danger">*</span></label><x-backend.help-tip text="Una URL por línea." /><textarea id="source_urls" class="form-control" name="source_urls" rows="3" required>{{ $sourcesText }}</textarea></div>
   <div class="col-md-6 col-xl-3 form-group"><label for="featured_image_path">Ruta de imagen destacada</label><input id="featured_image_path" class="form-control" name="featured_image_path" value="{{ old('featured_image_path', $signal->featured_image_path) }}"></div>
   <div class="col-md-6 col-xl-3 form-group"><label for="image_alt">Texto alternativo de imagen</label><input id="image_alt" class="form-control" name="image_alt" value="{{ old('image_alt', $signal->image_alt) }}"></div>
 

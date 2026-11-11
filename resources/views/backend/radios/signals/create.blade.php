@@ -8,13 +8,13 @@
 @stop
 
 @section('content')
-<div class="card card-primary">
+<div class="row"><div class="col-12"><div class="card card-primary">
   <form method="POST" action="{{ route('backend.radios.signals.store') }}" class="form-compact">
     @csrf 
     <div class="card-body">@include('backend.radios.signals.form')</div>
     <div class="card-footer"><x-backend.form-actions :back="route('backend.radios.signals.index')" /></div>
   </form>
-</div>
+</div></div></div>
 @stop
 
 @section('js')

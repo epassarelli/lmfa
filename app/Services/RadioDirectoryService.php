@@ -42,6 +42,8 @@ class RadioDirectoryService
                 $signal->save();
             }
 
+            app(AdminAttentionService::class)->forget();
+
             return $signal;
         });
     }

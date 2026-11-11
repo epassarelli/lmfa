@@ -2,7 +2,17 @@
 
 ## Estado
 
-Implementado en local, pendiente de deploy del usuario y primera publicación real. Sin migraciones ni dependencias nuevas. Instagram desactivado por defecto. No se modificó el workflow activo de Facebook.
+**Programación conjunta operativa:** Activación2026-11-11 autorizada por el usuario y verificada: MfaNewsDailyV401, Facebook + Instagram diario11:00 Argentina, único cron0 0 11 * * * / America/Argentina/Buenos_Aires. Facebook conserva los parámetros de sus14 nodos; IG empieza después del callback success con exactamente el content_id confirmado, sin consultar otra candidata ni tener scheduler independiente. Cuatro escenarios n8n simulados pasaron: éxito conjunto, rechazo/incertidumbre FB sin IG y error IG sin duplicar FB. Versión publicada=activa y log Activated workflow comprobados tras reinicio. Sin publicaciones reales adicionales, migraciones ni deploy adicional del portal. Borradores IG separados/prueba833 siguen bloqueados e inactivos. PC/Docker/n8n deben estar funcionando; incertidumbres requieren conciliación.
+
+Fuente segura `daily/news-facebook-instagram.json`, generador `build-news-chain.cjs`. Genera export inactivo/bloqueado por defecto; runtime solo en artefactos locales desde la versión activa exportada. La cola IG separada queda disponible para recuperación manual supervisada.
+
+Desplegado por el usuario y primera publicación real verificada el2026-11-11. Sin migraciones ni dependencias nuevas. Bandera API Instagram habilitada y encadenamiento diario activado después de la prueba, como se detalla arriba.
+
+### Prueba productiva833 completada
+
+Preflight del usuario: PHP8.2.35, GD/fuentes/catálogo/esquema, enabled/instagram_enabled/ruta, operador1 y HTTPS correctos. GET autenticado productivo devolvió noticia833 y cuota Meta0/100 en24h. UNA ejecución `MfaIGTest833Once` creó contenedor18643887001010404 y publicó media17964203609999673, HTTP200. Permalink verificado: https://www.instagram.com/p/Dfm52_xlrID/. Publicada2026-11-11 13:24:53 Argentina. Ledger IG target2/attempt3 success, attempts_count1; snapshot1882f614242eacb70e462337b6aad6535efc23197dc72a674c1233be3fbc4533. JPEG1080x1350 SHA2560f1a87bc9a8053f0d30b1b28132cb10e9a64bcb831629022f21b54d7d7bc8551 revisado visualmente, mismo diseño v4 y texto aprobado. Caption y media_typeIMAGE confirmados por GET Meta. GET candidatos posterior HTTP200, cola vacía:833 excluida. Registro Facebook target1 conserva success/1envío, sin segundo POST a Facebook.
+
+Workflow de prueba reimportado con bloqueo explícito después del éxito, inactivo/sin horario. El borrador `MfaInstagramNews01` también sigue bloqueado/inactivo; activar diariamente es un paso pendiente. Evidencia local sin secretos: project/artifacts/social-instagram-news-833.jpg. No volver a ejecutar la prueba ni cambiar el estado de833 para probar de nuevo.
 
 - App2383825398825453; Página145931542128207; cuenta IG17841400312117345 (@mifolkloreargentino).
 - Credencial independiente `MFA - Instagram Publicaciones` (`qaekI4MYP9zPCJe7`), tipo Facebook Graph API. Nunca exportar el valor del token.

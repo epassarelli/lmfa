@@ -54,8 +54,8 @@ class RadioBackofficeTest extends TestCase
             ]],
         ]);
 
-        $response->assertRedirect(route('backend.radios.signals.index'));
         $signal = \App\Models\RadioSignal::where('title', 'Radio de prueba streaming')->firstOrFail();
+        $response->assertRedirect(route('backend.radios.signals.edit', $signal));
         $this->assertSame('draft', $signal->editorial_status);
         $this->assertSame('pending', $signal->verification_status);
         $this->assertNull($signal->verified_by_user_id);

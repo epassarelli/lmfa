@@ -9,6 +9,7 @@ use App\Models\EventProgram;
 use App\Models\Festival;
 use App\Models\Interprete;
 use App\Models\News;
+use App\Models\RadioSignal;
 use App\Models\Venue;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -58,6 +59,11 @@ class ModerationQueue
         return Festival::query()->where('status', 'draft');
     }
 
+    public static function radios(): Builder
+    {
+        return RadioSignal::query()->where('editorial_status', 'draft');
+    }
+
     /**
      * @return array{items: array<string, int>, total: int, oldest: ?int}
      */
@@ -72,6 +78,7 @@ class ModerationQueue
             'Discos' => self::albums()->count(),
             'Canciones' => self::canciones()->count(),
             'Festivales' => self::festivales()->count(),
+            'Radios' => self::radios()->count(),
         ];
 
         return ['items' => $items, 'total' => array_sum($items), 'oldest' => null];

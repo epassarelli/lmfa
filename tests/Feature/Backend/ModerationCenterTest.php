@@ -30,7 +30,7 @@ class ModerationCenterTest extends TestCase
     /** Vacía las colas dentro de la transacción del test (sin eventos de modelo) para no depender de datos previos. */
     private function clearQueues(): void
     {
-        foreach (['news', 'events', 'programs', 'venues', 'interpretes', 'albums', 'canciones', 'festivales'] as $queue) {
+        foreach (['news', 'events', 'programs', 'venues', 'interpretes', 'albums', 'canciones', 'festivales', 'radios'] as $queue) {
             ModerationQueue::$queue()->toBase()->delete();
         }
     }
