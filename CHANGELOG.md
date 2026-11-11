@@ -7,7 +7,7 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
-## [2.6.0] — 2026-11-11
+## [2.6.0] — 2026-11-12
 
 ### Agregado
 
@@ -34,6 +34,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Corregido
 
+- **Radios: edición y moderación** (`radios-edit-and-moderation`): se corrigió el error 500 al editar una señal, las radios en borrador se revisan y publican desde el Centro de Moderación (con su contador) y los formularios de radios quedan a ancho completo. Sin migraciones; tests en `RadioModerationTest`.
+
 - **Tests desactualizados**: `BackofficeSidebarTest` (orden alfabético del menú) pasa de nuevo con el nuevo orden, y `PublicMobilePerformanceBudgetTest` espera 24 noticias en la Home en lugar de 6.
 
 - **Estilos rotos en local por `public/hot` obsoleto**: el archivo de Vite dev apuntaba a `[::1]:5173`, puerto hoy ocupado por otro contenedor, y el response cache conservó el HTML con esas etiquetas. Se eliminó `public/hot` (ignorado por git), se limpió response/view cache y se documentó el diagnóstico en `project/docs/04_arquitectura.md`. Sin cambios de código ni de producción.
@@ -43,7 +45,8 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Notas de despliegue
 
-- **Qué se despliega (frente a `main`):** solo la Home (24 noticias, enlace «Ver todas las noticias», cuatro bloques de catálogo, sin contador) y las tarjetas de noticia sin imagen de relleno. Sin migraciones, sin cambios de `composer.lock`/dependencias, sin rutas ni variables de entorno nuevas.
+- **Qué se despliega (frente a `main`):** (1) Home: 24 noticias, enlace «Ver todas las noticias», cuatro bloques de catálogo, sin contador y tarjetas de noticia sin imagen de relleno; (2) menús: Centro de Moderación primero en el backoffice y Discos/Canciones en el NAV público; (3) Radios: edición corregida y borradores de radios en el Centro de Moderación; (4) mail de reactivación de usuarios con envío manual desde el backoffice; (5) export n8n Facebook+Instagram y su documentación. **Incluye una migración** (`2026_11_12_100000_add_reengagement_mail_support`, aditiva); sin cambios de `composer.lock`/dependencias y sin variables de entorno obligatorias.
+- **Orden recomendado:** backup de la base → `migrate:status` (solo debe figurar esa migración) → `migrate` → `git pull` de `main` con `public/build` completo → `bash scripts/post-deploy.sh`. Checklist completo: `project/docs/releases/deploy-v2.6.0.md`; el de la reactivación en `reactivacion-usuarios-deploy.md`.
 - **Build:** `public/build` recompilado (3 CSS con hash nuevo + `manifest.json`); producción no tiene Node, deben subirse completos. Ver `project/docs/releases/deploy-v2.6.0-home.md`.
 - **Tras el deploy:** `bash scripts/post-deploy.sh` (limpia y regenera cachés y el response cache).
 
