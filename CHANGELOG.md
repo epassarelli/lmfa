@@ -22,9 +22,13 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Cambiado
 
+- **Menús** (`menus-backoffice-y-front`): en el backoffice, «Centro de Moderación» pasa al primer lugar y «Publicaciones en redes» a la sección «Astronomía y audiencia»; en el NAV público, «Discos» y «Canciones» van como enlaces principales detrás de «Festivales» (ya no dentro de «Más»). 2 tests nuevos.
+
 - **Noticias sin habilitación manual** (pedido2026-11-11): una por ejecución desde la siguiente a833, orden ID ascendente, activa/visible según el estado público del portal y sin envío anterior al destino. El claim registra automáticamente elegibilidad/historial sin cambiar publication_mode. Excluye éxitos, envíos en curso/inciertos y reservas vigentes; recupera reservas pre-begin vencidas y respeta backoff/límite de envíos. Eventos sigue manual. Sin migraciones nuevas ni cambios de contrato/credencial de n8n; requiere desplegar PHP/config y regenerar caché para que rija en producción.
 
 ### Corregido
+
+- **Tests desactualizados**: `BackofficeSidebarTest` (orden alfabético del menú) pasa de nuevo con el nuevo orden, y `PublicMobilePerformanceBudgetTest` espera 24 noticias en la Home en lugar de 6.
 
 - **Estilos rotos en local por `public/hot` obsoleto**: el archivo de Vite dev apuntaba a `[::1]:5173`, puerto hoy ocupado por otro contenedor, y el response cache conservó el HTML con esas etiquetas. Se eliminó `public/hot` (ignorado por git), se limpió response/view cache y se documentó el diagnóstico en `project/docs/04_arquitectura.md`. Sin cambios de código ni de producción.
 

@@ -1,5 +1,10 @@
 # 00 - Estado Actual del Proyecto
 
+## Novedad 2026-11-11: menús del backoffice y del NAV público
+
+Pedido del usuario: en el backoffice se intercambian «Centro de Moderación» (primero del menú) y «Publicaciones en redes» (sección Astronomía y audiencia); en el NAV público «Discos» y «Canciones» pasan a enlaces principales detrás de «Festivales». Implementado local en la rama `feature/menus-backoffice-front` (desde `dev`); validación: 2 tests nuevos, `BackofficeSidebarTest` en verde y pruebas de navegación/Home en verde; además se actualizó el test de presupuesto de performance al nuevo límite de 24 noticias. Sin migraciones ni URLs nuevas. Pendiente merge a `dev` y deploy humano. Spec `project/docs/specs/menus-backoffice-y-front.md`.
+
+
 ## Novedad 2026-11-11: Home con enlace a todas las noticias y cuatro bloques de catálogo
 
 Pedido del usuario: debajo de las noticias se agrega «Ver todas las noticias» y los destacados únicos se reemplazan por cuatro bloques de 4 (próximos eventos, últimos intérpretes, festivales más visitados, últimos discos), cada uno con enlace a su sección y omitido si está vacío. Implementado local; validación: 3 tests nuevos (`HomeBlocksTest`) más los de Home/noticias, y render real con los cuatro bloques (la base local tiene solo 2 eventos vigentes). Sin migraciones ni URLs nuevas; SEO con más enlaces internos, H1/metadescripción intactos. Performance: consultas LIMIT 4 con eager loading cacheadas 10 min; no medido en producción. Pendiente deploy humano. Spec `project/docs/specs/home-bloques-catalogo.md`.

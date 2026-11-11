@@ -294,7 +294,13 @@ return [
     */
 
     'menu' => [
-        ['text' => 'Publicaciones en redes', 'url' => 'admin/social-publications', 'icon' => 'fas fa-share-alt', 'can' => 'manage_users'],
+        [
+            'text' => 'Centro de Moderación',
+            'pending' => 'review',
+            'url' => 'admin/moderation',
+            'icon' => 'fas fa-fw fa-tasks',
+            'can' => 'manage user',
+        ],
         [
             'text' => 'Mis fichas',
             'url' => 'admin/mis-fichas',
@@ -458,13 +464,7 @@ return [
                 'admin/classifieds*',
             ],
         ],
-        [
-            'text' => 'Centro de Moderación',
-            'pending' => 'review',
-            'url' => 'admin/moderation',
-            'icon' => 'fas fa-fw fa-tasks',
-            'can' => 'manage user',
-        ],
+        ['text' => 'Publicaciones en redes', 'url' => 'admin/social-publications', 'icon' => 'fas fa-share-alt', 'can' => 'manage_users'],
         [
             'header' => 'SISTEMA Y AUDIENCIA',
         ],

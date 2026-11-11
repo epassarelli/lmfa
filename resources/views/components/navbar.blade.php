@@ -46,6 +46,12 @@
           <li>
             <a href="{{ route('festivales.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Festivales</a>
           </li>
+          <li>
+            <a href="{{ route('discografias.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Discos</a>
+          </li>
+          <li>
+            <a href="{{ route('canciones.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Canciones</a>
+          </li>
           @if(config('features.penia_directory'))
             <li>
               <a href="{{ route('penia-profiles.index') }}" class="block rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-[#ff661f]">Peñas</a>
@@ -76,8 +82,6 @@
                 <svg class="h-3.5 w-3.5 transition group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.09 1.03l-4.25 4.51a.75.75 0 01-1.09 0l-4.25-4.51a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
               </summary>
               <div class="mt-1 overflow-hidden rounded-lg border border-slate-200 bg-white py-1 text-slate-800 shadow-xl lg:absolute lg:right-0 lg:z-50 lg:mt-2 lg:w-52">
-                <a href="{{ route('discografias.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Discos</a>
-                <a href="{{ route('canciones.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Canciones</a>
                 <a href="{{ route('classifieds.index') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Clasificados</a>
                 <a href="{{ route('contacto') }}" class="block px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-700">Contacto</a>
               </div>

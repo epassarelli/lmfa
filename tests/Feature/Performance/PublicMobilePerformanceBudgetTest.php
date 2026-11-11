@@ -16,7 +16,7 @@ class PublicMobilePerformanceBudgetTest extends TestCase
     {
         Cache::flush();
 
-        for ($i = 1; $i <= 14; $i++) {
+        for ($i = 1; $i <= 30; $i++) {
             DB::table('news')->insert([
                 'title' => 'Noticia publicada '.$i,
                 'slug' => 'noticia-publicada-'.$i,
@@ -30,7 +30,7 @@ class PublicMobilePerformanceBudgetTest extends TestCase
 
         $home = $this->call('GET', '/', [], [], [], $this->serverVariables());
         $home->assertOk();
-        $this->assertCount(6, $home->viewData('ultimasNoticias'));
+        $this->assertCount(24, $home->viewData('ultimasNoticias'));
 
         $news = $this->call('GET', '/noticias-del-folklore-argentino', [], [], [], $this->serverVariables());
         $news->assertOk();
