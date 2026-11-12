@@ -31,16 +31,19 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    // Botones de ingreso/registro con Google y Facebook en el login. Apagado por defecto mientras el
-    // login social no funcione; las rutas auth/* se conservan.
+    // Botones sociales apagados por defecto. Los overrides permiten habilitar
+    // cada proveedor después de validar su configuración y acceso público.
     'social_login' => [
         'enabled' => (bool) env('SOCIAL_LOGIN_ENABLED', false),
+        // null conserva el interruptor global; cada proveedor admite un override.
+        'google_enabled' => env('GOOGLE_LOGIN_ENABLED'),
+        'facebook_enabled' => env('FACEBOOK_LOGIN_ENABLED'),
     ],
 
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT_URI', env('GOOGLE_REDIRECT_URL')),
+        'redirect' => env('GOOGLE_REDIRECT_URI', env('GOOGLE_REDIRECT_URL', rtrim((string) env('APP_URL', 'https://mifolkloreargentino.com'), '/').'/auth/google/callback')),
     ],
 
     'facebook' => [
