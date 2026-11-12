@@ -41,6 +41,9 @@ La habilitación independiente de botones NO se desplegó. No se modificó .env 
 - Corridas Docker contra la aplicación compartida: perfil/config inicial equivalentes a los del worktree; prueba de botones fuerza el finder de vistas del worktree. No se ejecutó suite completa ni prueba standalone del worktree.
 - diff --check sin errores. Sin medición de performance productiva. No consultas ni JS nuevos; solo OAuth deja de cachearse. URLs y SEO sin cambios.
 
+### Integración local completada
+Commit `8df8a8b`, integrado en dev mediante merge sin conflictos `fe68938`. Validación sobre dev: `php artisan test --do-not-cache-result --filter=SocialLogin`, **16 tests / 107 assertions**, todos pasan; incluye las pruebas existentes SocialLoginButtonsTest. Estas usan DatabaseTransactions sobre mfa_test cuando crean usuarios; sin migraciones ni llamadas externas. No se ejecutó la suite completa. Sin push ni nuevas escrituras productivas. La carpeta principal conserva únicamente archivos ajenos sin versionar; se retiraron los duplicados propios previos al merge.
+
 ## Despliegue manual previsto para el usuario
 1. Integrar este cambio en el release habitual; no sobrescribir cambios ajenos ni revertir el hotfix remoto de auth/*.
 2. Para mostrar solo Google, configurar SOCIAL_LOGIN_ENABLED=false, GOOGLE_LOGIN_ENABLED=true y FACEBOOK_LOGIN_ENABLED=false. No cambiar client IDs, secretos o callbacks válidos.
