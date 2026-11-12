@@ -40,7 +40,7 @@ class InterpreteSpotifyController extends Controller
                 if (filled($interprete->spotify_artist_id)) {
                     $preview = $this->importer->preview($interprete);
                 } else {
-                    $candidates = $this->linker->candidates($interprete);
+                    $candidates = $this->linker->candidates($interprete, true);
                 }
             } catch (SpotifyException $e) {
                 $error = $e->getMessage();

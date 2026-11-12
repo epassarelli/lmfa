@@ -108,6 +108,8 @@
       <div class="card-header"><h3 class="card-title mb-0">Elegí el artista correcto en Spotify</h3></div>
       <div class="card-body">
         <p class="text-muted">Este artista todavía no está vinculado. Al vincularlo, el portal podrá traer sus discos sin buscar por nombre cada vez.</p>
+        @php $portalDiscs = $interprete->discos()->orderByDesc('anio')->limit(8)->pluck('album'); @endphp
+        @if ($portalDiscs->isNotEmpty())<p class="small">Discos de este artista en el portal (para comparar): {{ $portalDiscs->implode(' · ') }}</p>@endif
 
         @forelse ($candidates as $candidate)
           <div class="d-flex align-items-center border-bottom py-2">
@@ -117,11 +119,11 @@
             <div class="flex-grow-1">
               <strong>{{ $candidate['name'] }}</strong>
               @if ($candidate['exact'])<span class="badge badge-success ml-1">Nombre exacto</span>@endif
-              @if ($loop->first && $candidate['exact'] && collect($candidates)->where('exact', true)->count() > 1)<span class="badge badge-info ml-1">Sugerido: más seguidores</span>@endif
               <div class="text-muted small">
-                {{ number_format($candidate['followers'], 0, ',', '.') }} seguidores
-                @if ($candidate['genres']) · {{ implode(', ', $candidate['genres']) }}@endif
-                · <a href="{{ $candidate['url'] }}" target="_blank" rel="noopener">abrir en Spotify</a>
+                @if ($candidate['followers'] > 0){{ number_format($candidate['followers'], 0, ',', '.') }} seguidores · @endif
+                @if ($candidate['genres']){{ implode(', ', $candidate['genres']) }} · @endif
+                <a href="{{ $candidate['url'] }}" target="_blank" rel="noopener">abrir en Spotify</a>
+                @if ($candidate['albums'])<br>Discos en este perfil: {{ implode(' · ', $candidate['albums']) }}@endif
               </div>
             </div>
             @if ($candidate['used_by'])

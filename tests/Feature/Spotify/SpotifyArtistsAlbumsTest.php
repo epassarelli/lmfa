@@ -196,7 +196,7 @@ class SpotifyArtistsAlbumsTest extends TestCase
         $this->fakeSpotify([$this->spotifyArtist(self::SP_ARTIST, 'Pantalla QA')]);
         $unlinked = $this->artist('Pantalla QA');
         $this->actingAs($admin)->get(route('backend.interpretes.spotify', $unlinked))
-            ->assertOk()->assertSee('Elegí el artista correcto')->assertSee('Nombre exacto')->assertSee('Vincular');
+            ->assertOk()->assertSee('Elegí el artista correcto')->assertSee('Nombre exacto')->assertSee('Vincular')->assertDontSee('Sugerido');
     }
 
     public function test_spotify_screen_lists_new_albums_when_linked(): void

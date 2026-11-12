@@ -50,7 +50,7 @@ class SpotifyArtistLinker
      *
      * @return array<int, array<string, mixed>>
      */
-    public function candidates(Interprete $interprete): array
+    public function candidates(Interprete $interprete, bool $withAlbums = false): array
     {
         $needle = self::normalize($interprete->interprete);
         $results = $this->client->searchArtists($interprete->interprete, 10);
@@ -65,7 +65,18 @@ class SpotifyArtistLinker
             'url' => $item['external_urls']['spotify'] ?? 'https://open.spotify.com/artist/'.$item['id'],
             'exact' => self::normalize($item['name'] ?? '') === $needle,
             'used_by' => $used[$item['id']] ?? null,
+            'albums' => [],
         ], $results);
+
+        // Sin seguidores ni géneros (la API en modo desarrollo no los devuelve), lo que ayuda a distinguir homónimos
+        // son los discos de cada perfil: se piden solo para las coincidencias exactas cuando hay más de una.
+        if ($withAlbums && count(array_filter($mapped, fn ($c) => $c['exact'])) > 1) {
+            foreach ($mapped as $i => $c) {
+                if ($c['exact']) {
+                    $mapped[$i]['albums'] = array_slice(array_values(array_unique(array_column($this->client->artistAlbums($c['id'], 1), 'name'))), 0, 5);
+                }
+            }
+        }
 
         // Coincidencia exacta primero y, dentro de cada grupo, el perfil con más seguidores (suele ser el principal).
         usort($mapped, fn ($a, $b) => [$b['exact'], $b['followers']] <=> [$a['exact'], $a['followers']]);
