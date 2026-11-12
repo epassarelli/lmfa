@@ -37,6 +37,8 @@ class PublicPagesCacheProfile extends CacheAllSuccessfulGetRequests
         'contacto*',
         'login',
         'register',
+        // OAuth usa un state por sesión: nunca compartir redirects ni callbacks.
+        'auth/*',
         'password/*',
         'email/*',
         'two-factor-challenge',

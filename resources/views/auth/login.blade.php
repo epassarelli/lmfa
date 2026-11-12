@@ -3,16 +3,23 @@
 @section('auth_footer')
     @parent
 
-    {{-- Ingreso social oculto mientras no funcione (SOCIAL_LOGIN_ENABLED). --}}
-    @if (config('services.social_login.enabled'))
+    @php
+        $googleLoginEnabled = config('services.social_login.google_enabled') ?? config('services.social_login.enabled');
+        $facebookLoginEnabled = config('services.social_login.facebook_enabled') ?? config('services.social_login.enabled');
+    @endphp
+    @if ($googleLoginEnabled || $facebookLoginEnabled)
         <hr class="my-3">
 
-        <a href="{{ route('auth.google') }}" class="btn btn-block btn-outline-danger mb-2">
-            <i class="fab fa-google mr-2"></i>Ingresar con Google
-        </a>
+        @if ($googleLoginEnabled)
+            <a href="{{ route('auth.google') }}" class="btn btn-block btn-outline-danger mb-2">
+                <i class="fab fa-google mr-2"></i>Ingresar con Google
+            </a>
+        @endif
 
-        <a href="{{ route('auth.facebook') }}" class="btn btn-block btn-outline-primary">
-            <i class="fab fa-facebook-f mr-2"></i>Ingresar con Facebook
-        </a>
+        @if ($facebookLoginEnabled)
+            <a href="{{ route('auth.facebook') }}" class="btn btn-block btn-outline-primary">
+                <i class="fab fa-facebook-f mr-2"></i>Ingresar con Facebook
+            </a>
+        @endif
     @endif
 @stop
