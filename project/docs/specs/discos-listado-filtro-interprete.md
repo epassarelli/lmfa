@@ -8,7 +8,7 @@
 Al revisar los discos propuestos desde Spotify, el listado de `backoffice/discos` no permite ver los de un solo artista, y la portada se muestra a tamaño natural (el componente `x-optimized-image` ignora el atributo `style`), lo que vuelve gigante cada fila.
 
 ## Alcance
-1. Filtro **Intérprete** (Select2, con opción «Todos») dentro de la barra de filtros existente, vía `?interprete_id=`. Se combina con búsqueda, orden y paginación (`withQueryString`).
+1. Filtro **Intérprete** (select nativo con el mismo estilo que los demás filtros, con opción «Todos») dentro de la barra de filtros existente, vía `?interprete_id=`. Se combina con búsqueda, orden y paginación (`withQueryString`).
 2. Portada del listado en una caja fija de 50×50 px con `overflow:hidden` y la imagen cubriendo la caja (también en las imágenes legacy y la de «sin imagen»).
 
 ### Fuera de alcance

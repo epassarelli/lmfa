@@ -41,7 +41,7 @@
       >
         <div class="col-md-3">
           <label for="interprete_id" class="small text-muted mb-1">Interprete</label>
-          <select id="interprete_id" name="interprete_id" class="form-control select2" data-placeholder="Todos los interpretes">
+          <select id="interprete_id" name="interprete_id" class="form-control">
             <option value="">Todos</option>
             @foreach ($filterInterpretes as $filterInterprete)
               <option value="{{ $filterInterprete->id }}" @selected((int) $interpreteId === $filterInterprete->id)>{{ $filterInterprete->interprete }}</option>
@@ -121,7 +121,6 @@
 @stop
 
 @section('js')
-  @include('backend.partials.scripts._select2')
   <script>
     $(document).ready(function() {
       $('#imageModal').on('show.bs.modal', function(event) {
