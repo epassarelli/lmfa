@@ -78,6 +78,20 @@
     <x-input name="web" label="Sitio web oficial" :value="$interprete->web ?? ''" />
   </div>
 
+  {{-- Spotify (solo al editar): estado del vínculo y acceso a la gestión --}}
+  @if ($action == 'edit')
+    <div class="col-12 mb-3">
+      <i class="fab fa-spotify text-success"></i>
+      @if (filled($interprete->spotify_artist_id))
+        <span class="ml-1">Vinculado a Spotify <code>{{ $interprete->spotify_artist_id }}</code></span>
+        <a href="{{ route('backend.interpretes.spotify', $interprete) }}" class="btn btn-xs btn-outline-success ml-2">Traer discos / gestionar</a>
+      @else
+        <span class="ml-1 text-muted">Sin vincular a Spotify</span>
+        <a href="{{ route('backend.interpretes.spotify', $interprete) }}" class="btn btn-xs btn-outline-success ml-2">Vincular y traer discos</a>
+      @endif
+    </div>
+  @endif
+
   {{-- Fila 4: Biografía 12 --}}
   <div class="col-12">
     <x-textarea name="biografia" label="Biografía" :value="$interprete->biografia ?? ''" editor editor-profile="editorial-body" :required="true" />

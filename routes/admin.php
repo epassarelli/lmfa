@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\FestivalController;
 use App\Http\Controllers\Backend\FolkloreTournamentController;
 use App\Http\Controllers\Backend\FolkloreTournamentMatchController;
 use App\Http\Controllers\Backend\InterpreteController;
+use App\Http\Controllers\Backend\InterpreteSpotifyController;
 use App\Http\Controllers\Backend\KnowledgeArticleController;
 use App\Http\Controllers\Backend\MitoController;
 use App\Http\Controllers\Backend\ModerationController;
@@ -156,6 +157,14 @@ Route::middleware(['auth'])->group(function () {
             Route::patch('members/{member}', [OrganizationMemberController::class, 'update'])->name('members.update');
             Route::delete('members/{member}', [OrganizationMemberController::class, 'destroy'])->name('members.destroy');
         });
+    });
+    // --- SPOTIFY (vinculo de artistas e importacion de discos). Spec: spotify-artistas-discos ---
+    Route::middleware('backoffice.section:interpretes')->group(function () {
+        Route::post('interpretes/spotify/bulk-link', [InterpreteSpotifyController::class, 'bulkLink'])->name('backend.interpretes.spotify.bulk-link');
+        Route::get('interpretes/{interprete}/spotify', [InterpreteSpotifyController::class, 'show'])->name('backend.interpretes.spotify');
+        Route::post('interpretes/{interprete}/spotify/link', [InterpreteSpotifyController::class, 'link'])->name('backend.interpretes.spotify.link');
+        Route::delete('interpretes/{interprete}/spotify/link', [InterpreteSpotifyController::class, 'unlink'])->name('backend.interpretes.spotify.unlink');
+        Route::post('interpretes/{interprete}/spotify/import', [InterpreteSpotifyController::class, 'import'])->name('backend.interpretes.spotify.import');
     });
     Route::resource('interpretes', InterpreteController::class)->middleware('backoffice.section:interpretes')->names('backend.interpretes');
     Route::resource('categories', CategoryController::class)->names('backend.categories');

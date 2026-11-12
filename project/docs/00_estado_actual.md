@@ -1,5 +1,16 @@
 # 00 - Estado Actual del Proyecto
 
+## Novedad 2026-11-12: Spotify en Artistas y Discos (implementado y validado en local; rama `feature/spotify-artistas-discos`, sin merge, tag ni despliegue)
+
+Spec: `project/docs/specs/spotify-artistas-discos.md`. Reemplaza la lógica del script PowerShell del piloto: ahora vive en Laravel y la comparten tres funciones.
+
+- **Vínculo**: `interpretes.spotify_artist_id` (único, migración aditiva `2026_11_12_120000`, aplicada en las bases `mfa` y `mfa_test`). Pantalla `Artistas > (ícono Spotify)`: candidatos con coincidencia exacta/seguidores, vínculo por URL, desvincular. Listado con filtro «Sin vincular/Vinculados» y acción masiva (admin, lote de 40, solo coincidencia exacta y única). Nunca se pisa un ID existente.
+- **Importación manual**: desde esa pantalla, vista previa de discos que el portal no tiene (portada, año, tipo, «posible duplicado» destildado) y alta como **inactivos** con portada y embed; aparecen en Moderación.
+- **Tarea programada**: `php artisan spotify:proponer-discos` (un artista vinculado por corrida, máx. 15). En el scheduler de Laravel queda **apagada** salvo `SPOTIFY_SCHEDULE_ENABLED=true`. La tarea local de Claude (`discos-spotify-propuestas`, diaria 10:12) ahora dispara ese comando; el script `run-discos.ps1` queda obsoleto.
+- **Validación**: 19 tests Feature nuevos (`tests/Feature/Spotify`, `Http::fake`) + pruebas reales locales (barrida de 40 artistas: 12 vinculados, 24 ambiguos, 4 sin match; importación real de 3 discos con portada para Damasio Esquivel). Los ambiguos son perfiles duplicados en Spotify y requieren elección humana.
+- **Pendiente**: revisar y vincular a mano los ambiguos; rotar el Client Secret de Spotify; para producción hacen falta credenciales propias en su `.env`, `SPOTIFY_PROPOSALS_USER_ID`, aplicar la migración y decisión explícita para habilitar el scheduler. Depende del Premium del dueño de la app de Spotify.
+
+
 ## Novedad 2026-11-11: Discos con estado editable, portada contenida y propuestas desde Spotify (implementado en local, sin commit ni tag)
 
 **Estado en edición** (`project/docs/specs/discos-estado-en-edicion.md`, `done` local): selector Activo/Inactivo en crear/editar Discos para quien `canPublish()`; antes cada guardado fijaba `estado = canPublish ? 1 : 0` y solo se podía activar desde Moderación. Sin `estado` en el pedido el publicador queda activo (compatibilidad); quien no puede publicar sigue en 0. Portada en miniatura de 56 px dentro de un contenedor fijo: `x-optimized-image` no imprime atributos extra y la imagen salía con el ancho de la variante (observación abierta: el componente ignora `style`). Archivos: `albunes/form.blade.php`, `AlbumRequest`, `Backend/AlbumController`, test `AlbumStatusFieldTest` (6). Validación: **33 tests / 413 assertions** (nuevo + `CultureFormsCompactTest`, `FormHeaderAndActionsStandardTest`, `TrustedPublishingTest`, `MemberContentAccessTest`); `MemberSelectionScopingTest` pasó en la corrida conjunta previa (44 de 45 tests pasaron; el único fallo era el test nuevo, ya corregido). Sin migraciones; transacciones en `mfa_test`. Sin consultas nuevas. Pendiente: revisión visual del usuario, commit y despliegue autorizado.

@@ -20,6 +20,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('newsletter:build-draft')->weeklyOn(1, '07:00')->withoutOverlapping();
         $schedule->command('newsletter:dispatch-scheduled')->everyFifteenMinutes()->withoutOverlapping();
 
+        // Spotify (spec spotify-artistas-discos): propone discos INACTIVOS de un artista vinculado por corrida.
+        // Apagado por defecto: se habilita con SPOTIFY_SCHEDULE_ENABLED=true.
+        if (config('spotify.schedule_enabled')) {
+            $schedule->command('spotify:proponer-discos')->dailyAt('10:00')->withoutOverlapping();
+        }
+
         // PC-09: Event reminders — runs daily at 08:00
         $schedule->job(new \App\Jobs\Publication\EventReminderJob())->dailyAt('08:00');
 

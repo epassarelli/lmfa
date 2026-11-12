@@ -26,6 +26,8 @@ class Interprete extends Model
     protected $casts = [
         'estado' => 'boolean',
         'visitas' => 'integer',
+        'spotify_link_checked_at' => 'datetime',
+        'spotify_albums_checked_at' => 'datetime',
     ];
 
     protected $fillable = [

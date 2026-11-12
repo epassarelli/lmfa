@@ -42,6 +42,8 @@ class InterpreteController extends Controller
         ! $user->hasRole('administrador') && (config('backoffice_access.enabled') || ! $user->hasRole('colaborador')),
         fn ($query) => $query->managedOrLegacyBy($user)
       )
+      ->when($request->query('spotify') === 'sin_vincular', fn ($query) => $query->whereNull('spotify_artist_id'))
+      ->when($request->query('spotify') === 'vinculados', fn ($query) => $query->whereNotNull('spotify_artist_id'))
       ->when($request->filled('search'), function ($query) use ($request) {
         $search = $request->string('search')->trim()->toString();
 
