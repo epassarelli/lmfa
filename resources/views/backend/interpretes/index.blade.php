@@ -41,6 +41,19 @@
         ]"
       />
 
+      <div class="d-flex flex-wrap align-items-center mb-3">
+        <span class="mr-2"><i class="fab fa-spotify text-success"></i> Spotify:</span>
+        <a href="{{ route('backend.interpretes.index', request()->except('spotify', 'page')) }}" class="btn btn-xs mr-1 {{ request('spotify') ? 'btn-outline-secondary' : 'btn-secondary' }}">Todos</a>
+        <a href="{{ route('backend.interpretes.index', array_merge(request()->except('page'), ['spotify' => 'sin_vincular'])) }}" class="btn btn-xs mr-1 {{ request('spotify') === 'sin_vincular' ? 'btn-secondary' : 'btn-outline-secondary' }}">Sin vincular</a>
+        <a href="{{ route('backend.interpretes.index', array_merge(request()->except('page'), ['spotify' => 'vinculados'])) }}" class="btn btn-xs mr-3 {{ request('spotify') === 'vinculados' ? 'btn-secondary' : 'btn-outline-secondary' }}">Vinculados</a>
+        @role('administrador')
+          <form action="{{ route('backend.interpretes.spotify.bulk-link') }}" method="POST" class="d-inline" onsubmit="return confirm('Se buscarán en Spotify hasta 40 artistas activos sin vincular y se vincularán solo los de coincidencia exacta y única. ¿Continuar?');">
+            @csrf
+            <button type="submit" class="btn btn-xs btn-outline-success"><i class="fas fa-link mr-1"></i> Vincular pendientes (lote de 40)</button>
+          </form>
+        @endrole
+      </div>
+
       <div class="table-responsive">
       <table class="table table-hover mb-0">
         <thead class="thead-light">
@@ -78,6 +91,12 @@
               <td>{{ $interprete->canciones_count }}</td>
               <td class="text-right" style="white-space: nowrap;">
                 <div class="action-icons">
+                  @can('update', $interprete)
+                  <a class="btn {{ filled($interprete->spotify_artist_id) ? 'btn-success' : 'btn-outline-secondary' }}" href="{{ route('backend.interpretes.spotify', $interprete->id) }}" title="{{ filled($interprete->spotify_artist_id) ? 'Spotify: traer discos' : 'Vincular con Spotify' }}">
+                    <i class="fab fa-spotify"></i>
+                  </a>
+                  @endcan
+
                   @can('update', $interprete)
                   <a class="btn btn-warning" href="{{ route('backend.interpretes.edit', $interprete->id) }}">
                     <i class="fas fa-edit"></i>

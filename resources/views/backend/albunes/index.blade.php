@@ -38,7 +38,17 @@
           'spotify' => 'Spotify',
           'canciones_count' => 'Canciones',
         ]"
-      />
+      >
+        <div class="col-md-3">
+          <label for="interprete_id" class="small text-muted mb-1">Interprete</label>
+          <select id="interprete_id" name="interprete_id" class="form-control">
+            <option value="">Todos</option>
+            @foreach ($filterInterpretes as $filterInterprete)
+              <option value="{{ $filterInterprete->id }}" @selected((int) $interpreteId === $filterInterprete->id)>{{ $filterInterprete->interprete }}</option>
+            @endforeach
+          </select>
+        </div>
+      </x-admin-listing-toolbar>
 
       <div class="table-responsive">
         <table id="albums-table" class="table table-hover mb-0">
@@ -60,15 +70,15 @@
               <tr>
                 <td>{{ $album->id }}</td>
                 <td style="width:60px;padding:4px">
-                  @if ($album->images->isNotEmpty())
-                    <x-optimized-image :image="$album->images->first()" variant="card" :minimal="true" style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle" />
-                  @elseif($album->foto)
-                    <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}"
-                      style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle">
-                  @else
-                    <img src="{{ asset('img/no-image.jpg') }}"
-                      style="width:50px;height:50px;object-fit:cover;display:block" class="rounded-circle">
-                  @endif
+                  <div class="album-list-thumb">
+                    @if ($album->images->isNotEmpty())
+                      <x-optimized-image :image="$album->images->first()" variant="card" :minimal="true" />
+                    @elseif($album->foto)
+                      <img src="{{ asset('storage/albunes/' . $album->foto) }}" alt="Foto de {{ $album->album }}">
+                    @else
+                      <img src="{{ asset('img/no-image.jpg') }}" alt="Sin imagen">
+                    @endif
+                  </div>
                 </td>
                 <td>{{ $album->anio }}</td>
                 <td>{{ $album->album }}</td>
@@ -101,6 +111,13 @@
       </div>
     </div>
   </div>
+@stop
+
+@section('css')
+  <style>
+    .album-list-thumb { width: 50px; height: 50px; overflow: hidden; border-radius: 50%; flex-shrink: 0; }
+    .album-list-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  </style>
 @stop
 
 @section('js')
