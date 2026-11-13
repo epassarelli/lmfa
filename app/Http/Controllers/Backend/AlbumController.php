@@ -34,6 +34,7 @@ class AlbumController extends Controller
         $allowedSorts = ['id', 'anio', 'album', 'visitas', 'spotify', 'canciones_count'];
         [$sort, $direction] = BackendListing::resolveSort($request, $allowedSorts, 'id');
         $search = trim($request->string('search')->toString());
+        $interpreteId = $request->integer('interprete_id') ?: null;
 
         $albums = Album::query()
             ->when(
@@ -42,6 +43,7 @@ class AlbumController extends Controller
             )
             ->with('interprete', 'user', 'images')
             ->withCount('canciones')
+            ->when($interpreteId, fn ($query) => $query->where('interprete_id', $interpreteId))
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($albumQuery) use ($search) {
                     $albumQuery
@@ -57,7 +59,16 @@ class AlbumController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('backend.albunes.index', compact('albums'));
+        // Selector del filtro: solo id y nombre; quien está acotado ve solo los artistas de los discos que puede ver en el listado.
+        $filterInterpretes = Interprete::query()
+            ->when(
+                $user->hasRole('colaborador') || $user->isScopedToManagedInterpretes('update album'),
+                fn ($query) => $query->whereIn('id', Album::query()->ownedOrOfManagedInterprete($user)->select('interprete_id'))
+            )
+            ->orderBy('interprete')
+            ->get(['id', 'interprete']);
+
+        return view('backend.albunes.index', compact('albums', 'filterInterpretes', 'interpreteId'));
     }
 
     /**

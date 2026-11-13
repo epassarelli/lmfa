@@ -7,6 +7,10 @@ Versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+### Agregado
+
+- **Spotify en Artistas y Discos** (`spotify-artistas-discos`): columna `spotify_artist_id` (única) en artistas para vincularlos a Spotify; pantalla Spotify por artista (candidatos, vínculo manual por URL, desvincular, vista previa de discos nuevos con portada y alta como **inactivos** en Moderación); filtro «Sin vincular/Vinculados» y acción masiva (lote de 40, solo coincidencia exacta y única) en el listado; comandos `spotify:vincular-artistas` y `spotify:proponer-discos` (un artista por corrida, máx. 15, apagado en el scheduler salvo `SPOTIFY_SCHEDULE_ENABLED=true`). Migración aditiva `2026_11_12_120000`. Credenciales solo por entorno (`config/spotify.php`).
+
 ## [2.6.0] — 2026-11-12
 
 ### Agregado
