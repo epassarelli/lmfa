@@ -15,4 +15,17 @@ return [
     'catalog_version' => '4.0.0',
     'font_regular' => env('SOCIAL_PUBLICATION_FONT_REGULAR', '/tmp/mfa-fonts/segoeui.ttf'),
     'font_bold' => env('SOCIAL_PUBLICATION_FONT_BOLD', '/tmp/mfa-fonts/segoeuib.ttf'),
+
+    // Ejecutor Laravel (spec social-publication-laravel-executor).
+    'graph_version' => env('SOCIAL_PUBLICATION_GRAPH_VERSION', 'v27.0'),
+    'events_automatic' => env('SOCIAL_PUBLICATION_EVENTS_AUTOMATIC', true),
+    'events_after_id' => (int) env('SOCIAL_PUBLICATION_EVENTS_AFTER_ID', 0),
+    'alert_email' => env('SOCIAL_PUBLICATION_ALERT_EMAIL'),
+    'timezone' => 'America/Argentina/Buenos_Aires',
+    // Ajustes editables desde el panel (sin secretos) y token cifrado: fuera de git, en storage/app/private.
+    'settings_path' => env('SOCIAL_PUBLICATION_SETTINGS_PATH', storage_path('app/private/social-publications-settings.json')),
+    'credentials_path' => env('SOCIAL_PUBLICATION_CREDENTIALS_PATH', storage_path('app/private/social-publications-meta.json')),
+    'schedule_window_minutes' => 180,
+    'instagram_poll_attempts' => 6,
+    'instagram_poll_seconds' => 5,
 ];

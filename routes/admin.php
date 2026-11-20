@@ -238,4 +238,11 @@ Route::prefix('social-publications')->middleware('role:administrador')->name('so
     Route::get('/', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'index'])->name('index');
     Route::post('/eligibility', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'eligibility'])->name('eligibility');
     Route::post('/{target}/resolve', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'resolve'])->whereNumber('target')->name('resolve');
+    Route::post('/settings', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'updateSettings'])->name('settings');
+    Route::post('/token', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'storeToken'])->name('token.store');
+    Route::post('/token/check', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'checkToken'])->name('token.check');
+    Route::delete('/token/{provider}', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'forgetToken'])->whereIn('provider', ['facebook', 'instagram'])->name('token.forget');
+    Route::post('/preview', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'preview'])->name('preview');
+    Route::get('/preview/{hash}.png', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'previewAsset'])->where('hash', '[a-f0-9]{64}')->name('preview.asset');
+    Route::post('/publish', [\App\Http\Controllers\Backend\SocialPublicationController::class, 'publish'])->middleware('throttle:10,1')->name('publish');
 });
