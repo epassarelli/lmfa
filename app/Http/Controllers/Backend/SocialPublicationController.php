@@ -61,6 +61,8 @@ class SocialPublicationController extends Controller
             foreach (array_keys(SocialPublicationSettings::PROVIDERS) as $provider) {
                 $rules["schedules.$kind.$provider.enabled"] = 'nullable|boolean';
                 $rules["schedules.$kind.$provider.time"] = ['required', 'regex:/^([01]\d|2[0-3]):[0-5]\d$/'];
+                $rules["schedules.$kind.$provider.days"] = 'nullable|array';
+                $rules["schedules.$kind.$provider.days.*"] = 'integer|between:1,7';
             }
         }
         $data = $request->validate($rules, ['schedules.*.*.time.regex' => 'El horario debe tener formato HH:MM.']);
@@ -68,7 +70,12 @@ class SocialPublicationController extends Controller
         $schedules = [];
         foreach ($data['schedules'] as $kind => $providers) {
             foreach ($providers as $provider => $slot) {
-                $schedules[$kind][$provider] = ['enabled' => (bool) ($slot['enabled'] ?? false), 'time' => $slot['time']];
+                $enabled = (bool) ($slot['enabled'] ?? false);
+                $days = array_map('intval', $slot['days'] ?? []);
+                if ($enabled && !$days) {
+                    return back()->withInput()->withErrors(['schedules' => 'Un horario activo necesita al menos un día ('.SocialPublicationSettings::KINDS[$kind].' en '.SocialPublicationSettings::PROVIDERS[$provider].').']);
+                }
+                $schedules[$kind][$provider] = ['enabled' => $enabled, 'time' => $slot['time'], 'days' => $days ?: SocialPublicationSettings::ALL_DAYS];
             }
         }
         $new = ['executor' => $data['executor'], 'paused' => $request->boolean('paused'), 'alert_email' => $data['alert_email'] ?? null, 'schedules' => $schedules];

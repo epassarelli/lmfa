@@ -128,7 +128,23 @@ class SocialPublicationExecutorTest extends TestCase
         Http::assertNothingSent();
     }
 
-    public function test_pause_blocks_scheduled_and_manual_runs(): void
+    public function test_slot_runs_only_on_selected_weekdays(): void
+    {
+        $settings = app(SocialPublicationSettings::class);
+        $settings->update(['schedules' => ['news' => ['facebook' => ['days' => [1]], 'instagram' => ['enabled' => false]]]]); // solo lunes
+        $this->fakeMeta();
+        $this->at('11:00'); // 2026-11-23 es lunes
+        $this->artisan('social-publications:run --due');
+        $this->assertSame('success', $this->target('facebook')->status);
+        $this->assertSame([1], $settings->get('schedules.news.facebook.days'));
+
+        $second = $this->makeNews('Noticia del martes');
+        $this->travelTo(Carbon::parse('2026-11-24 11:00', 'America/Argentina/Buenos_Aires'));
+        $this->artisan('social-publications:run --due');
+        $this->assertNull($this->target('facebook', $second->id), 'El martes no está marcado.');
+    }
+
+        public function test_pause_blocks_scheduled_and_manual_runs(): void
     {
         app(SocialPublicationSettings::class)->update(['paused' => true]);
         $this->fakeMeta(); $this->at('11:00');
@@ -253,13 +269,19 @@ class SocialPublicationExecutorTest extends TestCase
     public function test_settings_update_schedules_and_executor(): void
     {
         $this->actingAs($this->admin())->post('/admin/social-publications/settings', ['executor' => 'n8n', 'paused' => '1', 'alert_email' => 'yo@example.com',
-            'schedules' => ['news' => ['facebook' => ['enabled' => '1', 'time' => '09:30'], 'instagram' => ['enabled' => '0', 'time' => '20:00']],
-                'events' => ['facebook' => ['enabled' => '1', 'time' => '18:15'], 'instagram' => ['enabled' => '0', 'time' => '18:00']]]])
-            ->assertRedirect();
+            'schedules' => ['news' => ['facebook' => ['enabled' => '1', 'time' => '09:30', 'days' => ['1', '3', '5']], 'instagram' => ['enabled' => '0', 'time' => '20:00']],
+                'events' => ['facebook' => ['enabled' => '1', 'time' => '18:15', 'days' => ['4', '5']], 'instagram' => ['enabled' => '0', 'time' => '18:00']]]])
+            ->assertRedirect()->assertSessionHasNoErrors();
         $s = app(SocialPublicationSettings::class)->all();
         $this->assertSame('n8n', $s['executor']);
         $this->assertTrue($s['paused']);
-        $this->assertSame(['enabled' => true, 'time' => '09:30'], $s['schedules']['news']['facebook']);
+        $this->assertSame(['enabled' => true, 'time' => '09:30', 'days' => [1, 3, 5]], $s['schedules']['news']['facebook']);
+        $this->assertSame([4, 5], $s['schedules']['events']['facebook']['days']);
+        $this->assertSame([1, 2, 3, 4, 5, 6, 7], $s['schedules']['news']['instagram']['days'], 'Sin días marcados en un horario apagado queda diario.');
+        $this->post('/admin/social-publications/settings', ['executor' => 'laravel', 'schedules' => [
+            'news' => ['facebook' => ['enabled' => '1', 'time' => '09:30'], 'instagram' => ['enabled' => '0', 'time' => '20:00']],
+            'events' => ['facebook' => ['enabled' => '0', 'time' => '18:15'], 'instagram' => ['enabled' => '0', 'time' => '18:00']]]])
+            ->assertSessionHasErrors('schedules');
         $this->assertFalse($s['schedules']['news']['instagram']['enabled']);
         $this->post('/admin/social-publications/settings', ['executor' => 'laravel', 'schedules' => ['news' => ['facebook' => ['time' => '25:00']]]])
             ->assertSessionHasErrors();

@@ -15,7 +15,7 @@ Responsable editorial/administrador, programador de tareas de Laravel (`schedule
 - Ejecutor en Laravel que replica el protocolo validado de n8n (Graph v27.0): Facebook foto multipart a `/{page}/photos`; Instagram contenedor → espera de `FINISHED` → registro del contenedor → `media_publish` → verificación de permalink.
 - Usa los mismos métodos del ledger (`claim`, `render`, `begin`, `instagramContainer`, `result`); los intentos quedan con `executor=portal`.
 - Interruptor de ejecutor (`n8n` | `laravel`): por defecto `n8n`, así el deploy no cambia el comportamiento productivo.
-- Horario configurable desde el backoffice por tipo (Noticias, Eventos) y red (Facebook, Instagram), con activación individual. Valores iniciales: Noticias FB e IG 11:00; Eventos desactivados (18:00).
+- Horario configurable desde el backoffice por tipo (Noticias, Eventos) y red (Facebook, Instagram), con activación individual, hora y días de la semana (diario o 1 a N días; ampliación pedida el 2026-11-20). Valores iniciales: Noticias FB e IG 11:00 todos los días; Eventos desactivados (18:00). Todo tipo que se sume sigue `project/docs/specs/social-autopublicacion-estandar.md`.
 - Pausa general desde el panel.
 - Eventos: misma operatoria que Noticias (cola automática + envío manual). Cola: eventos públicos y vigentes/próximos, con ID mayor a `SOCIAL_PUBLICATION_EVENTS_AFTER_ID`, sin envío previo a ese destino, por fecha de inicio. Instagram de eventos requiere éxito previo en Facebook, igual que Noticias.
 - Envío a demanda: elegir tipo, red (FB, IG o ambas) y contenido entre los no enviados de la cola; vista previa de placa y texto antes de confirmar.
@@ -38,7 +38,7 @@ Fuera de alcance: Grupos de Facebook (la API `publish_to_groups` fue eliminada p
 
 1. Solo se ejecuta si `SOCIAL_PUBLICATION_ENABLED=true`, ejecutor = `laravel` y sin pausa. El envío manual requiere ejecutor `laravel` (evita convivir con n8n).
 2. Una corrida programada publica como máximo un contenido por tipo y red.
-3. Un horario se ejecuta una vez por día, al llegar la hora (zona America/Argentina/Buenos_Aires), con tolerancia de 3 horas si el cron se demora; fuera de esa ventana se saltea.
+3. Un horario se ejecuta solo los días de la semana marcados (los siete = diario), una vez por día, al llegar la hora (zona America/Argentina/Buenos_Aires), con tolerancia de 3 horas si el cron se demora; fuera de esa ventana se saltea.
 4. Si en el mismo minuto vencen FB e IG del mismo tipo, primero FB.
 5. Envío manual de un contenido no siguiente en la cola: los anteriores siguen en la cola (opción a).
 6. Clasificación de resultados igual que n8n: FB éxito solo con `post_id` de la Página; rechazo 4xx (≠408) con error → fallo definitivo; resto → incierto. IG: si falla la creación del contenedor (4xx) o no queda listo, no se llamó a `media_publish` → fallo definitivo; si `media_publish` o la verificación del permalink no confirman → incierto. Un incierto nunca se reenvía sin conciliación manual.

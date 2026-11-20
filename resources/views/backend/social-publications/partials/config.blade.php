@@ -21,11 +21,18 @@
                 <input type="hidden" name="schedules[{{ $k }}][{{ $p }}][enabled]" value="0">
                 <div class="custom-control custom-switch"><input class="custom-control-input" type="checkbox" id="s-{{ $k }}-{{ $p }}" name="schedules[{{ $k }}][{{ $p }}][enabled]" value="1" @checked($slot['enabled'])><label class="custom-control-label" for="s-{{ $k }}-{{ $p }}"><span class="sr-only">Activar {{ $kname }} en {{ $name }}</span></label></div>
                 <input type="time" name="schedules[{{ $k }}][{{ $p }}][time]" value="{{ $slot['time'] }}" class="form-control form-control-sm" style="max-width:7.5rem" aria-label="Horario {{ $kname }} {{ $name }}">
-            </div>@if($last)<small class="text-muted">Última corrida: {{ \Carbon\Carbon::parse($last)->format('d/m') }}</small>@endif</td>
+            </div>
+            <div class="btn-group btn-group-toggle btn-group-sm mt-1" role="group" aria-label="Días de {{ $kname }} en {{ $name }}">
+                @foreach(\App\Services\Publication\SocialPublicationSettings::DAYS as $n => $d)
+                    <label class="btn btn-outline-secondary px-1 @if(in_array($n, $slot['days'] ?? [])) active @endif" style="min-width:2rem">
+                        <input type="checkbox" class="d-none" name="schedules[{{ $k }}][{{ $p }}][days][]" value="{{ $n }}" @checked(in_array($n, $slot['days'] ?? [])) onchange="this.parentElement.classList.toggle('active', this.checked)">{{ $d }}</label>
+                @endforeach
+            </div>
+            <small class="d-block text-muted">{{ count($slot['days'] ?? []) === 7 ? 'Todos los días' : count($slot['days'] ?? []).' día(s) por semana' }}</small>@if($last)<small class="text-muted">Última corrida: {{ \Carbon\Carbon::parse($last)->format('d/m') }}</small>@endif</td>
             @endforeach</tr>
         @endforeach
         </tbody></table>
-        <p class="small text-muted mt-2 mb-0">Una publicación por tipo y red en cada horario. Si coinciden, Facebook sale primero: Instagram solo publica lo que ya salió en Facebook.</p>
+        <p class="small text-muted mt-2 mb-0">Una publicación por tipo y red en cada horario, solo los días marcados (los siete = diario). Si coinciden, Facebook sale primero: Instagram solo publica lo que ya salió en Facebook.</p>
     </div>
     <div class="card-footer"><button class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button></div>
 </form>
