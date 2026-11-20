@@ -44,7 +44,6 @@ class SocialPublicationLedgerService
                 'event_timezone' => $content->timezone ?: 'America/Argentina/Buenos_Aires', 'event_city' => trim(strip_tags($content->city ?? ''))];
         }
         if ($this->provider === 'instagram') {
-            abort_unless($e->content_kind === 'news', 422);
             abort_if(mb_strlen($payload['copy']) > 2200, 422, 'Caption supera2200 caracteres.');
         }
         $payload['content_hash'] = hash('sha256', json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
@@ -82,14 +81,19 @@ class SocialPublicationLedgerService
         });
     }
 
-    public function claim(string $kind, int $id, string $key, ?string $execution): array
+    public function claim(string $kind, int $id, string $key, ?string $execution, string $executor = 'n8n'): array
     {
-        return DB::transaction(function () use ($kind, $id, $key, $execution) {
+        // $executor solo etiqueta el intento ('n8n' o 'portal'); el destino del ledger conserva executor='n8n' (ledger) para no
+        // confundirse con la pasarela legacy, que usa executor='laravel'.
+        return DB::transaction(function () use ($kind, $id, $key, $execution, $executor) {
             $this->identity($kind, $id);
             ($kind === 'news' ? News::class : Event::class)::lockForUpdate()->findOrFail($id);
-            if ($kind === 'news' && config('social_publication.news_automatic')) {
-                app(AutomaticNewsPublication::class)->activeQuery($this->provider)->whereKey($id)->firstOrFail();
-                if ($this->provider === 'instagram') { abort_unless(app(AutomaticNewsPublication::class)->facebookPublished($id), 409, 'Falta publicación Facebook confirmada.'); }
+            $automaticEvent = $kind === 'events' && config('social_publication.events_automatic')
+                && app(AutomaticEventPublication::class)->activeQuery($this->provider)->whereKey($id)->exists();
+            if (($kind === 'news' && config('social_publication.news_automatic')) || $automaticEvent) {
+                $queue = app($kind === 'news' ? AutomaticNewsPublication::class : AutomaticEventPublication::class);
+                $queue->activeQuery($this->provider)->whereKey($id)->firstOrFail();
+                if ($this->provider === 'instagram') { abort_unless($queue->facebookPublished($id), 409, 'Falta publicación Facebook confirmada.'); }
                 $existing = SocialPublicationEligibility::where($this->identity($kind, $id))->first();
                 $cancelled = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)
                     ->where('provider', $this->provider)->where('destination_key', $this->destination())->where('status', 'cancelled')->exists();
@@ -112,7 +116,7 @@ class SocialPublicationLedgerService
             $lease = bin2hex(random_bytes(32));
             $expires = now()->addSeconds(config('social_publication.lease_seconds'));
             $attempt = $target->attempts()->create(['attempt_number' => ((int) $target->attempts()->max('attempt_number')) + 1,
-                'status' => 'reserved', 'executor' => 'n8n', 'request_key' => $key, 'n8n_execution_id' => $execution, 'lease_expires_at' => $expires]);
+                'status' => 'reserved', 'executor' => $executor, 'request_key' => $key, 'n8n_execution_id' => $execution, 'lease_expires_at' => $expires]);
             $target->update(['status' => 'reserved', 'lease_token_hash' => hash('sha256', $lease), 'lease_expires_at' => $expires,
                 'payload_snapshot_json' => $payload, 'content_hash' => $payload['content_hash'], 'template_id' => $payload['template_id'], 'template_catalog_version' => $payload['template_catalog_version'], 'asset_reference' => null, 'asset_sha256' => null]);
             return ['target_id' => $target->id, 'attempt_id' => $attempt->id, 'lease' => $lease, 'lease_expires_at' => $expires->toIso8601String(), 'payload' => $payload, 'replayed' => false];

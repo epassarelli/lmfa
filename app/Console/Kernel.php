@@ -26,6 +26,12 @@ class Kernel extends ConsoleKernel
             $schedule->command('spotify:proponer-discos')->dailyAt('10:00')->withoutOverlapping();
         }
 
+        // Publicaciones en redes (spec social-publication-laravel-executor). Cada minuto se fija si venció algún horario
+        // configurado en el panel; no hace nada mientras el ejecutor activo sea n8n o esté en pausa.
+        $schedule->command('social-publications:run --due')->everyMinute()->withoutOverlapping(30);
+        $schedule->command('social-publications:reconcile')->everyTenMinutes()->withoutOverlapping();
+        $schedule->command('social-publications:check-token')->dailyAt('09:00')->timezone('America/Argentina/Buenos_Aires');
+
         // PC-09: Event reminders — runs daily at 08:00
         $schedule->job(new \App\Jobs\Publication\EventReminderJob())->dailyAt('08:00');
 
