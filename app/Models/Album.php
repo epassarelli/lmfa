@@ -62,6 +62,15 @@ class Album extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Alias de lectura `title` → `album` para el código genérico de publicaciones en redes (log, cola, ejecutor).
+     * No hay columna `title`; si una consulta trae el alias explícito, se respeta.
+     */
+    public function getTitleAttribute(): ?string
+    {
+        return $this->attributes['title'] ?? $this->attributes['album'] ?? null;
+    }
+
     public function getUrl(): string
     {
         if ($this->interprete) {

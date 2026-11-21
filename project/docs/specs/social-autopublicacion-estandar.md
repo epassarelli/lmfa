@@ -48,6 +48,7 @@ Tests Feature con `Http::fake()` (sin llamadas reales a Meta) que cubran: éxito
 
 ## 7. Cómo sumar un tipo en el código
 
+0. Registrar modelo y cola en `SocialPublicationKinds` (registro único; evita condicionales por tipo en ledger, ejecutor y guard). Referencia: Discos (`social-autopublicacion-discos`).
 1. Clase de cola `Automatic<Tipo>Publication` con `activeQuery()`, `candidates($provider)`, `facebookPublished()` y `eligibility()` (modelo: `AutomaticEventPublication`).
 2. Registrar el tipo en `SocialPublicationSettings::KINDS` y su horario por defecto en `defaults()`.
 3. Snapshot y plantilla en `SocialPublicationLedgerService::snapshot()` y el catálogo de placas; ruta pública del contenido.

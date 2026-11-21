@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
  */
 class SocialPublicationSettings
 {
-    public const KINDS = ['news' => 'Noticias', 'events' => 'Eventos'];
+    public const KINDS = ['news' => 'Noticias', 'events' => 'Eventos', 'albums' => 'Discos'];
     public const PROVIDERS = ['facebook' => 'Facebook', 'instagram' => 'Instagram'];
     public const EXECUTORS = ['n8n', 'laravel'];
     /** Días ISO-8601 (1 = lunes … 7 = domingo). Un horario corre solo los días marcados; los siete equivalen a diario. */
@@ -28,6 +28,8 @@ class SocialPublicationSettings
             'schedules' => [
                 'news' => ['facebook' => ['enabled' => true, 'time' => '11:00', 'days' => self::ALL_DAYS], 'instagram' => ['enabled' => true, 'time' => '11:00', 'days' => self::ALL_DAYS]],
                 'events' => ['facebook' => ['enabled' => false, 'time' => '18:00', 'days' => self::ALL_DAYS], 'instagram' => ['enabled' => false, 'time' => '18:00', 'days' => self::ALL_DAYS]],
+                // Discos (spec social-autopublicacion-discos): apagado hasta que el responsable lo active desde el panel.
+                'albums' => ['facebook' => ['enabled' => false, 'time' => '20:00', 'days' => self::ALL_DAYS], 'instagram' => ['enabled' => false, 'time' => '20:00', 'days' => self::ALL_DAYS]],
             ],
             'last_runs' => [],
         ];

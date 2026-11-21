@@ -14,7 +14,7 @@ class SocialPublicationGuard
 
     public function legacyExists(string $kind, int $id, string $provider = 'facebook', ?string $destination = null): bool
     {
-        $class = $kind === 'news' ? \App\Models\News::class : \App\Models\Event::class;
+        $class = SocialPublicationKinds::model($kind);
         $destination ??= config('social_publication.destination');
         $page = substr($destination, strrpos($destination, ':') + 1);
         // Any matching legacy row blocks the pilot until explicitly reconciled.

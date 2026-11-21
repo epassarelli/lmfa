@@ -26,13 +26,13 @@ class SocialPublicationExecutor
     public function queue(string $kind, string $provider): Builder
     {
         abort_unless(isset(SocialPublicationSettings::KINDS[$kind], SocialPublicationSettings::PROVIDERS[$provider]), 422);
-        return app($kind === 'news' ? AutomaticNewsPublication::class : AutomaticEventPublication::class)->candidates($provider);
+        return SocialPublicationKinds::queue($kind)->candidates($provider);
     }
 
     /** Snapshot (texto, URL, plantilla) del contenido en la cola, sin reservar nada. */
     public function preview(string $kind, string $provider, int $contentId): array
     {
-        $queue = app($kind === 'news' ? AutomaticNewsPublication::class : AutomaticEventPublication::class);
+        $queue = SocialPublicationKinds::queue($kind);
         $content = $this->queue($kind, $provider)->whereKey($contentId)->firstOrFail();
         return (new SocialPublicationLedgerService($provider))->snapshot($queue->eligibility($content, $provider), $content);
     }

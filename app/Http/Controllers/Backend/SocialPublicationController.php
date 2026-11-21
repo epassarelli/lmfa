@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\{AuditLog, PublicationTarget};
 use App\Services\Publication\{MetaCredentialStore, SocialPublicationExecutor, SocialPublicationLedgerService, SocialPublicationRenderer, SocialPublicationSettings};
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB, Storage};
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -22,9 +23,10 @@ class SocialPublicationController extends Controller
 
     public function index(Request $request, SocialPublicationSettings $settings, MetaCredentialStore $credentials, SocialPublicationExecutor $executor)
     {
-        $filters = $request->validate(['content_kind' => 'nullable|in:news,events', 'provider' => 'nullable|in:facebook,instagram',
+        $kinds = array_keys(SocialPublicationSettings::KINDS);
+        $filters = $request->validate(['content_kind' => ['nullable', Rule::in($kinds)], 'provider' => 'nullable|in:facebook,instagram',
             'status' => 'nullable|in:pending,reserved,processing,success,failed,uncertain,cancelled', 'from' => 'nullable|date', 'to' => 'nullable|date',
-            'tab' => 'nullable|in:log,manual,config', 'm_kind' => 'nullable|in:news,events', 'm_network' => 'nullable|in:facebook,instagram,both']);
+            'tab' => 'nullable|in:log,manual,config', 'm_kind' => ['nullable', Rule::in($kinds)], 'm_network' => 'nullable|in:facebook,instagram,both']);
         $tz = config('social_publication.timezone');
         $targets = PublicationTarget::with(['request.content', 'attempts' => fn ($q) => $q->select(['id', 'publication_target_id', 'attempt_number', 'status',
                 'executor', 'error_code', 'response_payload_json', 'dispatch_started_at', 'finished_at', 'created_at'])->orderBy('attempt_number')])
@@ -41,7 +43,8 @@ class SocialPublicationController extends Controller
         $mNetwork = $filters['m_network'] ?? 'both';
         $mProvider = $mNetwork === 'instagram' ? 'instagram' : 'facebook';
         $queue = $executor->queue($mKind, $mProvider)
-            ->select($mKind === 'news' ? ['news.id', 'news.title', 'news.published_at'] : ['events.id', 'events.title', 'events.start_at'])
+            ->select(['news' => ['news.id', 'news.title', 'news.published_at'], 'events' => ['events.id', 'events.title', 'events.start_at'],
+                'albums' => ['albunes.id', 'albunes.album', 'albunes.anio']][$mKind])
             ->limit(50)->get();
         $lastSent = PublicationTarget::where('executor', 'n8n')->where('ledger_content_kind', $mKind)
             ->where('destination_key', $this->destinations()[$mProvider])
@@ -60,7 +63,8 @@ class SocialPublicationController extends Controller
         foreach (array_keys(SocialPublicationSettings::KINDS) as $kind) {
             foreach (array_keys(SocialPublicationSettings::PROVIDERS) as $provider) {
                 $rules["schedules.$kind.$provider.enabled"] = 'nullable|boolean';
-                $rules["schedules.$kind.$provider.time"] = ['required', 'regex:/^([01]\d|2[0-3]):[0-5]\d$/'];
+                // Un tipo ausente del formulario conserva su horario guardado (p. ej., un tipo recién sumado).
+                $rules["schedules.$kind.$provider.time"] = ["required_with:schedules.$kind", 'regex:/^([01]\d|2[0-3]):[0-5]\d$/'];
                 $rules["schedules.$kind.$provider.days"] = 'nullable|array';
                 $rules["schedules.$kind.$provider.days.*"] = 'integer|between:1,7';
             }
@@ -68,7 +72,7 @@ class SocialPublicationController extends Controller
         $data = $request->validate($rules, ['schedules.*.*.time.regex' => 'El horario debe tener formato HH:MM.']);
         $old = $settings->all();
         $schedules = [];
-        foreach ($data['schedules'] as $kind => $providers) {
+        foreach ($data['schedules'] ?? [] as $kind => $providers) {
             foreach ($providers as $provider => $slot) {
                 $enabled = (bool) ($slot['enabled'] ?? false);
                 $days = array_map('intval', $slot['days'] ?? []);
@@ -113,7 +117,7 @@ class SocialPublicationController extends Controller
 
     public function preview(Request $request, SocialPublicationExecutor $executor)
     {
-        $data = $request->validate(['content_kind' => 'required|in:news,events', 'network' => 'required|in:facebook,instagram,both', 'content_id' => 'required|integer|min:1']);
+        $data = $request->validate(['content_kind' => ['required', Rule::in(array_keys(SocialPublicationSettings::KINDS))], 'network' => 'required|in:facebook,instagram,both', 'content_id' => 'required|integer|min:1']);
         try {
             $snapshot = $executor->preview($data['content_kind'], $data['network'] === 'instagram' ? 'instagram' : 'facebook', (int) $data['content_id']);
             $asset = app(SocialPublicationRenderer::class)->render($snapshot, 'png');
@@ -133,7 +137,7 @@ class SocialPublicationController extends Controller
 
     public function publish(Request $request, SocialPublicationExecutor $executor)
     {
-        $data = $request->validate(['content_kind' => 'required|in:news,events', 'network' => 'required|in:facebook,instagram,both',
+        $data = $request->validate(['content_kind' => ['required', Rule::in(array_keys(SocialPublicationSettings::KINDS))], 'network' => 'required|in:facebook,instagram,both',
             'content_id' => 'required|integer|min:1', 'confirmed' => 'accepted']);
         @set_time_limit(180);
         $lines = []; $ok = true;

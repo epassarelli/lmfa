@@ -11,7 +11,7 @@ return [
     'lease_seconds' => 600,
     'news_automatic' => env('SOCIAL_PUBLICATION_NEWS_AUTOMATIC', true),
     'news_after_id' => (int) env('SOCIAL_PUBLICATION_NEWS_AFTER_ID', 833),
-    'templates' => ['news' => 'mfa-noticias-v4', 'events' => 'mfa-agenda-v4'],
+    'templates' => ['news' => 'mfa-noticias-v4', 'events' => 'mfa-agenda-v4', 'albums' => 'mfa-discos-v4'],
     'catalog_version' => '4.0.0',
     'font_regular' => env('SOCIAL_PUBLICATION_FONT_REGULAR', '/tmp/mfa-fonts/segoeui.ttf'),
     'font_bold' => env('SOCIAL_PUBLICATION_FONT_BOLD', '/tmp/mfa-fonts/segoeuib.ttf'),
@@ -20,6 +20,9 @@ return [
     'graph_version' => env('SOCIAL_PUBLICATION_GRAPH_VERSION', 'v27.0'),
     'events_automatic' => env('SOCIAL_PUBLICATION_EVENTS_AUTOMATIC', true),
     'events_after_id' => (int) env('SOCIAL_PUBLICATION_EVENTS_AFTER_ID', 0),
+    // Discos (spec social-autopublicacion-discos): cola por ID ascendente desde el umbral (0 = todo el catálogo).
+    'albums_automatic' => env('SOCIAL_PUBLICATION_ALBUMS_AUTOMATIC', true),
+    'albums_after_id' => (int) env('SOCIAL_PUBLICATION_ALBUMS_AFTER_ID', 0),
     'alert_email' => env('SOCIAL_PUBLICATION_ALERT_EMAIL'),
     'timezone' => 'America/Argentina/Buenos_Aires',
     // Ajustes editables desde el panel (sin secretos) y token cifrado: fuera de git, en storage/app/private.

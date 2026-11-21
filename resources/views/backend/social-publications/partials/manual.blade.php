@@ -27,7 +27,7 @@
         <select id="m-content" name="content_id" class="form-control">
         @foreach($queue as $i => $item)
             <option value="{{ $item->id }}" @selected(($preview['content_id'] ?? null) === $item->id)>#{{ $item->id }} · {{ $item->title }}
-                @if($mKind === 'events' && $item->start_at) ({{ $item->start_at->timezone($tz)->format('d/m/Y') }})@endif{{ $i === 0 ? ' — siguiente en la cola' : '' }}</option>
+                @if($mKind === 'events' && $item->start_at) ({{ $item->start_at->timezone($tz)->format('d/m/Y') }})@elseif($mKind === 'albums' && $item->anio) ({{ $item->anio }})@endif{{ $i === 0 ? ' — siguiente en la cola' : '' }}</option>
         @endforeach
         </select></div>
     <div class="col-md-3"><button class="btn btn-outline-primary btn-block"><i class="fas fa-eye"></i> Vista previa</button></div>

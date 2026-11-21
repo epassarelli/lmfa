@@ -2,7 +2,7 @@
 
 namespace App\Services\Publication;
 
-use App\Models\{AuditLog, Event, News, PublicationAttempt, PublicationRequest, PublicationTarget, SocialPublicationEligibility};
+use App\Models\{Album, AuditLog, PublicationAttempt, PublicationRequest, PublicationTarget, SocialPublicationEligibility};
 use Illuminate\Support\Facades\DB;
 
 class SocialPublicationLedgerService
@@ -16,14 +16,17 @@ class SocialPublicationLedgerService
 
     public function identity(string $kind, int $id): array
     {
-        abort_unless(in_array($kind, ['news', 'events'], true), 422, 'Tipo no permitido.');
+        abort_unless(SocialPublicationKinds::exists($kind), 422, 'Tipo no permitido.');
         return ['content_kind' => $kind, 'content_id' => $id, 'provider' => $this->provider, 'destination_key' => $this->destination()];
     }
 
     public function snapshot(SocialPublicationEligibility $e, ?\Illuminate\Database\Eloquent\Model $loaded = null): array
     {
-        $class = $e->content_kind === 'news' ? News::class : Event::class;
+        $class = SocialPublicationKinds::model($e->content_kind);
         $content = $loaded ?? $class::lockForUpdate()->findOrFail($e->content_id);
+        if ($e->content_kind === 'albums') {
+            return $this->finalize($this->albumPayload($e, $content));
+        }
         abort_unless($e->enabled && $content->isPublished(), 409, 'Contenido no habilitado o no público.');
         abort_if($content->publication_mode === 'portal_only' && !$e->portal_only_override, 409, 'Falta autorización portal_only.');
         if ($e->content_kind === 'events') {
@@ -33,9 +36,7 @@ class SocialPublicationLedgerService
         $url = $e->content_kind === 'news' ? route('noticias.show', $content->slug) : route('cartelera.show', ['provinceOrSlug' => $content->slug]);
         $title = trim(strip_tags($content->title));
         $excerpt = trim(strip_tags($content->excerpt ?? ''));
-        $approved = ['news' => 'mfa-noticias-v4', 'events' => 'mfa-agenda-v4'];
-        abort_unless(config('social_publication.templates.'.$e->content_kind) === $approved[$e->content_kind]
-            && config('social_publication.catalog_version') === '4.0.0', 409, 'Plantilla no aprobada para este tipo.');
+        $this->assertTemplate($e->content_kind);
         $payload = ['content_kind' => $e->content_kind, 'content_id' => $e->content_id, 'title' => $title, 'excerpt' => $excerpt,
             'url' => $url, 'copy' => $title.($excerpt ? "\n\n".$excerpt : '')."\n\n".$url,
             'template_id' => config('social_publication.templates.'.$e->content_kind), 'template_catalog_version' => config('social_publication.catalog_version')];
@@ -43,6 +44,18 @@ class SocialPublicationLedgerService
             $payload += ['event_start_at' => $content->start_at?->toIso8601String(), 'event_end_at' => $content->end_at?->toIso8601String(),
                 'event_timezone' => $content->timezone ?: 'America/Argentina/Buenos_Aires', 'event_city' => trim(strip_tags($content->city ?? ''))];
         }
+        return $this->finalize($payload);
+    }
+
+    private function assertTemplate(string $kind): void
+    {
+        $approved = ['news' => 'mfa-noticias-v4', 'events' => 'mfa-agenda-v4', 'albums' => 'mfa-discos-v4'];
+        abort_unless(isset($approved[$kind]) && config('social_publication.templates.'.$kind) === $approved[$kind]
+            && config('social_publication.catalog_version') === '4.0.0', 409, 'Plantilla no aprobada para este tipo.');
+    }
+
+    private function finalize(array $payload): array
+    {
         if ($this->provider === 'instagram') {
             abort_if(mb_strlen($payload['copy']) > 2200, 422, 'Caption supera2200 caracteres.');
         }
@@ -50,11 +63,33 @@ class SocialPublicationLedgerService
         return $payload;
     }
 
+    /** Snapshot de Discos (spec social-autopublicacion-discos): datos del disco, intérprete y portada con su huella. */
+    private function albumPayload(SocialPublicationEligibility $e, Album $album): array
+    {
+        $album->loadMissing('interprete');
+        $artist = $album->interprete;
+        abort_unless($e->enabled && $album->estado && $artist && $artist->estado, 409, 'Contenido no habilitado o no público.');
+        abort_unless(filled($album->slug) && filled($album->album) && filled($artist->slug) && filled($artist->interprete), 409, 'Falta título o URL.');
+        $this->assertTemplate('albums');
+        $title = trim(strip_tags($album->album));
+        $artistName = trim(strip_tags($artist->interprete));
+        $year = preg_match('/^\d{4}$/D', trim((string) $album->anio)) ? trim((string) $album->anio) : null;
+        $excerpt = trim(strip_tags($album->excerpt ?? ''));
+        $url = route('artista.disco', ['interprete' => $artist->slug, 'slug' => $album->slug]);
+        $cover = app(AutomaticAlbumPublication::class)->coverPath($album);
+        $heading = $title.' — '.$artistName.($year ? ' ('.$year.')' : '');
+        return ['content_kind' => 'albums', 'content_id' => $e->content_id, 'title' => $title, 'excerpt' => $excerpt,
+            'url' => $url, 'copy' => $heading.($excerpt ? "\n\n".$excerpt : '')."\n\n".$url,
+            'template_id' => config('social_publication.templates.albums'), 'template_catalog_version' => config('social_publication.catalog_version'),
+            'album_artist' => $artistName, 'album_year' => $year, 'album_type' => $album->album_type ? mb_strtolower(trim($album->album_type)) : null,
+            'cover_path' => $cover, 'cover_sha256' => $cover ? hash_file('sha256', \Illuminate\Support\Facades\Storage::disk('public')->path($cover)) : null];
+    }
+
     public function enable(string $kind, int $id, bool $enabled, bool $override, int $actor): PublicationTarget
     {
         return DB::transaction(function () use ($kind, $id, $enabled, $override, $actor) {
             $this->identity($kind, $id);
-            ($kind === 'news' ? News::class : Event::class)::lockForUpdate()->findOrFail($id);
+            SocialPublicationKinds::model($kind)::lockForUpdate()->findOrFail($id);
             $e = SocialPublicationEligibility::firstOrCreate($this->identity($kind, $id));
             $e = SocialPublicationEligibility::lockForUpdate()->findOrFail($e->id);
             $old = $e->only(['enabled', 'portal_only_override']);
@@ -66,7 +101,7 @@ class SocialPublicationLedgerService
             }
             $target = PublicationTarget::where('ledger_content_kind', $kind)->where('ledger_content_id', $id)->where('provider', $this->provider)->where('destination_key', $e->destination_key)->lockForUpdate()->first();
             if (!$target) {
-                $request = PublicationRequest::create(['content_type' => $kind === 'news' ? News::class : Event::class, 'content_id' => $id,
+                $request = PublicationRequest::create(['content_type' => SocialPublicationKinds::model($kind), 'content_id' => $id,
                     'requested_by' => $actor, 'mode' => 'social_ledger', 'status' => 'pending']);
                 $target = $request->targets()->create(['ledger_content_kind' => $kind, 'ledger_content_id' => $id, 'provider' => $this->provider,
                     'destination_key' => $e->destination_key, 'executor' => 'n8n', 'status' => $enabled ? 'pending' : 'cancelled']);
@@ -87,11 +122,12 @@ class SocialPublicationLedgerService
         // confundirse con la pasarela legacy, que usa executor='laravel'.
         return DB::transaction(function () use ($kind, $id, $key, $execution, $executor) {
             $this->identity($kind, $id);
-            ($kind === 'news' ? News::class : Event::class)::lockForUpdate()->findOrFail($id);
-            $automaticEvent = $kind === 'events' && config('social_publication.events_automatic')
-                && app(AutomaticEventPublication::class)->activeQuery($this->provider)->whereKey($id)->exists();
-            if (($kind === 'news' && config('social_publication.news_automatic')) || $automaticEvent) {
-                $queue = app($kind === 'news' ? AutomaticNewsPublication::class : AutomaticEventPublication::class);
+            SocialPublicationKinds::model($kind)::lockForUpdate()->findOrFail($id);
+            // Noticias: cola automática si está habilitada. Eventos y Discos: además el contenido tiene que estar en su cola activa.
+            $automatic = SocialPublicationKinds::automatic($kind) && ($kind === 'news'
+                || SocialPublicationKinds::queue($kind)->activeQuery($this->provider)->whereKey($id)->exists());
+            if ($automatic) {
+                $queue = SocialPublicationKinds::queue($kind);
                 $queue->activeQuery($this->provider)->whereKey($id)->firstOrFail();
                 if ($this->provider === 'instagram') { abort_unless($queue->facebookPublished($id), 409, 'Falta publicación Facebook confirmada.'); }
                 $existing = SocialPublicationEligibility::where($this->identity($kind, $id))->first();
@@ -126,7 +162,7 @@ class SocialPublicationLedgerService
     private function locked(int $id, array $data): array
     {
         $identity = PublicationTarget::where('executor', 'n8n')->where('destination_key', $this->destination())->findOrFail($id);
-        ($identity->ledger_content_kind === 'news' ? News::class : Event::class)::lockForUpdate()->find($identity->ledger_content_id);
+        SocialPublicationKinds::model($identity->ledger_content_kind)::lockForUpdate()->find($identity->ledger_content_id);
         SocialPublicationEligibility::where($this->identity($identity->ledger_content_kind, $identity->ledger_content_id))->lockForUpdate()->firstOrFail();
         $target = PublicationTarget::where('executor', 'n8n')->where('destination_key', $this->destination())->lockForUpdate()->findOrFail($id);
         $attempt = $target->attempts()->lockForUpdate()->findOrFail($data['attempt_id']);
