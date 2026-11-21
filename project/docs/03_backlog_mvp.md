@@ -1,7 +1,7 @@
 # 03 - Backlog Maestro
 
 > Backlog estructural en Git alineado con `07_hoja_de_ruta.md`.
-> Ultima actualizacion: 2026-09-08.
+> Ultima actualizacion: 2026-11-20 (sección E: redes, derechos y observaciones).
 > Google Drive conserva la priorizacion humana; esta es la cola local ejecutable del agente.
 
 ---
@@ -97,6 +97,22 @@ Estados validos en este documento:
 | `PROD-07` | Diseñar servicios comerciales y atribución de resultados | `pending` | Media | `HUMANA` | Requiere decisión comercial, pricing, pagos y obligaciones fiscales. |
 | `PROD-08` | Agregar E2E crítico, accesibilidad y presupuestos de calidad al CI | `done` | Alta | `IA_AUTONOMA` | Suite publica con 2 pruebas y 50 aserciones incorporada a CI; valida landings, estructura accesible y presupuesto HTML. |
 | `PROD-09` | Empaquetar y verificar assets Vite para deploy sin Node en servidor | `done` | Crítica | `IA_AUTONOMA` | Validador y 5 pruebas Node, verificación de 13 assets reales, artefacto CI `vite-build-<SHA>` con retención de 14 días y runbook sin Node. OpenSpec estricto válido. |
+
+### E. Redes, derechos y observaciones (2026-11-20)
+
+Cargado a pedido del usuario para avanzar con «tomá algo del backlog». El agente toma la tarea `pending` de mayor prioridad cuya autonomía y dependencias lo permitan; si es `IA_CON_VALIDACION`, presenta la spec y espera aprobación antes de implementar.
+
+| ID | Tarea | Estado | Prioridad | Autonomía | Dependencia / criterio de cierre |
+|---|---|---|---|---|---|
+| `RED-01` | Validar y cerrar Discos en la autopublicación de redes | `needs_review` | Alta | `HUMANA` | Implementado en local sobre `dev`, sin commit (spec `social-autopublicacion-discos`). Falta correr `SocialPublicationAlbumsTest`, `SocialPublicationExecutorTest` y `SocialPublicationLedgerTest` en `mfa_test`, revisar la placa en el panel, commit y deploy autorizados. |
+| `RED-02` | Link a Spotify en las publicaciones de Discos | `pending` | Alta | `IA_AUTONOMA` | Depende de `RED-01`. Agregar «Escuchalo en Spotify: …» al copy cuando el disco tenga `spotify` cargado (política de Spotify: portada y metadatos con link al álbum). Test Feature del copy. |
+| `RED-03` | Letras de canciones en la autopublicación de redes | `pending` | Alta | `IA_CON_VALIDACION` | Depende de `RED-01`. Decisión del usuario del 2026-11-20: **sin letra ni fragmentos**; placa y copy con título, intérprete, aviso de que la interpretación no implica autoría y link al portal (plantilla `mfa-canciones-v4`, `metadata_only`). Abiertas: mostrar créditos `lyricist`/`composer` si están cargados; instrumentales sí/no. No contradice `GOV-C1`: no amplía la publicación de letras. |
+| `RED-04` | Biografías y Festivales en la autopublicación de redes | `pending` | Media | `IA_CON_VALIDACION` | Después de `RED-03`. Una spec por tipo siguiendo `social-autopublicacion-estandar`. |
+| `GOV-C3` | Declaración de derechos al cargar letras y canal de reclamos y bajas | `pending` | Alta | `IA_CON_VALIDACION` | Casilla obligatoria en el formulario de Canciones (quién declara y cuándo), canal público de reclamos y baja registrada (`rights_status = not_available`). Texto legal final revisado por un abogado (humano). |
+| `GOV-C4` | Registrar origen y derechos de las imágenes nuevas | `pending` | Media | `IA_CON_VALIDACION` | Usar `media_assets.source_type` y `rights_status`, que ya existen, al cargar fotos de artistas, flyers y portadas. Sin tocar el histórico. |
+| `GOV-C5` | Confirmar la inscripción de la base de datos personales (Ley 25.326) | `pending` | Media | `HUMANA` | Usuarios, newsletter y login social. Trámite ante la AAIP, a cargo del responsable. |
+| `ED-A6` | Revisar por muestreo biografías y textos largos copiados de terceros | `pending` | Media | `IA_CON_VALIDACION` | Detectar textos copiados (Wikipedia requiere cita y link por su licencia; otros sitios, reescritura). Informe con muestra y propuesta; sin cambios masivos. |
+| `OBS-01` | Página pública de disco: validar intérprete y estado | `pending` | Media | `IA_AUTONOMA` | `DiscosController::show` busca solo por slug del disco: no verifica que pertenezca al intérprete de la URL ni que esté activo, y con slugs repetidos puede mostrar otro. Evaluar impacto SEO (404 vs. redirección) en la spec. |
 
 ## 5. Auditoría de pendientes — 2026-09-08
 
